@@ -1,0 +1,702 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.LoaderContainer{
+  height: 94vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.PresentProblemsInputs {
+  display: flex;
+  width: 60%;
+  align-items: center;
+  justify-content: space-between;
+}
+.ChecklistHeader{
+  padding: 15px;
+}
+.ChecklistBody {
+   height: 100% 
+}
+:where(.css-dev-only-do-not-override-htwhyh).ant-collapse>.ant-collapse-item:last-child{
+  border-radius: 8px;
+}
+.ChecklistBodyCard {
+   margin-top: 16px;
+}
+.AreaProblemsInputsContainer{
+  display: flex; 
+  width: 100%; 
+  justify-content: space-between; 
+  align-items: center;
+
+  .FormItem{
+    width: 19%;
+    margin-bottom: 0px;
+  }
+  
+  .Typography{
+    width: 19%;
+    text-align: center;
+  }
+}
+.DisplayFlex{
+display: flex;  
+}
+:where(.css-dev-only-do-not-override-htwhyh).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
+   padding: 0px
+}
+.ChecklistHistoryInputsMainContainer{
+  display: flex ; 
+  width: 100%;
+  justify-content: space-between;
+  border: 1px solid #dadada;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  .ChecklistHistoryInputsContainer{
+    margin: 20px; 
+    display: flex;
+
+    .PossibleProblems{
+      width: 370px;
+       align-items: center; 
+       display: flex
+      }
+      .ChecklistFormItem{
+        margin-bottom: 0px;
+        display: flex;
+        align-items: center;
+      }
+      .RadioGroup{
+        display: flex;
+        align-items: center;
+      }
+    }
+  }
+
+  .CollapsePannelHeader{
+    display:flex;
+    justify-content: space-between;
+  }
+
+
+.InputContainer {
+  width: 20%;
+}
+
+.InputContainer2 {
+  width: 40%;
+}
+
+.ButtonConainer{
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  gap: 20px; 
+  background-color: white;
+  padding: 10px;
+}
+.PremiseNameContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  background-color: white;
+  padding: 10px;
+  font-size: 15px;
+  margin-top: 10px;
+}
+.RouteMapContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.HistoryElementMedia{
+  background-size: contain;
+  height: 200px;
+}
+
+.HistoryCard{
+  width: 80%;
+  margin-bottom: 50px;
+}
+
+.Layout{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.ant-layout-header {
+  background-color: white;
+}
+
+
+.LoginPage{
+  display:flex;
+  width: 500px;
+  flex-direction: column;
+  justify-content:center;
+  align-items: center;
+
+  .loginButtons{
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.CreateUserContainer{
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: #f5f5f5;
+  justify-content: center;
+}
+.ant-card-body{
+  width: 100%;
+}
+
+.ChecklisStartPage{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.StartPageCard{
+  width: 350;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  justify-content: space-between;
+  padding: 50px;
+  .CardTitle{
+    padding: 30px; 
+    font-size: 25px
+  }
+  .CardButton{
+    padding: 30px;
+  }
+}
+
+:where(.css-dev-only-do-not-override-htwhyh).ant-card-type-inner .ant-card-body {
+  padding: 8px 8px;
+}
+
+
+:where(.css-dev-only-do-not-override-htwhyh).ant-card {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  list-style: none;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  position: relative;
+  background: #ffffff;
+  border-radius: 0px;
+}
+.ant-card-bordered{
+  border: 1px solid #f0f0f0;
+}
+:where(.css-dev-only-do-not-override-amfm5q).ant-drawer .ant-drawer-body {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 0px;
+  overflow: auto;
+}
+.ant-form-item{
+  margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.88);
+    font-size: 14px;
+    line-height: 1.5714285714285714;
+    list-style: none;
+    font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+    margin-bottom: 0px;
+    padding: 10px;
+    vertical-align: top;
+}
+
+
+.LogoImage{
+  background-image: url('../../public/Images/DLClogo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 32px; 
+  margin: 16px
+}
+.LogoImage2{
+  background-image: url('../../public/Images/Logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 40px; 
+  margin: 20px;
+}
+input.number-to-text::-webkit-outer-spin-button,
+input.number-to-text::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number].number-to-text {
+  -moz-appearance: textfield;
+}
+.RowStyle{
+  background-color: #fafafa;
+}
+thead[class*="ant-table-thead"] th{
+  background-color: #001529 !important;
+  border-radius: 0px !important;
+}
+thead[class*="ant-table-thead"] th{
+  color:white!important;
+}
+.ant-table-column-sorter{
+  color:white !important;
+}
+
+.ant-layout-sider-trigger{
+  height: 66px !important;
+}
+:where(.css-dev-only-do-not-override-htwhyh).ant-collapse .ant-collapse-content {
+    color: rgba(0, 0, 0, 0.88);
+    background-color: none!important;
+    border-top: 1px solid #d9d9d9;
+}
+:where(.css-dev-only-do-not-override-1rjfs9s).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
+   padding: 0px  
+}
+
+
+
+.PageLayoutSpace{
+  width: 100%;
+  .PageLayoutSlider{
+    z-index: 10;
+    position: sticky; 
+    .PageLayoutIcon{
+      height: 32px;
+      margin: 16px;
+    }
+    .PageLayoutSliderMenu{
+      position: sticky; 
+      top: 0;
+      z-index: 10; 
+      width: 100%; 
+      padding-inline: 0px;
+    }
+
+  }
+  .Layout{
+    height: 100%;
+    .PageLayoutHeaedrMenu{
+      position: sticky; 
+      top: 0;
+      z-index: 10; 
+      width: 100%; 
+      padding-inline: 0px;
+      .MenuItem{
+        justify-content: flex-end
+      }
+    }
+    .PageLayoutContentDark{
+      width: 100%;
+      height: 100%;
+      min-height: calc(100vh - 131px);
+      display: flex;
+      justify-content: center;
+      background-color:#000000e0
+    }
+    .PageLayoutContentLight{
+      width: 100%;
+      height: 100%;
+      min-height: calc(100vh - 131px);
+      display: flex;
+      justify-content: center;
+    }
+    .PageLayoutFooterDark{
+      width: 100%;
+      text-align: center;
+      background-color: #191919; 
+      color: rgba(255, 255, 255, 0.65);
+    }
+    .PageLayoutFooteLight{
+      width: 100%;
+      text-align: center;
+      color:black;
+    }
+  }
+  .SelectFilterDark{
+    margin: 15px; 
+    background-color: #001529;
+  }
+  .SelectFilterLight{
+    margin: 15px; 
+  }
+  .FilterPlaceholderDark{
+    color:#001529
+  }
+  .FilterPlaceholderLight{
+    color:white
+  }
+  .SelectFilterIconDark{
+    margin: 15px; 
+    background-color: white;
+  }
+  .SelectFilterIconLight{
+    margin: 15px; 
+  }
+  
+  .UserTableSearchContainer{
+    padding:8px;
+    .UserTableSearchInput{
+      margin-bottom: 8; 
+      display: block
+    }
+    .UserTableSearchButton{
+      width: 90px;
+    }
+  }
+
+  .FlterIcon{
+    color: white
+  }
+
+  .UsersTableContainer{
+    background-color: red;
+    .UsersTableTitle{
+      text-align: center;
+      padding: 20px;
+      font-size: 20px;
+    }
+    .UsersTableButtonsContainer{
+      padding: 10px;
+      .UsersTableButtons{
+        margin: 10px;
+      }
+    }
+    
+    .UsersTable{
+      width: 100px;
+      background-color: red;
+    }
+  }
+
+  .ActiveUser{
+    color: #1dd91d
+  }
+  .InactiveUser{
+    color:red
+  }
+  .ActionButtons{
+    display: flex;
+    justify-content: space-between
+  }
+
+  .DataHighlighter{
+    width: 90px;
+  }
+
+  .ChecklistHistoryPageContainerLight{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    width: 1700px;
+
+    .ChecklistHistoryPageFilters{
+      display: flex;
+      padding: 30px;
+    }
+  }
+  .ChecklistHistoryPageContainerDark{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    background-color: #2e4153;
+    width: 1700px;
+
+    .ChecklistHistoryPageFilters{
+      display: flex;
+      padding: 30px;
+    }
+  }
+  .CheckListPageCard{
+    width: 100%;
+  }
+
+  .CreateUserPageContainer{
+    display: flex;
+    align-items: center;
+    .CreateUserCard{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-align: center;
+      width: 500px;
+      .Form{
+        max-width: 600px
+      }
+    }
+  }
+
+  .SingleHistoryPageContainer{
+    display: flex;
+    justify-content: center;
+    width: 17000px;
+    height: 100%;
+
+    .Tab{
+      width: 90%;
+      padding: 10px;
+    }
+  }
+  .ant-card-head-title{
+    overflow: visible !important;
+  }
+  .ant-tabs-tab{
+    padding: 0px !important;
+    overflow: hidden !important;
+  }
+
+  .ant-menu-item-only-child{
+    justify-content: center;
+    display: flex;
+  }
+  .MobileHistoryItemHeader{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  } 
+  .DekstopHistoryItemHeader{
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center
+  }
+
+  :where(.css-dev-only-do-not-override-htwhyh).ant-progress.ant-progress-circle .ant-progress-inner {
+    position: relative;
+    line-height: 1;
+    background-color: transparent;
+}
+
+  .ant-progress-circle-trail{
+    stroke-dasharray: 301.593px, 301.593;
+    stroke-dashoffset: 0;
+    transform: rotate(-90deg);
+    transform-origin: 0px 0px;
+    transition: stroke-dashoffset 0.3s ease 0s, stroke-dasharray 0.3s ease 0s, stroke 0.3s ease 0s, stroke-width 0.06s ease 0.3s, opacity 0.3s ease 0s;
+    fill-opacity: 0;
+  }
+  :where(.css-dev-only-do-not-override-htwhyh).ant-progress.ant-progress-status-success .ant-progress-inner:not(.ant-progress-circle-gradient) .ant-progress-circle-path {
+    stroke: #52c41a;
+  }
+
+  .ant-table-title{
+    text-align: center;
+    font-size: 20px;
+  }
+
+:where(.css-dev-only-do-not-override-htwhyh).ant-upload-wrapper .ant-upload-list .ant-upload-list-item {
+  position: relative;
+  height: 22px;
+  margin-top: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s;
+  display: none;
+}
+
+:where(.css-htwhyh).ant-layout .ant-layout-sider-trigger {
+  position: fixed;
+  bottom: auto;
+  z-index: 1;
+  color: #fff;
+  line-height: 48px;
+  text-align: center;
+  background: #002140;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ChecklistCard {
+  width: 100%;
+  padding: 10px;
+}
+@media only screen and (max-width: 600px) {
+  .PageLayoutSpace .Layout .PageLayoutContentDark {
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 131px);
+    display: block;
+    background-color: rgba(0, 0, 0, 0.8784313725);
+}
+    .ChecklistCard {
+      width: 100%;
+      padding: 10px;
+    }
+    .PageLayoutSlider{
+      display: none;
+    }
+    .ChecklistHistoryInputsMainContainer{
+      display: block; 
+      justify-content: space-between;
+    
+      .ChecklistHistoryInputsContainer{
+        margin: 0px; 
+        display: flex;
+    
+        .PossibleProblems{
+          width: 100%;
+           align-items: center; 
+           display: flex
+          }
+          .ChecklistFormItem{
+            margin-bottom: 0px;
+            display: flex;
+            align-items: center;
+          }
+          .RadioGroup{
+            display: flex;
+            align-items: center;
+          }
+        }
+      }
+      .AreaProblemsInputsContainer{
+        display: block; 
+        width: 100%; 
+        justify-content: space-between; 
+        align-items: center;
+      
+        .FormItem{
+          width: 100%;
+          margin-bottom: 0px;
+        }
+        
+        .Typography{
+          width: 100%;
+          text-align: left;
+        }
+      }
+      .ant-card-head{
+        .ant-card-head-wrapper{
+          .ant-card-head-title{
+            font-size: 12px;
+            .ChecklistHeaderContainer{
+              padding: 15px;
+            }
+          }
+      }
+
+    }
+
+    .CardContent{
+      padding: 10px;
+    }
+    .ChecklistHeaderContainer{
+      padding: 0px !important;
+    }
+    .CreateUserPageContainer{
+      display: flex;
+      align-items: center;
+      .CreateUserCard{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        margin: 20px;
+        padding: 20px;
+        width: 100%;
+        .Form{
+          max-width: 600px;
+        }
+      }
+    }
+    .StartPageCard{
+      width: 250px;
+      height: 250px; 
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      justify-content: space-between;
+      padding: 0px;
+    }
+    .LoginPage{
+      display:flex;
+      width: 80%;
+      flex-direction: column;
+      justify-content:center;
+      align-items: center;
+    
+      .loginButtons{
+        display: flex;
+        justify-content: center;
+      }
+    }
+    .SingleHistoryPageContainer{
+      display: block;
+      width: 100%;
+      height: 100%;
+  
+      .Tab{
+        width: 98%;
+      }
+    }
+
+  }
+  .ScreenWidth{
+    width: 348px;
+  }
+  :where(.css-dev-only-do-not-override-htwhyh).ant-layout .ant-layout-sider-trigger {
+    position: fixed;
+    bottom: 0;
+    z-index: 1;
+    height: 48px !important;
+    color: #fff;
+    line-height: 48px;
+    text-align: center;
+    background: #1a82e3;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+}
+
+.VisitListItem :hover{
+  background-color: rgb(177, 177, 177);
+
+}
