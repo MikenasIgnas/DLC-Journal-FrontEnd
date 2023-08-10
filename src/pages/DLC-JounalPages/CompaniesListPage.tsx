@@ -12,11 +12,12 @@ type PaginationPosition = 'top' | 'bottom' | 'both';
 type PaginationAlign = 'start' | 'center' | 'end';
 
 const App: React.FC = () => {
-  const [position, setPosition] =   React.useState<PaginationPosition>('bottom')
-  const [align, setAlign] =         React.useState<PaginationAlign>('center')
-  const [loading, setLoading] =     React.useState(false)
-  const [cookies] =                 useCookies(['access_token'])
-  const [companies, setCompanies] = React.useState<CompaniesType[]>()
+  const [position, setPosition] =             React.useState<PaginationPosition>('bottom')
+  const [align, setAlign] =                   React.useState<PaginationAlign>('center')
+  const [loading, setLoading] =               React.useState(false)
+  const [cookies] =                           useCookies(['access_token'])
+  const [companies, setCompanies] =           React.useState<CompaniesType[]>()
+  const [isCompanyAdded, setIsCompanyAdded] = React.useState(false)
 
   React.useEffect(() => {
     (async () => {
@@ -31,25 +32,23 @@ const App: React.FC = () => {
         console.log(err)
       }
     })()
-  },[])
+  },[isCompanyAdded])
 
   const companyTitle = companies?.map((el) => {
-    return {title: el.CompanyName, id: el.id}
+    return {title: el.companyInfo.companyName, id: el.id, photo: el.companyInfo.companyPhoto}
   })
 
   return (
     <div style={{width: '100%'}}>
-      <CompanyAddition/>
+      <CompanyAddition setIsCompanyAdded={setIsCompanyAdded}/>
       <List
         loading={loading}
         pagination={{ position, align }}
         dataSource={companyTitle}
-        renderItem={(item, index) => (
+        renderItem={(item) => (
           <List.Item>
             <List.Item.Meta
-              avatar={
-                <Avatar src={<img src={`Images/companyLogo${index}.png`} alt='err' />} />
-              }
+              avatar={<Avatar src={<img src={item.photo} alt='err' />} />}
               title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
               description='Ant Design, a design language for background applications, is refined by Ant UED Team'
             />

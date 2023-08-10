@@ -612,6 +612,7 @@ thead[class*="ant-table-thead"] th{
           text-align: left;
         }
       }
+      
       .ant-card-head{
         .ant-card-head-wrapper{
           .ant-card-head-title{
@@ -621,7 +622,6 @@ thead[class*="ant-table-thead"] th{
             }
           }
       }
-
     }
 
     .CardContent{
@@ -679,9 +679,11 @@ thead[class*="ant-table-thead"] th{
     }
 
   }
+
   .ScreenWidth{
     width: 348px;
   }
+
   :where(.css-dev-only-do-not-override-htwhyh).ant-layout .ant-layout-sider-trigger {
     position: fixed;
     bottom: 0;

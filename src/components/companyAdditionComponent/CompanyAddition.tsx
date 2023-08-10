@@ -5,26 +5,17 @@ import { Button} from 'antd'
 import React from 'react'
 import AdditionModal from './AdditionModal'
 
-const CompanyAddition = () => {
+type CompanyAdditionProps = {
+  setIsCompanyAdded: React.Dispatch<React.SetStateAction<boolean>>
+}
+const CompanyAddition = ({setIsCompanyAdded}:CompanyAdditionProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
-
   return (
     <div>
       <Button icon={<AppstoreAddOutlined />} onClick={()=> setIsModalOpen(true)}>Pridėti įmonę</Button>
-      {isModalOpen && <AdditionModal setIsModalOpen={setIsModalOpen}/>}
+      {isModalOpen && <AdditionModal setIsCompanyAdded={setIsCompanyAdded} setIsModalOpen={setIsModalOpen}/>}
     </div>
   )
 }
 
 export default CompanyAddition
-
-// const company = {
-//   J13: {
-//     DC5: ['S1.1'],
-//   },
-//   T72: {
-
-//     DC5: ['S1.1'],
-//   },
-
-// }

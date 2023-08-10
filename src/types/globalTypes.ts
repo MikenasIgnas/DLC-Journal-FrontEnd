@@ -85,11 +85,43 @@ export type ChecklistPhotosType = {
   photoId:            string;
 }
 
+
+// export type ColocationDataType = {
+//   [key: string]: {
+//     [key: string]: {
+//       [key: string]: string[] | string;
+//     }[];
+//   };
+// };
+// // [J13 || T72]: {
+// //   [key: string]: {
+// //     [key: string]: string[] | string;
+// //   }[];
+// // };
+// export type CompaniesType = {
+//   _id: string;
+//   companyInfo: ColocationDataType & {
+//     companyName: string;
+//     companyPhoto: string;
+//   };
+//   id: string;
+// };
+
+export type ColocationDataType = {
+  [key: string]: string[];
+};
+
 export type CompaniesType = {
-  _id:                string;
-  id:                 string;
-  CompanyName:        string;
-}
+  _id: string;
+  id: string;
+  companyInfo: {
+      J13?: ColocationDataType[];
+      T72?: ColocationDataType[];
+      companyName: string;
+      companyPhoto: string;
+  };
+};
+
 
 export type CompaniesSitesType = {
   _id:                string;

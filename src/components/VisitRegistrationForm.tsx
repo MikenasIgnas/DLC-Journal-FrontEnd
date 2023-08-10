@@ -88,7 +88,7 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
   }, [])
 
   const companyNames = allCompanies?.map((el)=> {
-    return {value: el.CompanyName, label: el.CompanyName, companyId: el.id}
+    return {value: el.companyInfo.companyName, label: el.companyInfo.companyName, companyId: el.id}
   })
 
   const companySites = allCompanySites?.map((el)=> {

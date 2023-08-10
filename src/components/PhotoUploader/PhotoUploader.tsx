@@ -19,7 +19,7 @@ const PhotoUploader = ({ dutiesId, setIsPhotoUploaded }: PhotoUploaderProps) => 
 
   const props: UploadProps = {
     name:    'file',
-    action:  'http://10.81.7.29/uploadPhoto',
+    action:  'http://localhost:4000/uploadPhoto',
     headers: {
       authorization: 'authorization-text',
     },

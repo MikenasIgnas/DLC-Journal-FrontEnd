@@ -28,7 +28,6 @@ const ChecklistHisotoryInputs = ({
 }:InputProps) => {
   const [radioButtonValue, setRadioButtonValue] = React.useState(false)
   const defaultTheme =                            useAppSelector((state) => state.theme.value)
-  const isMobile = window.innerWidth < 650
   return (
     <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : ''}} className='ChecklistHistoryInputsMainContainer'>
       <div className='ChecklistHistoryInputsContainer' >
