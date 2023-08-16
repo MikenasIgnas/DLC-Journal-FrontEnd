@@ -19,6 +19,7 @@
     "@types/redux-thunk": "^2.1.0",
     "@types/styled-components": "^5.1.26",
     "antd": "^5.4.2",
+    "axios": "^1.4.0",
     "browser-image-compression": "^2.0.2",
     "cloudinary-react": "^1.8.1",
     "compress-images": "^2.0.5",

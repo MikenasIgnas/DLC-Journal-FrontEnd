@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 
 const get = async (url, token) => {
   try {
@@ -45,6 +46,20 @@ const post = async (url, data, token) => {
   return response.json()
 }
 
+const postImage = async (url, data, token) => {
+  const options = {
+    method:  'POST',
+    headers: {
+      'content-type':  'application/x-www-form-urlencoded',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: data,
+  }
+
+  const response = await fetch(`http://localhost:4000/${url}`, options)
+  return response.json()
+}
+
 const getCurrentDate = () => {
   const currentdate = new Date()
   const datetime = currentdate.getFullYear() + '/'
@@ -65,4 +80,4 @@ const clearFilleChecklistdData = (totalAreasCount) => {
     localStorage.removeItem(`data${i}`)
   }
 }
-export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser }
+export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage }

@@ -12,7 +12,7 @@ const CompanyAddition = ({setIsCompanyAdded}:CompanyAdditionProps) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   return (
     <div>
-      <Button icon={<AppstoreAddOutlined />} onClick={()=> setIsModalOpen(true)}>Pridėti įmonę</Button>
+      <Button style={{display: 'flex', margin: 'auto', marginTop: '10px'}} icon={<AppstoreAddOutlined />} onClick={()=> setIsModalOpen(true)}>Pridėti įmonę</Button>
       {isModalOpen && <AdditionModal setIsCompanyAdded={setIsCompanyAdded} setIsModalOpen={setIsModalOpen}/>}
     </div>
   )

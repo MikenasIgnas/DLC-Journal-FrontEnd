@@ -39,7 +39,7 @@ const App: React.FC = () => {
   })
 
   return (
-    <div style={{width: '100%'}}>
+    <div style={{width: '97%'}}>
       <CompanyAddition setIsCompanyAdded={setIsCompanyAdded}/>
       <List
         loading={loading}
