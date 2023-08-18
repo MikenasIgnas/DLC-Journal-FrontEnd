@@ -1,18 +1,20 @@
 /* eslint-disable max-len */
 import React                                              from 'react'
-import { Modal, Form, Checkbox, Button, Collapse, Input } from 'antd'
+import { Modal, Form, Checkbox, Button, Collapse, Input, UploadFile, message } from 'antd'
 import { useForm }                                        from 'antd/es/form/Form'
-import { get, post }                                            from '../../Plugins/helpers'
+import { get, post, uploadPhoto }                                            from '../../Plugins/helpers'
 import { useCookies }                                     from 'react-cookie'
 import CompanyPhotoUploader                               from './CompanyPhotoUploader'
+import { RcFile } from 'antd/es/upload'
 
 type AdditionModalProps = {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     setIsCompanyAdded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-type MyObject = {
+type CompanyFormType = {
   companyName?: string,
+  companyDescription?: string,
   companyPhoto?: string,
   J13?: {
     [key: string]: string[];
@@ -27,7 +29,8 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
   const [collocations, setCollocations] =       React.useState<any[]>()
   const [form] =                                useForm()
   const { Panel } =                             Collapse
-  const [companyPhoto, setCompanyPhoto] =       React.useState('')
+  const [uploading, setUploading] =             React.useState(false)
+  const [fileList, setFileList] =               React.useState<UploadFile[]>([])
 
   React.useEffect(() => {
     (async () => {
@@ -40,8 +43,8 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     })()
   },[])
 
-  function filterObject(obj: MyObject): MyObject {
-    const filteredObj: MyObject = {}
+  function filterObject(obj: CompanyFormType): CompanyFormType {
+    const filteredObj: CompanyFormType = {}
     if (obj.J13) {
       filteredObj.J13 = []
       for (const key in obj.J13) {
@@ -70,13 +73,13 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     return filteredObj
   }
 
-  const addCompany = async(values: MyObject) => {
+  const addCompany = async(values: CompanyFormType) => {
     const filteredResult = filterObject(values)
+    console.log(values)
     filteredResult.companyName = values.companyName
-    filteredResult.companyPhoto = companyPhoto
-    console.log(filteredResult)
-    const addedCompany = await post('addCompany', filteredResult, cookies.access_token)
-    console.log(addedCompany)
+    filteredResult.companyDescription = values.companyDescription
+    await post('addCompany', filteredResult, cookies.access_token)
+    uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?company=${values.companyName}`)
     setIsCompanyAdded(true)
     setIsModalOpen(false)
   }
@@ -95,10 +98,13 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
           <Form.Item name='companyName'>
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
-          <CompanyPhotoUploader setCompanyPhoto={setCompanyPhoto}/>
+          <Form.Item name='companyDescription'>
+            <Input placeholder='Įmonės apibūdinimas'/>
+          </Form.Item>
+          <CompanyPhotoUploader setFileList={setFileList} fileList={fileList}/>
           {collocations?.map((colocation, i) => {
             return (
-              <Collapse style={{marginBottom: '10px'}} key={i}>
+              <Collapse style={{marginBottom: '10px', marginTop: '10px'}} key={i}>
                 <Panel style={{padding: '10px'}} header={colocation.site} key={i}>
                   <Form.List
                     name={colocation.site}
@@ -116,17 +122,15 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
                             </Panel>
                           </Collapse>
                         )
-                      }
-                      )}
+                      })}
                     }
                   </Form.List>
                 </Panel>
               </Collapse>
             )
-          })
-          }
+          })}
         </div>
-        <Button htmlType='submit'>Pridėti</Button>
+        <Button loading={uploading} htmlType='submit'>Pridėti</Button>
       </Form>
     </Modal>
   )

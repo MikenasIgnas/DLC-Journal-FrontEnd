@@ -5,17 +5,10 @@ import { useCookies } from 'react-cookie'
 import { useSearchParams }  from 'react-router-dom'
 import { get } from '../../Plugins/helpers'
 import { Avatar, Button, Card, Checkbox, Divider } from 'antd'
+import { EmployeesType } from '../../types/globalTypes'
+import ClientsEmployeesDataDisplay from '../../components/ClientsEmployeesDisplay'
 
-type EmployeesType = {
-    _id:            string;
-    companyId:      string;
-    name:           string;
-    lastName:       string;
-    occupation:     string;
-    employeeId:     string;
-    permissions:    string[];
-    employeePhoto?:  string
-}
+
 
 const SingleClientsEmployeePage = () => {
   const [searchParams] =                useSearchParams()
@@ -48,14 +41,15 @@ const SingleClientsEmployeePage = () => {
           <Divider type='vertical' style={{height: '150px'}} />
           <div style={{width: '100%'}}>
             <div>
-              <div><strong>Email: </strong>{employee?.lastName}</div>
-              <div><strong>Darbuotojo įmonė: </strong>{companyName}</div>
+              <ClientsEmployeesDataDisplay label={'Darbuotojo įmonė: '} employeeData={companyName}/>
+              <ClientsEmployeesDataDisplay label={'Email: '} employeeData={employee?.email}/>
             </div>
             <Divider />
             <div>
-              <div><strong>Mobilus Tel: </strong></div>
-              <div><strong>Gimimo data: </strong></div>
-              <div><strong>Pareigos: </strong>{employee?.occupation}</div>
+              <ClientsEmployeesDataDisplay label={'Mobilus Tel: '} employeeData={employee?.phoneNr}/>
+              <ClientsEmployeesDataDisplay label={'Gimimo data: '} employeeData={employee?.birthday}/>
+              <ClientsEmployeesDataDisplay label={'Pareigos: '} employeeData={employee?.occupation}/>
+              <ClientsEmployeesDataDisplay label={'Pastabos: '} employeeData={employee?.notes}/>
             </div>
           </div>
         </div>

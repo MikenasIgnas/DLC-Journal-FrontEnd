@@ -1,45 +1,36 @@
-import React, { ChangeEvent } from 'react'
-import { post } from '../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
-import Resizer from 'react-image-file-resizer'
-import { Button, Upload, UploadProps, message } from 'antd'
+import React from 'react'
+import { UploadOutlined }                       from '@ant-design/icons'
+import { Button, Upload }              from 'antd'
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
 
-type PhotoUploaderProps = {
-    setCompanyPhoto: React.Dispatch<React.SetStateAction<string>>
-};
+type CompanyPhotoUploaderProps = {
+  setFileList: React.Dispatch<React.SetStateAction<UploadFile<any>[]>>
+  fileList: UploadFile<any>[]
+}
 
-const CompanyPhotoUploader = ({ setCompanyPhoto }: PhotoUploaderProps) => {
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = async(event) => {
-        const base64Image = event?.target?.result
-        const blobPhoto = await fetch(base64Image as string).then((res) => res.blob())
-        Resizer.imageFileResizer (
-          blobPhoto,
-          300,
-          300,
-          'JPEG',
-          60,
-          0,
-          async (resizedPhoto) => {
-            setCompanyPhoto(`${resizedPhoto}`)
-          },
-          'base64'
-        )
-      }
-      reader.readAsDataURL(file)
-    }
+const CompanyPhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => {
+  const props: UploadProps = {
+    maxCount: 1,
+    multiple: false,
+    onRemove: (file) => {
+      const index = fileList.indexOf(file)
+      const newFileList = fileList.slice()
+      newFileList.splice(index, 1)
+      setFileList(newFileList)
+    },
+    beforeUpload: (file) => {
+      setFileList([file])
+      return false
+    },
+    fileList ,
   }
 
   return (
-    <input
-      type='file'
-      id='fileInput'
-      name='filename'
-      onChange={handleFileChange}
-    />
+    <div style={{display: 'flex', justifyContent: 'center', paddingBottom: '10px'}}>
+      <Upload listType='picture' {...props}>
+        <Button icon={<UploadOutlined />}>Pridėti nuotrauką</Button>
+      </Upload>
+    </div>
   )
 }
 

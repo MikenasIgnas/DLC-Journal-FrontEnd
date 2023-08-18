@@ -112,13 +112,14 @@ export type ColocationDataType = {
 };
 
 export type CompaniesType = {
-  _id: string;
-  id: string;
+  _id:                    string;
+  id:                     string;
   companyInfo: {
-      J13?: ColocationDataType[];
-      T72?: ColocationDataType[];
-      companyName: string;
-      companyPhoto: string;
+      J13?:               ColocationDataType[];
+      T72?:               ColocationDataType[];
+      companyName:        string;
+      companyDescription: string;
+      companyPhoto:       string;
   };
 };
 
@@ -149,4 +150,19 @@ export type CompaniesEmlployeesType = {
   id:                 string;
   CompanyId:          string;
   employee_name:      string;
+}
+
+export type EmployeesType = {
+  _id:            string;
+  companyId:      string | undefined;
+  name:           string;
+  lastName:       string;
+  occupation:     string;
+  employeeId:     string;
+  permissions:    string[];
+  employeePhoto?: string;
+  email?:         string;
+  phoneNr?:       string;
+  birthday?:      string;
+  notes?:         string;
 }

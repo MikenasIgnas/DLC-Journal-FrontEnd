@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Avatar, List }   from 'antd'
+import { Avatar, Button, List }   from 'antd'
 import React              from 'react'
 import { get }            from '../../Plugins/helpers'
 import { useCookies }     from 'react-cookie'
@@ -16,7 +16,7 @@ const App: React.FC = () => {
   const [align, setAlign] =                   React.useState<PaginationAlign>('center')
   const [loading, setLoading] =               React.useState(false)
   const [cookies] =                           useCookies(['access_token'])
-  const [companies, setCompanies] =           React.useState<CompaniesType[]>()
+  const [companies, setCompanies] =           React.useState<CompaniesType[]>([])
   const [isCompanyAdded, setIsCompanyAdded] = React.useState(false)
 
   React.useEffect(() => {
@@ -35,9 +35,19 @@ const App: React.FC = () => {
   },[isCompanyAdded])
 
   const companyTitle = companies?.map((el) => {
-    return {title: el.companyInfo.companyName, id: el.id, photo: el.companyInfo.companyPhoto}
+    return {title: el.companyInfo.companyName, id: el.id, photo: el.companyInfo.companyPhoto, description: el.companyInfo.companyDescription}
   })
 
+  const companyRemoved = (id:string) => {
+    let newCompaniesList = [...companies]
+    newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
+    setCompanies(newCompaniesList)
+  }
+
+  const delteCompany = async(companyId: string) => {
+    await get(`deleteCompany/${companyId}`, cookies.access_token)
+    companyRemoved(companyId)
+  }
   return (
     <div style={{width: '97%'}}>
       <CompanyAddition setIsCompanyAdded={setIsCompanyAdded}/>
@@ -45,15 +55,25 @@ const App: React.FC = () => {
         loading={loading}
         pagination={{ position, align }}
         dataSource={companyTitle}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={<img src={item.photo} alt='err' />} />}
-              title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
-              description='Ant Design, a design language for background applications, is refined by Ant UED Team'
-            />
-          </List.Item>
-        )}
+        renderItem={(item) => {
+
+          console.log(item)
+          return(
+            <List.Item
+              actions={[
+                <Link key={item.id} to={`/SingleCompanyPage/${item.id}`}>peržiūrėti</Link>,
+                <Button key={item.id} onClick={() => delteCompany(item.id)} type='link'>ištrinti</Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={<img src={`../CompanyLogos/${item.title}Logo${item.id}.jpeg`} alt='err' />} />}
+                title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
+                description={item.description}
+              />
+            </List.Item>
+          )
+        }
+        }
       />
     </div>
   )

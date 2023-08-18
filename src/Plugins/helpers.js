@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-
+import {message } from 'antd'
 const get = async (url, token) => {
   try {
     const response = await fetch(`http://localhost:4000/${url}`, {
@@ -80,4 +80,25 @@ const clearFilleChecklistdData = (totalAreasCount) => {
     localStorage.removeItem(`data${i}`)
   }
 }
-export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage }
+
+const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
+  const formData = new FormData()
+  formData.append('file', fileList )
+  setUploading(true)
+  fetch(`http://localhost:4000/${url}`, {
+    method: 'POST',
+    body:   formData,
+  })
+    .then((res) => res.json())
+    .then(() => {
+      setFileList(fileList)
+      message.success('upload successfully.')
+    })
+    .catch(() => {
+      message.error('upload failed.')
+    })
+    .finally(() => {
+      setUploading(false)
+    })
+}
+export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage, uploadPhoto }
