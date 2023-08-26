@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import React from 'react'
-import { Card } from 'antd'
-import { Link, useNavigate } from 'react-router-dom'
+import React                  from 'react'
+import { Card }               from 'antd'
+import { Link, useNavigate }  from 'react-router-dom'
 
 const DLCJournalStartPage = () => {
   const navigate = useNavigate()

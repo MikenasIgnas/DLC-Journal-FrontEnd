@@ -1,11 +1,12 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React                                              from 'react'
-import { Modal, Form, Checkbox, Button, Collapse, Input, UploadFile, message } from 'antd'
-import { useForm }                                        from 'antd/es/form/Form'
-import { get, post, uploadPhoto }                                            from '../../Plugins/helpers'
-import { useCookies }                                     from 'react-cookie'
-import CompanyPhotoUploader                               from './CompanyPhotoUploader'
-import { RcFile } from 'antd/es/upload'
+import React                                                                          from 'react'
+import { Modal, Form, Checkbox, Button, Collapse, Input, UploadFile, ConfigProvider } from 'antd'
+import { useForm }                                                                    from 'antd/es/form/Form'
+import { get, post, uploadPhoto }                                                     from '../../Plugins/helpers'
+import { useCookies }                                                                 from 'react-cookie'
+import CompanyPhotoUploader                                                           from './CompanyPhotoUploader'
+import ColocationSelectors from '../HisotryPageElements/CollocationSelectors'
 
 type AdditionModalProps = {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -57,7 +58,6 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
         }
       }
     }
-
     if (obj.T72) {
       filteredObj.T72 = []
       for (const key in obj.T72) {
@@ -75,11 +75,13 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
 
   const addCompany = async(values: CompanyFormType) => {
     const filteredResult = filterObject(values)
-    console.log(values)
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
+    filteredResult.companyPhoto = ''
     await post('addCompany', filteredResult, cookies.access_token)
-    uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?company=${values.companyName}`)
+    if(fileList[0]){
+      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?company=${values.companyName}`)
+    }
     setIsCompanyAdded(true)
     setIsModalOpen(false)
   }
@@ -95,40 +97,16 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     >
       <Form form={form} onFinish={addCompany}>
         <div>
-          <Form.Item name='companyName'>
+          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
           <Form.Item name='companyDescription'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
           <CompanyPhotoUploader setFileList={setFileList} fileList={fileList}/>
-          {collocations?.map((colocation, i) => {
-            return (
-              <Collapse style={{marginBottom: '10px', marginTop: '10px'}} key={i}>
-                <Panel style={{padding: '10px'}} header={colocation.site} key={i}>
-                  <Form.List
-                    name={colocation.site}
-                    initialValue={colocation.premises.map((ele:any) => ({[ele.premiseName]: []}))}
-                  >
-                    {(fields) => {
-                      return fields.map(({ name, ...rest }, index) => {
-                        const premise = colocation.premises[index]
-                        return(
-                          <Collapse key={index}>
-                            <Panel key={colocation.id} header={premise.premiseName}>
-                              <Form.Item name={[name, premise.premiseName]}>
-                                <Checkbox.Group options={premise.racks} style={{display: 'block', padding: ' 5px'}} />
-                              </Form.Item>
-                            </Panel>
-                          </Collapse>
-                        )
-                      })}
-                    }
-                  </Form.List>
-                </Panel>
-              </Collapse>
-            )
-          })}
+          <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+            { collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
+          </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>
       </Form>

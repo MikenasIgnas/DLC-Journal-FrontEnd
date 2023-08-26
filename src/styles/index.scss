@@ -299,8 +299,9 @@ thead[class*="ant-table-thead"] th{
    padding: 0px  
 }
 
-
-
+:where(.css-dev-only-do-not-override-htwhyh).ant-form label {
+  font-size: 14px;
+}
 .PageLayoutSpace{
   width: 100%;
   .PageLayoutSlider{

@@ -1,19 +1,20 @@
 /* eslint-disable max-len */
-import { Button, Checkbox, Form, Input, Modal, UploadFile, message } from 'antd'
-import { useForm } from 'antd/es/form/Form'
-import React from 'react'
-import { useCookies } from 'react-cookie'
-import { post, uploadPhoto } from '../Plugins/helpers'
-import { useParams } from 'react-router-dom'
-import CompanyPhotoUploader from './companyAdditionComponent/CompanyPhotoUploader'
-import { RcFile } from 'antd/es/upload'
-import { EmployeesType } from '../types/globalTypes'
+import { Button, Checkbox, Form, Input, Modal, UploadFile, message }  from 'antd'
+import { useForm }                                                    from 'antd/es/form/Form'
+import React                                                          from 'react'
+import { useCookies }                                                 from 'react-cookie'
+import { post, uploadPhoto }                                          from '../Plugins/helpers'
+import { useParams }                                                  from 'react-router-dom'
+import CompanyPhotoUploader                                           from './companyAdditionComponent/CompanyPhotoUploader'
+import { EmployeesType }                                              from '../types/globalTypes'
 
 type EmployeesAdditionModal = {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    companyName:    string | undefined;
+    companyId:      string | undefined;
 }
 
-const EmployeesAdditionModal = ({setIsModalOpen}: EmployeesAdditionModal) => {
+const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId}: EmployeesAdditionModal) => {
   const [form] =                    useForm()
   const [cookies] =                 useCookies(['access_token'])
   const {id}      =                 useParams()
@@ -21,10 +22,9 @@ const EmployeesAdditionModal = ({setIsModalOpen}: EmployeesAdditionModal) => {
   const [fileList, setFileList] =   React.useState<UploadFile[]>([])
 
   const addEmployees = async(values: EmployeesType) => {
-    console.log(values)
     values.companyId = id
     await post('addEmployee', values, cookies.access_token)
-    uploadPhoto(fileList[0],setUploading, setFileList, 'uploadCompanysPhoto' )
+    uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
     setIsModalOpen(false)
   }
 

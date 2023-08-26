@@ -1,6 +1,6 @@
-import React from 'react'
-import { UploadOutlined }                       from '@ant-design/icons'
-import { Button, Upload }              from 'antd'
+import React                            from 'react'
+import { UploadOutlined }               from '@ant-design/icons'
+import { Button, Upload }               from 'antd'
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface'
 
 type CompanyPhotoUploaderProps = {
@@ -8,7 +8,7 @@ type CompanyPhotoUploaderProps = {
   fileList: UploadFile<any>[]
 }
 
-const CompanyPhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => {
+const PhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => {
   const props: UploadProps = {
     maxCount: 1,
     multiple: false,
@@ -34,4 +34,4 @@ const CompanyPhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderPro
   )
 }
 
-export default CompanyPhotoUploader
+export default PhotoUploader

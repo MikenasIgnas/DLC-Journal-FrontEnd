@@ -34,7 +34,7 @@ const FilledHistoryData = ({
   const todo =                          useAppSelector((state) => state.fetchedData.ToDo)?.filter((el) => el.areasId === areasID)
   const filteredByRoute =               filledData?.filter((el) => el.routeNumber === routeID).map((el) => el.values)
   const [edit, setEdit] =               React.useState(false)
-  const [activeKey, setActiveKey] =   React.useState<string[]>()
+  const [activeKey, setActiveKey] =     React.useState<string[]>()
 
   return (
     <div style={{marginBottom: '10px'}} >
@@ -48,6 +48,7 @@ const FilledHistoryData = ({
           const checklistTextValues =   possibleProblemsTable?.filter((item) => item.todoId === el.id)
           const filteredValues =        filteredByRoute?.find((item) => Object.keys(item).includes(String(el.id)))
           const radioValues =           filteredValues ? filteredValues[el.id] : undefined
+          console.log(filteredValues)
           const problemCount =          radioValues?.filter((obj: RadioValues ) => Object.values(obj)[0] === true).length
           const dutiesId =              radioValues?.map(({ ticketNr, notes, time, ...rest }: HistoryInputValues) => {
             return Number(Object.keys(rest))

@@ -1,7 +1,8 @@
-/* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import { Avatar, Divider, List }    from 'antd'
-import { useNavigate, useParams }              from 'react-router-dom'
+import { Avatar, Button, Divider, List }    from 'antd'
+import { Link, useNavigate, useParams }              from 'react-router-dom'
+import { get } from '../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
 
 type EmployeesType = {
     _id:            string;
@@ -16,12 +17,20 @@ type EmployeesType = {
 
 type ClientsEmployeeListProps = {
     list: EmployeesType[] | undefined
+    companyName: string | undefined;
+    companyRemoved: (id: string) => void
 }
 
-const ClientsEmployeeList = ({list}: ClientsEmployeeListProps) => {
+const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmployeeListProps) => {
+  const [cookies] = useCookies(['access_token'])
   const navigate = useNavigate()
   const {id} = useParams()
-  console.log(id)
+
+  const deleteEmployee = async(companyId: string, employeeId: string) => {
+    await get(`deleteClientsEmployee?companyName=${companyName}&companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+    companyRemoved(employeeId)
+  }
+
   return (
     <div>
       <Divider>Darbuotojai</Divider>
@@ -29,19 +38,28 @@ const ClientsEmployeeList = ({list}: ClientsEmployeeListProps) => {
         className='demo-loadmore-list'
         itemLayout='horizontal'
         dataSource={list}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={<Avatar src={ item.employeePhoto ? item.employeePhoto : '../Images/UserLogo.png'}/>}
-              title={<div onClick={() => navigate(`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`)} style={{cursor: 'pointer'}}>{item.name}</div>}
-              description={item.occupation}
-            />
-            <div style={{width: '150px'}}>
-              <strong>Darbuotojo leidimai: </strong>
-              {item.permissions.map((el) => <div>{el}</div>)}
-            </div>
-          </List.Item>
-        )}
+        renderItem={(item) => {
+          console.log(item)
+          return (
+            <List.Item
+              key={item.companyId}
+              actions={[
+                <Link key={item.employeeId} to={`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`}>peržiūrėti</Link>,
+                <Button key={item.employeeId} onClick={() => deleteEmployee(item.companyId, item.employeeId)} type='link'>ištrinti</Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={<img src={`../ClientsEmployeesPhotos/${companyName}companyId${item.companyId}employeeId${item.employeeId}.jpeg`} alt='err' />} />}
+                title={<div onClick={() => navigate(`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`)} style={{cursor: 'pointer'}}>{item.name}</div>}
+                description={item.occupation}
+              />
+              <div style={{width: '150px'}}>
+                <strong>Darbuotojo leidimai: </strong>
+                {item.permissions.map((el, i) => <div key={i}>{el}</div>)}
+              </div>
+            </List.Item>
+          )
+        }}
       />
     </div>
   )
