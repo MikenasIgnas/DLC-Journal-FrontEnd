@@ -12,7 +12,6 @@ const VisitPurposeForm = ({setCurrent}: VisitPurposeForm) => {
     const puppose = {
       visitPurpose: value,
     }
-    console.log(puppose)
     localStorage.setItem('visitDetails2', JSON.stringify(puppose))
     setCurrent(2)
   }

@@ -9,7 +9,6 @@ type JournalStepsProps = {
 const JournalSteps = ({current, setCurrent}: JournalStepsProps) => {
 
   const onChange = (value: number) => {
-    console.log('onChange:', value)
     setCurrent(value)
   }
   const description = 'This is a description.'

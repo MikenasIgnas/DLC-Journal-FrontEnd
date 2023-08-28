@@ -49,16 +49,18 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[isModalOpen, edit])
+  },[isModalOpen, edit, cookies.access_token])
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const newObj2 = {J13, T72}
+
   const companyRemoved = (id:string) => {
     let newEmployeesList = [...employees]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
     setEmployees(newEmployeesList)
   }
+
   type CompanyFormType = {
     companyName?: string,
     companyDescription?: string,
@@ -70,6 +72,7 @@ const SingleCompanyPage = () => {
       [key: string]: string[];
     }[];
   };
+
   function filterCompanyData(obj: CompanyFormType): CompanyFormType {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {
@@ -142,8 +145,3 @@ const SingleCompanyPage = () => {
 }
 
 export default SingleCompanyPage
-
-// <div>
-// <CollocationFormList collocation={collocations?.[0]} collocationSite={J13}/>
-// <CollocationFormList collocation={collocations?.[1]} collocationSite={T72}/>
-// </div>

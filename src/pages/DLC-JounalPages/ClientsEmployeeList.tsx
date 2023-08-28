@@ -39,7 +39,6 @@ const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmploye
         itemLayout='horizontal'
         dataSource={list}
         renderItem={(item) => {
-          console.log(item)
           return (
             <List.Item
               key={item.companyId}
@@ -49,7 +48,12 @@ const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmploye
               ]}
             >
               <List.Item.Meta
-                avatar={<Avatar src={<img src={`../ClientsEmployeesPhotos/${companyName}companyId${item.companyId}employeeId${item.employeeId}.jpeg`} alt='err' />} />}
+                avatar={<Avatar
+                  src={
+                    <img
+                      src={`../ClientsEmployeesPhotos/${item.employeePhoto ? item.employeePhoto : 'noUserImage.jpeg'}`}
+                      alt='err' />}
+                />}
                 title={<div onClick={() => navigate(`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`)} style={{cursor: 'pointer'}}>{item.name}</div>}
                 description={item.occupation}
               />

@@ -79,7 +79,7 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     filteredResult.companyPhoto = ''
     await post('addCompany', filteredResult, cookies.access_token)
     if(fileList[0]){
-      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?company=${values.companyName}`)
+      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
     setIsCompanyAdded(true)
     setIsModalOpen(false)

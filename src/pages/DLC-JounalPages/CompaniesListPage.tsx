@@ -59,23 +59,25 @@ const App: React.FC = () => {
         loading={loading}
         pagination={{ position, align }}
         dataSource={company}
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              <Link key={item.id} to={`/SingleCompanyPage/${item.id}`}>peržiūrėti</Link>,
-              <Button key={item.id} onClick={() => delteCompany(item.id)} type='link'>ištrinti</Button>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={<Avatar src={<img
-                src={`../CompanyLogos/${item.photo !== '' ? item.photo : 'noImage.jpg'}` }
-                alt='err' />}
-              />}
-              title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
-              description={item.description}
-            />
-          </List.Item>
-        )}
+        renderItem={(item) => {
+          return(
+            <List.Item
+              actions={[
+                <Link key={item.id} to={`/SingleCompanyPage/${item.id}`}>peržiūrėti</Link>,
+                <Button key={item.id} onClick={() => delteCompany(item.id)} type='link'>ištrinti</Button>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={<img
+                  src={`../CompanyLogos/${item.photo !== '' ? item.photo : 'noImage.jpg'}` }
+                  alt='err' />}
+                />}
+                title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
+                description={item.description}
+              />
+            </List.Item>
+          )
+        }}
       />
     </div>
   )

@@ -66,7 +66,6 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
     }
   }
   const submitRegistration = (value: VisitValuesType) => {
-    console.log(value)
     localStorage.setItem('visitDetails', JSON.stringify(value))
     setCurrent(1)
   }

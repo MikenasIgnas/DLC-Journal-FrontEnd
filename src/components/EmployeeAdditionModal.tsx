@@ -23,8 +23,11 @@ const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId}: Employ
 
   const addEmployees = async(values: EmployeesType) => {
     values.companyId = id
+    values.employeePhoto = ''
     await post('addEmployee', values, cookies.access_token)
-    uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
+    if(fileList[0]){
+      uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
+    }
     setIsModalOpen(false)
   }
 

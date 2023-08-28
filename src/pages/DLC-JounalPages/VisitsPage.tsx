@@ -36,7 +36,6 @@ const VisitsPage = () => {
       try{
         setLoading(true)
         const visits = await get('getVisits', cookies.access_token)
-        console.log(visits)
         setVisits(visits.data)
         setLoading(false)
       }catch(err){
