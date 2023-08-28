@@ -2,11 +2,11 @@
 import React                                      from 'react'
 import { Modal, Form, Button, Input, UploadFile } from 'antd'
 import { useForm }                                from 'antd/es/form/Form'
-import { get, post, uploadPhoto }                 from '../../../Plugins/helpers'
+import { get, post, uploadPhoto }                 from '../../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
-import CompanyPhotoUploader                       from '../../UniversalComponents/PhotoUploader/PhotoUploader'
-import ColocationSelectors                        from '../../DLCChecklistComponents/HisotryPageElements/CollocationSelectors'
-import { CollocationsType }                       from '../../../types/globalTypes'
+import CompanyPhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import ColocationSelectors                        from '../../../DLCChecklistComponents/HisotryPageElements/CollocationSelectors'
+import { CollocationsType }                       from '../../../../types/globalTypes'
 
 type AdditionModalProps = {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>

@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import React                                      from 'react'
 import {Input, Form, Typography, ConfigProvider}  from 'antd'
-import { useAppSelector }                         from '../../../store/hooks'
-import CameraTool                                 from '../../../CameraTool'
+import { useAppSelector }                         from '../../../../store/hooks'
+import CameraTool                                 from '../../../../CameraTool'
 
 type AreaProblemsInputsProps = {
   reaction: string | undefined,

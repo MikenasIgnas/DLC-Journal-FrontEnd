@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { Avatar, Button, Divider, List }    from 'antd'
-import { Link, useNavigate, useParams }              from 'react-router-dom'
-import { get } from '../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
+import { Avatar, Button, Divider, List }  from 'antd'
+import { Link, useNavigate, useParams }   from 'react-router-dom'
+import { get }                            from '../../../Plugins/helpers'
+import { useCookies }                     from 'react-cookie'
 
 type EmployeesType = {
     _id:            string;

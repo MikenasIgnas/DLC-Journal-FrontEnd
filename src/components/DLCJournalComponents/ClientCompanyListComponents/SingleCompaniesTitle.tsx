@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                                        from 'react'
 import { Avatar, Button, Form, Input, UploadFile }  from 'antd'
-import PhotoUploader                                from '../UniversalComponents/PhotoUploader/PhotoUploader'
+import PhotoUploader                                from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 import { RcFile }                                   from 'antd/es/upload'
 
 type SingleCompaniesTitleProps = {

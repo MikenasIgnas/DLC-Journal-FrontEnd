@@ -5,12 +5,12 @@ import { useCookies }                                         from 'react-cookie
 import { useParams }                                          from 'react-router-dom'
 import { Button, Card, Divider, Form, UploadFile }            from 'antd'
 import { CollocationsSites, CollocationsType, CompaniesType } from '../../types/globalTypes'
-import ClientsEmployeeList                                    from '../../components/ClientCompanyListComponents/ClientsEmployeeList'
-import SingleCompanyTitle                                     from '../../components/ClientCompanyListComponents/SingleCompaniesTitle'
 import { useForm }                                            from 'antd/es/form/Form'
-import ClientsCollocations                                    from '../../components/ClientCompanyListComponents/ClientsCollocations'
-import EmployeesAdditionModal                                 from '../../components/ClientCompanyListComponents/EmployeeAdditionModal'
-import EditableCollocationFormList                            from '../../components/ClientCompanyListComponents/CollocationFormList'
+import ClientsCollocations from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
+import ClientsEmployeeList from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeeList'
+import EditableCollocationFormList from '../../components/DLCJournalComponents/ClientCompanyListComponents/CollocationFormList'
+import EmployeesAdditionModal from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
+import SingleCompanyTitle from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 
 type EmployeesType = {
   _id:            string;

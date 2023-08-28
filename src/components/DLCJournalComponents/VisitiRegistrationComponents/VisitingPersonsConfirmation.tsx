@@ -5,8 +5,8 @@ import { useForm }                          from 'antd/es/form/Form'
 import { post }                             from '../../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import SignatureCanvas                      from 'react-signature-canvas'
-import SuccessMessage from '../../ChhecklistBody/SuccessMessage'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate }                      from 'react-router-dom'
+import SuccessMessage from '../../DLCChecklistComponents/ChhecklistBody/SuccessMessage'
 
 type VisitorsIdentificationType = {
   signature: string | undefined;

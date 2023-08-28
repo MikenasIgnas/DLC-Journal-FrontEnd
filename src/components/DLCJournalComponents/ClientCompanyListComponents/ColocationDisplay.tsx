@@ -1,6 +1,6 @@
 import React                  from 'react'
 import { Divider }            from 'antd'
-import { ColocationDataType } from '../../types/globalTypes'
+import { ColocationDataType } from '../../../types/globalTypes'
 
 type ColocationViewProps = {
     locationName: string;

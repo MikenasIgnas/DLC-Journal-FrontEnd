@@ -7,7 +7,7 @@ import { setUsername }                                                from '../.
 import { useCookies }                                                 from 'react-cookie'
 import { TokenType }                                                  from '../../types/globalTypes'
 import jwt_decode                                                     from 'jwt-decode'
-import SuccessMessage                                                 from '../../components/ChhecklistBody/SuccessMessage'
+import SuccessMessage from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {

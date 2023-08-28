@@ -2,7 +2,7 @@
 import React                from 'react'
 import { Form, Card }       from 'antd'
 import { useSearchParams }  from 'react-router-dom'
-import { useAppSelector }   from '../../store/hooks'
+import { useAppSelector }   from '../../../store/hooks'
 import ChecklistInputs      from './ChecklistInputComponents/ChecklistRoutesPageInputs'
 
 const ChecklistBody = () => {

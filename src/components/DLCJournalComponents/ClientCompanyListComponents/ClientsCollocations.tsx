@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import ColocationDisplay from './ColocationDisplay'
-import { ColocationDataType } from '../../types/globalTypes'
+import React                  from 'react'
+import ColocationDisplay      from './ColocationDisplay'
+import { ColocationDataType } from '../../../types/globalTypes'
 
 type ClientsCollocationsProps = {
     J13locationName:string

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                                                  from 'react'
 import { Checkbox, Col, ConfigProvider, Divider, Form, Row }  from 'antd'
-import { CollocationsType, CollocationsSites }                from '../../types/globalTypes'
+import { CollocationsType, CollocationsSites }                from '../../../types/globalTypes'
 
 
 type CollocationFormListProps = {

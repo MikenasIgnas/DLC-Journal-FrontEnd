@@ -2,10 +2,10 @@
 import React                                                          from 'react'
 import { useParams }                                                  from 'react-router-dom'
 import { get, post }                                                  from '../../Plugins/helpers'
-import SuccessMessage                                                 from '../../components/ChhecklistBody/SuccessMessage'
 import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
 import {  useAppSelector }                                            from '../../store/hooks'
 import { useCookies }                                                 from 'react-cookie'
+import SuccessMessage from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {

@@ -6,9 +6,9 @@ import { useSearchParams }                                                  from
 import { get, post, uploadPhoto }                                           from '../../Plugins/helpers'
 import { Avatar, Button, Card, Checkbox, Divider, Form, Input, UploadFile } from 'antd'
 import { EmployeesType }                                                    from '../../types/globalTypes'
-import ClientsEmployeesDataDisplay                                          from '../../components/ClientCompanyListComponents/ClientsEmployeesDisplay'
 import { useForm }                                                          from 'antd/es/form/Form'
 import PhotoUploader                                                        from '../../components/UniversalComponents/PhotoUploader/PhotoUploader'
+import ClientsEmployeesDataDisplay from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesDisplay'
 
 
 

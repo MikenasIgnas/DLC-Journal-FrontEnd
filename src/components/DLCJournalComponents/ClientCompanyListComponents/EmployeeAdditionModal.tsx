@@ -4,9 +4,9 @@ import { useForm }                                                    from 'antd
 import React                                                          from 'react'
 import { useCookies }                                                 from 'react-cookie'
 import { useParams }                                                  from 'react-router-dom'
-import { EmployeesType }                                              from '../../types/globalTypes'
-import { post, uploadPhoto }                                          from '../../Plugins/helpers'
-import PhotoUploader                                                  from '../UniversalComponents/PhotoUploader/PhotoUploader'
+import { EmployeesType }                                              from '../../../types/globalTypes'
+import { post, uploadPhoto }                                          from '../../../Plugins/helpers'
+import PhotoUploader                                                  from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type EmployeesAdditionModal = {
     setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
