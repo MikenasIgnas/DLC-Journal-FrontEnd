@@ -7,10 +7,10 @@ import { get }                                                                  
 import { useAppDispatch, useAppSelector }                                                                                  from '../../store/hooks'
 import {resetReducer, setArea, setPossibleProblems, setRoute, setTodo,setFilledData, setProblemCount, setChecklistPhotos}  from '../../auth/FetchedDataReducer/fetchedDataReducer'
 import { useCookies }                                                                                                      from 'react-cookie'
-import Loader                                                                                                              from '../../components/Loader/Loader'
-import HistoryRouteTab                                                                                                     from '../../components/HisotryPageElements/HistoryRouteTab'
-import UserWhoFilled                                                                                                       from '../../components/HisotryPageElements/UserWhoFilled'
-import TabName from '../../components/HisotryPageElements/TabName'
+import Loader                                                                                                              from '../../components/UniversalComponents/Loader/Loader'
+import HistoryRouteTab                                                                                                     from '../../components/DLCChecklistComponents/HisotryPageElements/HistoryRouteTab'
+import UserWhoFilled                                                                                                       from '../../components/DLCChecklistComponents/HisotryPageElements/UserWhoFilled'
+import TabName from '../../components/DLCChecklistComponents/HisotryPageElements/TabName'
 
 const SingleHistoryPage = () => {
   const { id } =                          useParams()

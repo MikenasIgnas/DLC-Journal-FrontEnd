@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                          from 'react'
 import { get, getCurrentDate, post }  from '../../Plugins/helpers'
-import UsersTable                     from '../../components/UsersTable/UsersTable'
+import UsersTable                     from '../../components/UserManagementComponents/UsersTable/UsersTable'
 import type { ColumnsType }           from 'antd/es/table'
 import { Button, Space }              from 'antd'
 import { Link }                       from 'react-router-dom'

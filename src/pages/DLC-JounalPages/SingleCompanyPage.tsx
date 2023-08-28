@@ -1,19 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-import React                            from 'react'
-import { get, post, uploadPhoto }                          from '../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
-import { useParams }                    from 'react-router-dom'
-import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Divider, Form, Row, UploadFile }  from 'antd'
-import { CompaniesType }                from '../../types/globalTypes'
-import EmployeesAdditionModal           from '../../components/EmployeeAdditionModal'
-import ClientsEmployeeList              from './ClientsEmployeeList'
-import ColocationView                   from '../../components/ColocationDisplay'
-import SingleCompanyTitle               from '../../components/SingleCompaniesTitle'
-import { useForm }                      from 'antd/es/form/Form'
-import AdditionModal from '../../components/companyAdditionComponent/AdditionModal'
-import EditableCollocationFormList from '../../components/CollocationFormList'
-import ClientsCollocations from '../../components/ClientsCollocations'
+import React                                                  from 'react'
+import { get, post, uploadPhoto }                             from '../../Plugins/helpers'
+import { useCookies }                                         from 'react-cookie'
+import { useParams }                                          from 'react-router-dom'
+import { Button, Card, Divider, Form, UploadFile }            from 'antd'
+import { CollocationsSites, CollocationsType, CompaniesType } from '../../types/globalTypes'
+import ClientsEmployeeList                                    from '../../components/ClientCompanyListComponents/ClientsEmployeeList'
+import SingleCompanyTitle                                     from '../../components/ClientCompanyListComponents/SingleCompaniesTitle'
+import { useForm }                                            from 'antd/es/form/Form'
+import ClientsCollocations                                    from '../../components/ClientCompanyListComponents/ClientsCollocations'
+import EmployeesAdditionModal                                 from '../../components/ClientCompanyListComponents/EmployeeAdditionModal'
+import EditableCollocationFormList                            from '../../components/ClientCompanyListComponents/CollocationFormList'
 
 type EmployeesType = {
   _id:            string;
@@ -33,9 +30,10 @@ const SingleCompanyPage = () => {
   const [isModalOpen, setIsModalOpen] =   React.useState(false)
   const [edit, setEdit] =                 React.useState(false)
   const [form] =                          useForm()
-  const [collocations, setCollocations] = React.useState<any[]>()
+  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const [fileList, setFileList] =         React.useState<UploadFile[]>([])
   const [uploading, setUploading] =       React.useState(false)
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -53,7 +51,7 @@ const SingleCompanyPage = () => {
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
-  const newObj2 = {J13, T72}
+  const collocationsSites = {J13, T72} as CollocationsSites
 
   const companyRemoved = (id:string) => {
     let newEmployeesList = [...employees]
@@ -102,7 +100,7 @@ const SingleCompanyPage = () => {
     return filteredObj
   }
 
-  const saveChanges = async(values:any) => {
+  const saveChanges = async(values:CompanyFormType) => {
     setEdit(!edit)
     if(edit){
       const filteredCompanyData = filterCompanyData(values)
@@ -133,7 +131,7 @@ const SingleCompanyPage = () => {
           ?
           <ClientsCollocations J13locationName={'J13'} J13locationData={J13} T72locationName={'T72'} T72locationData={T72}/>
           :
-          <EditableCollocationFormList collocations={collocations} newObj2={newObj2} />
+          <EditableCollocationFormList collocations={collocations} collocationsSites={collocationsSites} />
         }
         <ClientsEmployeeList
           companyName={company?.companyInfo?.companyName}

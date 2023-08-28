@@ -6,17 +6,17 @@ import { get, getCurrentDate, getCurrentTime, post }                            
 import { useAppDispatch, useAppSelector }                                                                       from '../../store/hooks'
 import { setProgressTracker, setRouteNumber }                                                                   from '../../auth/RouteReducer/routeReducer'
 import { resetReducer, setArea, setPossibleProblems, setRoute, setTodo, setLatestHistoryItem, setLatestPhotos } from '../../auth/FetchedDataReducer/fetchedDataReducer'
-import ChecklistBody                                                                                            from '../../components/ChhecklistBody/ChecklistBody'
-import CheckilistHeader                                                                                         from '../../components/ChecklistHeader/ChecklistHeader'
+import CheckilistHeader                                                                                         from '../../components/DLCChecklistComponents/ChecklistHeader/ChecklistHeader'
 import { onIncrementProgressTracker }                                                                           from '../../store/incremetnThunks/thunksIncrement'
 import { onDecrementProgressTracker }                                                                           from '../../store/decrementThunks/thunksDecrement'
-import FinishModal                                                                                              from '../../components/FinishModal/FinishModal'
-import SuccessMessage                                                                                           from '../../components/ChhecklistBody/SuccessMessage'
-import ChecklistNavigationButtons                                                                               from '../../components/ChecklistNavigationButtons'
+import FinishModal                                                                                              from '../../components/UniversalComponents/FinishModal/FinishModal'
 import { useCookies }                                                                                           from 'react-cookie'
 import jwt_decode                                                                                               from 'jwt-decode'
 import { TokenType }                                                                                            from '../../types/globalTypes'
-import PremiseName                                                                                              from '../../components/PremiseName/PremiseName'
+import PremiseName                                                                                              from '../../components/DLCChecklistComponents/PremiseName/PremiseName'
+import ChecklistBody                                                                                            from '../../components/DLCChecklistComponents/ChhecklistBody/ChecklistBody'
+import ChecklistNavigationButtons                                                                               from '../../components/DLCChecklistComponents/ChhecklistBody/ChecklistNavigationButtons'
+import SuccessMessage                                                                                           from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
 
 type ValuesType = {
   [key: number]: { [key: number]: null | boolean }[];

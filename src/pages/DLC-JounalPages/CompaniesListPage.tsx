@@ -6,7 +6,7 @@ import { get }                                  from '../../Plugins/helpers'
 import { useCookies }                           from 'react-cookie'
 import { CompaniesType }                        from '../../types/globalTypes'
 import { Link }                                 from 'react-router-dom'
-import CompanyAddition                          from '../../components/companyAdditionComponent/CompanyAddition'
+import CompanyAddition                          from '../../components/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
 import { PaginationAlign, PaginationPosition }  from 'antd/es/pagination/Pagination'
 
 const App: React.FC = () => {

@@ -12,7 +12,7 @@ import CreateUserPage                   from './pages/DLC-UserManagementPages/Cr
 import ManageUsersPage                  from './pages/DLC-UserManagementPages/ManageUsersPage'
 import EditUsersProfilePage             from './pages/DLC-UserManagementPages/EditUsersProfilePage'
 import SingleUserPage                   from './pages/DLC-UserManagementPages/SingleUserPage'
-import PageLayout                       from './components/PageLayout/PageLayout'
+import PageLayout                       from './components/UniversalComponents/PageLayout/PageLayout'
 import UsersArchivePage                 from './pages/DLC-UserManagementPages/UsersArchivePage'
 import { useCookies }                   from 'react-cookie'
 import jwt_decode                       from 'jwt-decode'

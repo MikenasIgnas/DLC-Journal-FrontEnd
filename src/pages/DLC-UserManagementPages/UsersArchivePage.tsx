@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React            from 'react'
-import UsersTable       from '../../components/UsersTable/UsersTable'
+import UsersTable       from '../../components/UserManagementComponents/UsersTable/UsersTable'
 import { get }          from '../../Plugins/helpers'
 import { useCookies }   from 'react-cookie'
 import { ColumnsType }  from 'antd/es/table'

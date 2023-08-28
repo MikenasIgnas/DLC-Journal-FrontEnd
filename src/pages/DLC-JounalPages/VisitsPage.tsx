@@ -3,7 +3,7 @@ import React                from 'react'
 import { useCookies }       from 'react-cookie'
 import { get }              from '../../Plugins/helpers'
 import { Avatar, List }     from 'antd'
-import VisitListItemTitle   from '../../components/VisitListItemTitle'
+import VisitListItemTitle   from '../../components/DLCJournalComponents/VisitHistoryComponents/VisitListItemTitle'
 import { useNavigate } from 'react-router-dom'
 
 type VisitsType = {

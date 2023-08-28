@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import React                        from 'react'
-import VisitRegistrationForm        from '../../components/VisitRegistrationForm'
-import JournalSteps                 from '../../components/JournalSteps'
-import VisitPurposeForm             from '../../components/VisitPurposeForm'
-import VisitingPersonsConfirmation  from '../../components/VisitingPersonsConfirmation'
+import VisitRegistrationForm        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
+import JournalSteps                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationSteps'
+import VisitPurposeForm             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitPurposeForm'
+import VisitingPersonsConfirmation  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitingPersonsConfirmation'
 
 const VisitRegistrationPage = () => {
   const [current, setCurrent] = React.useState(0)
