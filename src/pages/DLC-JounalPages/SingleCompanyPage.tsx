@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import React                            from 'react'
-import { get }                          from '../../Plugins/helpers'
+import { get, post, uploadPhoto }                          from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import { useParams }                    from 'react-router-dom'
-import { Button, Card, Checkbox, Collapse, ConfigProvider, Divider, Form }  from 'antd'
+import { Button, Card, Checkbox, Col, Collapse, ConfigProvider, Divider, Form, Row, UploadFile }  from 'antd'
 import { CompaniesType }                from '../../types/globalTypes'
 import EmployeesAdditionModal           from '../../components/EmployeeAdditionModal'
 import ClientsEmployeeList              from './ClientsEmployeeList'
-import ColocationView                   from '../../components/ColocationView'
+import ColocationView                   from '../../components/ColocationDisplay'
 import SingleCompanyTitle               from '../../components/SingleCompaniesTitle'
 import { useForm }                      from 'antd/es/form/Form'
 import AdditionModal from '../../components/companyAdditionComponent/AdditionModal'
-import ColocationSelectors from '../../components/HisotryPageElements/CollocationSelectors'
+import EditableCollocationFormList from '../../components/CollocationFormList'
+import ClientsCollocations from '../../components/ClientsCollocations'
 
 type EmployeesType = {
   _id:            string;
@@ -32,56 +34,103 @@ const SingleCompanyPage = () => {
   const [edit, setEdit] =                 React.useState(false)
   const [form] =                          useForm()
   const [collocations, setCollocations] = React.useState<any[]>()
-
+  const [fileList, setFileList] =         React.useState<UploadFile[]>([])
+  const [uploading, setUploading] =       React.useState(false)
   React.useEffect(() => {
     (async () => {
       try{
         const singleCompany =     await get(`SingleCompanyPage/${id}`, cookies.access_token)
         const companyEmployees =  await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
-        const collocations = await get('getCollocations', cookies.access_token)
-        setCollocations(collocations.data[0].colocations)
+        const allCollocations =      await get('getCollocations', cookies.access_token)
+        setCollocations(allCollocations.data[0].colocations)
         setCompany(singleCompany.data)
         setEmployees(companyEmployees.data)
       }catch(err){
         console.log(err)
       }
     })()
-  },[isModalOpen])
+  },[isModalOpen, edit])
 
-  const J13 = company?.companyInfo.J13
-  const T72 = company?.companyInfo.T72
-
+  const J13 = company?.companyInfo?.J13
+  const T72 = company?.companyInfo?.T72
+  const newObj2 = {J13, T72}
   const companyRemoved = (id:string) => {
     let newEmployeesList = [...employees]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
     setEmployees(newEmployeesList)
   }
+  type CompanyFormType = {
+    companyName?: string,
+    companyDescription?: string,
+    companyPhoto?: string,
+    J13?: {
+      [key: string]: string[];
+    }[];
+    T72?: {
+      [key: string]: string[];
+    }[];
+  };
+  function filterCompanyData(obj: CompanyFormType): CompanyFormType {
+    const filteredObj: CompanyFormType = {}
+    if (obj.J13) {
+      filteredObj.J13 = []
+      for (const key in obj.J13) {
+        const entries = Object.entries(obj.J13[key])
+        if (entries.length > 0) {
+          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
+          if (nonEmptyEntry) {
+            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
+          }
+        }
+      }
+    }
+    if (obj.T72) {
+      filteredObj.T72 = []
+      for (const key in obj.T72) {
+        const entries = Object.entries(obj.T72[key])
+        if (entries.length > 0) {
+          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
+          if (nonEmptyEntry) {
+            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
+          }
+        }
+      }
+    }
+    return filteredObj
+  }
 
+  const saveChanges = async(values:any) => {
+    setEdit(!edit)
+    if(edit){
+      const filteredCompanyData = filterCompanyData(values)
+      filteredCompanyData.companyName = values.companyName
+      await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
+      uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
+    }
+  }
   return (
-    <Form form={form} style={{ width: '98%', marginTop: '10px' }}>
+    <Form form={form} onFinish={saveChanges} style={{ width: '98%', marginTop: '10px' }}>
       <Card
         headStyle={{textAlign: 'center'}}
         title={
           <SingleCompanyTitle
             companyTitle={company?.companyInfo?.companyName.toUpperCase()}
             companyDescription={company?.companyInfo.companyDescription}
-            setEdit={setEdit}
             edit={edit}
+            setFileList={setFileList}
+            fileList={fileList}
+            companyPhoto={company?.companyInfo.companyPhoto}
           />}
         bordered={false}
       >
         <Button style={{display: 'flex', margin: 'auto'}} onClick={()=> setIsModalOpen(true)}>Pridėti darbuotoją</Button>
         {isModalOpen && <EmployeesAdditionModal companyName={company?.companyInfo?.companyName} companyId={company?.id} setIsModalOpen={setIsModalOpen}/>}
         <Divider>Kolokacijos</Divider>
-        {edit ?
-          <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-            {collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
-          </div>
+        {!edit
+          ?
+          <ClientsCollocations J13locationName={'J13'} J13locationData={J13} T72locationName={'T72'} T72locationData={T72}/>
           :
-          <div style={{display: 'flex', justifyContent: 'space-between'}}>
-            <ColocationView locationName={'J13'} locationData={J13}/>
-            <ColocationView locationName={'T72'} locationData={T72}/>
-          </div>
+          <EditableCollocationFormList collocations={collocations} newObj2={newObj2} />
         }
         <ClientsEmployeeList
           companyName={company?.companyInfo?.companyName}
@@ -93,3 +142,8 @@ const SingleCompanyPage = () => {
 }
 
 export default SingleCompanyPage
+
+// <div>
+// <CollocationFormList collocation={collocations?.[0]} collocationSite={J13}/>
+// <CollocationFormList collocation={collocations?.[1]} collocationSite={T72}/>
+// </div>

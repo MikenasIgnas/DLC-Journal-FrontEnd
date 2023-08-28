@@ -68,7 +68,6 @@ const SingleClientsEmployeePage = () => {
                   </div>
                 </div>
               }
-
             </div>
             <Divider type='vertical' style={{height: '150px'}} />
             <div style={{width: '100%'}}>

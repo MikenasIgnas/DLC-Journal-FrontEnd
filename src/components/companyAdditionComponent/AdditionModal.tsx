@@ -29,7 +29,6 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
   const [cookies] =                             useCookies(['access_token'])
   const [collocations, setCollocations] =       React.useState<any[]>()
   const [form] =                                useForm()
-  const { Panel } =                             Collapse
   const [uploading, setUploading] =             React.useState(false)
   const [fileList, setFileList] =               React.useState<UploadFile[]>([])
 
@@ -105,7 +104,7 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
           </Form.Item>
           <CompanyPhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-            { collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
+            {collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>

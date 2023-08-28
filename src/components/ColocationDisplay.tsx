@@ -6,7 +6,7 @@ type ColocationViewProps = {
     locationName:string
     locationData: ColocationDataType[] | undefined
 }
-const ColocationView = ({locationName, locationData}:ColocationViewProps) => {
+const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => {
   return (
     <div style={{width: '45%'}}>
       {locationData && <Divider>{locationName}</Divider>}
@@ -30,4 +30,4 @@ const ColocationView = ({locationName, locationData}:ColocationViewProps) => {
   )
 }
 
-export default ColocationView
+export default ColocationDisplay

@@ -48,7 +48,7 @@ const FilledHistoryData = ({
           const checklistTextValues =   possibleProblemsTable?.filter((item) => item.todoId === el.id)
           const filteredValues =        filteredByRoute?.find((item) => Object.keys(item).includes(String(el.id)))
           const radioValues =           filteredValues ? filteredValues[el.id] : undefined
-          console.log(filteredValues)
+          console.log(radioValues)
           const problemCount =          radioValues?.filter((obj: RadioValues ) => Object.values(obj)[0] === true).length
           const dutiesId =              radioValues?.map(({ ticketNr, notes, time, ...rest }: HistoryInputValues) => {
             return Number(Object.keys(rest))

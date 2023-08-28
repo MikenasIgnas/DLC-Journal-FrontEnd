@@ -1,28 +1,45 @@
 /* eslint-disable max-len */
-import { Button, Form, Input }   from 'antd'
-import React        from 'react'
+import React                                        from 'react'
+import { Avatar, Button, Form, Input, UploadFile }  from 'antd'
+import PhotoUploader                                from './companyAdditionComponent/CompanyPhotoUploader'
 
 type SingleCompaniesTitleProps = {
     companyTitle:       string | undefined;
-    setEdit:            React.Dispatch<React.SetStateAction<boolean>>;
     edit:               boolean;
     companyDescription: string | undefined;
+    setFileList:        React.Dispatch<React.SetStateAction<UploadFile<any>[]>>
+    fileList:           UploadFile<any>[];
+    companyPhoto:       string | undefined;
 }
 
-const SingleCompanyTitle = ({companyTitle, companyDescription, setEdit, edit}: SingleCompaniesTitleProps) => {
-
-  const editCompany = () => {
-    setEdit(!edit)
-  }
+const SingleCompanyTitle = ({companyTitle, companyDescription, edit, setFileList, fileList, companyPhoto}: SingleCompaniesTitleProps) => {
   return (
     <div style={{display: 'flex', justifyContent: 'flex-end'}}>
       <div style={{display: 'flex', justifyContent: 'space-between', width: '50%'}}>
         {!edit ?
+          <Avatar src={<img
+            src={`../CompanyLogos/${companyPhoto !== '' ? companyPhoto : 'noImage.jpg'}` }
+            alt='err' />}
+          />
+          :
+          <div>
+            <Avatar src={<img
+              src={`../CompanyLogos/${companyPhoto !== '' ? companyPhoto : 'noImage.jpg'}` }
+              alt='err' />}
+            />
+            <PhotoUploader setFileList={setFileList} fileList={fileList}/>
+          </div>
+        }
+        {!edit
+          ?
           <div>
             <div>{companyTitle}</div>
             <div>{companyDescription}</div>
-          </div> : <Form.Item name='companyName' initialValue={companyTitle}><Input/></Form.Item> }
-        <Button onClick={editCompany} type='link'>{!edit ? 'Edit' : 'Save'}</Button>
+          </div>
+          :
+          <Form.Item name='companyName' initialValue={companyTitle}><Input/></Form.Item>
+        }
+        <Button htmlType='submit' type='link'>{!edit ? 'Edit' : 'Save'}</Button>
       </div>
     </div>
   )
