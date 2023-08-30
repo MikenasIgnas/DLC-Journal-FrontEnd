@@ -1,12 +1,16 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { PlusOutlined }                 from '@ant-design/icons'
-import { Select, Tag, Tooltip, theme }  from 'antd'
+import { Button, Select, Tag, Tooltip, theme }  from 'antd'
 import { useCookies }                   from 'react-cookie'
-import { get, post }                          from '../../../Plugins/helpers'
+import { get, post }                    from '../../../Plugins/helpers'
 import { CompaniesType }                from '../../../types/globalTypes'
-import { useParams }                    from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
+type OptionsType = {
+  value:string;
+  label: string;
+}
 
 const TagComponent = () => {
   const { token } =                           theme.useToken()
@@ -14,9 +18,9 @@ const TagComponent = () => {
   const [tags, setTags] =                     React.useState<string[]>([])
   const [inputVisible, setInputVisible] =     React.useState(false)
   const [cookies] =                           useCookies(['access_token'])
-  const [selectOptions, setSelectOptions] =   React.useState<CompaniesType[]>()
+  const [selectOptions, setSelectOptions] =   React.useState<OptionsType[]>()
   const [singleCompany, setSingleCompany] =   React.useState<CompaniesType>()
-
+  const navigate = useNavigate()
   React.useEffect(() => {
     (async () => {
       try{
@@ -30,8 +34,8 @@ const TagComponent = () => {
         setSelectOptions(options)
         const companysSubClient = singleCompany?.companyInfo?.subClient
         if(companysSubClient && companysSubClient?.length > 0){
-          const filteredArray = selectOptions?.filter((item1: any) =>
-            !companysSubClient?.some((item2: any) => item2?.subClientCompanyName === item1.label)
+          const filteredArray = selectOptions?.filter((item1) =>
+            !companysSubClient?.some((item2) => item2?.subClientCompanyName === item1.label)
           )
           setSelectOptions(filteredArray)
         }
@@ -39,25 +43,24 @@ const TagComponent = () => {
         console.log(err)
       }
     })()
-  },[inputVisible, tags])
+  },[inputVisible])
 
   const handleClose = async(removedTag: string) => {
     if(selectOptions){
       const newTags = tags.filter((tag) => tag !== removedTag)
       const res = await get(`deleteCompaniesSubClient?companyId=${id}&subClient=${removedTag}`, cookies.access_token)
       setTags(newTags)
-      console.log(res.data.value.companyInfo.subClient)
       setSelectOptions(res.data.value.companyInfo.subClient)
     }
   }
 
-
-  const handleInputChange = async(value: string, options: any) => {
+  const handleInputChange = async (_value: string, options: OptionsType | OptionsType[]) => {
     if (tags) {
-      setTags([...tags, options.label])
+      const option = Array.isArray(options) ? options[0] : options
+      setTags([...tags, option.label])
       const subClientInfo = {
-        subClientId:          options.value,
-        subClientCompanyName: options.label,
+        subClientId:          option.value,
+        subClientCompanyName: option.label,
       }
       await post(`addSubClient?companyId=${id}`, subClientInfo, cookies.access_token)
       setInputVisible(false)
@@ -84,26 +87,23 @@ const TagComponent = () => {
     background:  token.colorBgContainer,
     borderStyle: 'dashed',
   }
-
   return (
     <div>
       {singleCompany?.companyInfo?.subClient ?
         singleCompany.companyInfo.subClient.map((el) => {
-          const isLongTag = el.subClientCompanyName.length > 20
+          const isLongTag = el?.subClientCompanyName.length > 20
           const tagElem = (
             <Tag
-              key={el.subClientId}
+              key={el?.subClientId}
               closable={true}
-              onClose={() => handleClose(el.subClientCompanyName)}
+              onClose={() => handleClose(el?.subClientCompanyName)}
               style={{ userSelect: 'none' }}
             >
-              <span>
-                {isLongTag ? `${el.subClientCompanyName.slice(0, 20)}...` : el.subClientCompanyName}
-              </span>
+              <a href={`/SingleCompanyPage/${el.subClientId}`}>{isLongTag ? `${el?.subClientCompanyName?.slice(0, 20)}...` : el?.subClientCompanyName}</a>
             </Tag>
           )
           return isLongTag ? (
-            <Tooltip title={el.subClientCompanyName} key={el.subClientId}>
+            <Tooltip title={el?.subClientCompanyName} key={el?.subClientId}>
               {tagElem}
             </Tooltip>
           ) : tagElem
@@ -116,8 +116,8 @@ const TagComponent = () => {
           size='small'
           open={inputVisible}
           options={selectOptions}
-          onFocus={handleSelectOpen}
           onBlur={handleSelectClose}
+          onFocus={handleSelectOpen}
         />
       ) : (
         <Tag style={tagPlusStyle} onClick={handleSelectOpen}>

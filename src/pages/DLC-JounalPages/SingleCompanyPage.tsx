@@ -36,6 +36,7 @@ const SingleCompanyPage = () => {
   const [fileList, setFileList] =         React.useState<UploadFile[]>([])
   const [uploading, setUploading] =       React.useState(false)
   const [messageApi, contextHolder] =     message.useMessage()
+
   React.useEffect(() => {
     (async () => {
       try{
