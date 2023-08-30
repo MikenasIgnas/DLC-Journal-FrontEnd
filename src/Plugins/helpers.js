@@ -92,10 +92,6 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
     .then((res) => res.json())
     .then(() => {
       setFileList(fileList)
-      message.success('upload successfully.')
-    })
-    .catch(() => {
-      message.error('upload failed.')
     })
     .finally(() => {
       setUploading(false)

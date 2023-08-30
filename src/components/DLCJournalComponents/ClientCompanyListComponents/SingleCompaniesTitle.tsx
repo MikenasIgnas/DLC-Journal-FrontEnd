@@ -15,10 +15,10 @@ type SingleCompaniesTitleProps = {
 
 const SingleCompanyTitle = ({companyTitle, companyDescription, edit, setFileList, fileList, companyPhoto}: SingleCompaniesTitleProps) => {
   return (
-    <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-      <div style={{display: 'flex', justifyContent: 'space-between', width: '50%'}}>
+    <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+      <div style={{width: '50%',display: 'flex', alignItems: 'center'}}>
         {!edit ?
-          <Avatar src={<img
+          <Avatar size='large' src={<img
             src={`../CompanyLogos/${companyPhoto !== '' ? companyPhoto : 'noImage.jpg'}` }
             alt='err' />}
           />
@@ -34,12 +34,14 @@ const SingleCompanyTitle = ({companyTitle, companyDescription, edit, setFileList
         {!edit
           ?
           <div>
-            <div>{companyTitle}</div>
+            <div style={{fontSize: '20px', marginLeft: '20px'}}>{companyTitle}</div>
             <div>{companyDescription}</div>
           </div>
           :
           <Form.Item name='companyName' initialValue={companyTitle}><Input/></Form.Item>
         }
+      </div>
+      <div>
         <Button htmlType='submit' type='link'>{!edit ? 'Edit' : 'Save'}</Button>
       </div>
     </div>

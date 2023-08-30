@@ -8,7 +8,7 @@ import { post }                             from '../../../Plugins/helpers'
 import { useParams }                        from 'react-router-dom'
 import { useCookies }                       from 'react-cookie'
 import { setProblemCount }                  from '../../../auth/FetchedDataReducer/fetchedDataReducer'
-import SuccessMessage                       from '../ChhecklistBody/SuccessMessage'
+import SuccessMessage                       from '../../UniversalComponents/SuccessMessage'
 
 type AreasComponentProps = {
   routeID:      number | undefined,

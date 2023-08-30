@@ -3,14 +3,16 @@ import React                                                  from 'react'
 import { get, post, uploadPhoto }                             from '../../Plugins/helpers'
 import { useCookies }                                         from 'react-cookie'
 import { useParams }                                          from 'react-router-dom'
-import { Button, Card, Divider, Form, UploadFile }            from 'antd'
+import { Button, Card, Divider, Form, UploadFile, message }   from 'antd'
 import { CollocationsSites, CollocationsType, CompaniesType } from '../../types/globalTypes'
 import { useForm }                                            from 'antd/es/form/Form'
-import ClientsCollocations from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
-import ClientsEmployeeList from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeeList'
-import EditableCollocationFormList from '../../components/DLCJournalComponents/ClientCompanyListComponents/CollocationFormList'
-import EmployeesAdditionModal from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
-import SingleCompanyTitle from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import ClientsCollocations                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
+import ClientsEmployeeList                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeeList'
+import EditableCollocationFormList                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/CollocationFormList'
+import EmployeesAdditionModal                                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
+import SingleCompanyTitle                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import SuccessMessage                                         from '../../components/UniversalComponents/SuccessMessage'
+import TagComponent from '../../components/DLCJournalComponents/ClientCompanyListComponents/TagComponent'
 
 type EmployeesType = {
   _id:            string;
@@ -33,13 +35,13 @@ const SingleCompanyPage = () => {
   const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const [fileList, setFileList] =         React.useState<UploadFile[]>([])
   const [uploading, setUploading] =       React.useState(false)
-
+  const [messageApi, contextHolder] =     message.useMessage()
   React.useEffect(() => {
     (async () => {
       try{
         const singleCompany =     await get(`SingleCompanyPage/${id}`, cookies.access_token)
         const companyEmployees =  await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
-        const allCollocations =      await get('getCollocations', cookies.access_token)
+        const allCollocations =   await get('getCollocations', cookies.access_token)
         setCollocations(allCollocations.data[0].colocations)
         setCompany(singleCompany.data)
         setEmployees(companyEmployees.data)
@@ -105,8 +107,18 @@ const SingleCompanyPage = () => {
     if(edit){
       const filteredCompanyData = filterCompanyData(values)
       filteredCompanyData.companyName = values.companyName
-      await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
-      uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
+      const res = await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
+
+      if(fileList[0]){
+        await uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
+      }
+
+      if(!res.error){
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }
     }
   }
   return (
@@ -125,6 +137,7 @@ const SingleCompanyPage = () => {
         bordered={false}
       >
         <Button style={{display: 'flex', margin: 'auto'}} onClick={()=> setIsModalOpen(true)}>Pridėti darbuotoją</Button>
+        <TagComponent/>
         {isModalOpen && <EmployeesAdditionModal companyName={company?.companyInfo?.companyName} companyId={company?.id} setIsModalOpen={setIsModalOpen}/>}
         <Divider>Kolokacijos</Divider>
         {!edit
@@ -136,7 +149,9 @@ const SingleCompanyPage = () => {
         <ClientsEmployeeList
           companyName={company?.companyInfo?.companyName}
           list={employees}
-          companyRemoved={companyRemoved}/>
+          companyRemoved={companyRemoved}
+        />
+        <SuccessMessage contextHolder={contextHolder} />
       </Card>
     </Form>
   )

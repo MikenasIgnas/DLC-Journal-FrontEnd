@@ -5,7 +5,7 @@ import { get, post }                                                  from '../.
 import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
 import {  useAppSelector }                                            from '../../store/hooks'
 import { useCookies }                                                 from 'react-cookie'
-import SuccessMessage from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {

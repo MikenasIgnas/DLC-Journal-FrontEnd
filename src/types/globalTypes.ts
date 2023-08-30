@@ -98,6 +98,10 @@ export type CompaniesType = {
       companyName:        string;
       companyDescription: string;
       companyPhoto:       string;
+      subClient?: {
+      subClientId: string;
+      subClientCompanyName: string
+      }[]
   };
 };
 

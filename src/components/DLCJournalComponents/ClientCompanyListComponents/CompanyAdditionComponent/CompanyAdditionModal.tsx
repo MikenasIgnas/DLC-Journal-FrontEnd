@@ -4,7 +4,7 @@ import { Modal, Form, Button, Input, UploadFile } from 'antd'
 import { useForm }                                from 'antd/es/form/Form'
 import { get, post, uploadPhoto }                 from '../../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
-import CompanyPhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                        from '../../../DLCChecklistComponents/HisotryPageElements/CollocationSelectors'
 import { CollocationsType }                       from '../../../../types/globalTypes'
 
@@ -17,6 +17,10 @@ type CompanyFormType = {
   companyName?: string,
   companyDescription?: string,
   companyPhoto?: string,
+  subClient?: {
+    subClientId: string;
+    subClientCompanyName: string
+    }[]
   J13?: {
     [key: string]: string[];
   }[];
@@ -77,6 +81,7 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
+    filteredResult.subClient = []
     await post('addCompany', filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
@@ -102,7 +107,7 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
           <Form.Item name='companyDescription'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
-          <CompanyPhotoUploader setFileList={setFileList} fileList={fileList}/>
+          <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             {collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
           </div>

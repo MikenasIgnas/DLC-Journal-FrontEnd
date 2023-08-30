@@ -16,7 +16,7 @@ import { TokenType }                                                            
 import PremiseName                                                                                              from '../../components/DLCChecklistComponents/PremiseName/PremiseName'
 import ChecklistBody                                                                                            from '../../components/DLCChecklistComponents/ChhecklistBody/ChecklistBody'
 import ChecklistNavigationButtons                                                                               from '../../components/DLCChecklistComponents/ChhecklistBody/ChecklistNavigationButtons'
-import SuccessMessage                                                                                           from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
+import SuccessMessage                                                                                           from '../../components/UniversalComponents/SuccessMessage'
 
 type ValuesType = {
   [key: number]: { [key: number]: null | boolean }[];

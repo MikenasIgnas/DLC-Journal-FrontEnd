@@ -5,7 +5,7 @@ import { getCurrentDate, post }                                         from '..
 import { useNavigate }                                                  from 'react-router-dom'
 import { useAppSelector }                                               from '../../store/hooks'
 import { useCookies }                                                   from 'react-cookie'
-import SuccessMessage from '../../components/DLCChecklistComponents/ChhecklistBody/SuccessMessage'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {

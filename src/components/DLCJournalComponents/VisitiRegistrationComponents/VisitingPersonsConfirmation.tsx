@@ -6,7 +6,7 @@ import { post }                             from '../../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import SignatureCanvas                      from 'react-signature-canvas'
 import { useNavigate }                      from 'react-router-dom'
-import SuccessMessage from '../../DLCChecklistComponents/ChhecklistBody/SuccessMessage'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type VisitorsIdentificationType = {
   signature: string | undefined;
