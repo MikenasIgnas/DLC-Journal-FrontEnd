@@ -2,21 +2,24 @@
 import React                                      from 'react'
 import { Modal, Form, Button, Input, UploadFile } from 'antd'
 import { useForm }                                from 'antd/es/form/Form'
-import { get, post, uploadPhoto }                 from '../../../../Plugins/helpers'
+import { post, uploadPhoto }                      from '../../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import ColocationSelectors                        from '../../../DLCChecklistComponents/HisotryPageElements/CollocationSelectors'
+import ColocationSelectors                        from '../CollocationSelectors'
 import { CollocationsType }                       from '../../../../types/globalTypes'
 
 type AdditionModalProps = {
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-    setIsCompanyAdded: React.Dispatch<React.SetStateAction<boolean>>
+    postUrl:            string;
+    additionModalTitle: string;
+    setIsModalOpen:     React.Dispatch<React.SetStateAction<boolean>>
+    setIsCompanyAdded:  React.Dispatch<React.SetStateAction<boolean>>
+    collocations:       CollocationsType[] | undefined
 }
 
 type CompanyFormType = {
-  companyName?: string,
-  companyDescription?: string,
-  companyPhoto?: string,
+  companyName?:         string,
+  companyDescription?:  string,
+  companyPhoto?:        string,
   subClient?: {
     subClientId: string;
     subClientCompanyName: string
@@ -29,23 +32,11 @@ type CompanyFormType = {
   }[];
 };
 
-const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) => {
+const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) => {
   const [cookies] =                       useCookies(['access_token'])
-  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const [form] =                          useForm()
   const [uploading, setUploading] =       React.useState(false)
   const [fileList, setFileList] =         React.useState<UploadFile[]>([])
-
-  React.useEffect(() => {
-    (async () => {
-      try{
-        const collocations = await get('getCollocations', cookies.access_token)
-        setCollocations(collocations.data[0].colocations)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-  },[])
 
   function filterObject(obj: CompanyFormType): CompanyFormType {
     const filteredObj: CompanyFormType = {}
@@ -75,14 +66,13 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
     }
     return filteredObj
   }
-
   const addCompany = async(values: CompanyFormType) => {
     const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
     filteredResult.subClient = []
-    await post('addCompany', filteredResult, cookies.access_token)
+    await post(postUrl, filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
@@ -92,7 +82,7 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
 
   return (
     <Modal
-      title='Pridėkite įmonę'
+      title={additionModalTitle}
       centered
       open
       onOk={() => setIsModalOpen(false)}
@@ -118,4 +108,4 @@ const AdditionModal = ({setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) 
   )
 }
 
-export default AdditionModal
+export default CompanyAdditionModal

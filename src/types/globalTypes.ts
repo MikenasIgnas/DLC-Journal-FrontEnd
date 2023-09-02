@@ -92,6 +92,7 @@ export type ColocationDataType = {
 export type CompaniesType = {
   _id:                    string;
   id:                     string;
+  parentCompanyId?:       string;
   companyInfo: {
       J13?:               ColocationDataType[];
       T72?:               ColocationDataType[];

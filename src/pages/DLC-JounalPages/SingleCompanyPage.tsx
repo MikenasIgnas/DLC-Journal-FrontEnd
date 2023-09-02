@@ -12,7 +12,8 @@ import EditableCollocationFormList                            from '../../compon
 import EmployeesAdditionModal                                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
 import SingleCompanyTitle                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import SuccessMessage                                         from '../../components/UniversalComponents/SuccessMessage'
-import TagComponent from '../../components/DLCJournalComponents/ClientCompanyListComponents/TagComponent'
+import SubClients                                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClients'
+import CompanyAdditionModal                                   from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAdditionModal'
 
 type EmployeesType = {
   _id:            string;
@@ -24,18 +25,31 @@ type EmployeesType = {
   permissions:    string[];
 }
 
+type CompanyFormType = {
+  companyName?: string,
+  companyDescription?: string,
+  companyPhoto?: string,
+  J13?: {
+    [key: string]: string[];
+  }[];
+  T72?: {
+    [key: string]: string[];
+  }[];
+};
+
 const SingleCompanyPage = () => {
-  const [cookies] =                       useCookies(['access_token'])
-  const {id} =                            useParams()
-  const [company, setCompany] =           React.useState<CompaniesType>()
-  const [employees, setEmployees] =       React.useState<EmployeesType[]>([])
-  const [isModalOpen, setIsModalOpen] =   React.useState(false)
-  const [edit, setEdit] =                 React.useState(false)
-  const [form] =                          useForm()
-  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
-  const [fileList, setFileList] =         React.useState<UploadFile[]>([])
-  const [uploading, setUploading] =       React.useState(false)
-  const [messageApi, contextHolder] =     message.useMessage()
+  const [cookies] =                                                         useCookies(['access_token'])
+  const {id} =                                                              useParams()
+  const [company, setCompany] =                                             React.useState<CompaniesType>()
+  const [employees, setEmployees] =                                         React.useState<EmployeesType[]>([])
+  const [isEmployeeAdditionModalOpen, setIsEmployeeAdditionModalOpen] =     React.useState(false)
+  const [isSubClientAdditionModalOpen, setIsSubClientAdditionModalOpen] =   React.useState(false)
+  const [edit, setEdit] =                                                   React.useState(false)
+  const [form] =                                                            useForm()
+  const [collocations, setCollocations] =                                   React.useState<CollocationsType[]>()
+  const [fileList, setFileList] =                                           React.useState<UploadFile[]>([])
+  const [uploading, setUploading] =                                         React.useState(false)
+  const [messageApi, contextHolder] =                                       message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -50,7 +64,7 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[isModalOpen, edit, cookies.access_token])
+  },[setIsEmployeeAdditionModalOpen, setIsSubClientAdditionModalOpen, edit, cookies.access_token])
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
@@ -61,18 +75,6 @@ const SingleCompanyPage = () => {
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
     setEmployees(newEmployeesList)
   }
-
-  type CompanyFormType = {
-    companyName?: string,
-    companyDescription?: string,
-    companyPhoto?: string,
-    J13?: {
-      [key: string]: string[];
-    }[];
-    T72?: {
-      [key: string]: string[];
-    }[];
-  };
 
   function filterCompanyData(obj: CompanyFormType): CompanyFormType {
     const filteredObj: CompanyFormType = {}
@@ -113,7 +115,6 @@ const SingleCompanyPage = () => {
       if(fileList[0]){
         await uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
       }
-
       if(!res.error){
         messageApi.success({
           type:    'success',
@@ -122,10 +123,30 @@ const SingleCompanyPage = () => {
       }
     }
   }
+  const subClientsCollocations = []
+  let index = 1
+  for (const site in collocationsSites) {
+    const premisesData = collocationsSites[site]
+    const premisesArray = premisesData?.map(premiseData => {
+      const premiseName = Object.keys(premiseData)[0]
+      const racks = premiseData[premiseName]
+      return {
+        premiseName,
+        racks,
+      }
+    })
+    subClientsCollocations.push({
+      site,
+      id:       `${index++}`,
+      premises: premisesArray,
+    })
+  }
+
   return (
     <Form form={form} onFinish={saveChanges} style={{ width: '98%', marginTop: '10px' }}>
       <Card
         headStyle={{textAlign: 'center'}}
+        bordered={false}
         title={
           <SingleCompanyTitle
             companyTitle={company?.companyInfo?.companyName.toUpperCase()}
@@ -135,11 +156,25 @@ const SingleCompanyPage = () => {
             fileList={fileList}
             companyPhoto={company?.companyInfo.companyPhoto}
           />}
-        bordered={false}
       >
-        <Button style={{display: 'flex', margin: 'auto'}} onClick={()=> setIsModalOpen(true)}>Pridėti darbuotoją</Button>
-        <TagComponent/>
-        {isModalOpen && <EmployeesAdditionModal companyName={company?.companyInfo?.companyName} companyId={company?.id} setIsModalOpen={setIsModalOpen}/>}
+        <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+          <Button onClick={()=> setIsEmployeeAdditionModalOpen(true)}>Pridėti darbuotoją</Button>
+          <Button onClick={()=> setIsSubClientAdditionModalOpen(true)}>Pridėti Sub Klientą</Button>
+        </div>
+        {isEmployeeAdditionModalOpen &&
+        <EmployeesAdditionModal
+          companyName={company?.companyInfo?.companyName}
+          companyId={company?.id}
+          setIsModalOpen={setIsEmployeeAdditionModalOpen}
+        />}
+        {isSubClientAdditionModalOpen &&
+        <CompanyAdditionModal
+          setIsModalOpen={setIsSubClientAdditionModalOpen}
+          setIsCompanyAdded={setIsSubClientAdditionModalOpen}
+          collocations={subClientsCollocations}
+          additionModalTitle={'Pridėkite sub klientą'}
+          postUrl={`addSubClient?parentCompanyId=${id}`}
+        />}
         <Divider>Kolokacijos</Divider>
         {!edit
           ?
@@ -147,11 +182,14 @@ const SingleCompanyPage = () => {
           :
           <EditableCollocationFormList collocations={collocations} collocationsSites={collocationsSites} />
         }
-        <ClientsEmployeeList
-          companyName={company?.companyInfo?.companyName}
-          list={employees}
-          companyRemoved={companyRemoved}
-        />
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <ClientsEmployeeList
+            companyName={company?.companyInfo?.companyName}
+            list={employees}
+            companyRemoved={companyRemoved}
+          />
+          <SubClients parentCompanyId={id}/>
+        </div>
         <SuccessMessage contextHolder={contextHolder} />
       </Card>
     </Form>

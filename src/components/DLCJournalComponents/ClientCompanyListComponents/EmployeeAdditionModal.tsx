@@ -9,7 +9,7 @@ import { post, uploadPhoto }                                          from '../.
 import PhotoUploader                                                  from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type EmployeesAdditionModal = {
-    setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     companyName:    string | undefined;
     companyId:      string | undefined;
 }

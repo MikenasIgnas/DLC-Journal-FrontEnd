@@ -12,8 +12,7 @@ type ColocationSelectorsProps = {
 }
 
 const ColocationSelectors = ({collocationSite, colocationPremises, colocationId }: ColocationSelectorsProps) => {
-  const { Panel } =                       Collapse
-  console.log(colocationPremises)
+  const { Panel } = Collapse
   return(
     <div key={colocationId}>
       <Collapse style={{marginBottom: '10px', marginTop: '10px', width: '200px'}}>

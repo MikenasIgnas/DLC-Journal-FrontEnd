@@ -4,10 +4,10 @@ import { Avatar, Button, List }                 from 'antd'
 import React                                    from 'react'
 import { get }                                  from '../../Plugins/helpers'
 import { useCookies }                           from 'react-cookie'
-import { CompaniesType }                        from '../../types/globalTypes'
+import { CollocationsType, CompaniesType }      from '../../types/globalTypes'
 import { Link }                                 from 'react-router-dom'
 import { PaginationAlign, PaginationPosition }  from 'antd/es/pagination/Pagination'
-import CompanyAddition from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
+import CompanyAddition                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
 
 const App: React.FC = () => {
   const [loading, setLoading] =               React.useState(false)
@@ -16,12 +16,15 @@ const App: React.FC = () => {
   const [isCompanyAdded, setIsCompanyAdded] = React.useState(false)
   const position: PaginationPosition =        'bottom'
   const align: PaginationAlign =              'center'
+  const [collocations, setCollocations] =     React.useState<CollocationsType[]>()
 
   React.useEffect(() => {
     (async () => {
       try{
         setLoading(true)
         const allComapnies = await get('getCompanies', cookies.access_token)
+        const collocations = await get('getCollocations', cookies.access_token)
+        setCollocations(collocations.data[0].colocations)
         if(!allComapnies.error){
           setCompanies(allComapnies.data)
         }
@@ -54,7 +57,7 @@ const App: React.FC = () => {
 
   return (
     <div style={{width: '97%'}}>
-      <CompanyAddition setIsCompanyAdded={setIsCompanyAdded}/>
+      <CompanyAddition postUrl={'addCompany'} collocations={collocations} setIsCompanyAdded={setIsCompanyAdded} additionModalTitle={'Pridėkite įmonę'}/>
       <List
         loading={loading}
         pagination={{ position, align }}

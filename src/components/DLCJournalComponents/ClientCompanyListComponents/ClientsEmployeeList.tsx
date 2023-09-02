@@ -32,11 +32,11 @@ const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmploye
   }
 
   return (
-    <div>
+    <div style={{width: '50%'}}>
       <Divider>Darbuotojai</Divider>
       <List
-        className='demo-loadmore-list'
         itemLayout='horizontal'
+
         dataSource={list}
         renderItem={(item) => {
           return (
@@ -57,7 +57,7 @@ const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmploye
                 title={<div onClick={() => navigate(`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`)} style={{cursor: 'pointer'}}>{item.name}</div>}
                 description={item.occupation}
               />
-              <div style={{width: '150px'}}>
+              <div>
                 <strong>Darbuotojo leidimai: </strong>
                 {item.permissions.map((el, i) => <div key={i}>{el}</div>)}
               </div>
