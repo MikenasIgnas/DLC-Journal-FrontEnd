@@ -51,6 +51,7 @@ const SingleCompanyPage = () => {
   const [uploading, setUploading] =                                         React.useState(false)
   const [messageApi, contextHolder] =                                       message.useMessage()
   const [editClientsEmployee, setEditClientsEmployee] =                     React.useState(false)
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -123,8 +124,10 @@ const SingleCompanyPage = () => {
       }
     }
   }
+
   const subClientsCollocations = []
   let index = 1
+
   for (const site in collocationsSites) {
     const premisesData = collocationsSites[site]
     const premisesArray = premisesData?.map(premiseData => {
@@ -166,6 +169,7 @@ const SingleCompanyPage = () => {
           companyName={company?.companyInfo?.companyName}
           companyId={company?.id}
           setIsModalOpen={setIsEmployeeAdditionModalOpen}
+          urlPath={'addEmployee'}
         />}
         {isSubClientAdditionModalOpen &&
         <CompanyAdditionModal
@@ -176,8 +180,7 @@ const SingleCompanyPage = () => {
           postUrl={`addSubClient?parentCompanyId=${id}`}
         />}
         <Divider>Kolokacijos</Divider>
-        {!edit
-          ?
+        {!edit ?
           <ClientsCollocations
             J13locationName={'J13'}
             J13locationData={J13}

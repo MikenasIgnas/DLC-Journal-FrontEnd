@@ -67,9 +67,13 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved}: ClientsEmplo
           </List.Item>
         )}
       />
-      {
-        open &&
-        <ClientsEmployeeDrawer companyName={companyName} onClose={onClose} open={open} setOpen={setOpen}/>
+      { open &&
+        <ClientsEmployeeDrawer
+          companyName={companyName}
+          onClose={onClose}
+          open={open}
+          setOpen={setOpen}
+        />
       }
     </div>
   )

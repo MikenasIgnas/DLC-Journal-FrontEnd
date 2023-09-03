@@ -12,9 +12,10 @@ type EmployeesAdditionModal = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
     companyName:    string | undefined;
     companyId:      string | undefined;
+    urlPath:        string;
 }
 
-const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId}: EmployeesAdditionModal) => {
+const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
   const [form] =                    useForm()
   const [cookies] =                 useCookies(['access_token'])
   const {id}      =                 useParams()
@@ -24,7 +25,7 @@ const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId}: Employ
   const addEmployees = async(values: EmployeesType) => {
     values.companyId = id
     values.employeePhoto = ''
-    await post('addEmployee', values, cookies.access_token)
+    await post(urlPath, values, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
     }
