@@ -32,7 +32,7 @@ const SingleClientsEmployeePage = () => {
     })()
   }, [edit])
 
-  const options = ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti trečius asmenis']
+  const options = ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti Trečius asmenis']
   const [form] = useForm()
 
   const editUser = async(values: EmployeesType) => {

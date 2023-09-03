@@ -1,70 +1,76 @@
 /* eslint-disable max-len */
+import React                              from 'react'
 import { Avatar, Button, Divider, List }  from 'antd'
-import { Link, useNavigate, useParams }   from 'react-router-dom'
+import { EmployeesType }                  from '../../../types/globalTypes'
 import { get }                            from '../../../Plugins/helpers'
 import { useCookies }                     from 'react-cookie'
-
-type EmployeesType = {
-    _id:            string;
-    companyId:      string;
-    name:           string;
-    lastName:       string;
-    occupation:     string;
-    employeeId:     string;
-    permissions:    string[];
-    employeePhoto?:  string
-}
+import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
+import { useSearchParams } from 'react-router-dom'
 
 type ClientsEmployeeListProps = {
-    list: EmployeesType[] | undefined
-    companyName: string | undefined;
-    companyRemoved: (id: string) => void
+  companyName:            string | undefined;
+  list:                   EmployeesType[] | undefined
+  employeeRemoved:         (id: string) => void
+  setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
+  editClientsEmployee:    boolean
 }
 
-const ClientsEmployeeList = ({list, companyName, companyRemoved}: ClientsEmployeeListProps) => {
-  const [cookies] = useCookies(['access_token'])
-  const navigate = useNavigate()
-  const {id} = useParams()
+const ClientsEmployeeList = ({ list, companyName, employeeRemoved}: ClientsEmployeeListProps) => {
+  const [cookies] =                           useCookies(['access_token'])
+  const [open, setOpen] =                     React.useState(false)
+  const [, setSearchParams] =     useSearchParams()
+  const showDrawer = (employee: EmployeesType) => {
+    setSearchParams(`&employeeId=${employee.employeeId}&companyId=${employee.companyId}`, { replace: true })
+    setOpen(true)
+  }
 
-  const deleteEmployee = async(companyId: string, employeeId: string) => {
-    await get(`deleteClientsEmployee?companyName=${companyName}&companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
-    companyRemoved(employeeId)
+  const deleteEmployee = async(companyId: string | undefined, employeeId: string | undefined) => {
+    if(companyId && employeeId){
+      await get(`deleteClientsEmployee?companyName=${companyName}&companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+      employeeRemoved(employeeId)
+    }
+  }
+
+  const onClose = () => {
+    setOpen(false)
   }
 
   return (
-    <div style={{width: '50%'}}>
+    <div style={{width: '49%'}}>
       <Divider>Darbuotojai</Divider>
       <List
-        itemLayout='horizontal'
-
         dataSource={list}
-        renderItem={(item) => {
-          return (
-            <List.Item
-              key={item.companyId}
-              actions={[
-                <Link key={item.employeeId} to={`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`}>peržiūrėti</Link>,
-                <Button key={item.employeeId} onClick={() => deleteEmployee(item.companyId, item.employeeId)} type='link'>ištrinti</Button>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={<Avatar
-                  src={
-                    <img
-                      src={`../ClientsEmployeesPhotos/${item.employeePhoto ? item.employeePhoto : 'noUserImage.jpeg'}`}
-                      alt='err' />}
+        bordered
+        renderItem={(item) => (
+          <List.Item
+            key={item.employeeId}
+            actions={[
+              <Button type='link' onClick={() => showDrawer(item)} key={item.employeeId}>
+                Peržiūrėti
+              </Button>,
+              <Button type='link' onClick={() => deleteEmployee(item?.companyId, item?.employeeId)} key={item.employeeId}>
+                    Ištrinti
+              </Button>,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <Avatar src={
+                  <img
+                    src={`../ClientsEmployeesPhotos/${item.employeePhoto ? item.employeePhoto : 'noUserImage.jpeg'}`}
+                    alt='err' />}
                 />}
-                title={<div onClick={() => navigate(`/SingleClientsEmployeePage?companyId=${id}&employeeId=${item.employeeId}`)} style={{cursor: 'pointer'}}>{item.name}</div>}
-                description={item.occupation}
-              />
-              <div>
-                <strong>Darbuotojo leidimai: </strong>
-                {item.permissions.map((el, i) => <div key={i}>{el}</div>)}
-              </div>
-            </List.Item>
-          )
-        }}
+              title={<p>{`${item.name} ${item.lastName}`}</p>}
+              description={item.occupation}
+
+            />
+          </List.Item>
+        )}
       />
+      {
+        open &&
+        <ClientsEmployeeDrawer companyName={companyName} onClose={onClose} open={open} setOpen={setOpen}/>
+      }
     </div>
   )
 }

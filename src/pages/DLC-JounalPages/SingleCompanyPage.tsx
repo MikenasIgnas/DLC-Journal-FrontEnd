@@ -50,7 +50,7 @@ const SingleCompanyPage = () => {
   const [fileList, setFileList] =                                           React.useState<UploadFile[]>([])
   const [uploading, setUploading] =                                         React.useState(false)
   const [messageApi, contextHolder] =                                       message.useMessage()
-
+  const [editClientsEmployee, setEditClientsEmployee] =                     React.useState(false)
   React.useEffect(() => {
     (async () => {
       try{
@@ -64,13 +64,13 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[setIsEmployeeAdditionModalOpen, setIsSubClientAdditionModalOpen, edit, cookies.access_token])
+  },[isEmployeeAdditionModalOpen, isSubClientAdditionModalOpen, edit, cookies.access_token, editClientsEmployee])
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
 
-  const companyRemoved = (id:string) => {
+  const employeeRemoved = (id:string) => {
     let newEmployeesList = [...employees]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
     setEmployees(newEmployeesList)
@@ -178,17 +178,28 @@ const SingleCompanyPage = () => {
         <Divider>Kolokacijos</Divider>
         {!edit
           ?
-          <ClientsCollocations J13locationName={'J13'} J13locationData={J13} T72locationName={'T72'} T72locationData={T72}/>
+          <ClientsCollocations
+            J13locationName={'J13'}
+            J13locationData={J13}
+            T72locationName={'T72'}
+            T72locationData={T72}
+          />
           :
-          <EditableCollocationFormList collocations={collocations} collocationsSites={collocationsSites} />
+          <EditableCollocationFormList
+            collocations={collocations}
+            collocationsSites={collocationsSites}
+          />
         }
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <ClientsEmployeeList
+            setEditClientsEmployee={setEditClientsEmployee}
+            editClientsEmployee={editClientsEmployee}
             companyName={company?.companyInfo?.companyName}
             list={employees}
-            companyRemoved={companyRemoved}
-          />
-          <SubClients parentCompanyId={id}/>
+            employeeRemoved={employeeRemoved}/>
+          <SubClients
+            parentCompanyId={id}
+            isSubclientAdded={isSubClientAdditionModalOpen} />
         </div>
         <SuccessMessage contextHolder={contextHolder} />
       </Card>

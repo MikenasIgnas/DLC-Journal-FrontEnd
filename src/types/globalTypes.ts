@@ -141,7 +141,7 @@ export type EmployeesType = {
   name:           string;
   lastName:       string;
   occupation:     string;
-  employeeId:     string;
+  employeeId:     string | undefined;
   permissions:    string[];
   employeePhoto?: string;
   email?:         string;

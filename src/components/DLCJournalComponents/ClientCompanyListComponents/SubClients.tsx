@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import React, { useState }                          from 'react'
-import { Avatar, Col, Divider, Drawer, List, Row }  from 'antd'
-import { get }                                      from '../../../Plugins/helpers'
-import { CompaniesType }                            from '../../../types/globalTypes'
-import { useCookies }                               from 'react-cookie'
+import React, { useState }                                  from 'react'
+import { Avatar, Button, Col, Divider, Drawer, List, Row }  from 'antd'
+import { get }                                              from '../../../Plugins/helpers'
+import { CompaniesType }                                    from '../../../types/globalTypes'
+import { useCookies }                                       from 'react-cookie'
+import { useSearchParams }                                  from 'react-router-dom'
 
 interface DescriptionItemProps {
   title:            string;
@@ -11,6 +12,7 @@ interface DescriptionItemProps {
 }
 type SubClientsProps = {
   parentCompanyId: string | undefined;
+  isSubclientAdded: boolean
 }
 
 const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
@@ -20,11 +22,11 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const SubClients = ({parentCompanyId}: SubClientsProps) => {
+const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
   const [open, setOpen] =             useState(false)
   const [subClients, setSubClients] = React.useState<CompaniesType[]>()
   const [cookies] =                   useCookies()
-
+  const [, setSearchParams] =         useSearchParams()
   React.useEffect(() => {
     (async () => {
       try{
@@ -34,11 +36,24 @@ const SubClients = ({parentCompanyId}: SubClientsProps) => {
         console.log(err)
       }
     })()
-  },[])
+  },[isSubclientAdded])
 
-  console.log(subClients)
-  const showDrawer = () => {
+  const showDrawer = (subClient: CompaniesType) => {
+    setSearchParams(`&subClientId=${subClient.id}`, { replace: true })
     setOpen(true)
+  }
+  const deletSubClient = async(subClientId: string, parentCompanyId: string | undefined ) => {
+    if(subClientId ){
+      await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
+      companyRemoved(subClientId)
+    }
+  }
+  const companyRemoved = (id:string) => {
+    if(subClients){
+      let newCompaniesList = [...subClients]
+      newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
+      setSubClients(newCompaniesList)
+    }
   }
 
   const onClose = () => {
@@ -46,8 +61,7 @@ const SubClients = ({parentCompanyId}: SubClientsProps) => {
   }
 
   return (
-    <div style={{width: '50%'}}>
-
+    <div style={{width: '49%'}}>
       <Divider>Sub Klientai</Divider>
       <List
         dataSource={subClients}
@@ -56,17 +70,23 @@ const SubClients = ({parentCompanyId}: SubClientsProps) => {
           <List.Item
             key={item.id}
             actions={[
-              <a onClick={showDrawer} key={`a-${item.id}`}>
-                View Profile
-              </a>,
+              <Button type='link' onClick={() => showDrawer(item)} key={item.id}>
+              Peržiūrėti
+              </Button>,
+              <Button type='link' onClick={() => deletSubClient(item?.id, item?.parentCompanyId)} key={item.id}>
+                  Ištrinti
+              </Button>,
             ]}
           >
             <List.Item.Meta
               avatar={
-                <Avatar src='https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png' />
-              }
-              title={<a href='https://ant.design/index-cn'>{item.companyInfo.companyName}</a>}
-              description='Progresser XTech'
+                <Avatar src={
+                  <img
+                    src={`../CompanyLogos/${item.companyInfo.companyPhoto ? item.companyInfo.companyPhoto : 'noImage.jpg'}`}
+                    alt='err' />}
+                />}
+              title={item.companyInfo.companyName}
+              description={item.companyInfo.companyDescription}
             />
           </List.Item>
         )}
