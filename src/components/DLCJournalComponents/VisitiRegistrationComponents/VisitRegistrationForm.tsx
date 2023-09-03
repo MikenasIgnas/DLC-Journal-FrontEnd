@@ -61,7 +61,6 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
   })
 
   const selectCompany = (value: number, companyData: any) => {
-    console.log(companyData)
     const companiesSites = Object.keys(companyData.info).filter(key => key !== 'companyName' && key !== 'companyDescription')
     setSelectedCompany(companyData.info)
     setIsCompanySelected(true)

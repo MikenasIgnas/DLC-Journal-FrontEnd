@@ -21,7 +21,6 @@ const VisitingPersonsConfirmation = () => {
   const navigate =                    useNavigate()
 
   const finishVisitRegistration = async(visitorsIdentification:VisitorsIdentificationType) => {
-    console.log(signatureCanvasRef)
     const visitDetails = localStorage.getItem('visitDetails')
     const visitDetails2 = localStorage.getItem('visitDetails2')
     const signatureImage = signatureCanvasRef.current?.toDataURL()

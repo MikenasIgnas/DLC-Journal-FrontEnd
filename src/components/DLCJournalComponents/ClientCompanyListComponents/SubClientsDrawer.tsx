@@ -39,7 +39,6 @@ const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
       try{
         const res  = await get(`getSubClients?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
         const res2 = await get(`getSubClientsEmployees?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
-        console.log(res2.data)
         setSubClient(res.data[0])
         setSubClientEmployees(res2.data)
       }catch(err){
@@ -47,7 +46,6 @@ const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
       }
     })()
   },[])
-  console.log(subClient?.companyInfo.J13)
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
       <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
