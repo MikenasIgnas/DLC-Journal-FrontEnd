@@ -66,7 +66,7 @@ const SingleCompanyPage = () => {
       }
     })()
   },[isEmployeeAdditionModalOpen, isSubClientAdditionModalOpen, edit, cookies.access_token, editClientsEmployee])
-
+  console.log(company)
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
@@ -167,7 +167,7 @@ const SingleCompanyPage = () => {
         {isEmployeeAdditionModalOpen &&
         <EmployeesAdditionModal
           companyName={company?.companyInfo?.companyName}
-          companyId={company?.id}
+          companyId={company?.id as string | null}
           setIsModalOpen={setIsEmployeeAdditionModalOpen}
           urlPath={'addEmployee'}
         />}

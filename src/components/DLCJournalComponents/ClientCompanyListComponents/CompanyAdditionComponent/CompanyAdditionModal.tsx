@@ -71,7 +71,6 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setIsM
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
-    filteredResult.subClient = []
     await post(postUrl, filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)

@@ -27,7 +27,8 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
   const [open, setOpen] =             useState(false)
   const [subClients, setSubClients] = React.useState<CompaniesType[]>()
   const [cookies] =                   useCookies()
-  const [, setSearchParams] =         useSearchParams()
+  const [searchParams, setSearchParams] =         useSearchParams()
+  const subClientId = searchParams.get('subClientId')
   React.useEffect(() => {
     (async () => {
       try{
@@ -46,10 +47,10 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
   const deletSubClient = async(subClientId: string, parentCompanyId: string | undefined ) => {
     if(subClientId ){
       await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
-      companyRemoved(subClientId)
+      subClientCompanyRemoved(subClientId)
     }
   }
-  const companyRemoved = (id:string) => {
+  const subClientCompanyRemoved = (id:string) => {
     if(subClients){
       let newCompaniesList = [...subClients]
       newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
@@ -92,7 +93,7 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
           </List.Item>
         )}
       />
-      <SubClientsDrawer onClose={onClose} setOpen={setOpen} open={open}/>
+      <SubClientsDrawer subClientId={subClientId} onClose={onClose} open={open}/>
     </div>
   )
 }

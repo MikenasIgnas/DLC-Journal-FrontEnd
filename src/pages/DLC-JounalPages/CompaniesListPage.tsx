@@ -8,6 +8,7 @@ import { CollocationsType, CompaniesType }      from '../../types/globalTypes'
 import { Link }                                 from 'react-router-dom'
 import { PaginationAlign, PaginationPosition }  from 'antd/es/pagination/Pagination'
 import CompanyAddition                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
+import SubClientTag from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientTag'
 
 const App: React.FC = () => {
   const [loading, setLoading] =               React.useState(false)
@@ -34,15 +35,15 @@ const App: React.FC = () => {
       }
     })()
   },[isCompanyAdded])
-
-  const company = companies?.map((el) => {
-    return {
-      title:       el.companyInfo.companyName,
-      id:          el.id,
-      photo:       el.companyInfo.companyPhoto,
-      description: el.companyInfo.companyDescription,
-    }
-  })
+  console.log(companies)
+  // const company = companies?.map((el) => {
+  //   return {
+  //     title:       el.companyInfo.companyName,
+  //     id:          el.id,
+  //     photo:       el.companyInfo.companyPhoto,
+  //     description: el.companyInfo.companyDescription,
+  //   }
+  // })
 
   const companyRemoved = (id:string) => {
     let newCompaniesList = [...companies]
@@ -61,10 +62,11 @@ const App: React.FC = () => {
       <List
         loading={loading}
         pagination={{ position, align }}
-        dataSource={company}
+        dataSource={companies}
         renderItem={(item) => {
           return(
             <List.Item
+              style={{width: '100%'}}
               actions={[
                 <Link key={item.id} to={`/SingleCompanyPage/${item.id}`}>peržiūrėti</Link>,
                 <Button key={item.id} onClick={() => delteCompany(item.id)} type='link'>ištrinti</Button>,
@@ -72,12 +74,13 @@ const App: React.FC = () => {
             >
               <List.Item.Meta
                 avatar={<Avatar src={<img
-                  src={`../CompanyLogos/${item.photo !== '' ? item.photo : 'noImage.jpg'}` }
+                  src={`../CompanyLogos/${item.companyInfo.companyPhoto !== '' ? item.companyInfo.companyPhoto : 'noImage.jpg'}` }
                   alt='err' />}
                 />}
-                title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.title}</Link>}
-                description={item.description}
+                title={<Link to={`/SingleCompanyPage/${item.id}`}>{item.companyInfo.companyName}</Link>}
+                description={item?.companyInfo?.companyDescription}
               />
+              {item?.parentCompanyId ? <SubClientTag parentCompanyId={item.parentCompanyId}/> : ''}
             </List.Item>
           )
         }}

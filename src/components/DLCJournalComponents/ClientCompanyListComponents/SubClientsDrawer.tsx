@@ -9,11 +9,10 @@ import ColocationDisplay from './ColocationDisplay'
 import EmployeesAdditionModal from './EmployeeAdditionModal'
 
 type SubClientsDrawerProps = {
-    onClose:        () => void
-    setOpen:        React.Dispatch<React.SetStateAction<boolean>>
-    open:           boolean
+    onClose:        () => void;
+    open:           boolean;
+    subClientId:    string | null;
 }
-
 interface DescriptionItemProps {
     title:            string;
     content:          React.ReactNode;
@@ -26,26 +25,43 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
+const SubClientsDrawer = ({onClose, open, subClientId}:SubClientsDrawerProps) => {
   const [subClient, setSubClient] = React.useState<CompaniesType>()
-  const [searchParams] =            useSearchParams()
-  const subClientId =               searchParams.get('subClientId')
   const [cookies] =                 useCookies()
   const {id} =                      useParams()
   const [isSubClientEmployeeModalOpen, setIsSubClientEmployeeModalOpen] = React.useState(false)
   const [subClientEmployees, setSubClientEmployees] = React.useState<EmployeesType[]>()
+
   React.useEffect(() => {
     (async () => {
       try{
         const res  = await get(`getSubClients?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
-        const res2 = await get(`getSubClientsEmployees?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
-        setSubClient(res.data[0])
-        setSubClientEmployees(res2.data)
+        const res2 = await get(`getSubClientsEmployees?subClientId=${subClientId}`, cookies.access_token)
+        if(!res.error && !res2.error){
+          setSubClient(res.data[0])
+          setSubClientEmployees(res2.data)
+        }
       }catch(err){
         console.log(err)
       }
     })()
-  },[])
+  },[isSubClientEmployeeModalOpen, subClientId])
+
+  const subClientEmployeeRemoved = (id:string) => {
+    if(subClientEmployees){
+      let newSubClientEmployees = [...subClientEmployees]
+      newSubClientEmployees = newSubClientEmployees.filter(x => x?.employeeId !== id)
+      setSubClientEmployees(newSubClientEmployees)
+    }
+  }
+
+  const deleteSubClientEmployee = async(companyId: string | undefined, employeeId: string | undefined) => {
+    if(companyId && employeeId){
+      await get(`deleteSubClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+      subClientEmployeeRemoved(employeeId)
+    }
+  }
+
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
       <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
@@ -60,7 +76,7 @@ const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
       {isSubClientEmployeeModalOpen &&
         <EmployeesAdditionModal
           companyName={subClient?.companyInfo?.companyName}
-          companyId={subClient?.id}
+          companyId={subClientId}
           setIsModalOpen={setIsSubClientEmployeeModalOpen}
           urlPath={`addSubClientsEmployee?subClientId=${subClient?.id}`}
         />}
@@ -94,6 +110,7 @@ const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
       </div>
       <Divider />
       <p className='site-description-item-profile-p'>Darbuotojai</p>
+
       <List
         dataSource={subClientEmployees}
         bordered
@@ -104,7 +121,7 @@ const SubClientsDrawer = ({onClose, open, setOpen}:SubClientsDrawerProps) => {
               <Button type='link' key={item.employeeId}>
               Peržiūrėti
               </Button>,
-              <Button type='link' key={item.employeeId}>
+              <Button type='link' onClick={() => deleteSubClientEmployee(item.companyId, item.employeeId)} key={item.employeeId}>
                   Ištrinti
               </Button>,
             ]}
