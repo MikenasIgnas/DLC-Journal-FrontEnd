@@ -8,9 +8,9 @@ import { CollocationsType, CompaniesType }      from '../../types/globalTypes'
 import { Link }                                 from 'react-router-dom'
 import { PaginationAlign, PaginationPosition }  from 'antd/es/pagination/Pagination'
 import CompanyAddition                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
-import SubClientTag from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientTag'
+import SubClientTag                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientTag'
 
-const App: React.FC = () => {
+const CompaniesListPage = () => {
   const [loading, setLoading] =               React.useState(false)
   const [cookies] =                           useCookies(['access_token'])
   const [companies, setCompanies] =           React.useState<CompaniesType[]>([])
@@ -35,15 +35,6 @@ const App: React.FC = () => {
       }
     })()
   },[isCompanyAdded])
-  console.log(companies)
-  // const company = companies?.map((el) => {
-  //   return {
-  //     title:       el.companyInfo.companyName,
-  //     id:          el.id,
-  //     photo:       el.companyInfo.companyPhoto,
-  //     description: el.companyInfo.companyDescription,
-  //   }
-  // })
 
   const companyRemoved = (id:string) => {
     let newCompaniesList = [...companies]
@@ -89,4 +80,4 @@ const App: React.FC = () => {
   )
 }
 
-export default App
+export default CompaniesListPage

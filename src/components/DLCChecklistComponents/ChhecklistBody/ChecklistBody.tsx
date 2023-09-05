@@ -14,6 +14,7 @@ const ChecklistBody = () => {
   const latestHistoryItemData =     useAppSelector((state) => state.fetchedData.latestHistoryItemData?.filter((item)=>currentPageUrlParam === item.pageID ))
   const defaultTheme =              useAppSelector((state) => state.theme.value)
   const latestHistoryItemValues =   latestHistoryItemData?.map((el)=> el.values)
+
   return (
     <div>
       {duties?.map((el) => {

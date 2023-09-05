@@ -1,34 +1,27 @@
 /* eslint-disable max-len */
-import React, { useState }                                  from 'react'
-import { Avatar, Button, Col, Divider, Drawer, List, Row }  from 'antd'
-import { get }                                              from '../../../Plugins/helpers'
-import { CompaniesType }                                    from '../../../types/globalTypes'
-import { useCookies }                                       from 'react-cookie'
-import { useSearchParams }                                  from 'react-router-dom'
-import SubClientsDrawer from './SubClientsDrawer'
+import React, { useState }                from 'react'
+import { Avatar, Button, Divider, List }  from 'antd'
+import { get }                            from '../../../Plugins/helpers'
+import { CompaniesType }                  from '../../../types/globalTypes'
+import { useCookies }                     from 'react-cookie'
+import { useSearchParams }                from 'react-router-dom'
+import SubClientsDrawer                   from './SubClientsDrawer'
 
-interface DescriptionItemProps {
-  title:            string;
-  content:          React.ReactNode;
-}
 type SubClientsProps = {
-  parentCompanyId: string | undefined;
-  isSubclientAdded: boolean
+  parentCompanyId:                  string | undefined;
+  isSubclientAdded:                 boolean
+  isMainCompanyAddedAsSubClient:    boolean
+  setIsMainCompanyAddedAsSubClient: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
-  <div className='site-description-item-profile-wrapper'>
-    <p className='site-description-item-profile-p-label'>{title}:</p>
-    {content}
-  </div>
-)
+const SubClients = ({parentCompanyId, isSubclientAdded, isMainCompanyAddedAsSubClient}: SubClientsProps) => {
+  const [open, setOpen] =                 useState(false)
+  const [subClients, setSubClients] =     React.useState<CompaniesType[]>()
+  const [cookies] =                       useCookies()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const subClientId =                     searchParams.get('subClientId')
+  const [subClientChangedToMainClient, setSubClientChangedToMainClient] = React.useState(false)
 
-const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
-  const [open, setOpen] =             useState(false)
-  const [subClients, setSubClients] = React.useState<CompaniesType[]>()
-  const [cookies] =                   useCookies()
-  const [searchParams, setSearchParams] =         useSearchParams()
-  const subClientId = searchParams.get('subClientId')
   React.useEffect(() => {
     (async () => {
       try{
@@ -38,12 +31,13 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
         console.log(err)
       }
     })()
-  },[isSubclientAdded])
+  },[isSubclientAdded, isMainCompanyAddedAsSubClient, subClientChangedToMainClient])
 
   const showDrawer = (subClient: CompaniesType) => {
     setSearchParams(`&subClientId=${subClient.id}`, { replace: true })
     setOpen(true)
   }
+
   const deletSubClient = async(subClientId: string, parentCompanyId: string | undefined ) => {
     if(subClientId ){
       await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
@@ -57,10 +51,16 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
       setSubClients(newCompaniesList)
     }
   }
+  const removeFormSubClientList = async(companyId: string) => {
+    setSubClientChangedToMainClient(true)
+    await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
+  }
 
   const onClose = () => {
     setOpen(false)
   }
+
+
 
   return (
     <div style={{width: '49%'}}>
@@ -75,6 +75,7 @@ const SubClients = ({parentCompanyId, isSubclientAdded}: SubClientsProps) => {
               <Button type='link' onClick={() => showDrawer(item)} key={item.id}>
               Peržiūrėti
               </Button>,
+              item?.wasMainClient === true && <Button type='link' onClick={() => removeFormSubClientList(item.id)} key={item.id}> Perkelti </Button>,
               <Button type='link' onClick={() => deletSubClient(item?.id, item?.parentCompanyId)} key={item.id}>
                   Ištrinti
               </Button>,

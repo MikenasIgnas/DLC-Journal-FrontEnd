@@ -4,6 +4,7 @@ import { Tag }  from 'antd'
 import { get } from '../../../Plugins/helpers'
 import { useCookies } from 'react-cookie'
 import { CompaniesType } from '../../../types/globalTypes'
+import { Link } from 'react-router-dom'
 
 type SubClientTagProps = {
     parentCompanyId: string;
@@ -11,7 +12,7 @@ type SubClientTagProps = {
 
 const SubClientTag = ({parentCompanyId}:SubClientTagProps ) => {
   const [parentCompany, setParentCompany] = React.useState<CompaniesType>()
-  const [cookies] = useCookies()
+  const [cookies] =                         useCookies()
 
   React.useEffect(() => {
     (async () => {
@@ -23,8 +24,9 @@ const SubClientTag = ({parentCompanyId}:SubClientTagProps ) => {
       }
     })()
   },[])
+
   return(
-    <Tag color='green'>Pagrindinis Klientas: {parentCompany?.companyInfo.companyName}</Tag>
+    <Tag color='green'><Link to={`/SingleCompanyPage/${parentCompanyId}`}>Pagrindinis Klientas: {parentCompany?.companyInfo.companyName}</Link></Tag>
   )
 
 }

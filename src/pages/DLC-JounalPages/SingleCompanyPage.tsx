@@ -3,7 +3,7 @@ import React                                                  from 'react'
 import { get, post, uploadPhoto }                             from '../../Plugins/helpers'
 import { useCookies }                                         from 'react-cookie'
 import { useParams }                                          from 'react-router-dom'
-import { Button, Card, Divider, Form, UploadFile, message }   from 'antd'
+import { Button, Card, Divider, Form, Select, UploadFile, message }   from 'antd'
 import { CollocationsSites, CollocationsType, CompaniesType } from '../../types/globalTypes'
 import { useForm }                                            from 'antd/es/form/Form'
 import ClientsCollocations                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
@@ -51,22 +51,25 @@ const SingleCompanyPage = () => {
   const [uploading, setUploading] =                                         React.useState(false)
   const [messageApi, contextHolder] =                                       message.useMessage()
   const [editClientsEmployee, setEditClientsEmployee] =                     React.useState(false)
-
+  const [mainCompanies, setMainCompanies] =                                 React.useState<CompaniesType[]>([])
+  const [isMainCompanyAddedAsSubClient, setIsMainCompanyAddedAsSubClient] = React.useState(false)
   React.useEffect(() => {
     (async () => {
       try{
         const singleCompany =     await get(`SingleCompanyPage/${id}`, cookies.access_token)
         const companyEmployees =  await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
         const allCollocations =   await get('getCollocations', cookies.access_token)
+        const allMainCompanies =  await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
         setCollocations(allCollocations.data[0].colocations)
         setCompany(singleCompany.data)
         setEmployees(companyEmployees.data)
+        setMainCompanies(allMainCompanies.data)
       }catch(err){
         console.log(err)
       }
     })()
   },[isEmployeeAdditionModalOpen, isSubClientAdditionModalOpen, edit, cookies.access_token, editClientsEmployee])
-  console.log(company)
+
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
@@ -116,6 +119,7 @@ const SingleCompanyPage = () => {
       if(fileList[0]){
         await uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
       }
+
       if(!res.error){
         messageApi.success({
           type:    'success',
@@ -145,6 +149,20 @@ const SingleCompanyPage = () => {
     })
   }
 
+  const handleChange = async(value: string) => {
+    const selectedMainCompany = mainCompanies.filter((el) => el.id === value)
+    setIsMainCompanyAddedAsSubClient(!isMainCompanyAddedAsSubClient)
+    const remainingCompanies = mainCompanies.filter((el) => el.id !== value)
+    setMainCompanies(remainingCompanies)
+    await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${id}`, selectedMainCompany[0].companyInfo, cookies.access_token)
+  }
+  const mainCompaniesOptions = mainCompanies.map((el) => {
+    return{
+      value: el.id,
+      label: el.companyInfo.companyName,
+    }
+  })
+
   return (
     <Form form={form} onFinish={saveChanges} style={{ width: '98%', marginTop: '10px' }}>
       <Card
@@ -162,7 +180,14 @@ const SingleCompanyPage = () => {
       >
         <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
           <Button onClick={()=> setIsEmployeeAdditionModalOpen(true)}>Pridėti darbuotoją</Button>
-          <Button onClick={()=> setIsSubClientAdditionModalOpen(true)}>Pridėti Sub Klientą</Button>
+          <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+            <Button onClick={()=> setIsSubClientAdditionModalOpen(true)}>Pridėti Naują Sub Klientą</Button>
+            <Select
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={mainCompaniesOptions}
+            />
+          </div>
         </div>
         {isEmployeeAdditionModalOpen &&
         <EmployeesAdditionModal
@@ -199,10 +224,14 @@ const SingleCompanyPage = () => {
             editClientsEmployee={editClientsEmployee}
             companyName={company?.companyInfo?.companyName}
             list={employees}
-            employeeRemoved={employeeRemoved}/>
+            employeeRemoved={employeeRemoved}
+          />
           <SubClients
             parentCompanyId={id}
-            isSubclientAdded={isSubClientAdditionModalOpen} />
+            isSubclientAdded={isSubClientAdditionModalOpen}
+            isMainCompanyAddedAsSubClient={isMainCompanyAddedAsSubClient}
+            setIsMainCompanyAddedAsSubClient={setIsMainCompanyAddedAsSubClient}
+          />
         </div>
         <SuccessMessage contextHolder={contextHolder} />
       </Card>
