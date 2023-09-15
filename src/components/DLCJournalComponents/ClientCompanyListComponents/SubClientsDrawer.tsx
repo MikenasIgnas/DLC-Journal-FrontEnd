@@ -31,7 +31,6 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalOpen, modalOpen}:
   const [subClient, setSubClient] = React.useState<CompaniesType>()
   const [cookies] =                 useCookies()
   const {id} =                      useParams()
-  const [isSubClientEmployeeModalOpen, setIsSubClientEmployeeModalOpen] = React.useState(false)
   const [subClientEmployees, setSubClientEmployees] = React.useState<EmployeesType[]>()
 
   React.useEffect(() => {
