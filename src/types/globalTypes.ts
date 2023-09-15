@@ -164,3 +164,11 @@ export type CollocationsSites = {
     [key: string]: string[];
   }>;
 };
+
+export type ModalStateType = {
+  editClientsEmployee:           boolean;
+  edit:                          boolean;
+  isEmployeeAdditionModalOpen:   boolean;
+  isCompanyAdded:                boolean;
+  isModalOpen:                   boolean;
+}

@@ -1,26 +1,32 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React, { useState }                from 'react'
 import { Avatar, Button, Divider, List }  from 'antd'
 import { get }                            from '../../../Plugins/helpers'
-import { CompaniesType }                  from '../../../types/globalTypes'
+import { CompaniesType, ModalStateType }  from '../../../types/globalTypes'
 import { useCookies }                     from 'react-cookie'
 import { useSearchParams }                from 'react-router-dom'
 import SubClientsDrawer                   from './SubClientsDrawer'
 
-type SubClientsProps = {
-  parentCompanyId:                  string | undefined;
-  isSubclientAdded:                 boolean
-  isMainCompanyAddedAsSubClient:    boolean
-  setIsMainCompanyAddedAsSubClient: React.Dispatch<React.SetStateAction<boolean>>
+type SubClientStateType = {
+  mainCompanyAddedAsSubClient:  boolean,
+  subClientChangedToMainClient: boolean,
 }
 
-const SubClients = ({parentCompanyId, isSubclientAdded, isMainCompanyAddedAsSubClient}: SubClientsProps) => {
+type SubClientsProps = {
+  parentCompanyId:                  string | undefined;
+  setModalOpen:                     React.Dispatch<React.SetStateAction<ModalStateType>>;
+  modalOpen:                        ModalStateType
+  subClientState:                   SubClientStateType
+  setSubClientState:                React.Dispatch<React.SetStateAction<SubClientStateType>>
+}
+
+const SubClients = ({setModalOpen,modalOpen, parentCompanyId, subClientState, setSubClientState}: SubClientsProps) => {
   const [open, setOpen] =                 useState(false)
   const [subClients, setSubClients] =     React.useState<CompaniesType[]>()
   const [cookies] =                       useCookies()
   const [searchParams, setSearchParams] = useSearchParams()
   const subClientId =                     searchParams.get('subClientId')
-  const [subClientChangedToMainClient, setSubClientChangedToMainClient] = React.useState(false)
 
   React.useEffect(() => {
     (async () => {
@@ -31,7 +37,7 @@ const SubClients = ({parentCompanyId, isSubclientAdded, isMainCompanyAddedAsSubC
         console.log(err)
       }
     })()
-  },[isSubclientAdded, isMainCompanyAddedAsSubClient, subClientChangedToMainClient])
+  },[modalOpen.isModalOpen, subClientState.subClientChangedToMainClient, subClientState.mainCompanyAddedAsSubClient])
 
   const showDrawer = (subClient: CompaniesType) => {
     setSearchParams(`&subClientId=${subClient.id}`, { replace: true })
@@ -51,9 +57,12 @@ const SubClients = ({parentCompanyId, isSubclientAdded, isMainCompanyAddedAsSubC
       setSubClients(newCompaniesList)
     }
   }
+
   const removeFormSubClientList = async(companyId: string) => {
-    setSubClientChangedToMainClient(true)
-    await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
+    const res = await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
+    if(!res.error){
+      setSubClientState({...subClientState, subClientChangedToMainClient: !subClientState.subClientChangedToMainClient})
+    }
   }
 
   const onClose = () => {
@@ -94,7 +103,12 @@ const SubClients = ({parentCompanyId, isSubclientAdded, isMainCompanyAddedAsSubC
           </List.Item>
         )}
       />
-      <SubClientsDrawer subClientId={subClientId} onClose={onClose} open={open}/>
+      <SubClientsDrawer
+        setModalOpen={setModalOpen}
+        modalOpen={modalOpen}
+        subClientId={subClientId}
+        onClose={onClose}
+        open={open}/>
     </div>
   )
 }

@@ -1,9 +1,10 @@
+/* eslint-disable max-len */
 import React from 'react'
-
+import {Image} from 'antd'
 const HomePage = () => {
   return (
-    <div>
-      Home Page
+    <div style={{width: '100%'}}>
+      <img className='HomePageCover' src='../Images/DLC_cover.png'/>
     </div>
   )
 }

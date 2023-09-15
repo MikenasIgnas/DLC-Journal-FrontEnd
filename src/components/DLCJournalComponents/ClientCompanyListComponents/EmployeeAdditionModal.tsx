@@ -1,20 +1,21 @@
 /* eslint-disable max-len */
-import { Button, Checkbox, Form, Input, Modal, UploadFile }           from 'antd'
+import { Button, Checkbox, DatePicker, Form, Input, Modal, UploadFile }           from 'antd'
 import { useForm }                                                    from 'antd/es/form/Form'
 import React                                                          from 'react'
 import { useCookies }                                                 from 'react-cookie'
-import { EmployeesType }                                              from '../../../types/globalTypes'
+import { EmployeesType, ModalStateType }                              from '../../../types/globalTypes'
 import { post, uploadPhoto }                                          from '../../../Plugins/helpers'
 import PhotoUploader                                                  from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type EmployeesAdditionModal = {
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+    setModalOpen:   React.Dispatch<React.SetStateAction<ModalStateType>>;
+    modalOpen:      ModalStateType;
     companyName:    string | undefined;
     companyId:      string | null;
     urlPath:        string;
 }
 
-const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
+const EmployeesAdditionModal = ({setModalOpen, modalOpen, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
   const [form] =                    useForm()
   const [cookies] =                 useCookies(['access_token'])
   const [uploading, setUploading] = React.useState(false)
@@ -28,7 +29,7 @@ const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId, urlPath
       if(fileList[0]){
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
       }
-      setIsModalOpen(false)
+      setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})
     }
   }
 
@@ -39,8 +40,8 @@ const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId, urlPath
       title='Pridėkite įmonės darbuotoją'
       centered
       open
-      onOk={() => setIsModalOpen(false)}
-      onCancel={() => setIsModalOpen(false)}
+      onOk={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})}
+      onCancel={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})}
       footer={false}
       style={{textAlign: 'center'}}
     >
@@ -52,7 +53,7 @@ const EmployeesAdditionModal = ({setIsModalOpen, companyName, companyId, urlPath
           <Input placeholder='Darbuotojo pavardė'/>
         </Form.Item>
         <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo gimimo metus'}]} name='birthday'>
-          <Input placeholder='Darbuotojo gimimo data'/>
+          <DatePicker style={{width: '100%'}} placeholder='Darbuotojo gimimo data' />
         </Form.Item>
         <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo pavardę'}]} name='occupation'>
           <Input placeholder='Darbuotojo pareigos'/>

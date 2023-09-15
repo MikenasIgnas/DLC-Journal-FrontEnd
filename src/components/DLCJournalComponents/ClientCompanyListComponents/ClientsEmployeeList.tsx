@@ -10,9 +10,8 @@ import { useSearchParams } from 'react-router-dom'
 type ClientsEmployeeListProps = {
   companyName:            string | undefined;
   list:                   EmployeesType[] | undefined
-  employeeRemoved:         (id: string) => void
-  setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
-  editClientsEmployee:    boolean
+  employeeRemoved:        (id: string) => void
+
 }
 
 const ClientsEmployeeList = ({ list, companyName, employeeRemoved}: ClientsEmployeeListProps) => {

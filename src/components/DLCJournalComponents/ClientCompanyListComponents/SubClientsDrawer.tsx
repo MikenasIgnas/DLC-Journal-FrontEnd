@@ -4,7 +4,7 @@ import React from 'react'
 import { get } from '../../../Plugins/helpers'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
-import { CompaniesType, EmployeesType } from '../../../types/globalTypes'
+import { CompaniesType, EmployeesType, ModalStateType } from '../../../types/globalTypes'
 import ColocationDisplay from './ColocationDisplay'
 import EmployeesAdditionModal from './EmployeeAdditionModal'
 
@@ -12,6 +12,8 @@ type SubClientsDrawerProps = {
     onClose:        () => void;
     open:           boolean;
     subClientId:    string | null;
+    setModalOpen:   React.Dispatch<React.SetStateAction<ModalStateType>>;
+    modalOpen:      ModalStateType;
 }
 interface DescriptionItemProps {
     title:            string;
@@ -25,7 +27,7 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const SubClientsDrawer = ({onClose, open, subClientId}:SubClientsDrawerProps) => {
+const SubClientsDrawer = ({onClose, open, subClientId, setModalOpen, modalOpen}:SubClientsDrawerProps) => {
   const [subClient, setSubClient] = React.useState<CompaniesType>()
   const [cookies] =                 useCookies()
   const {id} =                      useParams()
@@ -45,7 +47,7 @@ const SubClientsDrawer = ({onClose, open, subClientId}:SubClientsDrawerProps) =>
         console.log(err)
       }
     })()
-  },[isSubClientEmployeeModalOpen, subClientId])
+  },[modalOpen.isEmployeeAdditionModalOpen, subClientId])
 
   const subClientEmployeeRemoved = (id:string) => {
     if(subClientEmployees){
@@ -72,12 +74,14 @@ const SubClientsDrawer = ({onClose, open, subClientId}:SubClientsDrawerProps) =>
         <Button type='link'>Edit</Button>
         <a href={`/SingleCompanyPage/${subClientId}`}>Pilnas Profilis</a>
       </div>
-      <Button onClick={() => setIsSubClientEmployeeModalOpen(true)}>Pridėti darbuotoją</Button>
-      {isSubClientEmployeeModalOpen &&
+      <Button onClick={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: true})}>Pridėti darbuotoją</Button>
+      {modalOpen.isEmployeeAdditionModalOpen &&
         <EmployeesAdditionModal
+          setModalOpen={setModalOpen}
+          modalOpen={modalOpen}
           companyName={subClient?.companyInfo?.companyName}
           companyId={subClientId}
-          setIsModalOpen={setIsSubClientEmployeeModalOpen}
+
           urlPath={`addSubClientsEmployee?subClientId=${subClient?.id}`}
         />}
       <div style={{display: 'flex', justifyContent: 'space-between', padding: '15px'}}>

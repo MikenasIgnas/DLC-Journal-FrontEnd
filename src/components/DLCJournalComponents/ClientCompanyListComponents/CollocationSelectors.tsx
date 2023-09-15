@@ -19,10 +19,10 @@ const ColocationSelectors = ({collocationSite, colocationPremises, colocationId 
         <Panel style={{padding: '10px'}} header={collocationSite} key={colocationId}>
           <Form.List
             name={collocationSite}
-            initialValue={colocationPremises.map((ele) => ({[ele.premiseName]: []}))}
+            initialValue={colocationPremises?.map((ele) => ({[ele.premiseName]: []}))}
           >
             {(fields) => {
-              return fields.map(({ name, ...rest }, index) => {
+              return fields?.map(({ name }, index) => {
                 const premise = colocationPremises[index]
                 return(
                   <Collapse style={{marginTop: '5px'}} key={index}>

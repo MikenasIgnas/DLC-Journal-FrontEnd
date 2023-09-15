@@ -6,14 +6,14 @@ import { post, uploadPhoto }                      from '../../../../Plugins/help
 import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                        from '../CollocationSelectors'
-import { CollocationsType }                       from '../../../../types/globalTypes'
+import { CollocationsType, ModalStateType }                       from '../../../../types/globalTypes'
 
 type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
-    setIsModalOpen:     React.Dispatch<React.SetStateAction<boolean>>
-    setIsCompanyAdded:  React.Dispatch<React.SetStateAction<boolean>>
     collocations:       CollocationsType[] | undefined
+    setModalOpen:  React.Dispatch<React.SetStateAction<ModalStateType>>
+    modalOpen: ModalStateType
 }
 
 type CompanyFormType = {
@@ -32,7 +32,7 @@ type CompanyFormType = {
   }[];
 };
 
-const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setIsModalOpen, setIsCompanyAdded}: AdditionModalProps) => {
+const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setModalOpen, modalOpen}: AdditionModalProps) => {
   const [cookies] =                       useCookies(['access_token'])
   const [form] =                          useForm()
   const [uploading, setUploading] =       React.useState(false)
@@ -75,17 +75,15 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setIsM
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
-    setIsCompanyAdded(true)
-    setIsModalOpen(false)
+    setModalOpen({...modalOpen, isModalOpen: false})
   }
-
   return (
     <Modal
       title={additionModalTitle}
       centered
       open
-      onOk={() => setIsModalOpen(false)}
-      onCancel={() => setIsModalOpen(false)}
+      onOk={() => setModalOpen({...modalOpen, isModalOpen: false})}
+      onCancel={() => setModalOpen({...modalOpen, isModalOpen: false})}
       footer={false}
     >
       <Form form={form} onFinish={addCompany}>
@@ -98,7 +96,8 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setIsM
           </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-            {collocations?.map((colocation, i) => <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/>)}
+            {collocations?.map((colocation, i) =>
+              colocation.premises ? <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/> : null)}
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>

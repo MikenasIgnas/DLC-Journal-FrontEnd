@@ -350,6 +350,11 @@ thead[class*="ant-table-thead"] th{
       display: flex;
       justify-content: center;
     }
+    .HomePageCover{
+      width: 100%;
+      height: calc(100vh - 135px);
+      background-size: auto;
+    }
     .PageLayoutFooterDark{
       width: 100%;
       text-align: center;
