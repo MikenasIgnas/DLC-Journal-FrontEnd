@@ -15,6 +15,7 @@ import SingleCompanyTitle                                             from '../.
 import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
 import SubClients                                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClients'
 import CompanyAdditionModal                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAdditionModal'
+import SubClientAddition from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientAddition'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -55,16 +56,16 @@ const SingleCompanyPage = () => {
   const [messageApi, contextHolder] =                                       message.useMessage()
   const [mainCompanies, setMainCompanies] =                                 React.useState<CompaniesType[]>([])
   const [selectedValue, setSelectedValue] =                                 React.useState(null)
+  const [subClientState, setSubClientState] =                               React.useState<SubClientStateType>({
+    mainCompanyAddedAsSubClient:  false,
+    subClientChangedToMainClient: false,
+  })
   const [modalOpen, setModalOpen] =                                         React.useState<ModalStateType>({
     editClientsEmployee:         false,
     edit:                        false,
     isEmployeeAdditionModalOpen: false,
     isCompanyAdded:              false,
     isModalOpen:                 false,
-  })
-  const [subClientState, setSubClientState] =           React.useState<SubClientStateType>({
-    mainCompanyAddedAsSubClient:  false,
-    subClientChangedToMainClient: false,
   })
 
   React.useEffect(() => {
@@ -184,11 +185,13 @@ const SingleCompanyPage = () => {
       label: el.companyInfo.companyName,
     }
   })
-  const handleSelect = () => {
-    setSelectedValue(null)
-  }
+
   return (
-    <Form form={form} onFinish={saveChanges} style={{ width: '98%', marginTop: '10px' }}>
+    <Form
+      form={form}
+      onFinish={saveChanges}
+      style={{ width: '98%', marginTop: '10px' }}
+    >
       <Card
         headStyle={{textAlign: 'center'}}
         bordered={false}
@@ -202,31 +205,21 @@ const SingleCompanyPage = () => {
             companyPhoto={company?.companyInfo.companyPhoto}
           />}
       >
-        <div style={{display: 'flex', justifyContent: 'space-evenly' }}>
-          <div style={{width: '50%', display: 'flex',justifyContent: 'center'}}>
-            <Button onClick={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: true})}>Pridėti darbuotoją</Button>
-          </div>
-          <div style={{display: 'flex', justifyContent: 'space-evenly', width: '50%'}}>
-            <div>
-              <Button onClick={() => setModalOpen({...modalOpen, isModalOpen: true})}>Pridėti Naują Sub Klientą</Button>
-            </div>
-            <div>
-              <Select
-                placeholder={'Pridėti egzistuojantį klientą'}
-                value={selectedValue}
-                style={{ width: '100%' }}
-                onChange={handleChange}
-                options={mainCompaniesOptions}
-                onSelect={handleSelect}
-              />
-            </div>
-          </div>
-        </div>
+        <SubClientAddition
+          setModalOpen={setModalOpen}
+          modalOpen={modalOpen}
+          selectedValue={selectedValue}
+          handleChange={handleChange}
+          mainCompaniesOptions={mainCompaniesOptions}
+          handleSelect={()=> setSelectedValue(null)}
+        />
         {modalOpen.isEmployeeAdditionModalOpen &&
         <EmployeesAdditionModal
           companyName={company?.companyInfo?.companyName}
           companyId={company?.id as string | null}
-          urlPath={'addEmployee'} setModalOpen={setModalOpen } modalOpen={modalOpen}
+          urlPath={'addEmployee'}
+          setModalOpen={setModalOpen }
+          modalOpen={modalOpen}
         />
         }
         {modalOpen.isModalOpen &&
