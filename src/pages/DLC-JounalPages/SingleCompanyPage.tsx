@@ -60,7 +60,8 @@ const SingleCompanyPage = () => {
     mainCompanyAddedAsSubClient:  false,
     subClientChangedToMainClient: false,
   })
-  const [modalOpen, setModalOpen] =                                         React.useState<ModalStateType>({
+  const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
+  const [modalState, setModalState] =                                         React.useState<ModalStateType>({
     editClientsEmployee:         false,
     edit:                        false,
     isEmployeeAdditionModalOpen: false,
@@ -83,12 +84,11 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[modalOpen.isModalOpen,subClientState.mainCompanyAddedAsSubClient, subClientState.subClientChangedToMainClient, modalOpen.isEmployeeAdditionModalOpen, cookies.access_token])
+  },[editClientsEmployee, modalState.isModalOpen,subClientState.mainCompanyAddedAsSubClient, subClientState.subClientChangedToMainClient, modalState.isEmployeeAdditionModalOpen, cookies.access_token])
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
-
   const employeeRemoved = (id:string) => {
     let newEmployeesList = [...employees]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
@@ -125,11 +125,11 @@ const SingleCompanyPage = () => {
   }
 
   const saveChanges = async(values:CompanyFormType) => {
-    setModalOpen({
-      ...modalOpen,
-      edit: !modalOpen.edit,
+    setModalState({
+      ...modalState,
+      edit: !modalState.edit,
     })
-    if(modalOpen.edit){
+    if(modalState.edit){
       const filteredCompanyData = filterCompanyData(values)
       filteredCompanyData.companyName = values.companyName
       const res = await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
@@ -199,40 +199,40 @@ const SingleCompanyPage = () => {
           <SingleCompanyTitle
             companyTitle={company?.companyInfo?.companyName.toUpperCase()}
             companyDescription={company?.companyInfo.companyDescription}
-            edit={modalOpen.edit}
+            edit={modalState.edit}
             setFileList={setFileList}
             fileList={fileList}
             companyPhoto={company?.companyInfo.companyPhoto}
           />}
       >
         <SubClientAddition
-          setModalOpen={setModalOpen}
-          modalOpen={modalOpen}
+          setModalState={setModalState}
+          modalState={modalState}
           selectedValue={selectedValue}
           handleChange={handleChange}
           mainCompaniesOptions={mainCompaniesOptions}
           handleSelect={()=> setSelectedValue(null)}
         />
-        {modalOpen.isEmployeeAdditionModalOpen &&
+        {modalState.isEmployeeAdditionModalOpen &&
         <EmployeesAdditionModal
           companyName={company?.companyInfo?.companyName}
           companyId={company?.id as string | null}
           urlPath={'addEmployee'}
-          setModalOpen={setModalOpen }
-          modalOpen={modalOpen}
+          setModalState={setModalState }
+          modalState={modalState}
         />
         }
-        {modalOpen.isModalOpen &&
+        {modalState.isModalOpen &&
         <CompanyAdditionModal
-          setModalOpen={setModalOpen}
-          modalOpen={modalOpen}
+          setModalState={setModalState}
+          modalState={modalState}
           collocations={subClientsCollocations}
           additionModalTitle={'Pridėkite sub klientą'}
           postUrl={`addSubClient?parentCompanyId=${id}`}
         />
         }
         <Divider>Kolokacijos</Divider>
-        {!modalOpen.edit ?
+        {!modalState.edit ?
           <ClientsCollocations
             J13locationName={'J13'}
             J13locationData={J13}
@@ -247,6 +247,8 @@ const SingleCompanyPage = () => {
         }
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <ClientsEmployeeList
+            setEditClientsEmployee={setEditClientsEmployee}
+            editClientsEmployee={editClientsEmployee}
             companyName={company?.companyInfo?.companyName}
             list={employees}
             employeeRemoved={employeeRemoved}
@@ -254,8 +256,8 @@ const SingleCompanyPage = () => {
           <SubClients
             subClientState={subClientState}
             setSubClientState={setSubClientState}
-            setModalOpen={setModalOpen}
-            modalOpen={modalOpen}
+            setModalState={setModalState}
+            modalState={modalState}
             parentCompanyId={id}
           />
         </div>

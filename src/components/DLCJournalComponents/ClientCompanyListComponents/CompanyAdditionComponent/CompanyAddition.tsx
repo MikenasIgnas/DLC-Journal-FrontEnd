@@ -8,25 +8,25 @@ import { CollocationsType, ModalStateType }     from '../../../../types/globalTy
 type CompanyAdditionProps = {
   postUrl:            string;
   additionModalTitle: string;
-  setModalOpen:       React.Dispatch<React.SetStateAction<ModalStateType>>
-  modalOpen:          ModalStateType
+  setModalState:       React.Dispatch<React.SetStateAction<ModalStateType>>
+  modalState:          ModalStateType
   collocations:       CollocationsType[] | undefined
 }
-const CompanyAddition = ({postUrl, additionModalTitle, collocations, setModalOpen, modalOpen}:CompanyAdditionProps) => {
+const CompanyAddition = ({postUrl, additionModalTitle, collocations, setModalState, modalState}:CompanyAdditionProps) => {
   return (
     <div>
       <Button
         style={{display: 'flex', margin: 'auto', marginTop: '10px'}}
         icon={<AppstoreAddOutlined />}
-        onClick={()=> setModalOpen({...modalOpen, isModalOpen: true})}>
+        onClick={()=> setModalState({...modalState, isModalOpen: true})}>
           Pridėti įmonę
       </Button>
-      {modalOpen.isModalOpen && <CompanyAdditionModal
+      {modalState.isModalOpen && <CompanyAdditionModal
         postUrl={postUrl}
         additionModalTitle={additionModalTitle}
         collocations={collocations}
-        setModalOpen={setModalOpen}
-        modalOpen={modalOpen}
+        setModalState={setModalState}
+        modalState={modalState}
       />
       }
     </div>

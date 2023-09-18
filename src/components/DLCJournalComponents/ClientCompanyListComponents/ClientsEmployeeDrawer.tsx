@@ -13,6 +13,8 @@ type ClientsEmployeeDrawerProps = {
     companyName:    string | undefined;
     setOpen:        React.Dispatch<React.SetStateAction<boolean>>
     open:           boolean
+    setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
+    editClientsEmployee: boolean
 }
 
 interface DescriptionItemProps {
@@ -27,10 +29,9 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open}: ClientsEmployeeDrawerProps) => {
+const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
   const [form] = useForm()
   const options =                                       ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti Trečius asmenis']
-  const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
   const [fileList, setFileList] =                       React.useState<UploadFile[]>([])
   const [cookies] =                                     useCookies(['access_token'])
   const [uploading, setUploading] =                     React.useState(false)
@@ -50,7 +51,7 @@ const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open}: ClientsEm
         console.log(err)
       }
     })()
-  },[])
+  },[editClientsEmployee])
 
   const editUser = async(values: EmployeesType) => {
     setEditClientsEmployee(!editClientsEmployee)
@@ -88,29 +89,53 @@ const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open}: ClientsEm
             <div>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ? <DescriptionItem title='Vardas' content={`${employee?.name}`} /> : <Form.Item name='name' initialValue={employee?.name} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
-                  {!editClientsEmployee ? <DescriptionItem title='Pavardė' content={`${employee?.lastName}`} /> : <Form.Item name='lastName' initialValue={employee?.lastName} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+                  {!editClientsEmployee ?
+                    <DescriptionItem title='Vardas' content={`${employee?.name}`} /> :
+                    <Form.Item name='name' initialValue={employee?.name} style={{width: '270px', padding: '0px'}} >
+                      <Input/>
+                    </Form.Item>
+                  }
+                  {!editClientsEmployee ?
+                    <DescriptionItem title='Pavardė' content={`${employee?.lastName}`} /> :
+                    <Form.Item name='lastName' initialValue={employee?.lastName} style={{width: '270px', padding: '0px'}} >
+                      <Input/>
+                    </Form.Item>
+                  }
                 </Col>
               </Row>
               <Row>
               </Row>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ? <DescriptionItem title='Gimimo data' content={`${employee?.birthday}`} /> : <Form.Item name='birthday' initialValue={employee?.birthday} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+                  {!editClientsEmployee ?
+                    <DescriptionItem title='Gimimo data' content={`${employee?.birthday}`} /> :
+                    <Form.Item name='birthday' initialValue={employee?.birthday} style={{width: '270px', padding: '0px'}} >
+                      <Input/>
+                    </Form.Item>
+                  }
                 </Col>
               </Row>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ? <DescriptionItem title='Pareigos' content={`${employee?.occupation}`} /> : <Form.Item name='occupation' initialValue={employee?.occupation} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+                  {!editClientsEmployee ?
+                    <DescriptionItem title='Pareigos' content={`${employee?.occupation}`} /> :
+                    <Form.Item name='occupation' initialValue={employee?.occupation} style={{width: '270px', padding: '0px'}} >
+                      <Input/>
+                    </Form.Item>
+                  }
                 </Col>
               </Row>
               <Row>
                 <Col span={24}>
-                  {!editClientsEmployee ? <DescriptionItem title='Pastabos' content={`${employee?.notes ? employee?.notes : '-'}`} /> : <Form.Item name='notes' initialValue={employee?.notes} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+                  {!editClientsEmployee ?
+                    <DescriptionItem title='Pastabos' content={`${employee?.notes ? employee?.notes : '-'}`} /> :
+                    <Form.Item name='notes' initialValue={employee?.notes} style={{width: '270px', padding: '0px'}} >
+                      <Input/>
+                    </Form.Item>
+                  }
                 </Col>
               </Row>
             </div>
-
           </div>
           <Divider />
           <p className='site-description-item-profile-p'>Įgaliojimai</p>
@@ -125,10 +150,20 @@ const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open}: ClientsEm
           <p className='site-description-item-profile-p'>Kontaktai</p>
           <Row>
             <Col span={12}>
-              {!editClientsEmployee ? <DescriptionItem title='El. Paštas' content={`${employee?.email}`} /> : <Form.Item name='email' initialValue={employee?.email} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+              {!editClientsEmployee ?
+                <DescriptionItem title='El. Paštas' content={`${employee?.email}`} /> :
+                <Form.Item name='email' initialValue={employee?.email} style={{width: '270px', padding: '0px'}} >
+                  <Input/>
+                </Form.Item>
+              }
             </Col>
             <Col span={12}>
-              {!editClientsEmployee ? <DescriptionItem title='Tel. Numeris' content={`${employee?.phoneNr}`} /> : <Form.Item name='phoneNr' initialValue={employee?.phoneNr} style={{width: '270px', padding: '0px'}} ><Input/></Form.Item> }
+              {!editClientsEmployee ?
+                <DescriptionItem title='Tel. Numeris' content={`${employee?.phoneNr}`} /> :
+                <Form.Item name='phoneNr' initialValue={employee?.phoneNr} style={{width: '270px', padding: '0px'}} >
+                  <Input/>
+                </Form.Item>
+              }
             </Col>
           </Row>
         </Form>

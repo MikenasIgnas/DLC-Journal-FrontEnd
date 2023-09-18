@@ -1,25 +1,28 @@
 /* eslint-disable max-len */
-import React                              from 'react'
-import { Avatar, Button, Divider, List }  from 'antd'
-import { EmployeesType }                  from '../../../types/globalTypes'
-import { get }                            from '../../../Plugins/helpers'
-import { useCookies }                     from 'react-cookie'
-import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
-import { useSearchParams } from 'react-router-dom'
+import React                  from 'react'
+import {  Divider, List }     from 'antd'
+import { EmployeesType }      from '../../../types/globalTypes'
+import { get }                from '../../../Plugins/helpers'
+import { useCookies }         from 'react-cookie'
+import ClientsEmployeeDrawer  from './ClientsEmployeeDrawer'
+import { useSearchParams }    from 'react-router-dom'
+import ListItem               from './ListItem'
 
 type ClientsEmployeeListProps = {
   companyName:            string | undefined;
   list:                   EmployeesType[] | undefined
   employeeRemoved:        (id: string) => void
+  setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
+  editClientsEmployee: boolean
 
 }
 
-const ClientsEmployeeList = ({ list, companyName, employeeRemoved}: ClientsEmployeeListProps) => {
+const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeListProps) => {
   const [cookies] =                           useCookies(['access_token'])
   const [open, setOpen] =                     React.useState(false)
   const [, setSearchParams] =     useSearchParams()
-  const showDrawer = (employee: EmployeesType) => {
-    setSearchParams(`&employeeId=${employee.employeeId}&companyId=${employee.companyId}`, { replace: true })
+  const showDrawer = ( companyId: string | undefined, employeeId: string | undefined) => {
+    setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     setOpen(true)
   }
 
@@ -40,34 +43,24 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved}: ClientsEmplo
       <List
         dataSource={list}
         bordered
-        renderItem={(item) => (
-          <List.Item
-            key={item.employeeId}
-            actions={[
-              <Button type='link' onClick={() => showDrawer(item)} key={item.employeeId}>
-                Peržiūrėti
-              </Button>,
-              <Button type='link' onClick={() => deleteEmployee(item?.companyId, item?.employeeId)} key={item.employeeId}>
-                    Ištrinti
-              </Button>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={
-                <Avatar src={
-                  <img
-                    src={`../ClientsEmployeesPhotos/${item.employeePhoto ? item.employeePhoto : 'noUserImage.jpeg'}`}
-                    alt='err' />}
-                />}
-              title={<p>{`${item.name} ${item.lastName}`}</p>}
-              description={item.occupation}
-
-            />
-          </List.Item>
+        renderItem={(item: EmployeesType) => (
+          <ListItem
+            showDrawer={showDrawer}
+            deleteListItem={deleteEmployee}
+            listItemId={item.companyId}
+            itemId={item.employeeId}
+            photo={item.employeePhoto}
+            title={`${item.name} ${item.lastName}`}
+            description={item.occupation}
+            photosFolder={'ClientsEmployeesPhotos'}
+            altImage={'noUserImage.jpeg'}
+          />
         )}
       />
       { open &&
         <ClientsEmployeeDrawer
+          setEditClientsEmployee={setEditClientsEmployee}
+          editClientsEmployee={editClientsEmployee}
           companyName={companyName}
           onClose={onClose}
           open={open}

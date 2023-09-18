@@ -8,14 +8,14 @@ import { post, uploadPhoto }                                          from '../.
 import PhotoUploader                                                  from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type EmployeesAdditionModal = {
-    setModalOpen:   React.Dispatch<React.SetStateAction<ModalStateType>>;
-    modalOpen:      ModalStateType;
+    setModalState:   React.Dispatch<React.SetStateAction<ModalStateType>>;
+    modalState:      ModalStateType;
     companyName:    string | undefined;
     companyId:      string | null;
     urlPath:        string;
 }
 
-const EmployeesAdditionModal = ({setModalOpen, modalOpen, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
+const EmployeesAdditionModal = ({setModalState, modalState, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
   const [form] =                    useForm()
   const [cookies] =                 useCookies(['access_token'])
   const [uploading, setUploading] = React.useState(false)
@@ -29,7 +29,7 @@ const EmployeesAdditionModal = ({setModalOpen, modalOpen, companyName, companyId
       if(fileList[0]){
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
       }
-      setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})
+      setModalState({...modalState, isEmployeeAdditionModalOpen: false})
     }
   }
 
@@ -40,8 +40,8 @@ const EmployeesAdditionModal = ({setModalOpen, modalOpen, companyName, companyId
       title='Pridėkite įmonės darbuotoją'
       centered
       open
-      onOk={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})}
-      onCancel={() => setModalOpen({...modalOpen, isEmployeeAdditionModalOpen: false})}
+      onOk={() => setModalState({...modalState, isEmployeeAdditionModalOpen: false})}
+      onCancel={() => setModalState({...modalState, isEmployeeAdditionModalOpen: false})}
       footer={false}
       style={{textAlign: 'center'}}
     >

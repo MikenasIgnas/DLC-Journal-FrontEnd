@@ -10,12 +10,13 @@ type ClientsCollocationsProps = {
     T72locationData: ColocationDataType[] | undefined
 }
 
-const ClientsCollocations = ({J13locationData, J13locationName, T72locationData, T72locationName}:ClientsCollocationsProps) => (
-
-  <div style={{display: 'flex', justifyContent: 'space-between'}}>
-    <ColocationDisplay locationName={J13locationName} locationData={J13locationData}/>
-    <ColocationDisplay locationName={T72locationName} locationData={T72locationData}/>
-  </div>
-)
+const ClientsCollocations = ({J13locationData, J13locationName, T72locationData, T72locationName}:ClientsCollocationsProps) => {
+  return(
+    <div style={{display: 'flex', justifyContent: !J13locationName && !T72locationName ? 'space-between': 'center'}}>
+      {J13locationName ? <ColocationDisplay locationName={J13locationName} locationData={J13locationData}/> : null}
+      {T72locationData ? <ColocationDisplay locationName={T72locationName} locationData={T72locationData}/> : null}
+    </div>
+  )
+}
 
 export default ClientsCollocations

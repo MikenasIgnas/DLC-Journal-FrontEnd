@@ -57,9 +57,7 @@ const EditableCollocationFormList = ({collocations, collocationsSites}: Collocat
             </div>
           </div>
         </div>
-
       )}
-
     </div>
 
   )

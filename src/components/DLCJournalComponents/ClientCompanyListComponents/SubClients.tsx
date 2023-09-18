@@ -3,10 +3,11 @@
 import React, { useState }                from 'react'
 import { Avatar, Button, Divider, List }  from 'antd'
 import { get }                            from '../../../Plugins/helpers'
-import { CompaniesType, ModalStateType }  from '../../../types/globalTypes'
+import { CompaniesType, EmployeesType, ModalStateType }  from '../../../types/globalTypes'
 import { useCookies }                     from 'react-cookie'
 import { useSearchParams }                from 'react-router-dom'
 import SubClientsDrawer                   from './SubClientsDrawer'
+import ListItem from './ListItem'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -15,13 +16,13 @@ type SubClientStateType = {
 
 type SubClientsProps = {
   parentCompanyId:                  string | undefined;
-  setModalOpen:                     React.Dispatch<React.SetStateAction<ModalStateType>>;
-  modalOpen:                        ModalStateType
+  setModalState:                     React.Dispatch<React.SetStateAction<ModalStateType>>;
+  modalState:                        ModalStateType
   subClientState:                   SubClientStateType
   setSubClientState:                React.Dispatch<React.SetStateAction<SubClientStateType>>
 }
 
-const SubClients = ({setModalOpen,modalOpen, parentCompanyId, subClientState, setSubClientState}: SubClientsProps) => {
+const SubClients = ({setModalState, modalState, parentCompanyId, subClientState, setSubClientState}: SubClientsProps) => {
   const [open, setOpen] =                 useState(false)
   const [subClients, setSubClients] =     React.useState<CompaniesType[]>()
   const [cookies] =                       useCookies()
@@ -37,14 +38,15 @@ const SubClients = ({setModalOpen,modalOpen, parentCompanyId, subClientState, se
         console.log(err)
       }
     })()
-  },[modalOpen.isModalOpen, subClientState.subClientChangedToMainClient, subClientState.mainCompanyAddedAsSubClient])
+  },[modalState.isModalOpen, subClientState.subClientChangedToMainClient, subClientState.mainCompanyAddedAsSubClient])
 
-  const showDrawer = (subClient: CompaniesType) => {
-    setSearchParams(`&subClientId=${subClient.id}`, { replace: true })
+  const showDrawer = (subClient: string | undefined) => {
+    setSearchParams(`&subClientId=${subClient}`, { replace: true })
+    console.log(subClient)
     setOpen(true)
   }
 
-  const deletSubClient = async(subClientId: string, parentCompanyId: string | undefined ) => {
+  const deletSubClient = async (subClientId: string | undefined, parentCompanyId: string | undefined ) => {
     if(subClientId ){
       await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
       subClientCompanyRemoved(subClientId)
@@ -58,7 +60,7 @@ const SubClients = ({setModalOpen,modalOpen, parentCompanyId, subClientState, se
     }
   }
 
-  const removeFormSubClientList = async(companyId: string) => {
+  const removeFormSubClientList = async(companyId: string | undefined) => {
     const res = await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
     if(!res.error){
       setSubClientState({...subClientState, subClientChangedToMainClient: !subClientState.subClientChangedToMainClient})
@@ -69,46 +71,39 @@ const SubClients = ({setModalOpen,modalOpen, parentCompanyId, subClientState, se
     setOpen(false)
   }
 
-
-
   return (
     <div style={{width: '49%'}}>
       <Divider>Sub Klientai</Divider>
       <List
         dataSource={subClients}
         bordered
-        renderItem={(item) => (
-          <List.Item
-            key={item.id}
-            actions={[
-              <Button type='link' onClick={() => showDrawer(item)} key={item.id}>
-              Peržiūrėti
-              </Button>,
-              item?.wasMainClient === true && <Button type='link' onClick={() => removeFormSubClientList(item.id)} key={item.id}> Perkelti </Button>,
-              <Button type='link' onClick={() => deletSubClient(item?.id, item?.parentCompanyId)} key={item.id}>
-                  Ištrinti
-              </Button>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={
-                <Avatar src={
-                  <img
-                    src={`../CompanyLogos/${item.companyInfo.companyPhoto ? item.companyInfo.companyPhoto : 'noImage.jpg'}`}
-                    alt='err' />}
-                />}
+        renderItem={(item: CompaniesType) => {
+          return(
+            <ListItem
+              showDrawer={showDrawer}
+              deleteListItem={deletSubClient}
+              listItemId={item.id}
+              photo={item.companyInfo.companyPhoto}
               title={item.companyInfo.companyName}
               description={item.companyInfo.companyDescription}
+              subClient={item.wasMainClient}
+              removeFormSubClientList={removeFormSubClientList}
+              photosFolder={'CompanyLogos'}
+              altImage={'noImage.jpg'}
             />
-          </List.Item>
-        )}
+          )
+        }
+        }
       />
+      {
+        open &&
       <SubClientsDrawer
-        setModalOpen={setModalOpen}
-        modalOpen={modalOpen}
+        setModalState={setModalState}
+        modalState={modalState}
         subClientId={subClientId}
         onClose={onClose}
         open={open}/>
+      }
     </div>
   )
 }

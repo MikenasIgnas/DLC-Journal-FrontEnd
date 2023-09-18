@@ -12,8 +12,8 @@ type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
     collocations:       CollocationsType[] | undefined
-    setModalOpen:  React.Dispatch<React.SetStateAction<ModalStateType>>
-    modalOpen: ModalStateType
+    setModalState:  React.Dispatch<React.SetStateAction<ModalStateType>>
+    modalState: ModalStateType
 }
 
 type CompanyFormType = {
@@ -32,7 +32,7 @@ type CompanyFormType = {
   }[];
 };
 
-const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setModalOpen, modalOpen}: AdditionModalProps) => {
+const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setModalState, modalState}: AdditionModalProps) => {
   const [cookies] =                       useCookies(['access_token'])
   const [form] =                          useForm()
   const [uploading, setUploading] =       React.useState(false)
@@ -75,15 +75,15 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
-    setModalOpen({...modalOpen, isModalOpen: false})
+    setModalState({...modalState, isModalOpen: false})
   }
   return (
     <Modal
       title={additionModalTitle}
       centered
       open
-      onOk={() => setModalOpen({...modalOpen, isModalOpen: false})}
-      onCancel={() => setModalOpen({...modalOpen, isModalOpen: false})}
+      onOk={() => setModalState({...modalState, isModalOpen: false})}
+      onCancel={() => setModalState({...modalState, isModalOpen: false})}
       footer={false}
     >
       <Form form={form} onFinish={addCompany}>

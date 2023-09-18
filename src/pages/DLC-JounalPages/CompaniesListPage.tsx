@@ -19,8 +19,7 @@ const CompaniesListPage = () => {
   const position: PaginationPosition =        'bottom'
   const align: PaginationAlign =              'center'
   const [collocations, setCollocations] =     React.useState<CollocationsType[]>()
-  const [modalOpen, setModalOpen] =           React.useState<ModalStateType>({
-
+  const [modalState, setModalState] =           React.useState<ModalStateType>({
     editClientsEmployee:         false,
     edit:                        false,
     isEmployeeAdditionModalOpen: false,
@@ -43,9 +42,8 @@ const CompaniesListPage = () => {
         console.log(err)
       }
     })()
-  },[modalOpen.isModalOpen])
+  },[modalState.isModalOpen])
 
-  console.log(modalOpen.isModalOpen)
   const companyRemoved = (id:string) => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
@@ -79,11 +77,11 @@ const CompaniesListPage = () => {
   return (
     <div style={{width: '97%'}}>
       <CompanyAddition
-        modalOpen={modalOpen}
+        modalState={modalState}
         postUrl={'addCompany'}
         collocations={collocations}
         additionModalTitle={'Pridėkite įmonę'}
-        setModalOpen={setModalOpen}
+        setModalState={setModalState}
       />
       <List
         loading={loading}
