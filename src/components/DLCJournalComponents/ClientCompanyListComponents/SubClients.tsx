@@ -1,13 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React, { useState }                from 'react'
-import { Avatar, Button, Divider, List }  from 'antd'
+import { Divider, List }                  from 'antd'
 import { get }                            from '../../../Plugins/helpers'
-import { CompaniesType, EmployeesType, ModalStateType }  from '../../../types/globalTypes'
+import { CompaniesType, ModalStateType }  from '../../../types/globalTypes'
 import { useCookies }                     from 'react-cookie'
 import { useSearchParams }                from 'react-router-dom'
 import SubClientsDrawer                   from './SubClientsDrawer'
-import ListItem from './ListItem'
+import ListItem                           from './ListItem'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -15,11 +14,11 @@ type SubClientStateType = {
 }
 
 type SubClientsProps = {
-  parentCompanyId:                  string | undefined;
-  setModalState:                     React.Dispatch<React.SetStateAction<ModalStateType>>;
-  modalState:                        ModalStateType
-  subClientState:                   SubClientStateType
-  setSubClientState:                React.Dispatch<React.SetStateAction<SubClientStateType>>
+  parentCompanyId:    string | undefined;
+  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>;
+  modalState:         ModalStateType
+  subClientState:     SubClientStateType
+  setSubClientState:  React.Dispatch<React.SetStateAction<SubClientStateType>>
 }
 
 const SubClients = ({setModalState, modalState, parentCompanyId, subClientState, setSubClientState}: SubClientsProps) => {
@@ -42,7 +41,6 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
 
   const showDrawer = (subClient: string | undefined) => {
     setSearchParams(`&subClientId=${subClient}`, { replace: true })
-    console.log(subClient)
     setOpen(true)
   }
 
@@ -92,9 +90,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
               altImage={'noImage.jpg'}
             />
           )
-        }
-        }
-      />
+        }}/>
       {
         open &&
       <SubClientsDrawer

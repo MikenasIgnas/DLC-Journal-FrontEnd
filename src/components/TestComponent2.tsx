@@ -23,7 +23,6 @@ const TestComponent2 = () => {
       }
     })()
   },[])
-  console.log(companies)
   const treeCompanies = companies?.map((el, i) => {
     const childCompanies = companies.filter((ele) => ele.parentCompanyId === el.id)
     return{

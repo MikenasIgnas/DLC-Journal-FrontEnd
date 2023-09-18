@@ -49,8 +49,7 @@ const EditableCollocationFormList = ({collocations, collocationsSites}: Collocat
                             </ConfigProvider>
                           </div>
                         </Col>
-                      )
-                    })}
+                      )})}
                   </Row>
                 )}
               </Form.List>

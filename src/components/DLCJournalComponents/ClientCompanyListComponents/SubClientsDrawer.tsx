@@ -1,16 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import { Drawer, Row, Col, Divider, Button, List, Avatar, Form, Input } from 'antd'
-import React from 'react'
-import { get } from '../../../Plugins/helpers'
-import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
-import { CompaniesType, EmployeesType, ModalStateType } from '../../../types/globalTypes'
-import ColocationDisplay from './ColocationDisplay'
-import EmployeesAdditionModal from './EmployeeAdditionModal'
-import EmployeeList from './EmployeeList'
-import { useForm } from 'antd/es/form/Form'
-import EditableCollocationFormList from './CollocationFormList'
+import { Drawer, Row, Col, Divider, Button, Form, Input, List } from 'antd'
+import React                                                    from 'react'
+import { get }                                                  from '../../../Plugins/helpers'
+import { useParams }                                            from 'react-router-dom'
+import { useCookies }                                           from 'react-cookie'
+import { CompaniesType, EmployeesType, ModalStateType }         from '../../../types/globalTypes'
+import EmployeesAdditionModal                                   from './EmployeeAdditionModal'
+import { useForm }                                              from 'antd/es/form/Form'
+import ListItem from './ListItem'
 
 type SubClientsDrawerProps = {
     onClose:        () => void;
@@ -40,11 +38,11 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
         <div style={{width: '250px', display: 'flex', justifyContent: 'space-between', padding: '5px'}}>
           <p className='site-description-item-profile-p-label'>{title}:</p>
           {!edit ? <p>{content}</p> : <Form.Item initialValue={initialValue} name={formItemName}><Input/></Form.Item>}
-
         </div>
       </Col>
     </Row>
   )
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -59,7 +57,7 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
       }
     })()
   },[modalState.isEmployeeAdditionModalOpen, subClientId, edit, open])
-  console.log(subClient?.companyInfo.companyName)
+
   const subClientEmployeeRemoved = (id:string) => {
     if(subClientEmployees){
       let newSubClientEmployees = [...subClientEmployees]
@@ -132,7 +130,21 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
       </Form>
       <Divider >Darbuotojai</Divider>
       <Button style={{display: 'flex', margin: 'auto', marginBottom: '10px'}} onClick={() => setModalState({...modalState, isEmployeeAdditionModalOpen: true})}>Pridėti darbuotoją</Button>
-      <EmployeeList subClientEmployees={subClientEmployees} deleteSubClientEmployee={deleteSubClientEmployee}/>
+      <List
+        dataSource={subClientEmployees}
+        bordered
+        renderItem={(item: EmployeesType) => (
+          <ListItem
+            deleteListItem={deleteSubClientEmployee}
+            listItemId={item.companyId}
+            employeeId={item.employeeId}
+            photo={item.employeePhoto}
+            title={`${item.name} ${item.lastName}`}
+            description={item.occupation}
+            photosFolder={'ClientsEmployeesPhotos'}
+            altImage={'noUserImage.jpeg'}/>
+        )}
+      />
     </Drawer>
   )
 }

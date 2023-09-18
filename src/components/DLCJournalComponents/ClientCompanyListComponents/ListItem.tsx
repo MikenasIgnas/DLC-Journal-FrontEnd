@@ -1,26 +1,29 @@
 /* eslint-disable max-len */
-import React from 'react'
+import React                    from 'react'
 import { Avatar, Button, List } from 'antd'
+import SubClientTag from './SubClientTag'
+import { Link } from 'react-router-dom'
 
 type ListItemProps = {
-  showDrawer: (listItemId: string | undefined, itemId?: string | undefined) => void
+  showDrawer?: (listItemId: string | undefined, itemId?: string | undefined) => void
   deleteListItem: (listItemId: string | undefined, itemId: string | undefined) => void
   listItemId: string | undefined;
-  itemId?: string | undefined;
+  employeeId?: string | undefined;
   photo: string | undefined;
-  title: string;
+  title: string | React.ReactNode;
   description: string;
   subClient?: boolean
   removeFormSubClientList?: (subClientId: string | undefined) => void
   photosFolder: string;
   altImage: string;
+  parentCompanyId?: string | undefined
 };
 
 const ListItem = ({
   showDrawer,
   deleteListItem,
   listItemId,
-  itemId,
+  employeeId,
   photo,
   title,
   description,
@@ -28,31 +31,24 @@ const ListItem = ({
   removeFormSubClientList,
   photosFolder,
   altImage,
+  parentCompanyId,
 }: ListItemProps) => {
   return (
     <>
       <List.Item
+        style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
         actions={[
-          <Button type='link' onClick={() => showDrawer(listItemId, itemId)} key={itemId}>
-                Peržiūrėti
-          </Button>,
-          subClient === true && <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={itemId}> Perkelti </Button>,
-          <Button type='link' onClick={() => deleteListItem(listItemId, itemId)} key={itemId}>
-                    Ištrinti
-          </Button>,
-        ]}
-      >
+          showDrawer ? <Button type='link' onClick={() => showDrawer(listItemId, employeeId)} key={employeeId}>Peržiūrėti</Button>
+            : <Link key={listItemId} to={`/SingleCompanyPage/${listItemId}`}>peržiūrėti</Link>,
+          subClient === true && <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={employeeId}> Perkelti </Button>,
+          <Button type='link' onClick={() => deleteListItem(listItemId, employeeId)} key={employeeId}>Ištrinti</Button>,
+        ]}>
         <List.Item.Meta
-          avatar={
-            <Avatar src={
-              <img
-                src={`../${photosFolder}/${photo ? photo : `${altImage}`}`}
-                alt='err' />}
-            />}
-          title={<p>{title}</p>}
+          avatar={<Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>}
+          title={<>{title}</>}
           description={description}
-
         />
+        {parentCompanyId ? <SubClientTag parentCompanyId={parentCompanyId}/> : ''}
       </List.Item>
     </>
   )

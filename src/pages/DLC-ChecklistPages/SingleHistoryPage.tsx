@@ -63,7 +63,6 @@ const SingleHistoryPage = () => {
     }
   }, [isUpdated])
 
-  console.log(filledUser)
   React.useEffect(() => {
     window.addEventListener('resize', updateMedia)
     return () => window.removeEventListener('resize', updateMedia)
