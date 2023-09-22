@@ -21,12 +21,12 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   const [cookies] =                           useCookies(['access_token'])
   const [open, setOpen] =                     React.useState(false)
   const [, setSearchParams] =     useSearchParams()
-  const showDrawer = ( companyId: string | undefined, employeeId: string | undefined) => {
+  const showDrawer = ( employeeId: string | undefined, companyId: string | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     setOpen(true)
   }
 
-  const deleteEmployee = async(companyId: string | undefined, employeeId: string | undefined) => {
+  const deleteEmployee = async(employeeId: string | undefined, companyId: string | undefined) => {
     if(companyId && employeeId){
       await get(`deleteClientsEmployee?companyName=${companyName}&companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
       employeeRemoved(employeeId)
@@ -43,12 +43,12 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       <List
         dataSource={list}
         bordered
-        renderItem={(item: EmployeesType) => (
+        renderItem={(item) => (
           <ListItem
             showDrawer={showDrawer}
             deleteListItem={deleteEmployee}
-            listItemId={item.companyId}
-            employeeId={item.employeeId}
+            listItemId={item.employeeId}
+            employeeId={item.companyId}
             photo={item.employeePhoto}
             title={`${item.name} ${item.lastName}`}
             description={item.occupation}

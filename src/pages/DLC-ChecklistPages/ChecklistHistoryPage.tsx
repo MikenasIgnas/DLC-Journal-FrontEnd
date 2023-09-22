@@ -12,7 +12,11 @@ import { ColumnType, FilterConfirmProps }                         from 'antd/es/
 import { SearchOutlined }                                         from '@ant-design/icons'
 import Highlighter                                                from 'react-highlight-words'
 import jwt_decode                                                 from 'jwt-decode'
-
+import { PDFDownloadLink, PDFRenderer } from '@react-pdf/renderer'
+import PDFFile from '../../components/DLCChecklistComponents/PDFRENDERER/PDFfile'
+import PDFGenerator from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 const ChecklistHistoryPage = () => {
   type DataIndex = keyof HistoryDataType;
 
@@ -28,13 +32,14 @@ const ChecklistHistoryPage = () => {
   const [totalHistoryEntriesCount, setTotalHistoryEntries] =  React.useState<number| undefined>(undefined)
   const page =                                                searchParams.get('page')
   const limit =                                               searchParams.get('limit')
-
+  const [reportData, setReportData] =                         React.useState<HistoryDataType[] | undefined>()
   React.useEffect(() => {
     (async () => {
       try{
         setLoading(true)
         const totalHistoryEntries = await get('totalHistoryEntries', cookies.access_token)
         const hisotoryData =        await get(`checklistHistoryData?page=${page}&limit=${limit}`, cookies.access_token)
+
         if(!hisotoryData.error && !totalHistoryEntries.error){
           setTotalHistoryEntries(totalHistoryEntries.data)
           setFilledData(hisotoryData.results)
@@ -50,6 +55,9 @@ const ChecklistHistoryPage = () => {
   const changePage = (page: number, pageSize: number) => {
     setSearchParams(`page=${page}&limit=${pageSize}&menu=2`)
   }
+
+
+
 
   const handleSearch = (
     selectedKeys: string[],
@@ -251,6 +259,19 @@ const ChecklistHistoryPage = () => {
         </div>,
     },
   ]
+  const downloadPdf = () => {
+    const doc = new jsPDF()
+    doc.text('Student Details', 20, 10)
+    autoTable(doc, {
+      head: [['Name', 'Email', 'Country']],
+      body: [
+        ['David', 'david@example.com', 'Sweden'],
+        ['Castille', 'castille@example.com', 'Spain'],
+      ],
+
+    })
+    doc.save('table.pdf')
+  }
 
   return (
     <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', width: '100%'}}>
@@ -264,6 +285,9 @@ const ChecklistHistoryPage = () => {
           borderTopRightRadius: '8px',
           borderTopLeftRadius:  '8px',
         }}>Istorija</div>
+
+      <PDFGenerator/>
+      <Button onClick={downloadPdf }/>
       <ConfigProvider theme={{
         token: {
           colorBgContainer: defaultPageTheme? '#1e1e1e': 'white',

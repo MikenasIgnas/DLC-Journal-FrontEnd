@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import React                                                          from 'react'
-import { get, post, uploadPhoto }                                     from '../../Plugins/helpers'
-import { useCookies }                                                 from 'react-cookie'
-import { useParams }                                                  from 'react-router-dom'
-import { Button, Card, Divider, Form, Select, UploadFile, message }   from 'antd'
-import { CollocationsSites, CollocationsType, CompaniesType, ModalStateType }         from '../../types/globalTypes'
-import { useForm }                                                    from 'antd/es/form/Form'
-import ClientsCollocations                                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
-import ClientsEmployeeList                                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeeList'
-import EditableCollocationFormList                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/CollocationFormList'
-import EmployeesAdditionModal                                         from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
-import SingleCompanyTitle                                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
-import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
-import SubClients                                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClients'
-import CompanyAdditionModal                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAdditionModal'
-import SubClientAddition from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientAddition'
+import React                                                                  from 'react'
+import { get, post, uploadPhoto }                                             from '../../Plugins/helpers'
+import { useCookies }                                                         from 'react-cookie'
+import { useParams }                                                          from 'react-router-dom'
+import { Card, Divider, Form, UploadFile, message }                           from 'antd'
+import { CollocationsSites, CollocationsType, CompaniesType, ModalStateType } from '../../types/globalTypes'
+import { useForm }                                                            from 'antd/es/form/Form'
+import ClientsCollocations                                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocations'
+import ClientsEmployeeList                                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeeList'
+import EditableCollocationFormList                                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/CollocationFormList'
+import EmployeesAdditionModal                                                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/EmployeeAdditionModal'
+import SingleCompanyTitle                                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import SuccessMessage                                                         from '../../components/UniversalComponents/SuccessMessage'
+import SubClients                                                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClients'
+import CompanyAdditionModal                                                   from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAdditionModal'
+import SubClientAddition                                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientAddition'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -49,19 +49,19 @@ const SingleCompanyPage = () => {
   const [cookies] =                                                         useCookies(['access_token'])
   const {id} =                                                              useParams()
   const [company, setCompany] =                                             React.useState<CompaniesType>()
-  const [employees, setEmployees] =                                         React.useState<EmployeesType[]>([])
+  const [employeesList, setEmployeesList] =                                 React.useState<EmployeesType[]>([])
   const [form] =                                                            useForm()
   const [collocations, setCollocations] =                                   React.useState<CollocationsType[]>()
   const [fileList, setFileList] =                                           React.useState<UploadFile[]>([])
   const [messageApi, contextHolder] =                                       message.useMessage()
   const [mainCompanies, setMainCompanies] =                                 React.useState<CompaniesType[]>([])
   const [selectedValue, setSelectedValue] =                                 React.useState(null)
+  const [editClientsEmployee, setEditClientsEmployee] =                     React.useState(false)
   const [subClientState, setSubClientState] =                               React.useState<SubClientStateType>({
     mainCompanyAddedAsSubClient:  false,
     subClientChangedToMainClient: false,
   })
-  const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
-  const [modalState, setModalState] =                                         React.useState<ModalStateType>({
+  const [modalState, setModalState] =                                       React.useState<ModalStateType>({
     editClientsEmployee:         false,
     edit:                        false,
     isEmployeeAdditionModalOpen: false,
@@ -78,7 +78,7 @@ const SingleCompanyPage = () => {
         const allMainCompanies =  await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
         setCollocations(allCollocations.data[0].colocations)
         setCompany(singleCompany.data)
-        setEmployees(companyEmployees.data)
+        setEmployeesList(companyEmployees.data)
         setMainCompanies(allMainCompanies.data)
       }catch(err){
         console.log(err)
@@ -90,9 +90,9 @@ const SingleCompanyPage = () => {
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
   const employeeRemoved = (id:string) => {
-    let newEmployeesList = [...employees]
+    let newEmployeesList = [...employeesList]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
-    setEmployees(newEmployeesList)
+    setEmployeesList(newEmployeesList)
   }
 
   const filterCompanyData = (obj: CompanyFormType): CompanyFormType => {
@@ -250,7 +250,7 @@ const SingleCompanyPage = () => {
             setEditClientsEmployee={setEditClientsEmployee}
             editClientsEmployee={editClientsEmployee}
             companyName={company?.companyInfo?.companyName}
-            list={employees}
+            list={employeesList}
             employeeRemoved={employeeRemoved}
           />
           <SubClients

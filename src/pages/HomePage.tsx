@@ -1,6 +1,3 @@
-/* eslint-disable max-len */
-import React from 'react'
-import {Image} from 'antd'
 const HomePage = () => {
   return (
     <div style={{width: '100%'}}>

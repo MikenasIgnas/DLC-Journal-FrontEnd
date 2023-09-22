@@ -91,20 +91,20 @@ const CompaniesListPage = () => {
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
               parentCompanyId={item.parentCompanyId}
-              title={ filter[0].children.length >= 1 ?
-                <ConfigProvider theme={{token: {colorBgContainer: 'none'}}}>
+              title={filter[0].children.length >= 1 ?
+                <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree
                     showLine
                     switcherIcon={<DownOutlined />}
                     defaultExpandedKeys={['0-0-0']}
-                    treeData={filter}
-                  />
+                    treeData={filter} />
                 </ConfigProvider>
-                : <Link to={`/SingleCompanyPage/${item.id}`}>{item.companyInfo.companyName}</Link>
-              }/>)
+                : <Link to={`/SingleCompanyPage/${item.id}`}>{item.companyInfo.companyName}</Link>}/>)
         }}/>
     </div>
   )
 }
 
 export default CompaniesListPage
+
+

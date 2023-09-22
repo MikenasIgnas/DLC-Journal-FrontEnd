@@ -75,7 +75,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
       <List
         dataSource={subClients}
         bordered
-        renderItem={(item: CompaniesType) => {
+        renderItem={(item) => {
           return(
             <ListItem
               showDrawer={showDrawer}
@@ -91,8 +91,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
             />
           )
         }}/>
-      {
-        open &&
+      { open &&
       <SubClientsDrawer
         setModalState={setModalState}
         modalState={modalState}

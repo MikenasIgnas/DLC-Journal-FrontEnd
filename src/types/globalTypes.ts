@@ -49,6 +49,13 @@ export type HistoryDataType = {
   _id:                string;
   secret:             string;
   userRole:           string;
+  filledData: {
+    values: {
+      [key: string]: {
+        [key: string]: boolean;
+      }[]
+    },
+  }[]
   values: {
       [key: string]: {
         [key: string]: boolean;

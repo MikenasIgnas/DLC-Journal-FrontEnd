@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React                    from 'react'
-import { Avatar, Button, List } from 'antd'
-import SubClientTag from './SubClientTag'
-import { Link } from 'react-router-dom'
+import React                            from 'react'
+import { Avatar, Button, List }         from 'antd'
+import SubClientTag                     from './SubClientTag'
+import { Link }                         from 'react-router-dom'
 
 type ListItemProps = {
   showDrawer?: (listItemId: string | undefined, itemId?: string | undefined) => void
@@ -33,6 +33,7 @@ const ListItem = ({
   altImage,
   parentCompanyId,
 }: ListItemProps) => {
+
   return (
     <>
       <List.Item
@@ -44,7 +45,12 @@ const ListItem = ({
           <Button type='link' onClick={() => deleteListItem(listItemId, employeeId)} key={employeeId}>Ištrinti</Button>,
         ]}>
         <List.Item.Meta
-          avatar={<Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>}
+          avatar={
+            <div style={{display: 'flex', alignItems: 'center'}}>
+              <div style={{marginRight: '10px'}}>{listItemId}</div>
+              <Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
+            </div>
+          }
           title={<>{title}</>}
           description={description}
         />
