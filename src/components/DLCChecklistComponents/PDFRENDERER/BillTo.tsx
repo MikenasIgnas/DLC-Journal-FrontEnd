@@ -11,15 +11,36 @@ const styles = StyleSheet.create({
     fontFamily:    'Helvetica-Oblique',
   },
 })
+type InvoiceItem = {
+  sno: number;
+  desc: string;
+  qty: number;
+  rate: number;
+};
 
+type InvoiceData = {
+  id: string;
+  invoice_no: string;
+  balance: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  trans_date: string;
+  due_date: string;
+  items: InvoiceItem[];
+};
+type tableDataProps = {
+  tableData: InvoiceData
+}
 
-const BillTo = ({invoice}:any) => (
+const BillTo = ({tableData}:tableDataProps) => (
   <View style={styles.headerContainer}>
     <Text style={styles.billTo}>Bill To:</Text>
-    <Text>{invoice.company}</Text>
-    <Text>{invoice.address}</Text>
-    <Text>{invoice.phone}</Text>
-    <Text>{invoice.email}</Text>
+    <Text>{tableData.company}</Text>
+    <Text>{tableData.address}</Text>
+    <Text>{tableData.phone}</Text>
+    <Text>{tableData.email}</Text>
   </View>
 )
 

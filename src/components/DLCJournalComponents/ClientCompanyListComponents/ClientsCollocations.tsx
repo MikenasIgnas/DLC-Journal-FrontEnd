@@ -12,9 +12,9 @@ type ClientsCollocationsProps = {
 
 const ClientsCollocations = ({J13locationData, J13locationName, T72locationData, T72locationName}:ClientsCollocationsProps) => {
   return(
-    <div style={{display: 'flex', justifyContent: !J13locationName && !T72locationName ? 'space-between': 'center'}}>
-      {J13locationName ? <ColocationDisplay locationName={J13locationName} locationData={J13locationData}/> : null}
-      {T72locationData ? <ColocationDisplay locationName={T72locationName} locationData={T72locationData}/> : null}
+    <div style={{display: 'flex', justifyContent: J13locationData && J13locationData?.length >= 1 && T72locationData && T72locationData?.length >= 1 ? 'space-between': 'center'}}>
+      {J13locationData && J13locationData?.length >= 1 ? <ColocationDisplay locationName={J13locationName} locationData={J13locationData}/> : null}
+      {T72locationData && T72locationData?.length >= 1 ? <ColocationDisplay locationName={T72locationName} locationData={T72locationData}/> : null}
     </div>
   )
 }

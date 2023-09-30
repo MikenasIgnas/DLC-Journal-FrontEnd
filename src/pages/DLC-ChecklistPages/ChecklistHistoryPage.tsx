@@ -17,6 +17,8 @@ import PDFFile from '../../components/DLCChecklistComponents/PDFRENDERER/PDFfile
 import PDFGenerator from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { Provider } from 'react-redux'
+import store from '../../store/store'
 const ChecklistHistoryPage = () => {
   type DataIndex = keyof HistoryDataType;
 
@@ -259,19 +261,6 @@ const ChecklistHistoryPage = () => {
         </div>,
     },
   ]
-  const downloadPdf = () => {
-    const doc = new jsPDF()
-    doc.text('Student Details', 20, 10)
-    autoTable(doc, {
-      head: [['Name', 'Email', 'Country']],
-      body: [
-        ['David', 'david@example.com', 'Sweden'],
-        ['Castille', 'castille@example.com', 'Spain'],
-      ],
-
-    })
-    doc.save('table.pdf')
-  }
 
   return (
     <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column', width: '100%'}}>
@@ -285,9 +274,7 @@ const ChecklistHistoryPage = () => {
           borderTopRightRadius: '8px',
           borderTopLeftRadius:  '8px',
         }}>Istorija</div>
-
       <PDFGenerator/>
-      <Button onClick={downloadPdf }/>
       <ConfigProvider theme={{
         token: {
           colorBgContainer: defaultPageTheme? '#1e1e1e': 'white',

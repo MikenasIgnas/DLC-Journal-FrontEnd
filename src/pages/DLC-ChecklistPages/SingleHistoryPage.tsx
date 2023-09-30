@@ -23,11 +23,6 @@ const SingleHistoryPage = () => {
   const defaultPageTheme =                useAppSelector((state) => state.theme.value)
   const [searchParams, setSearchParams] = useSearchParams()
   const tabUrlParam =                     searchParams.get('tab')
-  const [isDesktop, setDesktop] =         React.useState(window.innerWidth > 650)
-
-  const updateMedia = () => {
-    setDesktop(window.innerWidth > 650)
-  }
 
   React.useEffect(() => {
     if (id) {
@@ -62,11 +57,6 @@ const SingleHistoryPage = () => {
       dispatch(resetReducer())
     }
   }, [isUpdated])
-
-  React.useEffect(() => {
-    window.addEventListener('resize', updateMedia)
-    return () => window.removeEventListener('resize', updateMedia)
-  })
 
   if (loading) {
     return <Loader />

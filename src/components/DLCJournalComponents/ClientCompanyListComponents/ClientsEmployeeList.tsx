@@ -20,7 +20,7 @@ type ClientsEmployeeListProps = {
 const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeListProps) => {
   const [cookies] =                           useCookies(['access_token'])
   const [open, setOpen] =                     React.useState(false)
-  const [, setSearchParams] =     useSearchParams()
+  const [, setSearchParams] =                 useSearchParams()
   const showDrawer = ( employeeId: string | undefined, companyId: string | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     setOpen(true)

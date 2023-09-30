@@ -1,75 +1,10 @@
-import React from 'react'
+/* eslint-disable max-len */
+import React                          from 'react'
 import { Page, Document, StyleSheet } from '@react-pdf/renderer'
-import BillTo from './BillTo'
-import InvoiceNo from './InvoiceNo'
-import InvoiceTitle from './InvoiceTitle'
-import InvoiceItemsTable from './InvoiceItemsTable'
-
-
-
-type InvoiceItem = {
-    sno: number;
-    desc: string;
-    qty: number;
-    rate: number;
-  };
-
-  type InvoiceData = {
-    id: string;
-    invoice_no: string;
-    balance: string;
-    company: string;
-    email: string;
-    phone: string;
-    address: string;
-    trans_date: string;
-    due_date: string;
-    items: InvoiceItem[];
-  };
-
-const invoiceData: InvoiceData = {
-  id:         '5df3180a09ea16dc4b95f910',
-  invoice_no: '201906-28',
-  balance:    '$2,283.74',
-  company:    'MANTRIX',
-  email:      'susanafuentes@mantrix.com',
-  phone:      '+1 (872) 588-3809',
-  address:    '922 Campus Road, Drytown, Wisconsin, 1986',
-  trans_date: '2019-09-12',
-  due_date:   '2019-10-12',
-  items:      [
-    {
-      sno:  1,
-      desc: 'ad sunt culpa occaecat qui',
-      qty:  5,
-      rate: 405.89,
-    },
-    {
-      sno:  2,
-      desc: 'cillum quis sunt qui aute',
-      qty:  5,
-      rate: 373.11,
-    },
-    {
-      sno:  3,
-      desc: 'ea commodo labore culpa irure',
-      qty:  5,
-      rate: 458.61,
-    },
-    {
-      sno:  4,
-      desc: 'nisi consequat et adipisicing dolor',
-      qty:  10,
-      rate: 725.24,
-    },
-    {
-      sno:  5,
-      desc: 'proident cillum anim elit esse',
-      qty:  4,
-      rate: 141.02,
-    },
-  ],
-}
+import ReportTitle                    from './ReportTitle'
+import ChildTable                     from './ChildTable'
+import ParentTable                    from './ParentTable'
+import { HistoryDataType }            from '../../../types/globalTypes'
 
 const styles = StyleSheet.create({
   page: {
@@ -89,14 +24,51 @@ const styles = StyleSheet.create({
   },
 })
 
-const PDFTable = () => {
+const parentTableStyle = StyleSheet.create({
+  tableContainer: {
+    flexDirection: 'row',
+    flexWrap:      'wrap',
+    marginTop:     24,
+    borderWidth:   1,
+    borderColor:   '#bff0fd',
+  },
+})
+
+const childTableStyle = StyleSheet.create({
+  tableContainer: {
+    flexDirection: 'row',
+    flexWrap:      'wrap',
+    marginTop:     0,
+    borderWidth:   1,
+    padding:       2,
+    borderColor:   '#bff0fd',
+  },
+})
+
+type PDFTableProps = {
+  tableData: HistoryDataType[] | undefined
+  fetchedPremisesData: {
+    routes: null;
+    areas: null;
+    problems: null;
+    todo: null;
+  }
+}
+
+const PDFTable = ({tableData, fetchedPremisesData }: PDFTableProps) => {
   return(
     <Document>
       <Page size='A4' style={styles.page}>
-        <InvoiceTitle title='Invoice'/>
-        <InvoiceNo invoice={invoiceData}/>
-        <BillTo invoice={invoiceData}/>
-        <InvoiceItemsTable invoice={invoiceData}/>
+        <ReportTitle title='Invoice'/>
+        {/* <InvoiceNo tableData={tableData}/>
+        <BillTo tableData={tableData}/> */}
+        {
+          tableData?.map((table) => (
+            <ParentTable key={table.id} table={table} tableStyle={parentTableStyle}>
+              <ChildTable fetchedPremisesData={fetchedPremisesData} table={table} tableStyle={childTableStyle} tableData={tableData}/>
+            </ParentTable>
+          ))
+        }
       </Page>
     </Document>
   )

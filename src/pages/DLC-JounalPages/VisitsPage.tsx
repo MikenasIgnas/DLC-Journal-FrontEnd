@@ -12,12 +12,12 @@ type VisitsType = {
         visitPurpose: string;
     }
     visitInfo: {
-        company: string;
-        location: string;
+      visitingClient: string;
+      visitAddress: string;
         premises: string;
         colocation: string;
-        employee:string;
-        DLCEmployee: string;
+        clientsEmployees:string;
+        dlcEmployees: string;
     }
     visitorsId: {
         visitorsIdType: string;
@@ -36,6 +36,7 @@ const VisitsPage = () => {
       try{
         setLoading(true)
         const visits = await get('getVisits', cookies.access_token)
+        console.log(visits.data)
         setVisits(visits.data)
         setLoading(false)
       }catch(err){
@@ -47,7 +48,7 @@ const VisitsPage = () => {
 
   return (
     <div style={{width: '100%', padding: '10px', cursor: 'pointer'}} >
-      <List
+      {/* <List
         loading={loading}
         dataSource={visits}
         renderItem={(item, index) => (
@@ -64,6 +65,14 @@ const VisitsPage = () => {
             />
           </List.Item>
         )}
+      /> */}
+      <List
+        size='large'
+        header={<div>Header</div>}
+        footer={<div>Footer</div>}
+        bordered
+        dataSource={visits}
+        renderItem={(item) => <List.Item>{item?.visitInfo?.visitingClient}</List.Item>}
       />
     </div>
   )

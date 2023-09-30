@@ -20,18 +20,19 @@ const VisitingPersonsConfirmation = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const navigate =                    useNavigate()
 
-  const finishVisitRegistration = async(visitorsIdentification:VisitorsIdentificationType) => {
+  const finishVisitRegistration = async(visitorsId:VisitorsIdentificationType) => {
     const visitDetails = localStorage.getItem('visitDetails')
     const visitDetails2 = localStorage.getItem('visitDetails2')
     const signatureImage = signatureCanvasRef.current?.toDataURL()
-    visitorsIdentification.signature = signatureImage
+    visitorsId.signature = signatureImage
+    console.log(visitorsId)
     if(visitDetails && visitDetails2){
       const visitInfo = JSON.parse(visitDetails)
       const visitGoal = JSON.parse(visitDetails2)
       const visitationDetails = {
         visitInfo,
         visitGoal,
-        visitorsIdentification,
+        visitorsId,
       }
       messageApi.success({
         type:    'success',

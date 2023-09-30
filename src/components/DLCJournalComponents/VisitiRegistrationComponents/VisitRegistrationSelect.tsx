@@ -2,37 +2,39 @@
 import React            from 'react'
 import { Form, Select } from 'antd'
 
-type VisitRegistrationSelectProps = {
+type VisitRegistrationFormItemProps = {
     formItemName: string;
     placeholder: string;
+    formItemLabel: string;
     slectOptions:{
-        value: string;
-        label: string;
+        value: string | undefined;
+        label: string | undefined;
     }[] | undefined
-    onChange ?: (value: string, options: { value: string; label: string; } | { value: string; label: string; }[]) => void
+    fieldValue: string
+    updateValue?: boolean | ((prevValue: any, curValue: any) => boolean)
+    onSelect?: (values: any, data: any) => void
 }
 
-const VisitRegistrationSelect = ({formItemName, placeholder, slectOptions, onChange}: VisitRegistrationSelectProps) => {
+const VisitRegistrationFormItem = ({formItemName, placeholder, formItemLabel, slectOptions, fieldValue, updateValue, onSelect}: VisitRegistrationFormItemProps) => {
   return (
-    <div>
-      <Form.Item
-        rules={[
-          {
-            required: true,
-            message:  'Please input your password!',
-          },
-        ]} name={formItemName}>
-        <Select
-          placeholder = {placeholder}
-          style={{width: '300px'}}
-          options={slectOptions}
-          onChange= {onChange}
-
-        >
-        </Select>
-      </Form.Item>
-    </div>
+    <Form.Item
+      noStyle
+      shouldUpdate={updateValue}
+    >
+      {({ getFieldValue }) =>
+        getFieldValue(fieldValue) && (
+          <Form.Item name={formItemName} label={formItemLabel} rules={[{ required: true }]}>
+            <Select
+              placeholder={placeholder}
+              allowClear
+              onSelect={onSelect}
+              options={slectOptions}
+            >
+            </Select>
+          </Form.Item>
+        ) }
+    </Form.Item>
   )
 }
 
-export default VisitRegistrationSelect
+export default VisitRegistrationFormItem

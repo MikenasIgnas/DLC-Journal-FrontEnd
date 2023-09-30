@@ -52,14 +52,16 @@ export type HistoryDataType = {
   filledData: {
     values: {
       [key: string]: {
-        [key: string]: boolean;
-      }[]
+        [key: string]: boolean
+        }[]
     },
+    pageID:           number;
+    routeNumber:      number;
   }[]
   values: {
       [key: string]: {
         [key: string]: boolean;
-      }[]
+      }[],
     },
 
 };

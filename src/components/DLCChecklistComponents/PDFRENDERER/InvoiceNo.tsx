@@ -20,17 +20,38 @@ const styles = StyleSheet.create({
   },
 
 })
+type InvoiceItem = {
+  sno: number;
+  desc: string;
+  qty: number;
+  rate: number;
+};
 
+type InvoiceData = {
+  id: string;
+  invoice_no: string;
+  balance: string;
+  company: string;
+  email: string;
+  phone: string;
+  address: string;
+  trans_date: string;
+  due_date: string;
+  items: InvoiceItem[];
+};
+type InvoiceNoProps = {
+  tableData: InvoiceData
+}
 
-const InvoiceNo = ({invoice}:any) => (
+const InvoiceNo = ({tableData}:InvoiceNoProps) => (
   <Fragment>
     <View style={styles.invoiceNoContainer}>
       <Text style={styles.label}>Invoice No:</Text>
-      <Text style={styles.invoiceDate}>{invoice.invoice_no}</Text>
+      <Text style={styles.invoiceDate}>{tableData.invoice_no}</Text>
     </View >
     <View style={styles.invoiceDateContainer}>
       <Text style={styles.label}>Date: </Text>
-      <Text >{invoice.trans_date}</Text>
+      <Text >{tableData.trans_date}</Text>
     </View >
   </Fragment>
 )

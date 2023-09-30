@@ -4,7 +4,6 @@ import VisitRegistrationForm        from '../../components/DLCJournalComponents/
 import JournalSteps                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationSteps'
 import VisitPurposeForm             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitPurposeForm'
 import VisitingPersonsConfirmation  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitingPersonsConfirmation'
-import TestComponent from '../../components/TestComponent'
 
 const VisitRegistrationPage = () => {
   const [current, setCurrent] = React.useState(0)
@@ -14,7 +13,6 @@ const VisitRegistrationPage = () => {
       { current === 0 && <VisitRegistrationForm setCurrent={setCurrent}/> }
       { current === 1 && <VisitPurposeForm setCurrent={setCurrent}/> }
       { current === 2 && <VisitingPersonsConfirmation /> }
-      <TestComponent/>
     </div>
   )
 }

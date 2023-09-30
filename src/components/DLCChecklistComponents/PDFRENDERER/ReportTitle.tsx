@@ -16,11 +16,13 @@ const styles = StyleSheet.create({
   },
 })
 
-
-const InvoiceTitle = ({title}:any) => (
+type ReportTitleProps = {
+  title: string;
+}
+const ReportTitle = ({title}: ReportTitleProps) => (
   <View style={styles.titleContainer}>
     <Text style={styles.reportTitle}>{title}</Text>
   </View>
 )
 
-export default InvoiceTitle
+export default ReportTitle

@@ -16,32 +16,43 @@ const styles = StyleSheet.create({
     flexGrow:          1,
   },
   description: {
-    width:            '60%',
+    width:            '20%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   qty: {
-    width:            '10%',
+    width:            '20%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   rate: {
-    width:            '15%',
+    width:            '20%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   amount: {
-    width: '15%',
+    width: '20%',
+  },
+  aaa: {
+    width: '20%',
   },
 })
 
-const InvoiceTableHeader = () => (
+type TableHeaderProps = {
+  headerTitle: string | undefined;
+  employee: string;
+  date: string;
+  problemCount: number;
+}
+
+const TableHeader = ({date, headerTitle, problemCount}: TableHeaderProps) => (
   <View style={styles.container}>
-    <Text style={styles.description}>Item Description</Text>
-    <Text style={styles.qty}>Qty</Text>
-    <Text style={styles.rate}>@</Text>
-    <Text style={styles.amount}>Amount</Text>
+    <Text style={styles.description}>Patalpa: {headerTitle}</Text>
+    <Text style={styles.rate}>Veiksmas: {date}</Text>
+    <Text style={styles.aaa}>Problema: {date}</Text>
+    <Text style={styles.amount}>Odoo: {problemCount}</Text>
+    <Text style={styles.amount}>Laikas: {problemCount}</Text>
   </View>
 )
 
-export default InvoiceTableHeader
+export default TableHeader

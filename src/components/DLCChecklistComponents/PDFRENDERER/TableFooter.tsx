@@ -25,15 +25,24 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
 })
+type InvoiceItem = {
+  sno: number;
+  desc: string;
+  qty: number;
+  rate: number;
+};
 
+type InvoiceTableFooterProps = {
+  items: InvoiceItem[]
+}
 
-const InvoiceTableFooter = ({items}:any) => {
-  const total = items.map((item: any) => item.qty * item.rate)
-    .reduce((accumulator: any, currentValue: any) => accumulator + currentValue , 0)
+const InvoiceTableFooter = ({items}:InvoiceTableFooterProps) => {
+  const total = items.map((item) => item.qty * item.rate)
+    .reduce((accumulator, currentValue) => accumulator + currentValue , 0)
   return(
     <View style={styles.row}>
       <Text style={styles.description}>TOTAL</Text>
-      <Text style={styles.total}>{ Number.parseFloat(total).toFixed(2)}</Text>
+      <Text style={styles.total}>{ Number.parseFloat(String(total)).toFixed(2)}</Text>
     </View>
   )
 }

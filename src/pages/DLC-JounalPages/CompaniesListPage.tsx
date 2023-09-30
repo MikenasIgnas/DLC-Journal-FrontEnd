@@ -77,6 +77,7 @@ const CompaniesListPage = () => {
         setModalState={setModalState}
       />
       <List
+        header={<div> Header</div>}
         loading={loading}
         pagination={{ position, align}}
         dataSource={companies}
