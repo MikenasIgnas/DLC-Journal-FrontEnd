@@ -77,7 +77,6 @@ const CompaniesListPage = () => {
         setModalState={setModalState}
       />
       <List
-        header={<div> Header</div>}
         loading={loading}
         pagination={{ position, align}}
         dataSource={companies}
@@ -96,7 +95,7 @@ const CompaniesListPage = () => {
                 <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree
                     showLine
-                    switcherIcon={<DownOutlined />}
+                    switcherIcon={<DownOutlined rev />}
                     defaultExpandedKeys={['0-0-0']}
                     treeData={filter} />
                 </ConfigProvider>

@@ -5,6 +5,7 @@ import ReportTitle                    from './ReportTitle'
 import ChildTable                     from './ChildTable'
 import ParentTable                    from './ParentTable'
 import { HistoryDataType }            from '../../../types/globalTypes'
+import ReportHeader                   from './ReportHeader'
 
 const styles = StyleSheet.create({
   page: {
@@ -53,15 +54,17 @@ type PDFTableProps = {
     problems: null;
     todo: null;
   }
+  fileName?: string | undefined,
+  specificDate: string | undefined
 }
 
-const PDFTable = ({tableData, fetchedPremisesData }: PDFTableProps) => {
+const PDFTable = ({tableData, fetchedPremisesData, fileName, specificDate}: PDFTableProps) => {
+
   return(
     <Document>
       <Page size='A4' style={styles.page}>
-        <ReportTitle title='Invoice'/>
-        {/* <InvoiceNo tableData={tableData}/>
-        <BillTo tableData={tableData}/> */}
+        <ReportTitle />
+        <ReportHeader specificDate={specificDate} fileName={fileName} tableData={tableData}/>
         {
           tableData?.map((table) => (
             <ParentTable key={table.id} table={table} tableStyle={parentTableStyle}>

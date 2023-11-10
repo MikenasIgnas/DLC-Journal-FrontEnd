@@ -69,7 +69,6 @@ const ChildTable = ({ tableStyle, table, fetchedPremisesData }: ChildTableProps)
                 ticketNr={String(ticketNr)}
                 time={String(time)}
               />
-              {/* <InvoiceTableFooter items={invoiceData.items} /> */}
             </>
           )})
       }

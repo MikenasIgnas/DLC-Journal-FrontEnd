@@ -55,7 +55,7 @@ const UsersTable = ({users, actionButtons,deletenDateColumn, tableName, loading}
           <Button
             type='primary'
             onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined />}
+            icon={<SearchOutlined rev/>}
             size='small'
             className='UserTableSearchButton'
           >
@@ -95,7 +95,7 @@ const UsersTable = ({users, actionButtons,deletenDateColumn, tableName, loading}
     ),
 
     filterIcon: () => (
-      <SearchOutlined className='FlterIcon' />
+      <SearchOutlined rev className='FlterIcon' />
     ),
 
     onFilter: (value, record) =>
@@ -203,7 +203,6 @@ const UsersTable = ({users, actionButtons,deletenDateColumn, tableName, loading}
         token: {
           colorBgContainer: defaultPageTheme? '#1e1e1e': 'white',
           colorText:        defaultPageTheme? 'white': 'black',
-          borderRadius:     1,
         },
       }}>
         <Table

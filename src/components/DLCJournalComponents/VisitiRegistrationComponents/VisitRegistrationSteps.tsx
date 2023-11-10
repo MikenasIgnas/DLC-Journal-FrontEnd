@@ -7,29 +7,26 @@ type JournalStepsProps = {
 }
 
 const VisitRegistrationSteps = ({current, setCurrent}: JournalStepsProps) => {
-
   const onChange = (value: number) => {
     setCurrent(value)
   }
-  const description = 'This is a description.'
 
   return (
     <>
       <Steps
+        type='navigation'
         current={current}
+        className='site-navigation-steps'
         onChange={onChange}
         items={[
           {
-            title: 'Step 1',
-            description,
+            title: 'Atvykstantis klientas',
           },
           {
-            title: 'Step 2',
-            description,
+            title: 'Vizito tikslas',
           },
           {
-            title: 'Step 3',
-            description,
+            title: 'Kliento identifikacija',
           },
         ]}
       />

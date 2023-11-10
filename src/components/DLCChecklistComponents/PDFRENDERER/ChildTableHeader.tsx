@@ -21,20 +21,22 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
   },
   duty: {
-    width:            '20%',
+    width:            '32%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   problem: {
-    width:            '20%',
+    width:            '32%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   odoo: {
-    width: '20%',
+    width:            '8%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1,
   },
   time: {
-    width: '20%',
+    width: '8%',
   },
 })
 

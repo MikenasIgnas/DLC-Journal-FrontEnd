@@ -7,7 +7,8 @@ import { setUsername }                                                from '../.
 import { useCookies }                                                 from 'react-cookie'
 import { TokenType }                                                  from '../../types/globalTypes'
 import jwt_decode                                                     from 'jwt-decode'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
+import useFetch                                                       from '../../customHooks/useFetch'
 
 const formItemLayout = {
   labelCol: {
@@ -35,26 +36,11 @@ const EditUserProfilePage = () => {
   const [cookies] =                               useCookies(['access_token'])
   const token =                                   cookies.access_token
   const decodedToken:TokenType =                  jwt_decode(token)
-  const [userProfileData, setUserProfileData] =   React.useState<FormValuesType>()
   const [loading, setLoading] =                   React.useState(false)
   const defaultTheme =                            useAppSelector((state)=> state.theme.value)
   const [loginError, setLoginError] =             React.useState(false)
   const [errorMessage, setErrorMessage] =         React.useState('')
-
-  React.useEffect(() => {
-    (async () => {
-      try{
-        setLoading(true)
-        const user = await get(`FindUser/${decodedToken.secret}`, cookies.access_token)
-        if(!user.error){
-          setUserProfileData(user.data)
-        }
-        setLoading(false)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-  }, [])
+  const userProfileData =                         useFetch<FormValuesType>(`FindUser/${decodedToken.secret}`, setLoading)
 
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
@@ -179,7 +165,6 @@ const EditUserProfilePage = () => {
               dependencies={['password']}
               hasFeedback
               rules={[
-
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || getFieldValue('passwordOne') === value) {

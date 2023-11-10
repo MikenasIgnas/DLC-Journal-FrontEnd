@@ -13,20 +13,23 @@ type VisitRegistrationFormItemProps = {
     fieldValue: string
     updateValue?: boolean | ((prevValue: any, curValue: any) => boolean)
     onSelect?: (values: any, data: any) => void
+    onChange?: (value: string) => void
 }
 
-const VisitRegistrationFormItem = ({formItemName, placeholder, formItemLabel, slectOptions, fieldValue, updateValue, onSelect}: VisitRegistrationFormItemProps) => {
+const VisitRegistrationFormItem = ({formItemName, placeholder, formItemLabel, slectOptions, fieldValue, updateValue, onSelect, onChange}: VisitRegistrationFormItemProps) => {
   return (
     <Form.Item
-      noStyle
       shouldUpdate={updateValue}
     >
       {({ getFieldValue }) =>
         getFieldValue(fieldValue) && (
-          <Form.Item name={formItemName} label={formItemLabel} rules={[{ required: true }]}>
+          <Form.Item name={formItemName} label={<div style={{width: '120px'}}>{formItemLabel}</div>} rules={[{ required: true }]} colon={false} labelAlign={'left'}>
             <Select
+              showSearch
+              style={{width: '200px'}}
               placeholder={placeholder}
               allowClear
+              onChange={onChange}
               onSelect={onSelect}
               options={slectOptions}
             >

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text, View, StyleSheet } from '@react-pdf/renderer'
+import { View, StyleSheet, Image } from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
 
@@ -13,15 +13,14 @@ const styles = StyleSheet.create({
     fontSize:      25,
     textAlign:     'center',
     textTransform: 'uppercase',
+    width:         '200px',
   },
 })
 
-type ReportTitleProps = {
-  title: string;
-}
-const ReportTitle = ({title}: ReportTitleProps) => (
+
+const ReportTitle = () => (
   <View style={styles.titleContainer}>
-    <Text style={styles.reportTitle}>{title}</Text>
+    <Image style={styles.reportTitle} src={'../../Images/DLClogo.png'}/>
   </View>
 )
 

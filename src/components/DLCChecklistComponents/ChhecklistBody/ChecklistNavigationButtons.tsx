@@ -16,11 +16,11 @@ const ChecklistNavigationButtons = ({previousPage}:ChecklistNavigationButtonsPro
   const currentProgressUrlParam = searchParams.get('progress')
   return (
     <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : 'white'}} className='ButtonConainer'>
-      <Button icon={<LeftOutlined/>} type='link' onClick={previousPage}>Back</Button>
+      <Button icon={<LeftOutlined rev/>} type='link' onClick={previousPage}>Back</Button>
       <div style={{color: defaultTheme ? 'white' : 'black'}}>{currentProgressUrlParam}</div>
       <div style={{color: defaultTheme ? 'white' : 'black'}}>/</div>
       <div style={{color: defaultTheme ? 'white' : 'black'}}>{totalRoomsInArea}</div>
-      <Button style={{display: 'flex', alignItems: 'center' }} icon={<RightOutlined style={{marginLeft: '8px',order: '1'}}/>} type='link' htmlType='submit'>Next</Button>
+      <Button style={{display: 'flex', alignItems: 'center' }} icon={<RightOutlined rev style={{marginLeft: '8px',order: '1'}}/>} type='link' htmlType='submit'>Next</Button>
     </div>
   )
 }

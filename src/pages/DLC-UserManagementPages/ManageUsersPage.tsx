@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import React                          from 'react'
-import { get, getCurrentDate, post }  from '../../Plugins/helpers'
-import UsersTable                     from '../../components/UserManagementComponents/UsersTable/UsersTable'
-import type { ColumnsType }           from 'antd/es/table'
-import { Button, Space }              from 'antd'
-import { Link }                       from 'react-router-dom'
-import { useCookies }                 from 'react-cookie'
-import { useAppSelector }             from '../../store/hooks'
-import { UserType }                   from '../../types/globalTypes'
+import React                         from 'react'
+import { get, getCurrentDate, post } from '../../Plugins/helpers'
+import UsersTable                    from '../../components/UserManagementComponents/UsersTable/UsersTable'
+import type { ColumnsType }          from 'antd/es/table'
+import { Button, Space }             from 'antd'
+import { Link }                      from 'react-router-dom'
+import { useCookies }                from 'react-cookie'
+import { useAppSelector }            from '../../store/hooks'
+import { UserType }                  from '../../types/globalTypes'
 
 const ManageUsersPage = () => {
   const [users, setUsers] =       React.useState<UserType[]>([])
@@ -19,9 +19,7 @@ const ManageUsersPage = () => {
       try{
         setLoading(true)
         const allUsers = await get('getAllUsers', cookies.access_token)
-        if(!allUsers.error){
-          setUsers(allUsers.data)
-        }
+        setUsers(allUsers.data)
         setLoading(false)
       }catch(err){
         console.log(err)

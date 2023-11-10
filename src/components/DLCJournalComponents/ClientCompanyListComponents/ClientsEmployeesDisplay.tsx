@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { Form, Input } from 'antd'
-import react from 'react'
 
 type clientsEmployeesDataDisplayProps = {
     label:        string;

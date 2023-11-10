@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import {message } from 'antd'
 const get = async (url, token) => {
   try {
     const response = await fetch(`http://localhost:4000/${url}`, {

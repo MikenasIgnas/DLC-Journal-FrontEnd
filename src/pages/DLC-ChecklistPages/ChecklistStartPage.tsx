@@ -11,7 +11,6 @@ const ChecklistStartPage = () => {
   const defaultPageTheme =                        useAppSelector((state) => state.theme.value)
   const [totalAreasCount, setTotalAreasCount] =   React.useState(0)
   const [cookies, ,removeCookie] =                useCookies(['access_token'])
-
   React.useEffect(() => {
     (async () => {
       try{

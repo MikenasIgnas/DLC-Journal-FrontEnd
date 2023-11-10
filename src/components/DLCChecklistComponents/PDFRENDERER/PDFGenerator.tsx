@@ -7,16 +7,21 @@ import { useCookies }                           from 'react-cookie'
 import { Button, DatePicker, DatePickerProps }  from 'antd'
 import { RangePickerProps }                     from 'antd/es/date-picker'
 import customParseFormat                        from 'dayjs/plugin/customParseFormat'
-import dayjs                                    from 'dayjs'
 import PDFTable                                 from './PDFTable'
+import type { TimeRangePickerProps }            from 'antd'
+import dayjs                                    from 'dayjs'
+import type { Dayjs }                           from 'dayjs'
 dayjs.extend(customParseFormat)
 const { RangePicker } = DatePicker
 
 const PDFGenerator = () => {
-
   const [cookies] = useCookies(['access_token'])
   const [reportData, setPDFData] = React.useState<HistoryDataType[]>()
-  const [buttonText, setButtonText] = React.useState('Generuoti 1 menesio ataskaitą')
+  const [buttonText, setButtonText] = React.useState('Generuoti ataskaitą')
+  const [specificDate, setSpecificDate] = React.useState('')
+  const currentDate = reportData?.[0]?.startDate
+  const dateInAMonth = reportData?.[reportData?.length -1]?.startDate
+  const fileName = `Patalpu tikrinimo ataskaita ${currentDate} - ${dateInAMonth}`
   const [fetchedPremisesData, setFetchedPremisesData] = React.useState({
     routes:   null,
     areas:    null,
@@ -31,9 +36,9 @@ const PDFGenerator = () => {
         const resAreas =              await get('areasData', cookies.access_token)
         const resProblems =           await get('problemsData', cookies.access_token)
         const resTodo =               await get('todoData', cookies.access_token)
+        const historyData =           await get('generateMonthlyPDFReport', cookies.access_token)
         if( !resRoutes.error && !resAreas.error && !resProblems.error && !resTodo.error){
           setFetchedPremisesData({routes: resRoutes.data , areas: resAreas.data, problems: resProblems.data, todo: resTodo.data})
-          const historyData = await get('generateMonthlyPDFReport', cookies.access_token)
           setPDFData(historyData.data)
         }
       }catch(err){
@@ -42,33 +47,33 @@ const PDFGenerator = () => {
     })()
   }, [])
 
-  const currentDate = reportData?.[0].startDate
-  const dateInOneMonth = reportData?.[reportData?.length -1].startDate
-  const fileName = `Patalpų tikrinimo ataskaita ${currentDate} - ${dateInOneMonth}`
 
-  const onChange = (
+  const onChange = async(
     value: DatePickerProps['value'] | RangePickerProps['value'],
     dateString: [string, string] | string,
   ) => {
+    console.log(value)
+    console.log(dateString)
     setButtonText(`Generuoti ${dateString[0]} - ${dateString[1]} ataskaitą`)
-    if(dateString[0] === '' && dateString[1] === ''){
-      setButtonText('Generuoti 1 menesio ataskaitą')
-    }
+    const getSpecificDateReport = await get(`getSpecificDateReport?startDate=${dateString[0]}&endDate=${dateString[1]}`, cookies.access_token)
+    setSpecificDate(`${dateString[0]} - ${dateString[1]}`)
+    setPDFData(getSpecificDateReport.data)
   }
 
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    return current && (current > dayjs())
-  }
+  const rangePresets: TimeRangePickerProps['presets'] = [
+    { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
+    { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
+    { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
+    { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] },
+  ]
+
   return(
-    <div>
-      <PDFDownloadLink document={<PDFTable fetchedPremisesData={fetchedPremisesData} tableData={reportData}/>} fileName={fileName}>
-        {({loading}) => (loading ? <Button>Loading Document...</Button> : <Button>{buttonText}</Button> )}
+    <>
+      <RangePicker presets={rangePresets} onChange={onChange} />
+      <PDFDownloadLink document={<PDFTable fetchedPremisesData={fetchedPremisesData} tableData={reportData} specificDate={specificDate}/>} fileName={fileName}>
+        {({loading}) => (loading ? <Button>Loading Document...</Button> : <Button>{buttonText}</Button>)}
       </PDFDownloadLink>
-      <RangePicker
-        format='YYYY-MM-DD'
-      />
-    </div>
-
+    </>
   )
 }
 

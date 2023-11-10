@@ -29,6 +29,7 @@ const DLCJournalStartPage = () => {
         </Card>
         <Card
           hoverable={true}
+          onClick={()=> navigate('/VisitsPage?page=1&limit=10')}
           style={{
             width:      '400px',
             height:     '150px',
@@ -38,7 +39,7 @@ const DLCJournalStartPage = () => {
             alignItems: 'center',
             margin:     '20px',
           }}>
-          <Link to={'/VisitsPage'}>Aktyvūs vizitai</Link>
+          <Link to={'/VisitsPage?page=1&limit=10'}>Aktyvūs vizitai</Link>
         </Card>
       </div>
       <div>

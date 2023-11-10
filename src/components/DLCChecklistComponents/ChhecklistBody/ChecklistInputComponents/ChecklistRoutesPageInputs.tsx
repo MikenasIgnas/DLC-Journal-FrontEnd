@@ -17,6 +17,7 @@ type InputProps = {
   radioValues:          { [key: string] : boolean; } | undefined,
   alreadyFilledValues:  { [key: string] : boolean; } | undefined,
 };
+
 const ChecklistInputs = ({
   reaction,
   possibleProblems,
@@ -43,7 +44,7 @@ const ChecklistInputs = ({
                 }
                 placement='topLeft'
               >
-                <InfoCircleOutlined style={{color: 'red', marginLeft: '10px'}}/>
+                <InfoCircleOutlined rev style={{color: 'red', marginLeft: '10px'}}/>
               </Tooltip>
           }
         </div>

@@ -55,7 +55,3 @@ const ChecklistHisotoryInputs = ({
 }
 
 export default ChecklistHisotoryInputs
-
-
-
-

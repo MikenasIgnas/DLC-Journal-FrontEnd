@@ -85,7 +85,6 @@ const SingleCompanyPage = () => {
       }
     })()
   },[editClientsEmployee, modalState.isModalOpen,subClientState.mainCompanyAddedAsSubClient, subClientState.subClientChangedToMainClient, modalState.isEmployeeAdditionModalOpen, cookies.access_token])
-
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
@@ -137,7 +136,6 @@ const SingleCompanyPage = () => {
       if(fileList[0]){
         await uploadPhoto(fileList[0], false, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
       }
-
       if(!res.error){
         messageApi.success({
           type:    'success',
@@ -200,9 +198,6 @@ const SingleCompanyPage = () => {
             companyTitle={company?.companyInfo?.companyName.toUpperCase()}
             companyDescription={company?.companyInfo.companyDescription}
             edit={modalState.edit}
-            setFileList={setFileList}
-            fileList={fileList}
-            companyPhoto={company?.companyInfo.companyPhoto}
           />}
       >
         <SubClientAddition

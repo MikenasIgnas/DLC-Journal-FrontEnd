@@ -17,7 +17,7 @@ const CompanyAddition = ({postUrl, additionModalTitle, collocations, setModalSta
     <div>
       <Button
         style={{display: 'flex', margin: 'auto', marginTop: '10px'}}
-        icon={<AppstoreAddOutlined />}
+        icon={<AppstoreAddOutlined rev />}
         onClick={()=> setModalState({...modalState, isModalOpen: true})}>
           Pridėti įmonę
       </Button>

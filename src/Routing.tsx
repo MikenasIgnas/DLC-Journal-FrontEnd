@@ -20,12 +20,13 @@ import { TokenType }                    from './types/globalTypes'
 import DLCJournalStartPage              from './pages/DLC-JounalPages/JournalStartPage'
 import VisitRegistrationPage            from './pages/DLC-JounalPages/VisitRegistrationPage'
 import HomePage                         from './pages/HomePage'
-import CompaniesListPage from './pages/DLC-JounalPages/CompaniesListPage'
-import SingleCompanyPage from './pages/DLC-JounalPages/SingleCompanyPage'
-import VisitsPage from './pages/DLC-JounalPages/VisitsPage'
-import SingleVisitPage from './pages/DLC-JounalPages/SingleVisitPage'
-import SingleClientsEmployeePage from './pages/DLC-JounalPages/SingleClientsEmployeePage'
-import axios from 'axios'
+import CompaniesListPage                from './pages/DLC-JounalPages/CompaniesListPage'
+import SingleCompanyPage                from './pages/DLC-JounalPages/SingleCompanyPage'
+import VisitsPage                       from './pages/DLC-JounalPages/VisitsPage'
+import SingleVisitPage                  from './pages/DLC-JounalPages/SingleVisitPage'
+import SingleClientsEmployeePage        from './pages/DLC-JounalPages/SingleClientsEmployeePage'
+import axios                            from 'axios'
+import TableContainer                   from './components/Table/TableComponents/TableContainer'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])
@@ -72,6 +73,7 @@ const Routing = () => {
               <Route path='CompaniesList' element={<CompaniesListPage/>}/>
               <Route path='VisitsPage' element={<VisitsPage/>}/>
               <Route path='SingleVisitPage/:id' element={<SingleVisitPage/>}/>
+              <Route path='TestTable' element={<TableContainer/>}/>
               <Route path='SingleCompanyPage/:id' element={<SingleCompanyPage/>}/>
               <Route path='SingleClientsEmployeePage' element={<SingleClientsEmployeePage/>}/>
               <Route path='CreateUser' element={<CreateUserPage/>}/>

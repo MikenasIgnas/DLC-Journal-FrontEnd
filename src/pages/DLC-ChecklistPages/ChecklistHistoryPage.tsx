@@ -1,27 +1,20 @@
 /* eslint-disable max-len */
-
-import React                                                      from 'react'
-import { Link, useSearchParams }                                                   from 'react-router-dom'
+import React                                                                  from 'react'
+import { Link, useSearchParams }                                              from 'react-router-dom'
 import { Button, Input, InputRef, Space, Table, ConfigProvider, Pagination }  from 'antd'
-import { get }                                                    from '../../Plugins/helpers'
-import { HistoryDataType, TokenType }                             from '../../types/globalTypes'
-import { useAppSelector }                                         from '../../store/hooks'
-import { useCookies }                                             from 'react-cookie'
-import { ColumnsType }                                            from 'antd/es/table'
-import { ColumnType, FilterConfirmProps }                         from 'antd/es/table/interface'
-import { SearchOutlined }                                         from '@ant-design/icons'
-import Highlighter                                                from 'react-highlight-words'
-import jwt_decode                                                 from 'jwt-decode'
-import { PDFDownloadLink, PDFRenderer } from '@react-pdf/renderer'
-import PDFFile from '../../components/DLCChecklistComponents/PDFRENDERER/PDFfile'
-import PDFGenerator from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
-import { Provider } from 'react-redux'
-import store from '../../store/store'
+import { get }                                                                from '../../Plugins/helpers'
+import { HistoryDataType, TokenType }                                         from '../../types/globalTypes'
+import { useAppSelector }                                                     from '../../store/hooks'
+import { useCookies }                                                         from 'react-cookie'
+import { ColumnsType }                                                        from 'antd/es/table'
+import { ColumnType, FilterConfirmProps }                                     from 'antd/es/table/interface'
+import { SearchOutlined }                                                     from '@ant-design/icons'
+import Highlighter                                                            from 'react-highlight-words'
+import jwt_decode                                                             from 'jwt-decode'
+import PDFGenerator                                                           from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
+
 const ChecklistHistoryPage = () => {
   type DataIndex = keyof HistoryDataType;
-
   const [cookies] =                                           useCookies(['access_token'])
   const decodedToken:TokenType =                              jwt_decode(cookies.access_token)
   const defaultPageTheme =                                    useAppSelector((state) => state.theme.value)
@@ -34,7 +27,7 @@ const ChecklistHistoryPage = () => {
   const [totalHistoryEntriesCount, setTotalHistoryEntries] =  React.useState<number| undefined>(undefined)
   const page =                                                searchParams.get('page')
   const limit =                                               searchParams.get('limit')
-  const [reportData, setReportData] =                         React.useState<HistoryDataType[] | undefined>()
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -58,14 +51,7 @@ const ChecklistHistoryPage = () => {
     setSearchParams(`page=${page}&limit=${pageSize}&menu=2`)
   }
 
-
-
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex,
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
     confirm()
     setSearchText(selectedKeys[0])
     setSearchedColumn(dataIndex)
@@ -91,7 +77,7 @@ const ChecklistHistoryPage = () => {
           <Button
             type='primary'
             onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-            icon={<SearchOutlined />}
+            icon={<SearchOutlined rev />}
             size='small'
             className='UserTableSearchButton'
           >
@@ -131,7 +117,7 @@ const ChecklistHistoryPage = () => {
     ),
 
     filterIcon: () => (
-      <SearchOutlined className='FlterIcon' />
+      <SearchOutlined rev className='FlterIcon' />
     ),
 
     onFilter: (value, record) =>
@@ -149,7 +135,6 @@ const ChecklistHistoryPage = () => {
         }, 100)
       }
     },
-
     render: (text) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -185,20 +170,16 @@ const ChecklistHistoryPage = () => {
       sorter:    (a, b) => Number(a.id) - Number(b.id),
       ...getColumnSearchProps('id'),
     },
-
     {
       title:     'Darbuotojas',
       dataIndex: 'userName',
       render:    (text, user) => (
         <>
-          {
-            user.userRole === 'admin' || user.userRole === 'SYSADMIN' ?<Link to={`/SingleUserPage/${user.secret}`}>{user.userName}</Link>: <div>{user.userName}</div>
-          }
+          {user.userRole === 'admin' || user.userRole === 'SYSADMIN' ?<Link to={`/SingleUserPage/${user.secret}`}>{user.userName}</Link>: <div>{user.userName}</div>}
         </>
       ),
       ...getColumnSearchProps('userName'),
     },
-
     {
       title:     'Pradėta',
       dataIndex: 'startDate',
@@ -213,7 +194,6 @@ const ChecklistHistoryPage = () => {
         return dateA.getTime() - dateB.getTime()
       },
     },
-
     {
       title:     'Baigta',
       dataIndex: 'endDate',
@@ -228,7 +208,6 @@ const ChecklistHistoryPage = () => {
         return dateA.getTime() - dateB.getTime()
       },
     },
-
     {
       title:     'Užtrukta',
       dataIndex: 'endDate',
@@ -240,14 +219,12 @@ const ChecklistHistoryPage = () => {
         return <div>{differenceString}</div>
       },
     },
-
     {
       title:     'Problemos',
       dataIndex: 'problemCount',
       render:    (text, user) => <div style={{color: user.problemCount > 0 ? 'red': 'green'}}>{user.problemCount}</div>,
       sorter:    (a, b) => a.problemCount - b.problemCount,
     },
-
     {
       title:  'Veiksmai',
       render: (text, user) =>
@@ -279,7 +256,6 @@ const ChecklistHistoryPage = () => {
         token: {
           colorBgContainer: defaultPageTheme? '#1e1e1e': 'white',
           colorText:        defaultPageTheme? 'white': 'black',
-          borderRadius:     1,
         },
       }}>
         <Table

@@ -1,38 +1,62 @@
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Button, Form, Select, message }    from 'antd'
-import { useForm }                          from 'antd/es/form/Form'
-import { post }                             from '../../../Plugins/helpers'
-import { useCookies }                       from 'react-cookie'
-import SignatureCanvas                      from 'react-signature-canvas'
-import { useNavigate }                      from 'react-router-dom'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import React                                        from 'react'
+import { Button, Checkbox, Form, Select, message }  from 'antd'
+import { useForm }                                  from 'antd/es/form/Form'
+import { get, post }                                from '../../../Plugins/helpers'
+import { useCookies }                               from 'react-cookie'
+import SignatureCanvas                              from 'react-signature-canvas'
+import { useNavigate, useSearchParams }             from 'react-router-dom'
+import SuccessMessage                               from '../../UniversalComponents/SuccessMessage'
 
 type VisitorsIdentificationType = {
   signature: string | undefined;
   visitorsIdType: string;
 }
 
-const VisitingPersonsConfirmation = () => {
-  const [form] =                      useForm()
-  const [cookies] =                   useCookies(['access_token'])
-  const signatureCanvasRef =          React.useRef<SignatureCanvas>(null)
-  const [messageApi, contextHolder] = message.useMessage()
-  const navigate =                    useNavigate()
+type CollocationsType = {
+  [key: string]: string[]
+}
 
-  const finishVisitRegistration = async(visitorsId:VisitorsIdentificationType) => {
+const VisitingPersonsConfirmation = () => {
+  const [form] =                                            useForm()
+  const [cookies] =                                         useCookies(['access_token'])
+  const signatureCanvasRef =                                React.useRef<SignatureCanvas>(null)
+  const [messageApi, contextHolder] =                       message.useMessage()
+  const navigate =                                          useNavigate()
+  const [searchParams] =                                    useSearchParams()
+  const companyId =                                         searchParams.get('companyId')
+  const addressId =                                         searchParams.get('addressId')
+  const [companiesColocations, setCompaniesCollocations] =  React.useState<CollocationsType[]>()
+  const [visitStatus, setVisitStatus] =                     React.useState('')
+
+  React.useEffect(() => {
+    (async () => {
+      try{
+        const singleCompany =     await get(`SingleCompanyPage/${companyId}`, cookies.access_token)
+        if(addressId === '1'){
+          setCompaniesCollocations(singleCompany.data.companyInfo.J13)
+        }else{
+          setCompaniesCollocations(singleCompany.data.companyInfo.T72)
+        }
+      }catch(err){
+        console.log(err)
+      }
+    })()
+  },[])
+
+  const finishVisitRegistration = async(visitorsIdentification:VisitorsIdentificationType) => {
     const visitDetails = localStorage.getItem('visitDetails')
     const visitDetails2 = localStorage.getItem('visitDetails2')
     const signatureImage = signatureCanvasRef.current?.toDataURL()
-    visitorsId.signature = signatureImage
-    console.log(visitorsId)
+    visitorsIdentification.signature = signatureImage
     if(visitDetails && visitDetails2){
       const visitInfo = JSON.parse(visitDetails)
       const visitGoal = JSON.parse(visitDetails2)
       const visitationDetails = {
+        visitStatus: visitStatus,
         visitInfo,
         visitGoal,
-        visitorsId,
+        visitorsIdentification,
       }
       messageApi.success({
         type:    'success',
@@ -59,29 +83,49 @@ const VisitingPersonsConfirmation = () => {
   }
 
   return (
-    <Form form={form} onFinish={finishVisitRegistration}>
-      <div>
-        <Form.Item name='visitorsIdType'>
-          <Select style={{width: '100%'}}
-            options={[
-              {
-                value: 'Pasas', label: 'Pasas',
-              },
-              {
-                value: 'Tapatybės Kortelė', label: 'Tapatybės Kortelė',
-              },
-              {
-                value: 'Darbuotojo Pažymėjimas', label: 'Darbuotojo Pažymėjimas',
-              },
-            ]}/>
-        </Form.Item>
-        <SignatureCanvas
-          penColor='green'
-          canvasProps={{width: 500, height: 200, style: {backgroundColor: 'white'}}}
-          ref = {signatureCanvasRef}
-        />
-        <Button htmlType='submit'>Registruoti</Button>
-        <Button onClick={handleClear}>Clear</Button>
+    <Form
+      form={form}
+      onFinish={finishVisitRegistration}
+      style={{backgroundColor: 'white', height: '88%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%'}}>
+        <div>
+          {companiesColocations?.map((el, i) => {
+            const objEntries = Object.entries(el)
+            return(
+              <div key={i}>
+                <div>{objEntries[0][0]}</div>
+                <Form.Item name={['visitCollocation', objEntries[0][0]]}>
+                  <Checkbox.Group options={objEntries[0][1]} key={i}/>
+                </Form.Item>
+              </div>
+            )})
+          }
+          <Form.Item name='visitorsIdType'>
+            <Select style={{width: '100%'}}
+              options={[
+                {
+                  value: 'Pasas', label: 'Pasas',
+                },
+                {
+                  value: 'Tapatybės Kortelė', label: 'Tapatybės Kortelė',
+                },
+                {
+                  value: 'Darbuotojo Pažymėjimas', label: 'Darbuotojo Pažymėjimas',
+                },
+              ]}/>
+          </Form.Item>
+          <SignatureCanvas
+            penColor='black'
+            canvasProps={{width: 500, height: 200, style: {backgroundColor: 'lightgrey'}}}
+            ref = {signatureCanvasRef}
+          />
+        </div>
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: '20px'}}>
+          <Button onClick={() => setVisitStatus('success')} htmlType='submit'>Registruoti</Button>
+          <Button onClick={() => setVisitStatus('proccessing')} htmlType='submit'>Paruošti</Button>
+          <Button onClick={handleClear}>Clear</Button>
+        </div>
       </div>
       <SuccessMessage contextHolder={contextHolder}/>
     </Form>

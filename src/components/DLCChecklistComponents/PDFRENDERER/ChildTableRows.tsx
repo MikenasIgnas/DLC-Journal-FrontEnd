@@ -2,7 +2,6 @@
 import React, {Fragment} from 'react'
 import {Text, View, StyleSheet } from '@react-pdf/renderer'
 import { TodoType } from '../../../types/globalTypes'
-
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   row: {
@@ -12,37 +11,30 @@ const styles = StyleSheet.create({
     alignItems:        'center',
     height:            24,
     fontStyle:         'bold',
+    textAlign:         'center',
   },
   premiseName: {
     width:            '20%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
-    textAlign:        'right',
-    paddingRight:     8,
   },
   duty: {
-    width:            '30%',
-    textAlign:        'left',
+    width:            '32%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
-    paddingLeft:      8,
   },
   problem: {
-    width:            '20%',
+    width:            '32%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
-    textAlign:        'right',
-    paddingRight:     8,
   },
   odoo: {
-    width:        '15%',
-    textAlign:    'right',
-    paddingRight: 8,
+    width:            '8%',
+    borderRightColor: borderColor,
+    borderRightWidth: 1,
   },
   time: {
-    width:        '15%',
-    textAlign:    'right',
-    paddingRight: 8,
+    width: '8%',
   },
 })
 
@@ -86,9 +78,6 @@ const ChildTableRows = ({todoInArea, premiseName, possibleProblem, ticketNr, tim
         <Text key={item?.id} style={styles?.problem}>{possibleProblem}</Text>
         <Text key={item?.id} style={styles?.odoo}>{ticketNr !== 'undefined' ? ticketNr : '-'}</Text>
         <Text key={item?.id} style={styles?.time}>{time}</Text>
-        {/* <Text style={styles.qty}>{item?.qty}</Text>
-        <Text style={styles.rate}>{item?.rate}</Text>
-        <Text style={styles.amount}>{(item?.qty * item?.rate).toFixed(2)}</Text> */}
       </View>
     )
   }

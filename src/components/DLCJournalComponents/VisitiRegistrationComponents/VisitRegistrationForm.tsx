@@ -6,18 +6,10 @@ import { Button, Form, Select }                   from 'antd'
 import { useSearchParams }                        from 'react-router-dom'
 import { CompaniesType, EmployeesType, UserType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                  from './VisitRegistrationSelect'
+import EscortAdder                                from './EscortAdder'
 
 type VisitRegistrationFormPRops = {
     setCurrent: React.Dispatch<React.SetStateAction<number>>
-}
-
-const layout = {
-  labelCol:   { span: 8 },
-  wrapperCol: { span: 16 },
-}
-
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
 }
 
 const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
@@ -27,6 +19,7 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
   const [form] =                                  Form.useForm()
   const [searchParams, setSearchParams] =         useSearchParams()
   const [clientsEmployees, setClientsEmployees] = React.useState<EmployeesType[]>()
+  const [canBringCompany, setCamBringCompany] =   React.useState<boolean | undefined>()
 
   React.useEffect(() => {
     (async () => {
@@ -38,7 +31,6 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
   }, [])
 
   const onFinish = (values: any) => {
-    console.log(values)
     localStorage.setItem('visitDetails', JSON.stringify(values))
     setCurrent(1)
   }
@@ -56,20 +48,18 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
   })
 
   const visitors = clientsEmployees?.map((el) => {
-    return { value: el.name, label: el.name, clientsEmployeesId: el.employeeId}
+    return { value: el.name, label: el.name, clientsEmployeesId: el.employeeId, permissions: el.permissions}
   })
-
   const addresses = [
     {
-      value: 'J13',
+      value: '1',
       label: 'J13',
     },
     {
-      value: 'T72',
+      value: '2',
       label: 'T72',
     },
   ]
-
   const selectCompany = async(_: string, data: any) => {
     setSearchParams(`companyId=${data.companyId}`, { replace: true })
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${data.companyId}`, cookies.access_token)
@@ -81,23 +71,38 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
     setSearchParams(`companyId=${companyId}&employeeId=${data.clientsEmployeesId}`)
   }
 
+  const selectAddress = (addressId: string) => {
+    const companyId = searchParams.get('companyId')
+    const employeeId = searchParams.get('employeeId')
+    setSearchParams(`companyId=${companyId}&employeeId=${employeeId}&addressId=${addressId}`)
+  }
+
+  const onChange = (value: string) => {
+    const selectedVisitor = clientsEmployees?.filter((el) => el.name === value)
+    const permissions = selectedVisitor?.[0].permissions
+    const canBringCompany = permissions?.includes('Įleisti Trečius asmenis')
+    setCamBringCompany(canBringCompany)
+  }
+
   return (
     <div style={{
-      width:          '100%',
-      display:        'flex',
-      justifyContent: 'center',
-      alignItems:     'center',
+      width:           '100%',
+      display:         'flex',
+      justifyContent:  'center',
+      alignItems:      'center',
+      backgroundColor: '#ffffff',
     }}>
       <Form
-        {...layout}
         form={form}
         name='control-hooks'
         onFinish={onFinish}
-        style={{ maxWidth: 600 }}
+        style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}
       >
-        <Form.Item name='visitingClient' label='Įmonė' rules={[{ required: true }]}>
+        <Form.Item name='visitingClient' label={<div style={{width: '120px'}}>Įmonė</div>} rules={[{ required: true }]} colon={false} labelAlign={'left'}>
           <Select
-            placeholder='Select a option and change input text above'
+            showSearch
+            placeholder='Pasirinkite įmonę'
+            style={{width: '200px'}}
             onSelect={selectCompany}
             allowClear
             options={companyNames}
@@ -109,15 +114,25 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
           placeholder={'Pasirinkite įmonės darbuotoją'}
           formItemLabel={'clientsEmployees'}
           slectOptions={visitors}
+          onChange={onChange}
           fieldValue={'visitingClient'}
           onSelect={selectClientsEmployee}
           updateValue={(prevValues, currentValues) => prevValues.visitingClient !== currentValues.visitingClient}
         />
+        <Form.Item shouldUpdate={(prevValues, currentValues) => prevValues.visitingClient !== currentValues.visitingClient}>
+          {({ getFieldValue }) =>
+            getFieldValue('clientsEmployees') && (
+              <Form.Item label={<div style={{width: '120px'}}>Palyda</div>} name={'escortsName'} colon={false} labelAlign={'left'}>
+                {canBringCompany ? <EscortAdder/> : <div style={{color: 'red'}}>Negali Būti palydos</div>}
+              </Form.Item>
+            )}
+        </Form.Item>
         <VisitRegistrationFormItem
           formItemName={'visitAddress'}
           placeholder={'Pasirinkite įmonę'}
           formItemLabel={'Adresas'}
           slectOptions={addresses}
+          onSelect={selectAddress}
           fieldValue={'clientsEmployees'}
           updateValue={(prevValues, currentValues) => prevValues.clientsEmployees !== currentValues.clientsEmployees}
         />
@@ -129,7 +144,7 @@ const VisitRegistrationForm = ({setCurrent}: VisitRegistrationFormPRops) => {
           fieldValue={'visitAddress'}
           updateValue={(prevValues, currentValues) => prevValues.visitAddress !== currentValues.visitAddress}
         />
-        <Form.Item {...tailLayout}>
+        <Form.Item>
           <Button htmlType='button' onClick={onReset}>
           Reset
           </Button>

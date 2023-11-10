@@ -45,14 +45,14 @@ const LoginPage = () => {
               {type: 'email', message: 'The input is not valid E-mail!'},
             ]}
           >
-            <Input type='email' prefix={<UserOutlined className='site-form-item-icon' />} placeholder='Email' />
+            <Input type='email' prefix={<UserOutlined rev className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
             name='password'
             rules={[{ required: true, message: 'Please input your Password!' }]}
           >
             <Input.Password
-              prefix={<LockOutlined className='site-form-item-icon' />}
+              prefix={<LockOutlined rev className='site-form-item-icon' />}
               type='password'
               placeholder='Password'
             />

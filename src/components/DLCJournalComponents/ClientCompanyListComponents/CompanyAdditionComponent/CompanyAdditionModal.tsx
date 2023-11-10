@@ -6,7 +6,7 @@ import { post, uploadPhoto }                      from '../../../../Plugins/help
 import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                        from '../CollocationSelectors'
-import { CollocationsType, ModalStateType }                       from '../../../../types/globalTypes'
+import { CollocationsType, ModalStateType }       from '../../../../types/globalTypes'
 
 type AdditionModalProps = {
     postUrl:            string;

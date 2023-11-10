@@ -15,11 +15,8 @@ const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => 
     return { key, values }
   })
 
-  console.log(locationData)
   const totalItemCount = locationData?.reduce((count, obj) => count + Object.values(obj)[0].length, 0)
 
-
-  console.log(`Total number of items in all arrays: ${totalItemCount}`)
   return (
     <div style={{width: '49%'}}>
       {locationData && <Divider>{locationName}</Divider>}

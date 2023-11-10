@@ -4,6 +4,8 @@ import {Text, View, StyleSheet }    from '@react-pdf/renderer'
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
   container: {
+    display:           'flex',
+    justifyContent:    'space-between',
     flexDirection:     'row',
     borderBottomColor: '#bff0fd',
     backgroundColor:   '#bff0fd',
@@ -15,38 +17,31 @@ const styles = StyleSheet.create({
     flexGrow:          1,
   },
   id: {
-    width:            '25%',
-    borderRightColor: borderColor,
-    borderRightWidth: 1,
-  },
-  problemCount: {
-    width:            '5%',
+    width:            '33%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   employee: {
-    width:            '25%',
+    width:            '33%',
     borderRightColor: borderColor,
     borderRightWidth: 1,
   },
   date: {
-    width: '15%',
+    width: '33%',
   },
 })
 
 type TableHeaderProps = {
-    id: string | undefined;
+  id: string | undefined;
   date: string;
-  problemCount: number;
   employee: string | undefined
 }
 
-const TableHeader = ({date, id, problemCount, employee}: TableHeaderProps) => (
+const TableHeader = ({date, id, employee}: TableHeaderProps) => (
   <View style={styles.container}>
     <Text style={styles.id}>{id}</Text>
     <Text style={styles.employee}>{employee}</Text>
     <Text style={styles.date}>{date}</Text>
-    <Text style={styles.problemCount}>{problemCount}</Text>
   </View>
 )
 

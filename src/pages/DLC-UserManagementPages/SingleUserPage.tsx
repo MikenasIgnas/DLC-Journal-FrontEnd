@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 import React                                                          from 'react'
 import { useParams }                                                  from 'react-router-dom'
-import { get, post }                                                  from '../../Plugins/helpers'
+import { post }                                                       from '../../Plugins/helpers'
 import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
 import {  useAppSelector }                                            from '../../store/hooks'
 import { useCookies }                                                 from 'react-cookie'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
+import useFetch                                                       from '../../customHooks/useFetch'
 
 const formItemLayout = {
   labelCol: {
@@ -29,30 +30,14 @@ type SingleUserType = {
 }
 
 const SingleUserPage = () => {
-  const [form] =                        Form.useForm()
-  const [messageApi, contextHolder] =   message.useMessage()
-  const [cookies] =                     useCookies(['access_token'])
-  const {secret} =                      useParams()
-  const [singleUser, setSingleUser] =   React.useState<SingleUserType>()
-  const [loading, setLoading] =         React.useState(false)
-  const usersRole =                     useAppSelector((state)=> state.auth.usersRole)
-  const defaultTheme =                  useAppSelector((state)=> state.theme.value)
-
-  React.useEffect(() => {
-    (async () => {
-      try{
-        setLoading(true)
-        const user = await get(`FindSingleUser/${secret}`, cookies.access_token)
-        if(!user.error){
-          setSingleUser(user.data)
-        }
-        setLoading(false)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-
-  },[])
+  const [form] =                      Form.useForm()
+  const [messageApi, contextHolder] = message.useMessage()
+  const [cookies] =                   useCookies(['access_token'])
+  const {secret} =                    useParams()
+  const [loading, setLoading] =       React.useState(false)
+  const usersRole =                   useAppSelector((state)=> state.auth.usersRole)
+  const defaultTheme =                useAppSelector((state)=> state.theme.value)
+  const singleUser =                  useFetch<SingleUserType>(`FindSingleUser/${secret}`, setLoading)
 
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
@@ -61,7 +46,6 @@ const SingleUserPage = () => {
         email:    values.email,
         userRole: values.userRole,
       }
-
       if(secret){
         const res = await post(`editUserProfile/${secret}`, editedValues, cookies.access_token)
         const res2 = await post(`changedUsername/${secret}`, editedValues, cookies.access_token)
@@ -80,7 +64,6 @@ const SingleUserPage = () => {
         passwordOne: values.passwordOne,
         passwordTwo: values.passwordTwo,
       }
-
       if(secret){
         const res = await post(`editUserProfile/${secret}`, editedValues, cookies.access_token)
         const res2 = await post(`changedUsername/${secret}`, editedValues, cookies.access_token)
