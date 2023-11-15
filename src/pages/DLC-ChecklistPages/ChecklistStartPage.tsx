@@ -30,7 +30,7 @@ const ChecklistStartPage = () => {
       localStorage.removeItem('photos')
       localStorage.setItem('startDate', getCurrentDate())
       localStorage.setItem('startTime', getCurrentTime())
-      navigate('/ChecklistRoutes?route=1&page=1&progress=1')
+      navigate('/Checklistas?route=1&page=1&progress=1')
     }else{
       localStorage.clear()
       removeCookie('access_token')

@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
 import React from 'react'
 import { Box, ListItem, ListItemButton, ListItemContent, Typography } from '@mui/joy'
-import AssignmentRoundedIcon from '@mui/icons-material/AssignmentRounded'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import List from '@mui/joy/List'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 function Toggler({
   defaultExpanded = false,
   renderToggle,
@@ -48,7 +47,7 @@ const NestedListItem = ({itemIcon, itemName, nestedItems, link}:UnNestesListItem
   const openToggleButton = (open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>) => {
     setOpen(!open)
     if(link){
-      navigate(link)
+      navigate(`${itemName}`)
     }
   }
   return (
@@ -58,7 +57,7 @@ const NestedListItem = ({itemIcon, itemName, nestedItems, link}:UnNestesListItem
           <ListItemButton onClick={() => openToggleButton(open, setOpen)}>
             {itemIcon}
             <ListItemContent>
-              <Typography level='title-sm'>{itemName}</Typography>
+              <Typography level='title-sm'>{itemName !== '' ? itemName : 'Darbuotojai'}</Typography>
             </ListItemContent>
             <KeyboardArrowDownIcon
               sx={{ transform: open ? 'rotate(180deg)' : 'none' }}
@@ -67,11 +66,13 @@ const NestedListItem = ({itemIcon, itemName, nestedItems, link}:UnNestesListItem
         )}
       >
         <List sx={{ gap: 0.5 }}>
-          {nestedItems?.map((item, i) => (
-            <ListItem key={i} sx={{ mt: 0.5 }}>
-              <ListItemButton onClick={() => navigate(`${item.link}`)}>{item.itemName}</ListItemButton>
-            </ListItem>
-          ))}
+          <nav>
+            {nestedItems?.map((item, i) => (
+              <ListItem key={i} sx={{ mt: 0.5 }}>
+                <Link to={`${itemName}${item.link}`}>{item.itemName}</Link>
+              </ListItem>
+            ))}
+          </nav>
         </List>
       </Toggler>
     </ListItem>

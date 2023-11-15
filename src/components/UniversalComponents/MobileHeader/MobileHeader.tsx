@@ -30,11 +30,11 @@ const MobileHeader = ({menuItems2, Logout}: MobileHeaderProps) => {
       padding:         '5px',
     }}>
       <div>
-        <MenuOutlined style={{fontSize: '18px', padding: '15px' }} onClick={() => setOpen(true)} rev/>
+        <MenuOutlined style={{fontSize: '18px', padding: '15px' }} onClick={() => setOpen(true)} rev=''/>
       </div>
       <div style={{display: 'flex', alignItems: 'center', width: '230px', justifyContent: 'space-between'}}>
         <Link to={'/EditUsersProfile'}> {`Darbuotojas: ${userName}`}</Link>
-        <LogoutOutlined style={{fontSize: '20px', paddingRight: '15px'}} onClick={Logout} rev/>
+        <LogoutOutlined style={{fontSize: '20px', paddingRight: '15px'}} onClick={Logout} rev=''/>
       </div>
       <ConfigProvider theme={{
         token: {
@@ -46,7 +46,7 @@ const MobileHeader = ({menuItems2, Logout}: MobileHeaderProps) => {
           placement={'left'}
           onClose={() => setOpen(false)}
           open={open}
-          closeIcon={<CloseOutlined rev style={{fontSize: '16px', marginLeft: '10px'}} />}
+          closeIcon={<CloseOutlined rev='' style={{fontSize: '16px', marginLeft: '10px'}} />}
           style={{
             width:           width / 1.5,
             backgroundColor: defaultTheme ? '#191919' : 'white',

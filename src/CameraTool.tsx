@@ -95,7 +95,7 @@ const CameraTool = ({ dutiesId }: CameraToolProps) => {
 
   return (
     <div style={{display: 'flex',justifyContent: 'center',alignItems: 'center'}}>
-      <CameraOutlined rev style={{fontSize: '20px'}} onClick={() => setShowCamera(true)} />
+      <CameraOutlined rev='' style={{fontSize: '20px'}} onClick={() => setShowCamera(true)} />
       {showCamera ? (
         <OpenedCamera
           showCamera={showCamera}
@@ -110,8 +110,8 @@ const CameraTool = ({ dutiesId }: CameraToolProps) => {
       )}
       {(photo && hasPhoto && !isPhotoDeleted ) || hasOldPhoto && !isPhotoDeleted ? (
         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <EyeOutlined rev style={{ marginLeft: '15px', fontSize: '20px' }} onClick={() => setShowImage(true)} />
-          <DeleteOutlined rev style={{marginLeft: '15px', fontSize: '20px'}} onClick={deletePhoto}/>
+          <EyeOutlined rev='' style={{ marginLeft: '15px', fontSize: '20px' }} onClick={() => setShowImage(true)} />
+          <DeleteOutlined rev='' style={{marginLeft: '15px', fontSize: '20px'}} onClick={deletePhoto}/>
         </div>
       ) : (
         ''

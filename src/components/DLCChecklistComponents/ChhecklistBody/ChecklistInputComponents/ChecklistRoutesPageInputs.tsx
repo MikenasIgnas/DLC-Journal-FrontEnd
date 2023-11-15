@@ -44,7 +44,7 @@ const ChecklistInputs = ({
                 }
                 placement='topLeft'
               >
-                <InfoCircleOutlined rev style={{color: 'red', marginLeft: '10px'}}/>
+                <InfoCircleOutlined rev='' style={{color: 'red', marginLeft: '10px'}}/>
               </Tooltip>
           }
         </div>

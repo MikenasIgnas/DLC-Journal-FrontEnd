@@ -90,7 +90,7 @@ const SingleHistoryPage = () => {
               </div>,
               key:      tabId,
               children: item && typeof item?.id !== 'string'
-                ? <HistoryRouteTab setIsUpdated={setIsUpdated} itemId={tabItems && tabItems[0]?.secret} routeID={item?.id}/>
+                ? <HistoryRouteTab setIsUpdated={setIsUpdated} itemId={tabItems && String(tabItems[0]?.id)} routeID={item?.id}/>
                 : <UserWhoFilled item={item && item}/>,
             }
           })}

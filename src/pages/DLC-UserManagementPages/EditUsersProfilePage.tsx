@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import React                                                          from 'react'
 import { Button, Card, ConfigProvider, Form, Input, Select, message } from 'antd'
-import { get, post }                                                  from '../../Plugins/helpers'
+import { post }                                                       from '../../Plugins/helpers'
 import { useAppDispatch, useAppSelector }                             from '../../store/hooks'
 import { setUsername }                                                from '../../auth/AuthReducer/reducer'
 import { useCookies }                                                 from 'react-cookie'
 import { TokenType }                                                  from '../../types/globalTypes'
-import jwt_decode                                                     from 'jwt-decode'
+import {jwtDecode}                                                    from 'jwt-decode'
 import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
 import useFetch                                                       from '../../customHooks/useFetch'
 
@@ -35,12 +35,12 @@ const EditUserProfilePage = () => {
   const [messageApi, contextHolder] =             message.useMessage()
   const [cookies] =                               useCookies(['access_token'])
   const token =                                   cookies.access_token
-  const decodedToken:TokenType =                  jwt_decode(token)
+  const decodedToken:TokenType =                  jwtDecode(token)
   const [loading, setLoading] =                   React.useState(false)
   const defaultTheme =                            useAppSelector((state)=> state.theme.value)
   const [loginError, setLoginError] =             React.useState(false)
   const [errorMessage, setErrorMessage] =         React.useState('')
-  const userProfileData =                         useFetch<FormValuesType>(`FindUser/${decodedToken.secret}`, setLoading)
+  const userProfileData =                         useFetch<FormValuesType>(`FindUser/${decodedToken.id}`, setLoading)
 
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
@@ -50,8 +50,8 @@ const EditUserProfilePage = () => {
         userRole: values.userRole,
       }
 
-      const res = await post(`editUserProfile/${decodedToken.secret}`, editedValues, cookies.access_token)
-      const res2 = await post(`changedUsername/${decodedToken.secret}`, editedValues, cookies.access_token)
+      const res = await post(`editUserProfile/${decodedToken.id}`, editedValues, cookies.access_token)
+      const res2 = await post(`changedUsername/${decodedToken.id}`, editedValues, cookies.access_token)
       dispatch(setUsername(values.username))
       if(!res.error && !res2.error){
         messageApi.success({
@@ -75,8 +75,8 @@ const EditUserProfilePage = () => {
         passwordTwo: values.passwordTwo,
       }
       decodedToken.username = values.username
-      const res = await post(`editUserProfile/${decodedToken.secret}`, editedValues, cookies.access_token)
-      const res2 = await post(`changedUsername/${decodedToken.secret}`, editedValues, cookies.access_token)
+      const res = await post(`editUserProfile/${decodedToken.id}`, editedValues, cookies.access_token)
+      const res2 = await post(`changedUsername/${decodedToken.id}`, editedValues, cookies.access_token)
       dispatch(setUsername(values.username))
       if(!res.error && !res2.error){
         messageApi.success({
@@ -144,7 +144,7 @@ const EditUserProfilePage = () => {
                 placeholder='Pasirinkti rolę'
                 dropdownStyle={{ backgroundColor: defaultTheme ? '#191919' : 'white' }}
                 options={[
-                  { value: 'SYSADMIN', label: 'System Admin' },
+                  { value: 'SYSADMIN', label: 'SYSADMIN' },
                   { value: 'admin', label: 'Admin' },
                   { value: 'user', label: 'User' },
                 ]}

@@ -13,7 +13,7 @@ const EscortAdder: React.FC = () => {
               <Form.Item validateTrigger={['onChange', 'onBlur']} {...field} noStyle>
                 <Input placeholder='Palyda' style={{ width: '90%' }}/>
               </Form.Item>
-              <MinusCircleOutlined rev
+              <MinusCircleOutlined rev=''
                 style={{marginLeft: '5px'}}
                 className='dynamic-delete-button'
                 onClick={() => remove(field.name)}
@@ -25,7 +25,7 @@ const EscortAdder: React.FC = () => {
               type='dashed'
               onClick={() => add()}
               style={{ width: '200px' }}
-              icon={<PlusOutlined rev/>}
+              icon={<PlusOutlined rev=''/>}
             >
                 Pridėti palydą
             </Button>

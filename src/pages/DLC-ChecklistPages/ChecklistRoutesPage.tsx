@@ -11,7 +11,7 @@ import { onIncrementProgressTracker }                                           
 import { onDecrementProgressTracker }                                                                           from '../../store/decrementThunks/thunksDecrement'
 import FinishModal                                                                                              from '../../components/UniversalComponents/FinishModal/FinishModal'
 import { useCookies }                                                                                           from 'react-cookie'
-import jwt_decode                                                                                               from 'jwt-decode'
+import {jwtDecode}                                                                                              from 'jwt-decode'
 import { TokenType }                                                                                            from '../../types/globalTypes'
 import PremiseName                                                                                              from '../../components/DLCChecklistComponents/PremiseName/PremiseName'
 import ChecklistBody                                                                                            from '../../components/DLCChecklistComponents/ChhecklistBody/ChecklistBody'
@@ -33,7 +33,7 @@ const ChecklistRoutesPage = () => {
   const dispatch =                        useAppDispatch()
   const navigate =                        useNavigate()
   const [cookies] =                       useCookies(['access_token'])
-  const decodedToken:TokenType =          jwt_decode(cookies.access_token)
+  const decodedToken:TokenType =          jwtDecode(cookies.access_token)
   const [searchParams, setSearchParams] = useSearchParams()
   const [messageApi, contextHolder] =     message.useMessage()
   const [isModalOpen, setIsModalOpen] =   React.useState(false)
@@ -151,7 +151,7 @@ const ChecklistRoutesPage = () => {
         endDate,
         endTime,
         problemCount,
-        secret:   decodedToken.secret,
+        secret:   decodedToken.id,
         userRole: decodedToken.userRole,
       }
       try{

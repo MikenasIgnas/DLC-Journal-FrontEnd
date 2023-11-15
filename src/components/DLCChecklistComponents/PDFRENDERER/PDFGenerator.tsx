@@ -52,8 +52,6 @@ const PDFGenerator = () => {
     value: DatePickerProps['value'] | RangePickerProps['value'],
     dateString: [string, string] | string,
   ) => {
-    console.log(value)
-    console.log(dateString)
     setButtonText(`Generuoti ${dateString[0]} - ${dateString[1]} ataskaitą`)
     const getSpecificDateReport = await get(`getSpecificDateReport?startDate=${dateString[0]}&endDate=${dateString[1]}`, cookies.access_token)
     setSpecificDate(`${dateString[0]} - ${dateString[1]}`)

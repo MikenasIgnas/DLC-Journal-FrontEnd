@@ -1,58 +1,45 @@
-/* eslint-disable max-len */
-import { Button }                           from 'antd'
-import React                                from 'react'
-import { EmployeesType }                    from '../../../types/globalTypes'
-import { useSearchParams }                  from 'react-router-dom'
-import { ToggleButtonGroup, ToggleButton }  from '@mui/material'
-import useFetch                             from '../../../customHooks/useFetch'
-
-type VisitPurposeForm = {
-    setCurrent: React.Dispatch<React.SetStateAction<number>>
+import * as React from 'react'
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
+import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
+import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
+import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+type VisitPurposeFormProps = {
+  setCurrent: React.Dispatch<React.SetStateAction<number>>
 }
 
-const VisitPurposeForm = ({setCurrent}: VisitPurposeForm) => {
-  const [searchParams] = useSearchParams()
-  const companyId = searchParams.get('companyId')
-  const employeeId = searchParams.get('employeeId')
-  const clientsEmployee = useFetch<EmployeesType>(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`)
-  const visitPurposeArray: string[] = []
 
-  const handleCardClick = (value: string) => {
-    visitPurposeArray.push(value)
-    const puppose: { visitPurpose: string[] }  = {
-      visitPurpose: visitPurposeArray,
-    }
-    const uniqueVisitPurpose = puppose.visitPurpose.filter((value, index, self) => {
-      return self.indexOf(value) === index
-    })
-    const resultObject = {
-      visitPurpose: uniqueVisitPurpose,
-    }
-  }
-  const [alignment, setAlignment] = React.useState<string[]>([])
+const VisitPurposeForm = ({setCurrent}:VisitPurposeFormProps) => {
+  const [alignment, setAlignment] = React.useState<string | null>('left')
 
-  const handleChange = (
+  const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: string[],
+    newAlignment: string | null,
   ) => {
-    localStorage.setItem('visitDetails2', JSON.stringify(newAlignment))
     setAlignment(newAlignment)
   }
-  const goNext = () => {
-    setCurrent(2)
-  }
   return (
-    <div style={{display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-      <ToggleButtonGroup
-        color='primary'
-        aria-label='Platform'
-        value={alignment}
-        onChange={handleChange}
-      >
-        {clientsEmployee?.permissions.map((el, i) => <ToggleButton key={i} value={el}>{el}</ToggleButton>)}
-      </ToggleButtonGroup>
-      <Button onClick={goNext}>Next</Button>
-    </div>
+    <ToggleButtonGroup
+      value={alignment}
+      exclusive
+      sx={{borderRadius: '5px'}}
+      onChange={handleAlignment}
+      aria-label='text alignment'
+    >
+      <ToggleButton value='left' aria-label='left aligned'>
+        <FormatAlignLeftIcon />
+      </ToggleButton>
+      <ToggleButton value='center' aria-label='centered'>
+        <FormatAlignCenterIcon />
+      </ToggleButton>
+      <ToggleButton value='right' aria-label='right aligned'>
+        <FormatAlignRightIcon />
+      </ToggleButton>
+      <ToggleButton value='justify' aria-label='justified' disabled>
+        <FormatAlignJustifyIcon />
+      </ToggleButton>
+    </ToggleButtonGroup>
   )
 }
 

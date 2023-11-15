@@ -56,11 +56,11 @@ const CompaniesListPage = () => {
   const treeCompanies = companies?.map((el, i) => {
     const childCompanies = companies.filter((ele) => ele.parentCompanyId === el.id)
     return{
-      title:    <Link to={`/SingleCompanyPage/${el.id}`}>{el.companyInfo.companyName}</Link>,
+      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}`}>{el.companyInfo.companyName}</Link>,
       key:      el.id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/SingleCompanyPage/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),
@@ -95,11 +95,11 @@ const CompaniesListPage = () => {
                 <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree
                     showLine
-                    switcherIcon={<DownOutlined rev />}
+                    switcherIcon={<DownOutlined rev='' />}
                     defaultExpandedKeys={['0-0-0']}
                     treeData={filter} />
                 </ConfigProvider>
-                : <Link to={`/SingleCompanyPage/${item.id}`}>{item.companyInfo.companyName}</Link>}/>)
+                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>}/>)
         }}/>
     </div>
   )

@@ -1,46 +1,80 @@
 /* eslint-disable max-len */
-import React            from 'react'
-import UsersTable       from '../../components/UserManagementComponents/UsersTable/UsersTable'
-import { get }          from '../../Plugins/helpers'
-import { useCookies }   from 'react-cookie'
-import { ColumnsType }  from 'antd/es/table'
-import { UserType }     from '../../types/globalTypes'
+import React                from 'react'
+import { get }              from '../../Plugins/helpers'
+import { useCookies }       from 'react-cookie'
+import { UserType }         from '../../types/globalTypes'
+import FullTable            from '../../components/Table/TableComponents/FullTable'
+import { useSearchParams }  from 'react-router-dom'
+import UserArchiveTableRows from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
+import RowMenu              from '../../components/Table/TableComponents/RowMenu'
 
+const TableColumns = () => {
+  return(
+    <>
+      <th style={{ width: 220, padding: '12px 6px' }}>Prisijungimas</th>
+      <th style={{ width: 220, padding: '12px 6px' }}>El. Paštas</th>
+      <th style={{ width: 150, padding: '12px 6px' }}>Darbuotojas</th>
+      <th style={{ width: 120, padding: '12px 6px' }}>Rolė</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Sukurta</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Ištrinta</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Veiksmai</th>
+    </>
+  )
+}
 
 const UsersArchivePage = () => {
-  const [users, setUsers] =     React.useState<UserType[]>([])
-  const [loading, setLoading] = React.useState(false)
-  const [cookies] =             useCookies(['access_token'])
+  const [users, setUsers] =                 React.useState<UserType[]>()
+  const [cookies] =                         useCookies(['access_token'])
+  const [searchParams, setSearchParams] =   useSearchParams()
+  const page =                              searchParams.get('page')
+  const limit =                             searchParams.get('limit')
+  const filter =                            searchParams.get('filter')
+  const [documentCount, setDocumentCount] = React.useState<number | undefined>()
 
   React.useEffect(() => {
     (async () => {
       try{
-        setLoading(true)
-        const allArchivedUsers = await get('getArchivedUsers', cookies.access_token)
-        if(!allArchivedUsers.error){
-          setUsers(allArchivedUsers.data)
-        }
-        setLoading(false)
+        const allArchivedUsers = await get(`getArchivedUsers?page=${page}&limit=${limit}&filter=${filter}`, cookies.access_token)
+        const archivedUsersCount = await get('archivedUsersCount', cookies.access_token)
+        setUsers(allArchivedUsers)
+        setDocumentCount(archivedUsersCount.data)
       }catch(err){
         console.log(err)
       }
     })()
-  },[])
+  },[page, limit, filter])
 
-
-  const deletenDateColumn: ColumnsType<UserType> = [
+  const tableFilter = [
     {
-      title:     'Deteled',
-      dataIndex: 'dateDeleted',
-      render:    (text, user) => <div>{user.dateDeleted}</div>,
-      sorter:    (a, b) => a.dateDeleted.length - b.dateDeleted?.length,
+      filterName:    'Statusas',
+      filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
     },
   ]
-
   return (
-    <UsersTable loading={loading} users={users} deletenDateColumn={deletenDateColumn} tableName={'Darbuotojų Archyvas'}/>
+    <FullTable
+      tableData={users}
+      tableColumns={<TableColumns />}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      setTableData={setUsers}
+      tableFilter={tableFilter}
+      tableRows={users?.map((el) => (
+        <UserArchiveTableRows
+          key={el.id}
+          id={String(el.id)}
+          dateCreated={el.dateCreated}
+          dateDeleted={el.dateDeleted}
+          email={el.email}
+          userRole={el.userRole}
+          username={el.username}
+          rowMenu={<RowMenu />}
+          status={el.status} />
+      ))}
+      request={'getArchivedUsers'}
+      getDocumentCount={'archivedUsersCount'}
+    />
   )
-
 }
 
 export default UsersArchivePage

@@ -1,41 +1,34 @@
-import React                                         from 'react'
-import { Box, FormControl, FormLabel, Input, Sheet } from '@mui/joy'
-import SearchIcon                                    from '@mui/icons-material/Search'
-import IconButton                                    from '@mui/joy/IconButton'
-import FilterAltIcon                                 from '@mui/icons-material/FilterAlt'
-import TableFilters                                  from './TableFilters'
+/* eslint-disable max-len */
+import React                            from 'react'
+import { Box, FormControl, FormLabel }  from '@mui/joy'
+import TableFilters                     from './TableFilters'
+import { FilterOptions, VisitsType }    from '../../../types/globalTypes'
+import { Input }                        from 'antd'
+import { get }                          from '../../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
+import { useSearchParams }              from 'react-router-dom'
 
-const TableControls = () => {
-  const [open, setOpen] = React.useState(false)
+type TableControlsProps = {
+  setTableData:   React.Dispatch<React.SetStateAction<any[] | undefined>>;
+  tableFilter:    FilterOptions;
+  request: string;
+}
+
+const TableControls = ({setTableData, tableFilter, request}: TableControlsProps) => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [cookies] =                       useCookies(['access_token'])
+  const page =                            searchParams.get('page')
+  const limit =                           searchParams.get('limit')
+  const filter =                          searchParams.get('filter')
+
+  const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value}`)
+    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&filter=${filter}`, cookies.access_token)
+    setTableData(visitsData)
+  }
 
   return (
     <React.Fragment>
-      <Sheet
-        className='SearchAndFilters-mobile'
-        sx={{
-          display: {
-            xs: 'flex',
-            sm: 'none',
-          },
-          my:  1,
-          gap: 1,
-        }}
-      >
-        <Input
-          size='sm'
-          placeholder='Search'
-          startDecorator={<SearchIcon />}
-          sx={{ flexGrow: 1 }}
-        />
-        <IconButton
-          size='sm'
-          variant='outlined'
-          color='neutral'
-          onClick={() => setOpen(true)}
-        >
-          <FilterAltIcon />
-        </IconButton>
-      </Sheet>
       <Box
         className='SearchAndFilters-tabletUp'
         sx={{
@@ -57,9 +50,9 @@ const TableControls = () => {
       >
         <FormControl sx={{ flex: 1 }} size='sm'>
           <FormLabel>Search for order</FormLabel>
-          <Input size='sm' placeholder='Search' startDecorator={<SearchIcon />} />
+          <Input placeholder='input with clear icon' allowClear onChange={onChange} />
         </FormControl>
-        {<TableFilters/>}
+        {<TableFilters request={request} setTableData={setTableData} tableFilter={tableFilter}/>}
       </Box>
     </React.Fragment>
   )

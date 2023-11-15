@@ -5,7 +5,7 @@ import { Card }                 from 'antd'
 import { Link }                 from 'react-router-dom'
 import { useAppSelector }       from '../../../store/hooks'
 import { useCookies }           from 'react-cookie'
-import jwt_decode               from 'jwt-decode'
+import {jwtDecode}              from 'jwt-decode'
 
 type UserWhoFilledProps = {
     item: RouteType | undefined,
@@ -17,7 +17,7 @@ const UserWhoFilled = ({item}:UserWhoFilledProps) => {
   const defaultPageTheme =                useAppSelector((state) => state.theme.value)
   const [cookies] =                       useCookies(['access_token'])
   const token =                           cookies.access_token
-  const decodedToken:TokenType =          jwt_decode(token)
+  const decodedToken:TokenType =          jwtDecode(token)
   const isMobile = window.innerWidth < 650
   React.useEffect(() => {
     if(item){
@@ -33,7 +33,7 @@ const UserWhoFilled = ({item}:UserWhoFilledProps) => {
     <Card title={
       (item?.userRole === 'admin' || item?.userRole === 'SYSADMIN') || (decodedToken.userRole === 'admin' || decodedToken.userRole === 'SYSADMIN')
         ?
-        <Link to={`/SingleUserPage/${item?.secret}`}>{item?.userName}</Link>
+        <Link to={`/SingleUserPage/${item?.id}`}>{item?.userName}</Link>
         : <div style={{color: defaultPageTheme ? 'white' : 'black'}}>{item?.userName}</div>
     }
     bordered={false}

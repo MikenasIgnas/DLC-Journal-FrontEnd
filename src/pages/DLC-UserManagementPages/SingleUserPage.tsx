@@ -33,12 +33,11 @@ const SingleUserPage = () => {
   const [form] =                      Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
   const [cookies] =                   useCookies(['access_token'])
-  const {secret} =                    useParams()
+  const {id} =                    useParams()
   const [loading, setLoading] =       React.useState(false)
   const usersRole =                   useAppSelector((state)=> state.auth.usersRole)
   const defaultTheme =                useAppSelector((state)=> state.theme.value)
-  const singleUser =                  useFetch<SingleUserType>(`FindSingleUser/${secret}`, setLoading)
-
+  const singleUser =                  useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
       const editedValues = {
@@ -46,9 +45,9 @@ const SingleUserPage = () => {
         email:    values.email,
         userRole: values.userRole,
       }
-      if(secret){
-        const res = await post(`editUserProfile/${secret}`, editedValues, cookies.access_token)
-        const res2 = await post(`changedUsername/${secret}`, editedValues, cookies.access_token)
+      if(id){
+        const res = await post(`editUserProfile/${id}`, editedValues, cookies.access_token)
+        const res2 = await post(`changedUsername/${id}`, editedValues, cookies.access_token)
         if(!res.error && !res2.error){
           messageApi.success({
             type:    'success',
@@ -64,9 +63,9 @@ const SingleUserPage = () => {
         passwordOne: values.passwordOne,
         passwordTwo: values.passwordTwo,
       }
-      if(secret){
-        const res = await post(`editUserProfile/${secret}`, editedValues, cookies.access_token)
-        const res2 = await post(`changedUsername/${secret}`, editedValues, cookies.access_token)
+      if(id){
+        const res = await post(`editUserProfile/${id}`, editedValues, cookies.access_token)
+        const res2 = await post(`changedUsername/${id}`, editedValues, cookies.access_token)
         if(!res.error && !res2.error){
           messageApi.success({
             type:    'success',

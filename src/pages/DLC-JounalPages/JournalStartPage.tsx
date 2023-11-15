@@ -15,7 +15,7 @@ const DLCJournalStartPage = () => {
       <div>
         <Card
           hoverable={true}
-          onClick={()=> navigate('/VisitRegistration')}
+          onClick={()=> navigate('/DLC Žurnalas/Vizito_Registracija')}
           style={{
             width:      '400px',
             height:     '150px',
@@ -25,11 +25,11 @@ const DLCJournalStartPage = () => {
             alignItems: 'center',
             margin:     '20px',
           }}>
-          <Link to={'/VisitRegistration'}>Registruoti naują vizitą</Link>
+          <Link to={'/DLC Žurnalas/Vizito_Registracija'}>Registruoti naują vizitą</Link>
         </Card>
         <Card
           hoverable={true}
-          onClick={()=> navigate('/VisitsPage?page=1&limit=10')}
+          onClick={()=> navigate('/DLC Žurnalas/Vizitai?page=1&limit=10')}
           style={{
             width:      '400px',
             height:     '150px',
@@ -39,13 +39,13 @@ const DLCJournalStartPage = () => {
             alignItems: 'center',
             margin:     '20px',
           }}>
-          <Link to={'/VisitsPage?page=1&limit=10'}>Aktyvūs vizitai</Link>
+          <Link to={'/DLC Žurnalas/Vizitai?page=1&limit=10'}>Aktyvūs vizitai</Link>
         </Card>
       </div>
       <div>
         <Card
           hoverable={true}
-          onClick={()=> navigate('/CompaniesList')}
+          onClick={()=> navigate('/DLC Žurnalas/Įmonių_Sąrašas')}
           style={{
             width:      '400px',
             height:     '150px',
@@ -55,7 +55,7 @@ const DLCJournalStartPage = () => {
             alignItems: 'center',
             margin:     '20px',
           }}>
-            Įmonių sąrašas
+          <Link to={'DLC Žurnalas/Įmonių_Sąrašas'}>Įmonių sąrašas</Link>
         </Card>
         <Card
           hoverable={true}

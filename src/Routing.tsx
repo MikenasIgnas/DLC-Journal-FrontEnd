@@ -15,7 +15,6 @@ import SingleUserPage                   from './pages/DLC-UserManagementPages/Si
 import PageLayout                       from './components/UniversalComponents/PageLayout/PageLayout'
 import UsersArchivePage                 from './pages/DLC-UserManagementPages/UsersArchivePage'
 import { useCookies }                   from 'react-cookie'
-import jwt_decode                       from 'jwt-decode'
 import { TokenType }                    from './types/globalTypes'
 import DLCJournalStartPage              from './pages/DLC-JounalPages/JournalStartPage'
 import VisitRegistrationPage            from './pages/DLC-JounalPages/VisitRegistrationPage'
@@ -26,7 +25,7 @@ import VisitsPage                       from './pages/DLC-JounalPages/VisitsPage
 import SingleVisitPage                  from './pages/DLC-JounalPages/SingleVisitPage'
 import SingleClientsEmployeePage        from './pages/DLC-JounalPages/SingleClientsEmployeePage'
 import axios                            from 'axios'
-import TableContainer                   from './components/Table/TableComponents/TableContainer'
+import { jwtDecode }                    from 'jwt-decode'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])
@@ -36,7 +35,7 @@ const Routing = () => {
       const token = cookies.access_token
       if (token) {
         try {
-          const decodedToken: TokenType = jwt_decode(token)
+          const decodedToken: TokenType = jwtDecode(token)
           const expirationTime =  decodedToken.exp * 1000
           const currentTime =     Date.now()
           const timeRemaining =   expirationTime - currentTime
@@ -64,23 +63,25 @@ const Routing = () => {
           <PageLayout>
             <Routes>
               <Route path='/' element={<HomePage />} />
-              <Route path='checklistStartPage' element={<ChecklistStartPage/>}/>
-              <Route path='checklistHistoryData' element={<ChecklistHistoryPage/>}/>
-              <Route path='singleHistoryUnit/:id' element={(<SingleHistoryPage/>)}/>
-              <Route path='ChecklistRoutes' element={<ChecklistRoutesPage/>}/>
-              <Route path='DLCJournalStartPage' element={<DLCJournalStartPage/>}/>
-              <Route path='VisitRegistration' element={<VisitRegistrationPage/>}/>
-              <Route path='CompaniesList' element={<CompaniesListPage/>}/>
-              <Route path='VisitsPage' element={<VisitsPage/>}/>
-              <Route path='SingleVisitPage/:id' element={<SingleVisitPage/>}/>
-              <Route path='TestTable' element={<TableContainer/>}/>
-              <Route path='SingleCompanyPage/:id' element={<SingleCompanyPage/>}/>
+              <Route path='DLC Žurnalas' element={<DLCJournalStartPage />}/>
+              <Route path='DLC Žurnalas/Vizito_Registracija' element={<VisitRegistrationPage/>}/>
+              <Route path='DLC Žurnalas/Įmonių_Sąrašas' element={<CompaniesListPage/>}/>
+              <Route path='DLC Žurnalas/Vizitai' element={<VisitsPage/>}/>
+              <Route path='DLC Žurnalas/Vizitai/:id' element={<SingleVisitPage/>}/>
+              <Route path='/DLC Žurnalas/Įmonių_Sąrašas/:id' element={<SingleCompanyPage/>}/>
               <Route path='SingleClientsEmployeePage' element={<SingleClientsEmployeePage/>}/>
-              <Route path='CreateUser' element={<CreateUserPage/>}/>
-              <Route path='UsersArchive' element={<UsersArchivePage/>}/>
-              <Route path='ManageUsers' element={<ManageUsersPage/>}/>
-              <Route path='EditUsersProfile' element={<EditUsersProfilePage/>}/>
-              <Route path='SingleUserPage/:secret' element={<SingleUserPage/>}/>
+
+              <Route path='DLC Checklistas' element={<ChecklistStartPage/>}/>
+              <Route path='DLC Checklistas/Istorija' element={<ChecklistHistoryPage/>}/>
+              <Route path='DLC Checklistas/Istorija/:id' element={(<SingleHistoryPage/>)}/>
+              <Route path='DLC Checklistas/Checklistas' element={<ChecklistRoutesPage/>}/>
+
+              <Route path='/Sukurti_Darbuotoją' element={<CreateUserPage/>}/>
+              <Route path='/Darbuotojų_Archyvas' element={<UsersArchivePage/>}/>
+              <Route path='/Visi_Darbuotojai' element={<ManageUsersPage/>}/>
+              <Route path='/Mano_Profilis' element={<EditUsersProfilePage/>}/>
+              <Route path='/Visi_Darbuotojai/:id' element={<SingleUserPage/>}/>
+              <Route path='/Darbuotojų_Archyvas/:id' element={<SingleUserPage/>}/>
             </Routes>
           </PageLayout>
         )

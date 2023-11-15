@@ -32,7 +32,7 @@ type VisitsType = {
     }
 }
 
-const SingleVisitPage: React.FC = () => {
+const SingleVisitPage = () => {
   const [cookies] =                     useCookies(['access_token'])
   const [visitData, setVisitData] =     React.useState<VisitsType[] | undefined>()
   const {id} =                          useParams()
@@ -51,9 +51,9 @@ const SingleVisitPage: React.FC = () => {
 
   const items: DescriptionsProps['items'] = [
     {
-      key:      '1',
-      label:    '',
-      span:     4,
+      key:   '1',
+      label: '',
+      span:  4,
       children:
       <ConfigProvider theme ={{
         components: {

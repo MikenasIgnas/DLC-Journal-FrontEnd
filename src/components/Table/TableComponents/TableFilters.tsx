@@ -1,46 +1,38 @@
-import React        from 'react'
-import FormControl  from '@mui/joy/FormControl'
-import FormLabel    from '@mui/joy/FormLabel'
-import Select       from '@mui/joy/Select'
-import Option       from '@mui/joy/Option'
+/* eslint-disable max-len */
+import React                          from 'react'
+import { useCookies }                 from 'react-cookie'
+import { get }                        from '../../../Plugins/helpers'
+import { FilterOptions, VisitsType }  from '../../../types/globalTypes'
+import { useSearchParams }            from 'react-router-dom'
+import TableFilterItem                from './TableFilterItem'
 
-const TableFilters = () => {
+type TableFiltersProps = {
+  setTableData:   React.Dispatch<React.SetStateAction<any[] | undefined>>
+  tableFilter:  FilterOptions
+  request: string;
+}
+
+const TableFilters = ({setTableData, tableFilter, request}: TableFiltersProps) => {
+  const [cookies] =                       useCookies(['access_token'])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page =                            searchParams.get('page')
+  const limit =                           searchParams.get('limit')
+
+  const filterByStatus = async(filterOption: string) => {
+    setSearchParams(`page=${page}&limit=${limit}&filter=${filterOption}`)
+    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&filter=${filterOption}`, cookies.access_token)
+    setTableData(visitsData)
+  }
+
+  const clearSelect = () => {
+    setSearchParams(`page=${page}&limit=${limit}`)
+  }
+
   return (
     <React.Fragment>
-      <FormControl size='sm'>
-        <FormLabel>Status</FormLabel>
-        <Select
-          size='sm'
-          placeholder='Filter by status'
-          slotProps={{ button: { sx: { whiteSpace: 'nowrap' } } }}
-        >
-          <Option value='paid'>Paid</Option>
-          <Option value='pending'>Pending</Option>
-          <Option value='refunded'>Refunded</Option>
-          <Option value='cancelled'>Cancelled</Option>
-        </Select>
-      </FormControl>
-      <FormControl size='sm'>
-        <FormLabel>Category</FormLabel>
-        <Select size='sm' placeholder='All'>
-          <Option value='all'>All</Option>
-          <Option value='refund'>Refund</Option>
-          <Option value='purchase'>Purchase</Option>
-          <Option value='debit'>Debit</Option>
-        </Select>
-      </FormControl>
-      <FormControl size='sm'>
-        <FormLabel>Customer</FormLabel>
-        <Select size='sm' placeholder='All'>
-          <Option value='all'>All</Option>
-          <Option value='olivia'>Olivia Rhye</Option>
-          <Option value='steve'>Steve Hampton</Option>
-          <Option value='ciaran'>Ciaran Murray</Option>
-          <Option value='marina'>Marina Macdonald</Option>
-          <Option value='charles'>Charles Fulton</Option>
-          <Option value='jay'>Jay Hoper</Option>
-        </Select>
-      </FormControl>
+      {tableFilter.map((el, i) => (
+        <TableFilterItem key={i} filterName={el.filterName} options={el.filterOptions} onChange={filterByStatus} onClear={clearSelect}/>
+      ))}
     </React.Fragment>
   )
 }

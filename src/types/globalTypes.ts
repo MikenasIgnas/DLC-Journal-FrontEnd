@@ -67,6 +67,7 @@ export type HistoryDataType = {
 };
 
 export type UserType = {
+  id:                 number;
   key:                string;
   email:              string;
   secret:             string;
@@ -76,7 +77,6 @@ export type UserType = {
   dateDeleted:        string;
   status:             string;
   _id:                string;
-  id:                 number;
 };
 
 export type TokenType = {
@@ -87,6 +87,7 @@ export type TokenType = {
   userId:             string;
   iat:                number;
   exp:                number;
+  id:                 number;
 };
 
 export type ChecklistPhotosType = {
@@ -202,3 +203,11 @@ export type ModalStateType = {
   isCompanyAdded:                boolean;
   isModalOpen:                   boolean;
 }
+
+export type FilterOptions = {
+  filterName: string;
+  filterOptions: {
+      value: string;
+      label: string;
+  }[];
+}[]

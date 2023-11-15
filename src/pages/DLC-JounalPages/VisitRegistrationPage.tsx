@@ -8,12 +8,12 @@ import VisitingPersonsConfirmation  from '../../components/DLCJournalComponents/
 const VisitRegistrationPage = () => {
   const [current, setCurrent] = React.useState(0)
   return (
-    <div style={{ width: '70%', marginTop: '10px' }}>
+    <>
       <JournalSteps current={current} setCurrent={setCurrent}/>
       { current === 0 && <VisitRegistrationForm setCurrent={setCurrent}/> }
       { current === 1 && <VisitPurposeForm setCurrent={setCurrent}/> }
       { current === 2 && <VisitingPersonsConfirmation /> }
-    </div>
+    </>
   )
 }
 

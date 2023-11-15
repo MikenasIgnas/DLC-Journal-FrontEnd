@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
 
 const ReportTitle = () => (
   <View style={styles.titleContainer}>
-    <Image style={styles.reportTitle} src={'../../Images/DLClogo.png'}/>
+    {/* <Image style={styles.reportTitle} src={'../../Images/DLClogo.png'}/> */}
   </View>
 )
 

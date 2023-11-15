@@ -10,21 +10,24 @@ import SiderBarListItem             from '../SideBarComponents/SiderBarListItem'
 import { Box }                      from '@mui/joy'
 
 const usersMenuItems = [
-  {itemName: 'Mano Profilis', link: '/EditUsersProfile'},
-  {itemName: 'Sukurti Vartotoją', link: '/CreateUser'},
-  {itemName: 'Visi darbuotojai', link: '/ManageUsers'},
-  {itemName: 'Darbuotojų archyvas', link: '/UsersArchive'},
+  {itemName: 'Mano Profilis', link: '/Mano_Profilis'},
+  {itemName: 'Sukurti Vartotoją', link: '/Sukurti_Darbuotoją'},
+  {itemName: 'Visi darbuotojai', link: '/Visi_Darbuotojai?page=1&limit=10'},
+  {itemName: 'Darbuotojų archyvas', link: '/Darbuotojų_Archyvas?page=1&limit=10&filter=null'},
 ]
+
 const dlcJournalMenuItems = [
-  {itemName: 'Registruoti vizitą', link: '/VisitRegistration'},
-  {itemName: 'Įmonių sąrašas', link: '/CompaniesList'},
-  {itemName: 'Aktyvus vizitai', link: '/VisitsPage?page=1&limit=10'},
-  {itemName: 'Pastabos', link: ''},
+  {itemName: 'Registruoti vizitą', link: '/Vizito_Registracija'},
+  {itemName: 'Įmonių sąrašas', link: '/Įmonių_Sąrašas'},
+  {itemName: 'Aktyvus vizitai', link: '/Vizitai?page=1&limit=10'},
+  {itemName: 'Pastabos', link: '/testTable'},
 ]
+
 const dlcChecklistMenuItems = [
-  {itemName: 'Pradėti', link: '/checklistStartPage'},
-  {itemName: 'Istorija', link: '/checklistHistoryData'},
+  {itemName: 'Pradėti', link: ''},
+  {itemName: 'Istorija', link: '/Istorija?page=1&limit=10'},
 ]
+
 const SideBarBody = () => {
   return (
     <Box
@@ -47,10 +50,10 @@ const SideBarBody = () => {
           '--ListItem-radius':       (theme) => theme.vars.radius.sm,
         }}
       >
-        <SiderBarListItem itemName={'Pagrindinis'} itemIcon={<HomeRoundedIcon />} nested={false} link={'/'}/>
-        <SiderBarListItem itemName={'DLC Žurnalas'} itemIcon={<MenuBookIcon />} nested={true} nestedItems={dlcJournalMenuItems}/>
+        <SiderBarListItem itemName={'Pagrindinis'} itemIcon={<HomeRoundedIcon />} nested={false} link={''}/>
+        <SiderBarListItem itemName={'DLC Žurnalas'} itemIcon={<MenuBookIcon />} nested={true} nestedItems={dlcJournalMenuItems} link={'DLCJournalStartPage'}/>
         <SiderBarListItem itemName={'DLC Checklistas'} itemIcon={<ChecklistIcon />} nested={true} nestedItems={dlcChecklistMenuItems}/>
-        <SiderBarListItem itemName={'Users'} itemIcon={<GroupRoundedIcon />} nested={true} nestedItems={usersMenuItems}/>
+        <SiderBarListItem itemName={''} itemIcon={<GroupRoundedIcon />} nested={true} nestedItems={usersMenuItems}/>
       </List>
     </Box>
   )

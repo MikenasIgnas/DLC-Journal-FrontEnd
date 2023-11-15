@@ -12,7 +12,6 @@ const SideBarHead = () => {
           <BrightnessAutoRoundedIcon />
         </IconButton>
         <Typography level='title-md'>Data Logistics Center</Typography>
-        {/* <ColorSchemeToggle sx={{ ml: 'auto' }} /> */}
       </Box>
       <Input size='sm' startDecorator={<SearchRoundedIcon />} placeholder='Search' />
     </>

@@ -28,7 +28,7 @@ const PhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => 
   return (
     <div style={{display: 'flex', justifyContent: 'center', paddingBottom: '10px'}}>
       <Upload listType='picture' {...props}>
-        <Button icon={<UploadOutlined rev />}>Pridėti nuotrauką</Button>
+        <Button icon={<UploadOutlined rev='' />}>Pridėti nuotrauką</Button>
       </Upload>
     </div>
   )

@@ -252,14 +252,14 @@ display: flex;
 
 
 .LogoImage{
-  background-image: url('../../public/Images/DLClogo.png');
+  // background-image: url('../../public/Images/DLClogo.png');
   background-size: contain;
   background-repeat: no-repeat;
   height: 32px; 
   margin: 16px
 }
 .LogoImage2{
-  background-image: url('../../public/Images/Logo.png');
+  // background-image: url('../../public/Images/Logo.png');
   background-size: contain;
   background-repeat: no-repeat;
   height: 40px; 
@@ -351,8 +351,8 @@ thead[class*="ant-table-thead"] th{
     }
     .HomePageCover{
       width: 100%;
-      height: calc(100vh - 135px);
-      background-size: auto;
+      height: 90vh;
+      background-size: cov;
     }
     .PageLayoutFooterDark{
       width: 100%;
@@ -469,12 +469,14 @@ thead[class*="ant-table-thead"] th{
   .CreateUserPageContainer{
     display: flex;
     align-items: center;
+    justify-content: center;
+    height: 60%;
     .CreateUserCard{
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       text-align: center;
-      width: 500px;
+      width: 700px;
       .Form{
         max-width: 600px
       }
@@ -484,7 +486,6 @@ thead[class*="ant-table-thead"] th{
   .SingleHistoryPageContainer{
     display: flex;
     justify-content: center;
-    width: 17000px;
     height: 100%;
 
     .Tab{

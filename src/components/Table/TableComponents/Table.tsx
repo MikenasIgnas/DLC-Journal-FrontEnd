@@ -1,8 +1,14 @@
 import { Sheet, Table } from '@mui/joy'
 import TableHead        from './TableHead'
-import TableBody        from './TableBody'
+import { VisitsType }   from '../../../types/globalTypes'
 
-const DataTable = () => {
+type DataTableProps = {
+  tableData:    VisitsType[] | undefined;
+  tableColumns: React.ReactNode;
+  tableRows:    React.ReactNode
+}
+
+const DataTable = ({tableData, tableColumns, tableRows}: DataTableProps) => {
   return (
     <Sheet
       className='OrderTableContainer'
@@ -28,8 +34,10 @@ const DataTable = () => {
           '--TableCell-paddingX':             '8px',
         }}
       >
-        <TableHead/>
-        <TableBody/>
+        <TableHead tableData={tableData} tableColumns={tableColumns}/>
+        <tbody>
+          {tableRows}
+        </tbody>
       </Table>
     </Sheet>
   )

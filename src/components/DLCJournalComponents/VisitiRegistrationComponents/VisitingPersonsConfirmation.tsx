@@ -49,13 +49,13 @@ const VisitingPersonsConfirmation = () => {
     const visitDetails2 = localStorage.getItem('visitDetails2')
     const signatureImage = signatureCanvasRef.current?.toDataURL()
     visitorsIdentification.signature = signatureImage
-    if(visitDetails && visitDetails2){
+    if(visitDetails ){
       const visitInfo = JSON.parse(visitDetails)
-      const visitGoal = JSON.parse(visitDetails2)
+      // const visitGoal = JSON.parse(visitDetails2)
       const visitationDetails = {
         visitStatus: visitStatus,
         visitInfo,
-        visitGoal,
+        // visitGoal,
         visitorsIdentification,
       }
       messageApi.success({
@@ -123,7 +123,7 @@ const VisitingPersonsConfirmation = () => {
         </div>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: '20px'}}>
           <Button onClick={() => setVisitStatus('success')} htmlType='submit'>Registruoti</Button>
-          <Button onClick={() => setVisitStatus('proccessing')} htmlType='submit'>Paruošti</Button>
+          <Button onClick={() => setVisitStatus('processing')} htmlType='submit'>Paruošti</Button>
           <Button onClick={handleClear}>Clear</Button>
         </div>
       </div>

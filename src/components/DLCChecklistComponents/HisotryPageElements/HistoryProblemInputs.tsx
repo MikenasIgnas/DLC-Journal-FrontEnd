@@ -61,7 +61,7 @@ const HistoryProblemInputs = ({ reaction,name, edit, dutiesId }:AreaProblemsInpu
         </ConfigProvider>
       </div>
       <div style={{display: 'flex',width: isMobile ? '100%' : '20%', justifyContent: 'center', alignItems: 'center'}}>
-        { hasPhotoId || isPhotoUploaded ? <EyeOutlined rev style={{marginLeft: '15px', color: defaultTheme ? 'white' : 'black'}} onClick={()=> setPreviewPhoto(true)}/> : ''}
+        { hasPhotoId || isPhotoUploaded ? <EyeOutlined rev='' style={{marginLeft: '15px', color: defaultTheme ? 'white' : 'black'}} onClick={()=> setPreviewPhoto(true)}/> : ''}
         { previewPhoto &&
         <PreviewModal
           open={previewPhoto}
@@ -70,7 +70,7 @@ const HistoryProblemInputs = ({ reaction,name, edit, dutiesId }:AreaProblemsInpu
           dutiesId={dutiesId}
         />
         }
-        {edit && hasPhotoId || edit && isPhotoUploaded ? <DeleteOutlined rev style={{marginLeft: '15px', color: defaultTheme ? 'white' : 'black'}} onClick={deletePhoto}/>: ''}
+        {edit && hasPhotoId || edit && isPhotoUploaded ? <DeleteOutlined rev='' style={{marginLeft: '15px', color: defaultTheme ? 'white' : 'black'}} onClick={deletePhoto}/>: ''}
       </div>
     </div>
   )
