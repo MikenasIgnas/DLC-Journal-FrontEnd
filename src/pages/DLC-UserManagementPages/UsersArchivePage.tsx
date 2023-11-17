@@ -4,7 +4,7 @@ import { get }              from '../../Plugins/helpers'
 import { useCookies }       from 'react-cookie'
 import { UserType }         from '../../types/globalTypes'
 import FullTable            from '../../components/Table/TableComponents/FullTable'
-import { useSearchParams }  from 'react-router-dom'
+import { useNavigate, useSearchParams }  from 'react-router-dom'
 import UserArchiveTableRows from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
 import RowMenu              from '../../components/Table/TableComponents/RowMenu'
 
@@ -30,15 +30,12 @@ const UsersArchivePage = () => {
   const page =                              searchParams.get('page')
   const limit =                             searchParams.get('limit')
   const filter =                            searchParams.get('filter')
-  const [documentCount, setDocumentCount] = React.useState<number | undefined>()
-
+  const navigate =                          useNavigate()
   React.useEffect(() => {
     (async () => {
       try{
         const allArchivedUsers = await get(`getArchivedUsers?page=${page}&limit=${limit}&filter=${filter}`, cookies.access_token)
-        const archivedUsersCount = await get('archivedUsersCount', cookies.access_token)
         setUsers(allArchivedUsers)
-        setDocumentCount(archivedUsersCount.data)
       }catch(err){
         console.log(err)
       }
@@ -68,7 +65,9 @@ const UsersArchivePage = () => {
           email={el.email}
           userRole={el.userRole}
           username={el.username}
-          rowMenu={<RowMenu />}
+          rowMenu={<RowMenu
+            navigate={() => navigate(`${el.id}`)}
+          />}
           status={el.status} />
       ))}
       request={'getArchivedUsers'}

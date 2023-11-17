@@ -96,4 +96,27 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
       setUploading(false)
     })
 }
-export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage, uploadPhoto }
+
+
+const deleteTableItem = async(id, setTableItems, tableItems, cookie, url, url2, url3) => {
+  const tableItemRemoved = (id) => {
+    if(tableItems){
+      let newTableItems = [...tableItems]
+      newTableItems = newTableItems.filter(x => x.id !== id)
+      setTableItems(newTableItems)
+    }
+  }
+  const deletionDate = getCurrentDate()
+  if(tableItemRemoved){
+    await get(`${url}/${id}`, cookie)
+    if(url2 && url3){
+      await post(`${url2}/${id}`, {status: 'inactive'}, cookie)
+      await post(`${url3}/${id}`, {dateDeleted: deletionDate}, cookie)
+      tableItemRemoved(id)
+    }
+    tableItemRemoved(id)
+  }
+
+}
+
+export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage, uploadPhoto, deleteTableItem }

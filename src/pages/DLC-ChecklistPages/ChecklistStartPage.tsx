@@ -11,6 +11,7 @@ const ChecklistStartPage = () => {
   const defaultPageTheme =                        useAppSelector((state) => state.theme.value)
   const [totalAreasCount, setTotalAreasCount] =   React.useState(0)
   const [cookies, ,removeCookie] =                useCookies(['access_token'])
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -30,7 +31,7 @@ const ChecklistStartPage = () => {
       localStorage.removeItem('photos')
       localStorage.setItem('startDate', getCurrentDate())
       localStorage.setItem('startTime', getCurrentTime())
-      navigate('/Checklistas?route=1&page=1&progress=1')
+      navigate('/DLC Checklistas/Checklistas?route=1&page=1&progress=1')
     }else{
       localStorage.clear()
       removeCookie('access_token')

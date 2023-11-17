@@ -20,7 +20,6 @@ type UersTableProps = {
 
 const UserArchiveTableRows = ({dateCreated, dateDeleted, email, id, status, userRole, username, rowMenu}: UersTableProps) => {
   const [selected, setSelected] =   React.useState<readonly string[]>([])
-  const navigate =                  useNavigate()
   return (
     <tr key={id}>
       <td style={{ textAlign: 'center', width: 120 }}>
@@ -64,12 +63,7 @@ const UserArchiveTableRows = ({dateCreated, dateDeleted, email, id, status, user
         <Typography level='body-xs'>{dateDeleted}</Typography>
       </td>
       <td>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Link onClick={() => navigate(`${id}`)} level='body-xs' component='button'>
-          Peržiūrėti
-          </Link>
-          {rowMenu}
-        </Box>
+        {rowMenu}
       </td>
     </tr>
   )

@@ -1,11 +1,8 @@
 /* eslint-disable max-len */
-import React            from 'react'
-import Checkbox         from '@mui/joy/Checkbox'
-import Typography       from '@mui/joy/Typography'
-import Box              from '@mui/joy/Box'
-import Link             from '@mui/joy/Link'
-import { useNavigate }  from 'react-router'
-import {Tag}            from 'antd'
+import React      from 'react'
+import Checkbox   from '@mui/joy/Checkbox'
+import Typography from '@mui/joy/Typography'
+import {Tag}      from 'antd'
 
 type UersTableProps = {
     id:           string;
@@ -19,7 +16,6 @@ type UersTableProps = {
 
 const UersTableRows = ({dateCreated, email, id, status, userRole, username, rowMenu}: UersTableProps) => {
   const [selected, setSelected] =   React.useState<readonly string[]>([])
-  const navigate =                  useNavigate()
   return (
     <tr key={id}>
       <td style={{ textAlign: 'center', width: 120 }}>
@@ -60,12 +56,7 @@ const UersTableRows = ({dateCreated, email, id, status, userRole, username, rowM
         <Typography level='body-xs'>{dateCreated}</Typography>
       </td>
       <td>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Link onClick={() => navigate(`${id}`)} level='body-xs' component='button'>
-          Peržiūrėti
-          </Link>
-          {rowMenu}
-        </Box>
+        {rowMenu}
       </td>
     </tr>
   )

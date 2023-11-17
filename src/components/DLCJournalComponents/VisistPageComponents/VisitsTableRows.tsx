@@ -3,9 +3,7 @@ import React        from 'react'
 import Checkbox     from '@mui/joy/Checkbox'
 import Typography   from '@mui/joy/Typography'
 import Box          from '@mui/joy/Box'
-import Link         from '@mui/joy/Link'
 import { Tag }      from 'antd'
-import { useNavigate } from 'react-router'
 
 type VisitsTableRowsProps = {
     visitId: string;
@@ -19,7 +17,6 @@ type VisitsTableRowsProps = {
 
 const VisitsTableRows = ({visitId, visitStatus, visitAddress, visitingClient, dlcEmployees, rowMenu, clientsEmployees}: VisitsTableRowsProps) => {
   const [selected, setSelected] = React.useState<readonly string[]>([])
-  const navigate = useNavigate()
   return (
     <tr key={visitId}>
       <td style={{ textAlign: 'center', width: 120 }}>
@@ -42,7 +39,7 @@ const VisitsTableRows = ({visitId, visitStatus, visitAddress, visitingClient, dl
         <Typography level='body-xs'>{visitId}</Typography>
       </td>
       <td>
-        <Tag color={visitStatus}>{visitStatus}</Tag>
+        <Tag color={visitStatus}>{visitStatus === 'processing' ? 'paruoštas' : 'pradėtas'}</Tag>
       </td>
       <td>
         <Typography level='body-xs'>{visitingClient}</Typography>
@@ -64,9 +61,6 @@ const VisitsTableRows = ({visitId, visitStatus, visitAddress, visitingClient, dl
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Link onClick={() => navigate(`${visitId}`)} level='body-xs' component='button'>
-          Peržiūrėti
-          </Link>
           {rowMenu}
         </Box>
       </td>

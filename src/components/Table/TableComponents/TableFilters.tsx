@@ -19,8 +19,8 @@ const TableFilters = ({setTableData, tableFilter, request}: TableFiltersProps) =
   const limit =                           searchParams.get('limit')
 
   const filterByStatus = async(filterOption: string) => {
-    setSearchParams(`page=${page}&limit=${limit}&filter=${filterOption}`)
-    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&filter=${filterOption}`, cookies.access_token)
+    setSearchParams(`page=${page}&limit=${limit}&selectFilter=${filterOption}`)
+    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&selectFilter=${filterOption}`, cookies.access_token)
     setTableData(visitsData)
   }
 

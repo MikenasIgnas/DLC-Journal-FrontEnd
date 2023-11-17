@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                from 'react'
-import { useSearchParams }  from 'react-router-dom'
-import { get }              from '../../Plugins/helpers'
+import { useNavigate, useSearchParams }  from 'react-router-dom'
+import { deleteTableItem, get }              from '../../Plugins/helpers'
 import { VisitsType }       from '../../types/globalTypes'
 import { useCookies }       from 'react-cookie'
 import FullTable            from '../../components/Table/TableComponents/FullTable'
@@ -9,6 +9,7 @@ import VisitsTableRows      from '../../components/DLCJournalComponents/VisistPa
 import { Divider, Dropdown, Menu, MenuButton, MenuItem } from '@mui/joy'
 import IconButton           from '@mui/joy/IconButton'
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
+import RowMenu from '../../components/Table/TableComponents/RowMenu'
 
 const TableColumns = () => {
   return(
@@ -35,33 +36,14 @@ const tableFilter = [
   },
 ]
 
-const RowMenu = () => {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size='sm' sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>Rename</MenuItem>
-        <MenuItem>Move</MenuItem>
-        <Divider />
-        <MenuItem color='danger'>Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  )
-}
 const VisitPage = () => {
-  const [cookies] =                                   useCookies(['access_token'])
-  const [searchParams, setSearchParams] =             useSearchParams()
-  const page =                                        searchParams.get('page')
-  const limit =                                       searchParams.get('limit')
-  const filter =                                      searchParams.get('filter')
-  const [visits, setVisits] =                         React.useState<VisitsType[]>()
-
+  const [cookies] =                         useCookies(['access_token'])
+  const [searchParams, setSearchParams] =   useSearchParams()
+  const page =                              searchParams.get('page')
+  const limit =                             searchParams.get('limit')
+  const filter =                            searchParams.get('filter')
+  const [visits, setVisits] =               React.useState<VisitsType[]>()
+  const navigate =                          useNavigate()
   React.useEffect(() => {
     (async () => {
       try{
@@ -84,7 +66,12 @@ const VisitPage = () => {
           visitAddress={el.visitInfo.visitAddress}
           dlcEmployees={el.visitInfo.dlcEmployees}
           clientsEmployees={el.visitInfo.clientsEmployees}
-          rowMenu={<RowMenu />} />
+          rowMenu={
+            <RowMenu
+              navigate={() => navigate(`${el.id}`)}
+              deleteItem={() => deleteTableItem(el.id, setVisits, visits, cookies.access_token, 'deleteVisit')}
+            />}
+        />
       ))}
       tableFilter={tableFilter}
       setTableData={setVisits}

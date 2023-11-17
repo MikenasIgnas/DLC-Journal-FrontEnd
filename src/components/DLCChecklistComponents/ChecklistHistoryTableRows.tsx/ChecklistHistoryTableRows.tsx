@@ -64,9 +64,6 @@ const ChecklistHistoryTableRows = ({id, employee, startTime, startDate, endTime,
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          <Link onClick={() => navigate(`${id}`)} level='body-xs' component='button'>
-          Peržiūrėti
-          </Link>
           {rowMenu}
         </Box>
       </td>
