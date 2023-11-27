@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import React      from 'react'
-import Checkbox   from '@mui/joy/Checkbox'
-import Typography from '@mui/joy/Typography'
-import {Tag}      from 'antd'
+import React                from 'react'
+import { Tag, Typography }  from 'antd'
+import HighlightText        from '../../UniversalComponents/HighlightText'
+import { useSearchParams }  from 'react-router-dom'
 
 type UersTableProps = {
     id:           string;
@@ -15,45 +15,31 @@ type UersTableProps = {
 }
 
 const UersTableRows = ({dateCreated, email, id, status, userRole, username, rowMenu}: UersTableProps) => {
-  const [selected, setSelected] =   React.useState<readonly string[]>([])
+  const [searchParams] =            useSearchParams()
+  const filter =                    searchParams.get('filter')
+
   return (
     <tr key={id}>
-      <td style={{ textAlign: 'center', width: 120 }}>
-        <Checkbox
-          size='sm'
-          checked={selected.includes(id)}
-          color={selected.includes(id) ? 'primary' : undefined}
-          onChange={(event) => {
-            setSelected((ids) =>
-              event.target.checked
-                ? ids.concat(id)
-                : ids.filter((itemId) => itemId !== id),
-            )
-          }}
-          slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
-          sx={{ verticalAlign: 'text-bottom' }}
-        />
+      <td style={{padding: '12px'}}>
+        <Typography>{HighlightText(filter, String(id))}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{id}</Typography>
+        <Typography>{HighlightText(filter, email)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{email}</Typography>
+        <Typography>{HighlightText(filter, email)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{email}</Typography>
+        <Typography>{HighlightText(filter, username)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{username}</Typography>
+        <Typography>{HighlightText(filter, userRole)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{userRole}</Typography>
+        <Tag color={'success'}>{HighlightText(filter, status)}</Tag>
       </td>
       <td>
-        <Tag color={'success'}>{status}</Tag>
-      </td>
-      <td>
-        <Typography level='body-xs'>{dateCreated}</Typography>
+        <Typography >{HighlightText(filter, dateCreated)}</Typography>
       </td>
       <td>
         {rowMenu}

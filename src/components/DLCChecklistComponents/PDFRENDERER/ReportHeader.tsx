@@ -30,7 +30,7 @@ type tableDataProps = {
 const ReportHeader = ({ tableData, specificDate }:tableDataProps) => {
   const monthlyReportDate = `${tableData?.[0].startDate} - ${tableData?.[tableData.length - 1].startDate}`
   return(
-    <View style={styles.headerContainer}>
+    <View key={Math.random()} style={styles.headerContainer}>
       <Text style={styles.headerTitle}>Patalpu tikrinimo ataskaita</Text>
       <Text>{specificDate ? specificDate : monthlyReportDate}</Text>
     </View>

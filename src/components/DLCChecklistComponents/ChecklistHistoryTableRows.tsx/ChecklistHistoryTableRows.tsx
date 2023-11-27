@@ -1,71 +1,62 @@
 /* eslint-disable max-len */
-import React            from 'react'
-import Checkbox         from '@mui/joy/Checkbox'
-import Typography       from '@mui/joy/Typography'
-import Box              from '@mui/joy/Box'
-import Link             from '@mui/joy/Link'
-import { useNavigate }  from 'react-router'
+import React from 'react'
+import { Tag, Typography } from 'antd'
+import Box from '@mui/joy/Box'
+import HighlightText from '../../UniversalComponents/HighlightText'
+import { useSearchParams } from 'react-router-dom'
 
 type UersTableProps = {
-    id:         number;
-    employee:   string;
-    startTime:    string;
-    startDate:    string;
-    endTime:      string;
-    endDate:      string;
-    duration:   string;
-    problems:   React.ReactNode;
-    rowMenu:    React.ReactNode
-}
+  id: number;
+  employee: string;
+  startTime: string;
+  startDate: string;
+  endTime: string;
+  endDate: string;
+  problems: number;
+  rowMenu: React.ReactNode;
+};
 
-const ChecklistHistoryTableRows = ({id, employee, startTime, startDate, endTime, endDate, duration, problems, rowMenu}: UersTableProps) => {
-  const [selected, setSelected] =   React.useState<readonly string[]>([])
-  const navigate =                  useNavigate()
+const ChecklistHistoryTableRows = ({
+  id,
+  employee,
+  startTime,
+  startDate,
+  endTime,
+  endDate,
+  problems,
+  rowMenu,
+}: UersTableProps) => {
+  const [searchParams] =            useSearchParams()
+  const [startHour, startMinute] =  startTime ? startTime.split(':').map(Number) : [0, 0]
+  const [endHour, endMinute] =      endTime ? endTime.split(':').map(Number) : [0, 0]
+  const difference =                (endHour * 60 + endMinute) - (startHour * 60 + startMinute)
+  const differenceString =          `${Math.floor(difference / 60)}:${(difference % 60).toString().padStart(2, '0')}`
+  const filter =                    searchParams.get('filter')
+  const fullStartTime =             `${startDate} ${startTime}`
+  const fullEndTime =               `${endDate} ${endTime}`
 
-  const [startHour, startMinute] = startTime.split(':').map(Number)
-  const [endHour, endMinute] = endTime.split(':').map(Number)
-  const difference = (endHour * 60 + endMinute) - (startHour * 60 + startMinute)
-  const differenceString = `${Math.floor(difference / 60)}:${(difference % 60).toString().padStart(2, '0')}`
   return (
     <tr key={id}>
-      <td style={{ textAlign: 'center', width: 120 }}>
-        <Checkbox
-          size='sm'
-          checked={selected.includes(String(id))}
-          color={selected.includes(String(id)) ? 'primary' : undefined}
-          onChange={(event) => {
-            setSelected((ids) =>
-              event.target.checked
-                ? ids.concat(String(id))
-                : ids.filter((itemId) => itemId !== String(id)),
-            )
-          }}
-          slotProps={{ checkbox: { sx: { textAlign: 'left' } } }}
-          sx={{ verticalAlign: 'text-bottom' }}
-        />
+      <td style={{ padding: '12px' }}>
+        <Typography>{HighlightText(filter, String(id))}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{id}</Typography>
+        <Typography>{HighlightText(filter, employee)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{employee}</Typography>
+        <Typography>{HighlightText(filter, fullStartTime)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{startDate} {startTime}</Typography>
+        <Typography>{HighlightText(filter, fullEndTime)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{endDate} {endTime}</Typography>
+        <Typography>{HighlightText(filter, differenceString)}</Typography>
       </td>
       <td>
-        <Typography level='body-xs'>{differenceString}</Typography>
+        <Tag color={problems > 0 ? 'error' : 'success'}>{HighlightText(filter, String(problems))}</Tag>
       </td>
       <td>
-        <Typography level='body-xs'>{problems}</Typography>
-      </td>
-      <td>
-        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-          {rowMenu}
-        </Box>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>{rowMenu}</Box>
       </td>
     </tr>
   )

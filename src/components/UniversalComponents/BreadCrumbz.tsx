@@ -25,7 +25,7 @@ const BreadcrumbsLinks = () => {
         {pathParts.map((el, index) => (
           <Link
             key={index}
-            onClick={() => navigate(pathParts.slice(0, index + 1).map(encodeURIComponent).join('/'))}
+            onClick={() => navigate(pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')+ '?page=1&limit=10')}
           >
             {index > 0 && <ChevronRightRoundedIcon fontSize='medium' />}
             {decodeURIComponent(el)}

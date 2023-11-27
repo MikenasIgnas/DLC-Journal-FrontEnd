@@ -40,9 +40,13 @@ const styles = StyleSheet.create({
   },
 })
 
-const ChildTableHeader = () => {
+type ChildTableHeaderProps = {
+  id: number
+}
+
+const ChildTableHeader = ({id}: ChildTableHeaderProps ) => {
   return(
-    <View style={styles.container}>
+    <View key={id} style={styles.container}>
       <Text style={styles.premise}>Patalpa</Text>
       <Text style={styles.duty}>Veiksmas</Text>
       <Text style={styles.problem}>Problema</Text>

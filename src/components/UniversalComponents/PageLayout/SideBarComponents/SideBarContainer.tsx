@@ -40,7 +40,7 @@ const SideBarContainer = ({children}: SideBarContainerProps) => {
           ':root': {
             '--Sidebar-width':            '220px',
             [theme.breakpoints.up('lg')]: {
-              '--Sidebar-width': '240px',
+              '--Sidebar-width': '280px',
             },
           },
         })}

@@ -13,7 +13,7 @@ const usersMenuItems = [
   {itemName: 'Mano Profilis', link: '/Mano_Profilis'},
   {itemName: 'Sukurti Vartotoją', link: '/Sukurti_Darbuotoją'},
   {itemName: 'Visi darbuotojai', link: '/Visi_Darbuotojai?page=1&limit=10'},
-  {itemName: 'Darbuotojų archyvas', link: '/Darbuotojų_Archyvas?page=1&limit=10&filter=null'},
+  {itemName: 'Darbuotojų archyvas', link: '/Darbuotojų_Archyvas?page=1&limit=10'},
 ]
 
 const dlcJournalMenuItems = [

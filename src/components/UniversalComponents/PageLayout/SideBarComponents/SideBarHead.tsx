@@ -1,19 +1,19 @@
-import React                        from 'react'
-import { Input, Typography, Box }   from '@mui/joy'
-import BrightnessAutoRoundedIcon    from '@mui/icons-material/BrightnessAutoRounded'
-import IconButton                   from '@mui/joy/IconButton'
-import SearchRoundedIcon            from '@mui/icons-material/SearchRounded'
+import React                 from 'react'
+import { Typography, Box }   from '@mui/joy'
+import IconButton            from '@mui/joy/IconButton'
+import { useNavigate } from 'react-router'
 
 const SideBarHead = () => {
+  const navigate = useNavigate()
+
   return (
     <>
       <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-        <IconButton variant='soft' color='primary' size='sm'>
-          <BrightnessAutoRoundedIcon />
+        <IconButton onClick={() => navigate('/')} variant='soft' color='primary' size='sm'>
+          <img className='HomePageCover' src='../Images/Logo.png'/>
         </IconButton>
         <Typography level='title-md'>Data Logistics Center</Typography>
       </Box>
-      <Input size='sm' startDecorator={<SearchRoundedIcon />} placeholder='Search' />
     </>
   )
 }

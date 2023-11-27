@@ -1,32 +1,17 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem, get }                          from '../../Plugins/helpers'
-import { HistoryDataType }              from '../../types/globalTypes'
-import { useCookies }                   from 'react-cookie'
 import PDFGenerator                     from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import ChecklistHistoryTableRows        from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
+import useSetChecklistHistoryData       from '../../Plugins/useSetChecklistHistoryData'
 
 const ChecklistHistoryPage = () => {
-  const [cookies] =                        useCookies(['access_token'])
-  const [filledData, setFilledData] =      React.useState<HistoryDataType[]>()
-  const [searchParams, setSearchParams] =  useSearchParams()
-  const page =                             searchParams.get('page')
-  const limit =                            searchParams.get('limit')
-  const navigate =                         useNavigate()
-
-  React.useEffect(() => {
-    (async () => {
-      try{
-        const hisotoryData = await get(`checklistHistoryData?page=${page}&limit=${limit}`, cookies.access_token)
-        setFilledData(hisotoryData.results)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-  }, [page, limit, cookies.access_token])
+  const [searchParams, setSearchParams] =     useSearchParams()
+  const page =                                searchParams.get('page')
+  const navigate =                            useNavigate()
+  const {data, count} =                       useSetChecklistHistoryData()
 
   const TableColumns = () => {
     return(
@@ -41,41 +26,40 @@ const ChecklistHistoryPage = () => {
     )
   }
 
-  const tableFilter = [
+  const tableSorter = [
     {
       filterName:    'Statusas',
       filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
     },
   ]
+  console.log(data)
   return (
     <>
       <PDFGenerator/>
       <FullTable
-        tableData={filledData}
-        setTableData={setFilledData}
         tableColumns={<TableColumns />}
         currentPage={page}
         setSearchParams={setSearchParams}
-        tableFilter={tableFilter}
-        tableRows={filledData?.map((el) => (
+        documentCount={count}
+        tableSorter={tableSorter}
+        tableRows={data?.map((el) => (
           <ChecklistHistoryTableRows
-            key={el.id}
-            id={el.id}
-            employee={el.userName}
-            duration={String(el.problemCount)}
-            problems={el.problemCount}
+            key={el?.id}
+            id={el?.id}
+            employee={el?.userName}
+            problems={el?.problemCount}
+            startTime={el?.startTime}
+            startDate={el?.startDate}
+            endTime={el?.endTime}
+            endDate={el?.endDate}
             rowMenu={<RowMenu
-              navigate={() => navigate(`${el.id}`)}
-              deleteItem={() => deleteTableItem(el.id, setFilledData, filledData, cookies.access_token, 'deleteHistoryItem')}
-            />}
-            startTime={el.startTime}
-            startDate={el.startDate}
-            endTime={el.endTime}
-            endDate={el.endDate}
+              navigate={() => navigate(`${el?.id}`)}
+              // deleteItem={() => deleteTableItem(el?.id, setFechedData, filledData, cookies.access_token, 'deleteHistoryItem')}
+            />
+            }
           />
         ))}
-        request={'checklistHistoryData'}
-        getDocumentCount={'checklistHistoryCount'}
+
       />
     </>
   )

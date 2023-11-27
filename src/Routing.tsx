@@ -26,6 +26,7 @@ import SingleVisitPage                  from './pages/DLC-JounalPages/SingleVisi
 import SingleClientsEmployeePage        from './pages/DLC-JounalPages/SingleClientsEmployeePage'
 import axios                            from 'axios'
 import { jwtDecode }                    from 'jwt-decode'
+import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])
@@ -69,6 +70,7 @@ const Routing = () => {
               <Route path='DLC Žurnalas/Vizitai' element={<VisitsPage/>}/>
               <Route path='DLC Žurnalas/Vizitai/:id' element={<SingleVisitPage/>}/>
               <Route path='/DLC Žurnalas/Įmonių_Sąrašas/:id' element={<SingleCompanyPage/>}/>
+              <Route path='/DLC Žurnalas/Statistika' element={<StatisticsPage/>}/>
               <Route path='SingleClientsEmployeePage' element={<SingleClientsEmployeePage/>}/>
 
               <Route path='DLC Checklistas' element={<ChecklistStartPage/>}/>

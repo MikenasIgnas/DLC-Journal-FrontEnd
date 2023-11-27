@@ -5,7 +5,7 @@ import { validateUser }                 from '../Plugins/helpers'
 import { LockOutlined, UserOutlined }   from '@ant-design/icons'
 import { Button, Form, Input, Card }    from 'antd'
 import { useCookies }                   from 'react-cookie'
-import axios from 'axios'
+import axios                            from 'axios'
 
 type LoginValuesType = {
   email:    string,
@@ -13,7 +13,7 @@ type LoginValuesType = {
 }
 
 const LoginPage = () => {
-  const [c, setCookie] =                     useCookies(['access_token'])
+  const [,setCookie] =                     useCookies(['access_token'])
   const [loginError, setLoginError] =       React.useState(false)
   const [errorMessage, setErrorMessage] =   React.useState('')
 

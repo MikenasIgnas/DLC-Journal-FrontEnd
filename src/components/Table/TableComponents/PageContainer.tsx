@@ -14,7 +14,7 @@ const PageContainer = ({children, pageTitle}:PageContainerProps) => {
   return (
     <CssVarsProvider disableTransitionOnChange>
       <CssBaseline />
-      <Box sx={{ display: 'flex', minHeight: '100dvh', width: '100%' }}>
+      <Box sx={{ display: 'flex', width: '100%' }}>
         <Box
           component='main'
           className='MainContent'
@@ -37,7 +37,6 @@ const PageContainer = ({children, pageTitle}:PageContainerProps) => {
             display:       'flex',
             flexDirection: 'column',
             minWidth:      0,
-            height:        '100dvh',
             gap:           1,
           }}
         >

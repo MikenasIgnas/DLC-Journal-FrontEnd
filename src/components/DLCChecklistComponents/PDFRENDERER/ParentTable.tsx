@@ -41,7 +41,7 @@ type TableStyleType = {
   };
 }
 const ParentTable = ({children, tableStyle, table}: ParentTableProps) => (
-  <View style={tableStyle.tableContainer}>
+  <View key={table.id} style={tableStyle.tableContainer}>
     <ParentTableHeader id={`ChecklistID: ${table.id}`} employee={table.userName} date={table.startDate}/>
     {children}
   </View>

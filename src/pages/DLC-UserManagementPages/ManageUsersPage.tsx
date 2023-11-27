@@ -1,18 +1,15 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                            from 'react'
-import { get, deleteTableItem }         from '../../Plugins/helpers'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useCookies }                   from 'react-cookie'
-import { UserType }                     from '../../types/globalTypes'
-import FullTable                        from '../../components/Table/TableComponents/FullTable'
-import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
+import React                              from 'react'
+import { useNavigate, useSearchParams }   from 'react-router-dom'
+import FullTable                          from '../../components/Table/TableComponents/FullTable'
+import UersTableRows                      from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import RowMenu                            from '../../components/Table/TableComponents/RowMenu'
+import useSetUsersData                    from '../../Plugins/useSetUsersData'
 
 const tableColumnNames = [
-  {itemName: 'Id', itemWidth: 220, itemValue: 'id'},
-  {itemName: 'Prisijungimas', itemWidth: 220, itemValue: 'email'},
-  {itemName: 'El. Paštas', itemWidth: 220, itemValue: 'email'},
+  {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},
+  {itemName: 'El. Paštas', itemWidth: 270, itemValue: 'email'},
   {itemName: 'Darbuotojas', itemWidth: 150, itemValue: 'username'},
   {itemName: 'Rolė', itemWidth: 120, itemValue: 'userRole'},
   {itemName: 'Statusas', itemWidth: 100, itemValue: 'status'},
@@ -29,7 +26,7 @@ const TableColumns = () => {
   )
 }
 
-const tableFilter = [
+const tableSorter = [
   {
     filterName:    'Rolė',
     filterOptions: [{ value: 'user', label: 'user' }, { value: 'admin', label: 'admin' }, { value: 'SYSADMIN', label: 'SYSADMIN' }],
@@ -37,53 +34,34 @@ const tableFilter = [
 ]
 
 const ManageUsersPage = () => {
-  const [users, setUsers] =               React.useState<UserType[] | undefined>()
-  const [cookies] =                       useCookies(['access_token'])
-  const [searchParams, setSearchParams] = useSearchParams()
-  const page =                            searchParams.get('page')
-  const limit =                           searchParams.get('limit')
-  const filter =                          searchParams.get('filter')
-  const selectFilter =                    searchParams.get('selectFilter')
-  const navigate =                        useNavigate()
-
-  React.useEffect(() => {
-    (async () => {
-      try{
-        const allUsers = await get(`allUsers?page=${page}&limit=${limit}&filter=${filter}&selectFilter=${selectFilter}`, cookies.access_token)
-        setUsers(allUsers)
-        console.log(allUsers)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-  },[page, limit, filter, cookies.access_token, selectFilter])
+  const [searchParams, setSearchParams] =   useSearchParams()
+  const page =                              searchParams.get('page')
+  const navigate =                          useNavigate()
+  const {data, count} =                     useSetUsersData()
 
   return (
     <>
       <FullTable
-        tableRows={users?.map((el) => (
+        tableRows={data?.map((el) => (
           <UersTableRows
             key={el?.key}
             id={el?.key}
             dateCreated={el?.dateCreated}
-            email={el.email}
+            email={el?.email}
             status={el?.status}
             userRole={el?.userRole}
             username={el?.username}
             rowMenu={<RowMenu
-              deleteItem={() => deleteTableItem(el.id, setUsers, users, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
-              navigate={() => navigate(`${el.id}`)}
-            />}
-          />
+              // deleteItem={() => deleteTableItem(el?.id, setFechedData, users, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
+              navigate={() => navigate(`${el.id}`)} />} />
         ))}
-        tableFilter={tableFilter}
-        setTableData={setUsers}
+
         currentPage={page}
         setSearchParams={setSearchParams}
-        tableData={users}
         tableColumns={<TableColumns />}
-        request={'allUsers'}
-        getDocumentCount={'allUsersCount'} />
+        documentCount={count}
+        tableSorter={tableSorter}
+      />
     </>
   )
 }

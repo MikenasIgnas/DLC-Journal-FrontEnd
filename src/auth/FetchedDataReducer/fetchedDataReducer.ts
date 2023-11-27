@@ -1,20 +1,27 @@
 /* eslint-disable max-len */
-import { createSlice, PayloadAction }                                                                 from '@reduxjs/toolkit'
-import { PossibleProblemsType, RouteType, AreaType, TodoType, HistoryDataType, ChecklistPhotosType }  from '../../types/globalTypes'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {
+  PossibleProblemsType,
+  RouteType,
+  AreaType,
+  TodoType,
+  HistoryDataType,
+  ChecklistPhotosType,
+} from '../../types/globalTypes'
 
-interface PossibleProblemsReducer {
-    possibleProblems:       PossibleProblemsType[] | null,
-    FilledData:             HistoryDataType[] | null
-    Routes:                 RouteType[] | null,
-    Areas:                  AreaType[] | null,
-    ToDo:                   TodoType[] | null,
-    latestHistoryItemData:  HistoryDataType[] | null,
-    problemCount:           number | null,
-    checklistPhotos:        ChecklistPhotosType[] | null
-    latestPhotos:           ChecklistPhotosType[] | null
+interface PossibleProblemsReducerState {
+  possibleProblems:       PossibleProblemsType[] | null;
+  FilledData:             HistoryDataType[] | null;
+  Routes:                 RouteType[] | null;
+  Areas:                  AreaType[] | null;
+  ToDo:                   TodoType[] | null;
+  latestHistoryItemData:  HistoryDataType[] | null;
+  problemCount:           number | null;
+  checklistPhotos:        ChecklistPhotosType[] | null;
+  latestPhotos:           ChecklistPhotosType[] | null;
 }
 
-const initialState: PossibleProblemsReducer = {
+const initialState: PossibleProblemsReducerState = {
   possibleProblems:      null,
   Routes:                null,
   Areas:                 null,
@@ -42,21 +49,21 @@ const fetchedDataReducer = createSlice({
     setArea(state, { payload }: PayloadAction<AreaType[]>) {
       state.Areas = payload
     },
-    setFilledData(state, { payload }: PayloadAction<HistoryDataType[]>){{
+    setFilledData(state, { payload }: PayloadAction<HistoryDataType[]>) {
       state.FilledData = payload
-    }},
-    setLatestHistoryItem(state, { payload }: PayloadAction<HistoryDataType[]>){{
+    },
+    setLatestHistoryItem(state, { payload }: PayloadAction<HistoryDataType[]>) {
       state.latestHistoryItemData = payload
-    }},
-    setProblemCount(state, { payload }: PayloadAction<number>){{
+    },
+    setProblemCount(state, { payload }: PayloadAction<number>) {
       state.problemCount = payload
-    }},
-    setChecklistPhotos(state, {payload}:PayloadAction<ChecklistPhotosType[]>){{
+    },
+    setChecklistPhotos(state, { payload }: PayloadAction<ChecklistPhotosType[]>) {
       state.checklistPhotos = payload
-    }},
-    setLatestPhotos(state, { payload }: PayloadAction<ChecklistPhotosType[]>){{
+    },
+    setLatestPhotos(state, { payload }: PayloadAction<ChecklistPhotosType[]>) {
       state.latestPhotos = payload
-    }},
+    },
     resetReducer() {
       return initialState
     },

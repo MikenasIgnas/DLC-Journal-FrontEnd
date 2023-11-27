@@ -1,87 +1,78 @@
 /* eslint-disable max-len */
-import React                from 'react'
-import { useNavigate, useSearchParams }  from 'react-router-dom'
-import { deleteTableItem, get }              from '../../Plugins/helpers'
-import { VisitsType }       from '../../types/globalTypes'
-import { useCookies }       from 'react-cookie'
-import FullTable            from '../../components/Table/TableComponents/FullTable'
-import VisitsTableRows      from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
-import { Divider, Dropdown, Menu, MenuButton, MenuItem } from '@mui/joy'
-import IconButton           from '@mui/joy/IconButton'
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
-import RowMenu from '../../components/Table/TableComponents/RowMenu'
+import React                            from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { deleteTableItem }         from '../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
+import FullTable                        from '../../components/Table/TableComponents/FullTable'
+import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
+import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
+import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 
 const TableColumns = () => {
   return(
     <>
-      <th style={{ width: 140, padding: '12px 6px' }}>Statusas</th>
-      <th style={{ width: 140, padding: '12px 6px' }}>Klientas</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
+      <th style={{ width: 150, padding: '12px 6px' }}>Klientas</th>
       <th style={{ width: 200, padding: '12px 6px' }}>Kliento Darbuotojas</th>
       <th style={{ width: 200, padding: '12px 6px' }}>Vizito Tikslas</th>
-      <th style={{ width: 140, padding: '12px 6px' }}>Adresas</th>
-      <th style={{ width: 140, padding: '12px 6px' }}>Lydintysis</th>
-      <th style={{ width: 140, padding: '12px 6px' }}>Veiksmai</th>
+      <th style={{ width: 70, padding: '12px 6px' }}>Adresas</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Pradžios Data</th>
+      <th style={{ width: 70, padding: '12px 6px' }}>Pradžios Laikas</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Pabaigos Data</th>
+      <th style={{ width: 70, padding: '12px 6px' }}>Pabaigos Laikas</th>
+      <th style={{ width: 150, padding: '12px 6px' }}>Lydintysis</th>
+      <th style={{ width: 70, padding: '12px 6px' }}>Veiksmai</th>
     </>
   )
 }
 
-const tableFilter = [
+const tableSorter = [
   {
     filterName:    'statusas',
-    filterOptions: [{ value: 'success', label: 'success' },{ value: 'processing', label: 'processing' }],
+    filterOptions: [
+      { value: 'success', label: 'Pradėtas' },
+      { value: 'processing', label: 'Paruoštas'},
+      { value: 'error', label: 'Baigtas'},
+    ],
   },
   {
     filterName:    'adresas',
-    filterOptions: [{ value: '1', label: 'J13' },{ value: '2', label: 'T72' }],
+    filterOptions: [{ value: 'J13', label: 'J13' },{ value: 'T72', label: 'T72' }],
   },
 ]
 
 const VisitPage = () => {
-  const [cookies] =                         useCookies(['access_token'])
-  const [searchParams, setSearchParams] =   useSearchParams()
-  const page =                              searchParams.get('page')
-  const limit =                             searchParams.get('limit')
-  const filter =                            searchParams.get('filter')
-  const [visits, setVisits] =               React.useState<VisitsType[]>()
-  const navigate =                          useNavigate()
-  React.useEffect(() => {
-    (async () => {
-      try{
-        const visitsData =  await get(`visitsData?page=${page}&limit=${limit}&filter=${filter}`, cookies.access_token)
-        setVisits(visitsData)
-      }catch(err){
-        console.log(err)
-      }
-    })()
-  }, [page, limit, cookies.access_token, filter])
+  const [cookies] =                           useCookies(['access_token'])
+  const [searchParams, setSearchParams] =     useSearchParams()
+  const page =                                searchParams.get('page')
+  const navigate =                            useNavigate()
+  const {data, count, setData} =              useSetVisitsData()
 
   return (
     <FullTable
-      tableRows={visits?.map((el) => (
+      tableSorter={tableSorter}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      documentCount={count}
+      tableColumns={<TableColumns />}
+      tableRows={data?.map((el) => (
         <VisitsTableRows
           key={el.id}
           visitId={el.id}
           visitStatus={el.visitStatus}
-          visitingClient={el.visitInfo.visitingClient}
-          visitAddress={el.visitInfo.visitAddress}
-          dlcEmployees={el.visitInfo.dlcEmployees}
-          clientsEmployees={el.visitInfo.clientsEmployees}
-          rowMenu={
-            <RowMenu
-              navigate={() => navigate(`${el.id}`)}
-              deleteItem={() => deleteTableItem(el.id, setVisits, visits, cookies.access_token, 'deleteVisit')}
-            />}
-        />
-      ))}
-      tableFilter={tableFilter}
-      setTableData={setVisits}
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      tableData={visits}
-      tableColumns={<TableColumns />}
-      request={'visitsData'}
-      getDocumentCount={'visitsCount'}
-    />
+          visitingClient={el.visitingClient}
+          visitAddress={el.visitAddress}
+          dlcEmployees={el.dlcEmployees}
+          clientsEmployees={el.clientsEmployees}
+          visitPurpose={el.visitPurpose}
+          visitStartDate={el.startDate}
+          visitStartTime={el.startTime}
+          visitEndDate={el.endDate}
+          visitEndTime={el.endTime}
+          rowMenu={<RowMenu
+            navigate={() => navigate(`${el.id}`)}
+            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')} />} />
+      ))} />
   )
 }
 

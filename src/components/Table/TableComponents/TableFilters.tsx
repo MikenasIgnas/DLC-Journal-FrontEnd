@@ -1,27 +1,24 @@
 /* eslint-disable max-len */
-import React                          from 'react'
-import { useCookies }                 from 'react-cookie'
-import { get }                        from '../../../Plugins/helpers'
-import { FilterOptions, VisitsType }  from '../../../types/globalTypes'
-import { useSearchParams }            from 'react-router-dom'
-import TableFilterItem                from './TableFilterItem'
+import React                from 'react'
+import { FilterOptions }    from '../../../types/globalTypes'
+import { useSearchParams }  from 'react-router-dom'
+import TableFilterItem      from './TableFilterItem'
 
 type TableFiltersProps = {
-  setTableData:   React.Dispatch<React.SetStateAction<any[] | undefined>>
-  tableFilter:  FilterOptions
-  request: string;
+  tableSorter:  FilterOptions
 }
 
-const TableFilters = ({setTableData, tableFilter, request}: TableFiltersProps) => {
-  const [cookies] =                       useCookies(['access_token'])
+const TableFilters = ({tableSorter}: TableFiltersProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page =                            searchParams.get('page')
   const limit =                           searchParams.get('limit')
 
-  const filterByStatus = async(filterOption: string) => {
-    setSearchParams(`page=${page}&limit=${limit}&selectFilter=${filterOption}`)
-    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&selectFilter=${filterOption}`, cookies.access_token)
-    setTableData(visitsData)
+  const filterByStatus = async(selectFilter: string) => {
+    if (selectFilter) {
+      setSearchParams(`page=${page}&limit=${limit}&selectFilter=${selectFilter}`)
+    } else {
+      clearSelect()
+    }
   }
 
   const clearSelect = () => {
@@ -30,8 +27,8 @@ const TableFilters = ({setTableData, tableFilter, request}: TableFiltersProps) =
 
   return (
     <React.Fragment>
-      {tableFilter.map((el, i) => (
-        <TableFilterItem key={i} filterName={el.filterName} options={el.filterOptions} onChange={filterByStatus} onClear={clearSelect}/>
+      {tableSorter?.map((el, i) => (
+        <TableFilterItem key={i} filterName={el.filterName} options={el.filterOptions} onChange={filterByStatus}/>
       ))}
     </React.Fragment>
   )

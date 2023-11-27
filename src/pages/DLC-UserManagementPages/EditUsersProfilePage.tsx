@@ -106,7 +106,7 @@ const EditUserProfilePage = () => {
         <Card
           loading={loading}
           headStyle={{textAlign: 'center', backgroundColor: defaultTheme ? '#191919' : 'white', color: defaultTheme ? 'white' : 'black'}}
-          title='Edit your Profile'
+          title='Mano Profilis'
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -120,7 +120,7 @@ const EditUserProfilePage = () => {
             <Form.Item
               labelAlign='left'
               name='username'
-              label='Employee Name'
+              label='Darbuotojas'
               initialValue={userProfileData?.username}
             >
               <Input placeholder='Duorbotojo vardas' />
@@ -136,7 +136,7 @@ const EditUserProfilePage = () => {
             <Form.Item
               labelAlign='left'
               name='userRole'
-              label='User Role'
+              label='Rolė'
               initialValue={userProfileData?.userRole}
             >
               <Select
@@ -153,7 +153,7 @@ const EditUserProfilePage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordOne'
-              label='Change Password'
+              label='Naujas Slaptažodis'
               hasFeedback
             >
               <Input.Password placeholder='Slaptažodis' />
@@ -161,7 +161,7 @@ const EditUserProfilePage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordTwo'
-              label='Confirm Password'
+              label='Patvirtinti slaptažodį'
               dependencies={['password']}
               hasFeedback
               rules={[
@@ -178,7 +178,7 @@ const EditUserProfilePage = () => {
               <Input.Password placeholder='Pakartoti slaptažodį' />
             </Form.Item>
             <Button htmlType='submit'>
-              Save Changes
+              Išsaugoti
             </Button>
             {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           </Form>

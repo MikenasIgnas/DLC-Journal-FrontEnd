@@ -10,7 +10,6 @@ import customParseFormat                        from 'dayjs/plugin/customParseFo
 import PDFTable                                 from './PDFTable'
 import type { TimeRangePickerProps }            from 'antd'
 import dayjs                                    from 'dayjs'
-import type { Dayjs }                           from 'dayjs'
 dayjs.extend(customParseFormat)
 const { RangePicker } = DatePicker
 
@@ -68,8 +67,8 @@ const PDFGenerator = () => {
   return(
     <>
       <RangePicker presets={rangePresets} onChange={onChange} />
-      <PDFDownloadLink document={<PDFTable fetchedPremisesData={fetchedPremisesData} tableData={reportData} specificDate={specificDate}/>} fileName={fileName}>
-        {({loading}) => (loading ? <Button>Loading Document...</Button> : <Button>{buttonText}</Button>)}
+      <PDFDownloadLink document={<PDFTable key={Math.random()} fetchedPremisesData={fetchedPremisesData} tableData={reportData} specificDate={specificDate}/>} fileName={fileName}>
+        <Button>{buttonText}</Button>
       </PDFDownloadLink>
     </>
   )

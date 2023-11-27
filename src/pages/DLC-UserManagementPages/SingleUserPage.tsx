@@ -90,7 +90,7 @@ const SingleUserPage = () => {
         <Card
           loading={loading}
           headStyle={{textAlign: 'center', backgroundColor: defaultTheme ? '#191919' : 'white', color: defaultTheme ? 'white' : 'black'}}
-          title={`Edit Users ${singleUser?.username} Profile`}
+          title={`Tvarkyti ${singleUser?.username} Profilį`}
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -104,7 +104,7 @@ const SingleUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='username'
-              label='Employee Name'
+              label='Darbuotojas'
               initialValue={singleUser?.username}
             >
               <Input placeholder='Darbuotojas'/>
@@ -120,7 +120,7 @@ const SingleUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='userRole'
-              label='User Role'
+              label='Rolė'
               initialValue={singleUser?.userRole}
             >
               <Select
@@ -137,7 +137,7 @@ const SingleUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordOne'
-              label='Change Password'
+              label='Keisti Slaptažodį'
 
               hasFeedback
             >
@@ -146,7 +146,7 @@ const SingleUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordTwo'
-              label='Confirm Password'
+              label='Patvirtinti Slaptažodį'
               dependencies={['password']}
               hasFeedback
               rules={[
@@ -164,7 +164,7 @@ const SingleUserPage = () => {
               <Input.Password placeholder='Pakartoti slaptažodį'/>
             </Form.Item>
             <Button htmlType='submit'>
-              Save Changes
+              Išsaugoti
             </Button>
           </Form>
         </Card>

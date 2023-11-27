@@ -40,16 +40,16 @@ const ChecklistStartPage = () => {
   }
 
   return (
-    <div style={{display: 'flex', alignItems: 'center'}}>
+    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '500px'}}>
       <Card style={{backgroundColor: defaultPageTheme ? '#191919' : 'white'}} className='StartPageCard'>
-        <div style={{color: defaultPageTheme? 'white': 'black'}} className='CardTitle'>Begin Checklist</div>
+        <div style={{color: defaultPageTheme? 'white': 'black'}} className='CardTitle'>Pradėti Pildymą</div>
         <div className='CardButton'>
           <ConfigProvider theme={{
             token: {
               colorPrimary: defaultPageTheme? '#2a2a2a': 'primary',
             },
           }}>
-            <Button onClick={startChecklist} type='primary'>Start</Button>
+            <Button onClick={startChecklist} type='primary'>Pradėti</Button>
           </ConfigProvider>
         </div>
       </Card>

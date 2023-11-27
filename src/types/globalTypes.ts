@@ -164,21 +164,23 @@ export type EmployeesType = {
 export type VisitsType = {
   _id: string;
   id: string;
-  visitStatus: 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
-  visitGoal:string[]
-  visitInfo: {
-    clientsEmployees: string;
-    dlcEmployees: string;
-    visitAddress: string;
-    visitingClient: string;
-  },
-  visitorsId: {
-    signature: string;
-    visitCollocation: {
+  creationDate:     string;
+  creationTime:     string;
+  startDate:        string;
+  startTime:        string;
+  endDate:          string;
+  endTime:          string;
+  visitStatus:      'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+  visitPurpose:     string[]
+  clientsEmployees: string;
+  dlcEmployees:     string;
+  visitAddress:     string;
+  visitingClient:   string;
+  signature:        string;
+  visitorsIdType:   string;
+  visitCollocation: {
       [key: string] : string[]
     },
-    visitorsIdType: string;
-  }
 }
 
 export type CollocationsType = {

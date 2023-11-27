@@ -9,33 +9,28 @@ import TablePagination        from './TablePagination'
 
 
 type FullTableProps = {
-  tableData:        any[] | undefined;
   tableColumns:     React.ReactNode;
   currentPage:      string | null;
   setSearchParams:  SetURLSearchParams;
-  setTableData:     React.Dispatch<React.SetStateAction<any[] | undefined>>
-  tableFilter:      FilterOptions
+  tableSorter:      FilterOptions
   tableRows :       React.ReactNode
-  request:          string;
-  getDocumentCount: string;
+  documentCount:    number | undefined;
 }
 
 const FullTable = ({
-  tableData,
   tableColumns,
   currentPage,
   setSearchParams,
-  setTableData,
-  tableFilter,
+  tableSorter,
   tableRows,
-  request,
-  getDocumentCount,
+  documentCount,
 }: FullTableProps) => {
   return (
     <>
-      <TableControls setTableData={setTableData} tableFilter={tableFilter} request={request}/>
-      <Table tableRows={tableRows} tableData={tableData} tableColumns={tableColumns}/>
-      <TablePagination getDocumentCount={getDocumentCount} currentPage={currentPage} setSearchParams={setSearchParams} />
+      <TableControls tableSorter={tableSorter}/>
+      <Table tableRows={tableRows} tableColumns={tableColumns}/>
+      <TablePagination documentCount={documentCount} currentPage={currentPage} setSearchParams={setSearchParams}
+      />
     </>
   )
 }

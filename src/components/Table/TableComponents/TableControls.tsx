@@ -3,31 +3,28 @@ import React                            from 'react'
 import { Box, FormControl, FormLabel }  from '@mui/joy'
 import TableFilters                     from './TableFilters'
 import { FilterOptions }                from '../../../types/globalTypes'
-import { Input, Select }                from 'antd'
-import { get }                          from '../../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
+import { Input }                        from 'antd'
 import { useSearchParams }              from 'react-router-dom'
-const { Option } = Select
+import useDelay                         from '../../../Plugins/useDelay'
+
 type TableControlsProps = {
-  setTableData:   React.Dispatch<React.SetStateAction<any[] | undefined>>;
-  tableFilter:    FilterOptions;
-  request:        string;
+  tableSorter:    FilterOptions;
 }
 
-const TableControls = ({setTableData, tableFilter, request}: TableControlsProps) => {
+const TableControls = ({tableSorter}: TableControlsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const [cookies] =                       useCookies(['access_token'])
   const page =                            searchParams.get('page')
   const limit =                           searchParams.get('limit')
+  const delay =                           useDelay()
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    delay( async() => {
+      setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value}`)
+      if(e.target.value === ''){
+        setSearchParams(`page=${page}&limit=${limit}`)
+      }
+    })
 
-    setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value}`)
-    const visitsData =  await get(`${request}?page=${page}&limit=${limit}&filter=${e.target.value}`, cookies.access_token)
-    setTableData(visitsData)
-    if(e.target.value === ''){
-      setSearchParams(`page=${page}&limit=${limit}`)
-    }
   }
 
   return (
@@ -53,10 +50,9 @@ const TableControls = ({setTableData, tableFilter, request}: TableControlsProps)
       >
         <FormControl sx={{ flex: 1 }} size='sm'>
           <FormLabel>Search for order</FormLabel>
-          {/* <Input placeholder='input with clear icon' allowClear onChange={onChange} /> */}
           <Input allowClear onChange={onChange} />
         </FormControl>
-        {<TableFilters request={request} setTableData={setTableData} tableFilter={tableFilter}/>}
+        {<TableFilters tableSorter={tableSorter}/>}
       </Box>
     </React.Fragment>
   )

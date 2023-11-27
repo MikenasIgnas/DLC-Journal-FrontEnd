@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import React                          from 'react'
 import { Page, Document, StyleSheet } from '@react-pdf/renderer'
-import ReportTitle                    from './ReportTitle'
 import ChildTable                     from './ChildTable'
 import ParentTable                    from './ParentTable'
 import { HistoryDataType }            from '../../../types/globalTypes'
@@ -63,12 +62,11 @@ const PDFTable = ({tableData, fetchedPremisesData, fileName, specificDate}: PDFT
   return(
     <Document>
       <Page size='A4' style={styles.page}>
-        <ReportTitle />
         <ReportHeader specificDate={specificDate} fileName={fileName} tableData={tableData}/>
         {
           tableData?.map((table) => (
             <ParentTable key={table.id} table={table} tableStyle={parentTableStyle}>
-              <ChildTable fetchedPremisesData={fetchedPremisesData} table={table} tableStyle={childTableStyle} tableData={tableData}/>
+              <ChildTable key={table.id} fetchedPremisesData={fetchedPremisesData} table={table} tableStyle={childTableStyle} tableData={tableData}/>
             </ParentTable>
           ))
         }

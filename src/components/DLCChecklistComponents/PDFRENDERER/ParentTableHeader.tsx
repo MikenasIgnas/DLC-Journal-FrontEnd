@@ -38,7 +38,7 @@ type TableHeaderProps = {
 }
 
 const TableHeader = ({date, id, employee}: TableHeaderProps) => (
-  <View style={styles.container}>
+  <View key={id} style={styles.container}>
     <Text style={styles.id}>{id}</Text>
     <Text style={styles.employee}>{employee}</Text>
     <Text style={styles.date}>{date}</Text>

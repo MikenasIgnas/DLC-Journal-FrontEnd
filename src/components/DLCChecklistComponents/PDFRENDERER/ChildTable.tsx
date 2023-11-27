@@ -48,9 +48,9 @@ const ChildTable = ({ tableStyle, table, fetchedPremisesData }: ChildTableProps)
   }))
 
   return(
-    <View style={tableStyle.tableContainer}>
+    <View key={table.id} style={tableStyle.tableContainer}>
       {
-        filteredData.map((el, i) => {
+        filteredData.map((el) => {
           const valueKey = Object.keys(el.values)
           const premiseNameItem = areas?.find((area) => area.id === el.pageID)
           const todoInArea = todo?.filter((todo) => todo.areasId === el?.pageID).filter((elem) => elem.id === Number(...valueKey))
@@ -60,7 +60,7 @@ const ChildTable = ({ tableStyle, table, fetchedPremisesData }: ChildTableProps)
           const {time, ticketNr} = inputValues
           return(
             <>
-              <ChildTableHeader/>
+              <ChildTableHeader id={table?.id}/>
               <ChildTableRows
                 pageID={el.pageID}
                 todoInArea={todoInArea}

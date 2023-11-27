@@ -5,7 +5,7 @@ import { getCurrentDate, post }                                         from '..
 import { useNavigate }                                                  from 'react-router-dom'
 import { useAppSelector }                                               from '../../store/hooks'
 import { useCookies }                                                   from 'react-cookie'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage                                                   from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {
@@ -76,7 +76,7 @@ const CreateUserPage = () => {
 
         <Card
           headStyle={{textAlign: 'center', backgroundColor: defaultTheme? '#191919': 'white', color: defaultTheme? 'white':'black'}}
-          title='Create User'
+          title='Sukurti Vartotoją'
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -90,7 +90,7 @@ const CreateUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='username'
-              label='User Name'
+              label='Darbuotojas'
               rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
             >
               <Input placeholder='Darbuotojo vardas'/>
@@ -115,7 +115,7 @@ const CreateUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='userRole'
-              label='User Role'
+              label='Rolė'
               rules={[
                 {
                   required: true,
@@ -136,7 +136,7 @@ const CreateUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordOne'
-              label='Password'
+              label='Slaptažodis'
               rules={[
                 {
                   required: true,
@@ -150,7 +150,7 @@ const CreateUserPage = () => {
             <Form.Item
               labelAlign='left'
               name='passwordTwo'
-              label='Confirm Password'
+              label='Patvirtinti slaptažodį'
               dependencies={['password']}
               hasFeedback
               rules={[
@@ -171,7 +171,7 @@ const CreateUserPage = () => {
               <Input.Password placeholder='Pakartoti slaptažodį'/>
             </Form.Item>
             <Button htmlType='submit'>
-            Create User
+              Sukurti
             </Button>
             {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           </Form>

@@ -72,7 +72,7 @@ const ChildTableRows = ({todoInArea, premiseName, possibleProblem, ticketNr, tim
     const replacedPremiseNameText = replaceSpecialCharacters(premiseName)
 
     return(
-      <View style={styles.row} key={item.id?.toString()}>
+      <View style={styles.row} key={item.id}>
         <Text key={item?.id} style={styles?.premiseName}>{replacedPremiseNameText}</Text>
         <Text key={item?.id} style={styles?.duty}>{replacedText}</Text>
         <Text key={item?.id} style={styles?.problem}>{possibleProblem}</Text>

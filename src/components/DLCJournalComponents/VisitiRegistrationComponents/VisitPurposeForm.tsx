@@ -1,45 +1,54 @@
-import * as React from 'react'
-import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft'
-import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'
-import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight'
-import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+/* eslint-disable max-len */
+import * as React           from 'react'
+import { useSearchParams }  from 'react-router-dom'
+import { useCookies }       from 'react-cookie'
+import { get }              from '../../../Plugins/helpers'
+import VisitPurposeButtons  from './VisitPurposeButtons'
+import { Button, theme }    from 'antd'
+
 type VisitPurposeFormProps = {
   setCurrent: React.Dispatch<React.SetStateAction<number>>
 }
 
+const VisitPurposeForm = ({ setCurrent }: VisitPurposeFormProps) => {
+  const [searchParams] =                useSearchParams()
+  const employeeId =                    searchParams.get('employeeId')
+  const companyId =                     searchParams.get('companyId')
+  const [cookies] =                     useCookies(['access_token'])
+  const [permissions, setPermissions] = React.useState<string[]>()
+  const { token } =                     theme.useToken()
 
-const VisitPurposeForm = ({setCurrent}:VisitPurposeFormProps) => {
-  const [alignment, setAlignment] = React.useState<string | null>('left')
+  React.useEffect(() => {
+    (async () => {
+      const visitingClient = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+      const filteredArray = visitingClient.data.permissions.filter((item: string)=> item !== 'Įleisti Trečius asmenis')
+      setPermissions(filteredArray)
+    })()
+  }, [])
 
-  const handleAlignment = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string | null,
-  ) => {
-    setAlignment(newAlignment)
+  const contentStyle: React.CSSProperties = {
+    lineHeight:      '260px',
+    textAlign:       'center',
+    color:           token.colorTextTertiary,
+    backgroundColor: token.colorFillAlter,
+    borderRadius:    token.borderRadiusLG,
+    border:          `1px dashed ${token.colorBorder}`,
+    marginTop:       16,
+    width:           '100%',
+    justifyContent:  'space-between',
+    display:         'flex',
   }
+
   return (
-    <ToggleButtonGroup
-      value={alignment}
-      exclusive
-      sx={{borderRadius: '5px'}}
-      onChange={handleAlignment}
-      aria-label='text alignment'
-    >
-      <ToggleButton value='left' aria-label='left aligned'>
-        <FormatAlignLeftIcon />
-      </ToggleButton>
-      <ToggleButton value='center' aria-label='centered'>
-        <FormatAlignCenterIcon />
-      </ToggleButton>
-      <ToggleButton value='right' aria-label='right aligned'>
-        <FormatAlignRightIcon />
-      </ToggleButton>
-      <ToggleButton value='justify' aria-label='justified' disabled>
-        <FormatAlignJustifyIcon />
-      </ToggleButton>
-    </ToggleButtonGroup>
+    <div >
+      <div style={contentStyle}>
+        {permissions?.map((el, i) => <VisitPurposeButtons buttonText={el} key={i} buttonWidth={(100 / permissions.length) - 5}/>)}
+      </div>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <Button style={{marginTop: '20px'}} onClick={() => setCurrent(0)}>Atgal</Button>
+        <Button style={{marginTop: '20px'}} onClick={() => setCurrent(2)}>Kitas</Button>
+      </div>
+    </div>
   )
 }
 

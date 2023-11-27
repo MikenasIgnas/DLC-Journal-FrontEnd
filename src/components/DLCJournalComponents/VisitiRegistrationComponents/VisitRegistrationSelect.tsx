@@ -3,30 +3,32 @@ import React            from 'react'
 import { Form, Select } from 'antd'
 
 type VisitRegistrationFormItemProps = {
-    formItemName: string;
-    placeholder: string;
-    formItemLabel: string;
+    formItemName:       string;
+    placeholder:        string;
     slectOptions:{
         value: string | undefined;
         label: string | undefined;
-    }[] | undefined
-    fieldValue: string
-    updateValue?: boolean | ((prevValue: any, curValue: any) => boolean)
-    onSelect?: (values: any, data: any) => void
-    onChange?: (value: string) => void
+    } [] | undefined
+    fieldValue:         string
+    updateValue?:       boolean | ((prevValue: any, curValue: any) => boolean)
+    onSelect?:          (values: any, data: any) => void
+    onChange?:          (value: string[], option: any) => void;
+    validationMessage:  string;
+    mode?: 'multiple' | 'tags' | undefined;
 }
 
-const VisitRegistrationFormItem = ({formItemName, placeholder, formItemLabel, slectOptions, fieldValue, updateValue, onSelect, onChange}: VisitRegistrationFormItemProps) => {
+const VisitRegistrationFormItem = ({formItemName, placeholder, slectOptions, fieldValue, updateValue, onSelect, onChange, validationMessage, mode}: VisitRegistrationFormItemProps) => {
   return (
     <Form.Item
       shouldUpdate={updateValue}
+      noStyle
     >
       {({ getFieldValue }) =>
         getFieldValue(fieldValue) && (
-          <Form.Item name={formItemName} label={<div style={{width: '120px'}}>{formItemLabel}</div>} rules={[{ required: true }]} colon={false} labelAlign={'left'}>
+          <Form.Item name={formItemName} rules={[{ required: true, message: validationMessage }]} >
             <Select
+              mode={mode}
               showSearch
-              style={{width: '200px'}}
               placeholder={placeholder}
               allowClear
               onChange={onChange}
