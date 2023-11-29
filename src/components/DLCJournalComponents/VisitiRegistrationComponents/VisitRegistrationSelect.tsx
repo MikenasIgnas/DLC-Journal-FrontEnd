@@ -21,7 +21,7 @@ const VisitRegistrationFormItem = ({formItemName, placeholder, slectOptions, fie
   return (
     <Form.Item
       shouldUpdate={updateValue}
-      noStyle
+      style={{width: '100%'}}
     >
       {({ getFieldValue }) =>
         getFieldValue(fieldValue) && (

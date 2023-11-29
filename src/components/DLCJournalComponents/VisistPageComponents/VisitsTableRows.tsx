@@ -4,6 +4,7 @@ import Box                  from '@mui/joy/Box'
 import { Tag, Typography }  from 'antd'
 import { useSearchParams }  from 'react-router-dom'
 import HighlightText        from '../../UniversalComponents/HighlightText'
+import { VisitorsType } from '../../../types/globalTypes'
 
 type VisitsTableRowsProps = {
     visitId:          string;
@@ -12,7 +13,7 @@ type VisitsTableRowsProps = {
     visitAddress:     string;
     dlcEmployees:     string;
     rowMenu?:         React.ReactNode
-    clientsEmployees: string;
+    visitors:         VisitorsType[];
     visitStartDate:   string;
     visitStartTime:   string;
     visitEndDate:     string;
@@ -27,7 +28,7 @@ const VisitsTableRows = ({
   visitingClient,
   dlcEmployees,
   rowMenu,
-  clientsEmployees,
+  visitors,
   visitStartDate,
   visitStartTime,
   visitEndDate,
@@ -36,7 +37,6 @@ const VisitsTableRows = ({
 }: VisitsTableRowsProps) => {
   const [searchParams] =  useSearchParams()
   const filter =          searchParams.get('filter')
-
   return (
     <tr key={visitId}>
       <td style={{padding: '12px' }}>
@@ -49,7 +49,9 @@ const VisitsTableRows = ({
         <Typography> {HighlightText(filter, visitingClient)}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, clientsEmployees)}</Typography>
+        {visitors.map((el) =>
+          <Typography key={el.selectedVisitor.employeeId}>{HighlightText(filter, `${el.selectedVisitor?.name}`)}</Typography>
+        )}
       </td>
       <td>
         {visitPurpose?.map((el, i) => <Typography key={i}>{HighlightText(filter, el)}</Typography>)}

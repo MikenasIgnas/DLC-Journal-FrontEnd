@@ -1,19 +1,24 @@
-import React                 from 'react'
-import { Typography, Box }   from '@mui/joy'
-import IconButton            from '@mui/joy/IconButton'
-import { useNavigate } from 'react-router'
+/* eslint-disable max-len */
+import React            from 'react'
+import IconButton       from '@mui/joy/IconButton'
+import { useNavigate }  from 'react-router'
+import { Typography }   from 'antd'
 
-const SideBarHead = () => {
+type SideBarHeadProps = {
+  collapsed: boolean;
+}
+
+const SideBarHead = ({collapsed}:SideBarHeadProps) => {
   const navigate = useNavigate()
 
   return (
     <>
-      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 1, alignItems: 'center', margin: '10px', justifyContent: 'center' }}>
         <IconButton onClick={() => navigate('/')} variant='soft' color='primary' size='sm'>
           <img className='HomePageCover' src='../Images/Logo.png'/>
         </IconButton>
-        <Typography level='title-md'>Data Logistics Center</Typography>
-      </Box>
+        {!collapsed && <Typography >Data Logistics Center</Typography> }
+      </div>
     </>
   )
 }

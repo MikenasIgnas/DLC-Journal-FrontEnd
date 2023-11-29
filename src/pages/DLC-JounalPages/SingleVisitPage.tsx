@@ -7,6 +7,7 @@ import { Badge, ConfigProvider, Descriptions }  from 'antd'
 import type { DescriptionsProps }               from 'antd'
 import { useCookies }                           from 'react-cookie'
 import { get }                                  from '../../Plugins/helpers'
+import { EmployeesType } from '../../types/globalTypes'
 
 type CollocationType = {
   [key:string] :        string[]
@@ -14,15 +15,22 @@ type CollocationType = {
 
 type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
 
+type VisitorsType = {
+ idType: string;
+ selectedVisitor:EmployeesType
+}
+
+
 type VisitsType = {
     id:               string;
     visitPurpose:     string[];
     visitStatus:      VisitStatusType;
-    clientsEmployees: string;
+    visitors: VisitorsType[];
     dlcEmployees:     string;
     visitAddress:     string;
     visitingClient:   string;
-    escortNames:      string[];
+    clientsGuests:      string[];
+    carPlates:      string[];
     signature:        string;
     visitCollocation: CollocationType
     visitorsIdType:   string;
@@ -75,7 +83,7 @@ const SingleVisitPage = () => {
     {
       key:      '4',
       label:    'Atvykstantis asmuo',
-      children: visitData?.[0]?.clientsEmployees,
+      children: visitData?.[0]?.visitors?.map((el) => `${el?.selectedVisitor?.name} ${' '} ${el?.selectedVisitor?.lastName}`),
     },
     {
       key:      '5',
@@ -86,12 +94,12 @@ const SingleVisitPage = () => {
       key:      '6',
       label:    'Palyda',
       span:     2,
-      children: visitData?.[0]?.escortNames?.map((el, i) => <div key={i}>{el}</div>),
+      children: visitData?.[0]?.clientsGuests?.map((el, i) => <div key={i}>{el}</div>),
     },
     {
       key:      '7',
       label:    'Dokumento tipas',
-      children: visitData?.[0]?.visitorsIdType,
+      children: visitData?.[0]?.visitors.map((el) => el.idType),
     },
     {
       key:      '8',
@@ -145,12 +153,18 @@ const SingleVisitPage = () => {
       label:    'Pabaigos Laikas',
       children: visitData?.[0]?.endTime,
     },
+    {
+      key:      '17',
+      label:    'Automobilio Nr',
+      children: visitData?.[0]?.carPlates,
+    },
   ]
   const { id } =    useParams()
   const fetchData = async () => {
     try {
       const response = await get(`getSingleVisit/${id}`, cookies.access_token)
       setVisitData(response.data)
+      console.log(response.data)
     } catch (err) {
       console.log(err)
     }
@@ -160,6 +174,7 @@ const SingleVisitPage = () => {
     try {
       const res = await get(`${url}?visitId=${id}`, cookies.access_token)
       setVisitData(res.data)
+      console.log(res.data)
     } catch (err) {
       console.error(err)
     }

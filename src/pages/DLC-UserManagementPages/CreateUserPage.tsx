@@ -75,8 +75,7 @@ const CreateUserPage = () => {
       }}>
 
         <Card
-          headStyle={{textAlign: 'center', backgroundColor: defaultTheme? '#191919': 'white', color: defaultTheme? 'white':'black'}}
-          title='Sukurti Vartotoją'
+          title='Asmeninė informacija'
           bordered={true}
           className='CreateUserCard'>
           <Form

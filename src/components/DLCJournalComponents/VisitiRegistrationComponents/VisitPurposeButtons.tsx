@@ -1,32 +1,31 @@
 /* eslint-disable max-len */
-import React      from 'react'
+import React from 'react'
 import { Button } from 'antd'
 
 type VisitPurposeButtonsProps = {
-    buttonText:   string;
-    buttonWidth:  number;
-}
+  buttonText: string;
+  buttonWidth: number;
+};
 
-const VisitPurposeButtons = ({buttonText, buttonWidth}: VisitPurposeButtonsProps) => {
+const VisitPurposeButtons = ({ buttonText, buttonWidth }: VisitPurposeButtonsProps) => {
   const [isToggled, setToggled] = React.useState(false)
 
   React.useEffect(() => {
-    const selectedButtons = JSON.parse(localStorage.getItem('selectedButtons') || '[]')
+    const selectedButtons = JSON.parse(localStorage.getItem('visitPurpose') || '[]')
     setToggled(selectedButtons.includes(buttonText))
-    setToggled(false)
   }, [buttonText])
 
   const handleToggle = () => {
     setToggled(!isToggled)
-    const selectedButtons = JSON.parse(localStorage.getItem('selectedButtons') || '[]')
+    const visitPurposeButtons = JSON.parse(localStorage.getItem('visitPurpose') || '[]')
     const updatedButtons = isToggled
-      ? selectedButtons.filter((button: string) => button !== buttonText)
-      : [...selectedButtons, buttonText]
-    localStorage.setItem('selectedButtons', JSON.stringify(updatedButtons))
+      ? visitPurposeButtons.filter((button: string) => button !== buttonText)
+      : [...visitPurposeButtons, buttonText]
+    localStorage.setItem('visitPurpose', JSON.stringify(updatedButtons))
   }
 
   return (
-    <Button style={{width: `${buttonWidth}%`, height: '110px'}} type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
+    <Button style={{ width: `${buttonWidth}%`, height: '110px' }} type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
       {buttonText}
     </Button>
   )

@@ -1,36 +1,68 @@
 /* eslint-disable max-len */
-import React                        from 'react'
-import { Card, Steps }                    from 'antd'
-import VisitRegistrationForm        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
-import VisitPurposeForm             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitPurposeForm'
-import VisitingPersonsConfirmation  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitingPersonsConfirmation'
+import React                                    from 'react'
+import { Button, Card, Form, message, theme }   from 'antd'
+import VisitRegistrationForm                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
+import { getCurrentDate, getCurrentTime, post } from '../../Plugins/helpers'
+import { useCookies }                           from 'react-cookie'
+import { useNavigate }                          from 'react-router'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 
 const VisitRegistrationPage= () => {
-  const [current, setCurrent] = React.useState(0)
-
-  const steps = [
-    {
-      title:   ' Įmonės Registracija',
-      content: <VisitRegistrationForm setCurrent={setCurrent} />,
-    },
-    {
-      title:   'Vizito Tikslas',
-      content: <VisitPurposeForm setCurrent={setCurrent}/> ,
-    },
-    {
-      title:   'Identifikacija',
-      content: <VisitingPersonsConfirmation setCurrent={setCurrent} />,
-    },
-  ]
-
-  const items = steps.map((item) => ({ key: item.title, title: item.title }))
+  const [form]                            = Form.useForm()
+  const { token }                         = theme.useToken()
+  const [cookies]                         = useCookies(['access_token'])
+  const navigate                          = useNavigate()
+  const [clientsGuests, setClientsGuests] = React.useState<string[]>([])
+  const [carPlates, setCarPlates]         = React.useState<string[]>([])
+  const [messageApi, contextHolder]       = message.useMessage()
+  const registerVisit = async(values: any) => {
+    const visitPurpose = localStorage.getItem('visitPurpose')
+    if(visitPurpose && JSON.parse(visitPurpose).length > 0){
+      values.visitPurpose = JSON.parse(visitPurpose)
+      values.visitStatus = 'processing'
+      values.creationDate = getCurrentDate()
+      values.creationTime = getCurrentTime()
+      values.clientsGuests = clientsGuests
+      values.carPlates = carPlates
+      const res = await post('postVisitDetails', values, cookies.access_token )
+      if(!res.error){
+        localStorage.clear()
+        console.log('asd')
+        navigate(`/DLC Žurnalas/Vizitai/${res.data}`)
+      }
+    }else{
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinktas vizito tikslas',
+      })
+    }
+  }
+  const contentStyle: React.CSSProperties = {
+    lineHeight:      '260px',
+    textAlign:       'center',
+    color:           token.colorTextTertiary,
+    backgroundColor: token.colorFillAlter,
+    borderRadius:    token.borderRadiusLG,
+    border:          `1px dashed ${token.colorBorder}`,
+    marginTop:       16,
+    width:           '100%',
+  }
   return (
-    <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'column', width: '100%', alignItems: 'center'}}>
+    <div style={contentStyle}>
       <Card style={{width: '100% '}}>
-        <Steps current={current} items={items} />
-        <div>{steps[current].content}</div>
+        <Form form={form} onFinish={registerVisit}>
+          <VisitRegistrationForm
+            form={form}
+            setClientsGuests={setClientsGuests}
+            clientsGuests={clientsGuests}
+            setCarPlates={setCarPlates}
+            carPlates={carPlates}
+          />
+          <Button htmlType='submit'>Registruoti</Button>
+        </Form>
       </Card>
+      <SuccessMessage contextHolder={contextHolder} />
     </div>
   )
 }

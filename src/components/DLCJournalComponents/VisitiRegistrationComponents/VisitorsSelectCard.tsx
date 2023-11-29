@@ -1,26 +1,38 @@
 /* eslint-disable max-len */
-import { Card, Avatar } from 'antd'
-import Meta from 'antd/es/card/Meta'
-import React from 'react'
-import { EmployeesType } from '../../../types/globalTypes'
+import React                          from 'react'
+import { Card, Avatar, FormInstance } from 'antd'
+import Meta                           from 'antd/es/card/Meta'
+import { EmployeesType }              from '../../../types/globalTypes'
 
 type VisitorsSelectCardProps = {
-    name:       string;
-    lastName:   string;
-    occupation: string;
-    item:       EmployeesType
-    setSelectedVisitors: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    name:                 string;
+    lastName:             string;
+    occupation:           string;
+    item:                 EmployeesType
+    setSelectedVisitors:  React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    form:                 FormInstance<any>
 }
 
-const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisitors}:VisitorsSelectCardProps) => {
+const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisitors, form}:VisitorsSelectCardProps) => {
   const [isSelected, setIsSelected] = React.useState(false)
 
   const handleCardClick = () => {
     setSelectedVisitors((prevSelectedVisitors) => {
       if (isSelected) {
-        return prevSelectedVisitors?.filter((selectedItem) => selectedItem !== item) || []
+        const updatedSelectedVisitors = prevSelectedVisitors?.filter(
+          (selectedItem) => selectedItem !== item
+        )
+
+        form.setFieldsValue({
+          visitors: updatedSelectedVisitors?.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
+        })
+        return updatedSelectedVisitors || []
       } else {
-        return [...(prevSelectedVisitors || []), item]
+        const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
+        form.setFieldsValue({
+          visitors: updatedSelectedVisitors.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
+        })
+        return updatedSelectedVisitors
       }
     })
     setIsSelected((prev) => !prev)

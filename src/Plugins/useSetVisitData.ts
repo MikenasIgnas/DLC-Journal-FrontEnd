@@ -5,10 +5,11 @@ import { get }              from './helpers'
 import { VisitsType }       from '../types/globalTypes'
 
 const useSetVisitsData = () => {
-  const [data, setData] =   React.useState<VisitsType[]>()
-  const [count, setCount] = React.useState<number>()
-  const [cookies] =         useCookies(['access_token'])
-  const [searchParams] =    useSearchParams()
+  const [data, setData] =         React.useState<VisitsType[]>()
+  const [count, setCount] =       React.useState<number>()
+  const [cookies] =               useCookies(['access_token'])
+  const [searchParams] =          useSearchParams()
+  const [loading, setLoading] =   React.useState(false)
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -40,11 +41,13 @@ const useSetVisitsData = () => {
 
   React.useEffect(() => {
     (async () => {
+      setLoading(true)
       const documents = await get('visitsCount', cookies.access_token)
       setCount(documents.data)
+      setLoading(false)
     })()
   }, [])
-  return {data, count, setData}
+  return {data, count, setData, loading}
 }
 
 export default useSetVisitsData

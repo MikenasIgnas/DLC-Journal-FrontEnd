@@ -161,6 +161,11 @@ export type EmployeesType = {
   notes?:         string;
 }
 
+export type VisitorsType = {
+  idType: string;
+  selectedVisitor: EmployeesType
+}
+
 export type VisitsType = {
   _id: string;
   id: string;
@@ -172,7 +177,7 @@ export type VisitsType = {
   endTime:          string;
   visitStatus:      'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
   visitPurpose:     string[]
-  clientsEmployees: string;
+  visitors:         VisitorsType[];
   dlcEmployees:     string;
   visitAddress:     string;
   visitingClient:   string;

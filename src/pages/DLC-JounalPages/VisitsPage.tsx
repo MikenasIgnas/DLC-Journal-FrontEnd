@@ -46,8 +46,8 @@ const VisitPage = () => {
   const [searchParams, setSearchParams] =     useSearchParams()
   const page =                                searchParams.get('page')
   const navigate =                            useNavigate()
-  const {data, count, setData} =              useSetVisitsData()
-
+  const {data, count, setData} =     useSetVisitsData()
+  console.log(data)
   return (
     <FullTable
       tableSorter={tableSorter}
@@ -63,7 +63,7 @@ const VisitPage = () => {
           visitingClient={el.visitingClient}
           visitAddress={el.visitAddress}
           dlcEmployees={el.dlcEmployees}
-          clientsEmployees={el.clientsEmployees}
+          visitors={el.visitors}
           visitPurpose={el.visitPurpose}
           visitStartDate={el.startDate}
           visitStartTime={el.startTime}
