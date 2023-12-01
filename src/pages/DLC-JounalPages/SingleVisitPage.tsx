@@ -1,13 +1,16 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
 import React                                    from 'react'
 import { useParams }                            from 'react-router-dom'
-import { Button, Image }                        from 'antd'
+import { Avatar, Button, Card, Form, List }     from 'antd'
 import { Badge, ConfigProvider, Descriptions }  from 'antd'
 import type { DescriptionsProps }               from 'antd'
 import { useCookies }                           from 'react-cookie'
-import { get }                                  from '../../Plugins/helpers'
-import { EmployeesType } from '../../types/globalTypes'
+import { get, post }                            from '../../Plugins/helpers'
+import { EmployeesType }                        from '../../types/globalTypes'
+import VisitorAdditionModal                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionModal'
+import ItemList                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
 
 type CollocationType = {
   [key:string] :        string[]
@@ -20,17 +23,16 @@ type VisitorsType = {
  selectedVisitor:EmployeesType
 }
 
-
 type VisitsType = {
     id:               string;
     visitPurpose:     string[];
     visitStatus:      VisitStatusType;
-    visitors: VisitorsType[];
+    visitors:         VisitorsType[];
     dlcEmployees:     string;
     visitAddress:     string;
     visitingClient:   string;
-    clientsGuests:      string[];
-    carPlates:      string[];
+    clientsGuests:    string[];
+    carPlates:        string[];
     signature:        string;
     visitCollocation: CollocationType
     visitorsIdType:   string;
@@ -40,22 +42,100 @@ type VisitsType = {
     startTime:        string;
     endDate:          string;
     endTime:          string;
+    companyId:        number;
 }
 
 const SingleVisitPage = () => {
-  const [cookies] = useCookies(['access_token'])
-  const [visitData, setVisitData] = React.useState<VisitsType[] | undefined>(undefined)
+  const [cookies]                                     = useCookies(['access_token'])
+  const [visitData, setVisitData]                     = React.useState<VisitsType[]>()
+  const [open, setOpen]                               = React.useState(false)
+  const [clientsEmployees, setClientsEmployees]       = React.useState<EmployeesType[]>()
+  const { id }                                        = useParams()
+  const [selectedVisitors, setSelectedVisitors]       = React.useState<EmployeesType[]>()
+  const [guestsImput, setGuestsInput]                 = React.useState<string>('')
+  const [carPlatesInput, setCarPlatesInput]           = React.useState<string>('')
+  const [form]                                        = Form.useForm()
+  const [searchEmployeeValue, setSearchEmployeeValue] = React.useState<string | undefined>()
+  const [clientsGuests, setClientsGuests]             = React.useState<string[]>([])
+  const [carPlates, setCarPlates]                     = React.useState<string[]>([])
+
+  const fetchData = async () => {
+    try {
+      const response = await get(`getSingleVisit/${id}`, cookies.access_token)
+      setVisitData(response.data)
+      setClientsGuests(response.data[0]?.clientsGuests)
+      setCarPlates(response.data[0]?.carPlates)
+      const companyId = response.data[0].companyId
+      const companiesEmployees =  await get(`getAllClientsEmployees?companyId=${companyId}`, cookies.access_token)
+      const filteredArray = companiesEmployees.data.filter((visitor: any) =>
+        !response.data[0].visitors.some(
+          (filterItem: any) =>
+            filterItem.selectedVisitor.employeeId === visitor.employeeId
+        )
+      )
+      setClientsEmployees(filteredArray)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const changeVisitsState = async (url: string) => {
+    try {
+      const res = await get(`${url}?visitId=${id}`, cookies.access_token)
+      setVisitData(res.data)
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+
+  React.useEffect(() => {
+    fetchData()
+  }, [id, open])
+
+  const idTypes = [
+    {value: 'Darbuotojos pažymėjimas', label: 'Darbuotojos pažymėjimas'},
+    {value: 'Tapatybės kortelė', label: 'Tapatybės kortelė'},
+    {value: 'Pasas', label: 'Pasas'},
+  ]
+
+  const deleteVisitor = async(employeeId: string | undefined) => {
+    if (visitData && visitData.length > 0) {
+      const updatedVisitData = [...visitData]
+      if (updatedVisitData[0]?.visitors) {
+        updatedVisitData[0].visitors = updatedVisitData[0].visitors.filter(
+          (el) => el.selectedVisitor.employeeId !== employeeId
+        )
+        setVisitData(updatedVisitData)
+        await get(`deleteVisitor?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
+      }
+    }
+  }
 
   const items: DescriptionsProps['items'] = [
     {
-      key:   '1',
-      label: '',
-      span:  4,
-      children:
-      <ConfigProvider theme ={{
+      key:      '1',
+      label:    'Įmonė',
+      children: visitData?.[0].visitingClient,
+    },
+    {
+      key:      '2',
+      label:    'Vizito tikslas',
+      children: visitData?.[0].visitPurpose.map((el, i) => <div key={i}>{el}</div>),
+    },
+    {
+      key:      '3',
+      label:    'Adresas',
+      children: visitData?.[0].visitAddress,
+    },
+    {
+      key:      '4',
+      label:    'Statusas',
+      children: <ConfigProvider theme ={{
         components: {
           Badge: {
-            statusSize: 10,
+            statusSize: 12,
           },
         },
       }}>
@@ -69,125 +149,79 @@ const SingleVisitPage = () => {
       </ConfigProvider>,
     },
     {
-      key:      '2',
-      label:    'Įmonė',
-      span:     2,
-      children: visitData?.[0]?.visitingClient,
-    },
-    {
-      key:      '3',
-      span:     2,
-      label:    'Duomenų centras',
-      children: visitData?.[0]?.visitAddress === '1' ? 'J13' : 'T72',
-    },
-    {
-      key:      '4',
-      label:    'Atvykstantis asmuo',
-      children: visitData?.[0]?.visitors?.map((el) => `${el?.selectedVisitor?.name} ${' '} ${el?.selectedVisitor?.lastName}`),
-    },
-    {
       key:      '5',
-      label:    'Vizito tikslas',
-      children: visitData?.[0]?.visitPurpose?.map((el, i) => <div key={i}>{el}</div>),
+      label:    'Adresas',
+      children: visitData?.[0].visitAddress,
     },
     {
       key:      '6',
-      label:    'Palyda',
-      span:     2,
-      children: visitData?.[0]?.clientsGuests?.map((el, i) => <div key={i}>{el}</div>),
+      label:    'Sukūrimo data',
+      children: `${visitData?.[0].creationDate} ${visitData?.[0].creationTime}`,
     },
     {
       key:      '7',
-      label:    'Dokumento tipas',
-      children: visitData?.[0]?.visitors.map((el) => el.idType),
+      label:    'Pradžios laikas',
+      children: `${visitData?.[0].startDate} ${visitData?.[0].startTime}`,
     },
     {
       key:      '8',
-      label:    'Kolokacijos',
-      children: <div>{Object.keys(visitData?.[0]?.visitCollocation || {})?.map((key)=> (
-        <div key={key}>
-          <div>{key}</div>
-          {visitData?.[0]?.visitCollocation[key]?.map((value) => (
-            <div key={value}>{value}</div>
-          ))}
-        </div>
-      ))}</div>,
-    },
-    {
-      key:      '9',
-      label:    'Parašas',
-      children: <Image width={200} src={visitData?.[0]?.signature}/>,
-    },
-    {
-      key:      '10',
-      label:    'Lydintysis',
-      children: visitData?.[0]?.dlcEmployees,
-    },
-    {
-      key:      '11',
-      label:    'Sukūrimo Data',
-      children: visitData?.[0]?.creationDate,
-    },
-    {
-      key:      '12',
-      label:    'Sukūrimo Laikas',
-      children: visitData?.[0]?.creationTime,
-    },
-    {
-      key:      '13',
-      label:    'Pradžios Data',
-      children: visitData?.[0]?.startDate,
-    },
-    {
-      key:      '14',
-      label:    'Pradžios Laikas',
-      children: visitData?.[0]?.startTime,
-    },
-    {
-      key:      '15',
-      label:    'Pabaigos Data',
-      children: visitData?.[0]?.endDate,
-    },
-    {
-      key:      '16',
-      label:    'Pabaigos Laikas',
-      children: visitData?.[0]?.endTime,
-    },
-    {
-      key:      '17',
-      label:    'Automobilio Nr',
-      children: visitData?.[0]?.carPlates,
+      label:    'Pabaigos laikas',
+      children: `${visitData?.[0].endDate} ${visitData?.[0].endTime}`,
     },
   ]
-  const { id } =    useParams()
-  const fetchData = async () => {
-    try {
-      const response = await get(`getSingleVisit/${id}`, cookies.access_token)
-      setVisitData(response.data)
-      console.log(response.data)
-    } catch (err) {
-      console.log(err)
-    }
+  const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearchEmployeeValue(e.target.value.toLowerCase())
   }
-
-  const changeVisitsState = async (url: string) => {
-    try {
-      const res = await get(`${url}?visitId=${id}`, cookies.access_token)
-      setVisitData(res.data)
-      console.log(res.data)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-
-  React.useEffect(() => {
-    fetchData()
-  }, [id])
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center' }}>
-      <Descriptions layout='vertical' bordered items={items} column={4} />
+    <Form form={form} >
+      <Descriptions style={{backgroundColor: '#ffffff'}} title='Vizito informacija' items={items} />
+      <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}} extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
+        <List
+          dataSource={visitData?.[0].visitors}
+          renderItem={(item) =>
+            <List.Item
+              actions={[<Button type='link' onClick={() => deleteVisitor(item.selectedVisitor.employeeId)}>Ištrinti</Button>]}
+            >
+              <List.Item.Meta
+                avatar={<Avatar src={''} />}
+                title={<p>{item.selectedVisitor.name} {item.selectedVisitor.lastName}</p>}
+                description={item.selectedVisitor.occupation}
+              />
+              <div>content</div>
+            </List.Item>
+
+          }
+        />
+      </Card>
+      <ItemList
+        cardTitle={'Pridėti palydą'}
+        inputValue={guestsImput}
+        inputPlaceHolder={'Pridėti palydą'}
+        setInputValue={setGuestsInput}
+        list={clientsGuests}
+        setListItems={setClientsGuests}
+        url={'updateClientsGests'}
+        removeUrl={'removeClientsGuest'}
+      />
+      <ItemList
+        cardTitle={'Pridėti automobilį'}
+        inputValue={carPlatesInput}
+        inputPlaceHolder={'Pridėti automobilį'}
+        setInputValue={setCarPlatesInput}
+        list={carPlates}
+        setListItems={setCarPlates}
+        url={'updateCarPlates'}
+        removeUrl={'removeCarPlates'}
+      />
+      <VisitorAdditionModal
+        open={open}
+        clientsEmployees={clientsEmployees}
+        form={form} setOpen={setOpen }
+        searchEmployee={searchEmployee}
+        setSelectedVisitors={setSelectedVisitors}
+        searchEmployeeValue={searchEmployeeValue}
+      />
       <div>
         {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
           <Button onClick={async () => { await changeVisitsState('startVisit'); fetchData() }}>Pradėti vizitą</Button>
@@ -199,7 +233,7 @@ const SingleVisitPage = () => {
           <Button onClick={async () => { await changeVisitsState('endVisit'); fetchData() }}>Baigti vizitą</Button>
         )}
       </div>
-    </div>
+    </Form>
   )
 }
 

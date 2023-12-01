@@ -79,7 +79,6 @@ const FilledHistoryData = ({
                       <div key={el?.id} style={{backgroundColor: defaultPageTheme ? '#191919' : 'white'}}>
                         {fields.map(({ name, ...rest }, index) =>
                         {
-                          console.log(name)
                           return(
                             <ChecklistHisotoryInputs
                               key={index}

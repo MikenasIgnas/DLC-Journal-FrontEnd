@@ -47,7 +47,6 @@ const VisitPage = () => {
   const page =                                searchParams.get('page')
   const navigate =                            useNavigate()
   const {data, count, setData} =     useSetVisitsData()
-  console.log(data)
   return (
     <FullTable
       tableSorter={tableSorter}

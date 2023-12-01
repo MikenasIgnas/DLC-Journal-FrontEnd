@@ -6,6 +6,7 @@ import { getCurrentDate, getCurrentTime, post } from '../../Plugins/helpers'
 import { useCookies }                           from 'react-cookie'
 import { useNavigate }                          from 'react-router'
 import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import { useSearchParams } from 'react-router-dom'
 
 
 const VisitRegistrationPage= () => {
@@ -16,15 +17,19 @@ const VisitRegistrationPage= () => {
   const [clientsGuests, setClientsGuests] = React.useState<string[]>([])
   const [carPlates, setCarPlates]         = React.useState<string[]>([])
   const [messageApi, contextHolder]       = message.useMessage()
+  const [searchParams]                    = useSearchParams()
+  const companyId                         = searchParams.get('companyId')
+
   const registerVisit = async(values: any) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
-    if(visitPurpose && JSON.parse(visitPurpose).length > 0){
+    if(companyId && visitPurpose && JSON.parse(visitPurpose).length > 0){
       values.visitPurpose = JSON.parse(visitPurpose)
       values.visitStatus = 'processing'
       values.creationDate = getCurrentDate()
       values.creationTime = getCurrentTime()
       values.clientsGuests = clientsGuests
       values.carPlates = carPlates
+      values.companyId = companyId
       const res = await post('postVisitDetails', values, cookies.access_token )
       if(!res.error){
         localStorage.clear()

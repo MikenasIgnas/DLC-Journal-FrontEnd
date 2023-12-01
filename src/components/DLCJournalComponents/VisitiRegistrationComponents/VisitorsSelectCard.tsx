@@ -3,20 +3,24 @@ import React                          from 'react'
 import { Card, Avatar, FormInstance } from 'antd'
 import Meta                           from 'antd/es/card/Meta'
 import { EmployeesType }              from '../../../types/globalTypes'
+import { useParams } from 'react-router-dom'
+import { post } from '../../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
 
 type VisitorsSelectCardProps = {
     name:                 string;
     lastName:             string;
     occupation:           string;
     item:                 EmployeesType
-    setSelectedVisitors:  React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    setSelectedVisitors:  React.Dispatch<React.SetStateAction<any[] | undefined>>
     form:                 FormInstance<any>
 }
 
 const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisitors, form}:VisitorsSelectCardProps) => {
   const [isSelected, setIsSelected] = React.useState(false)
-
-  const handleCardClick = () => {
+  const [cookies] = useCookies(['access_token'])
+  const { id }                      = useParams()
+  const handleCardClick = async() => {
     setSelectedVisitors((prevSelectedVisitors) => {
       if (isSelected) {
         const updatedSelectedVisitors = prevSelectedVisitors?.filter(
@@ -36,6 +40,11 @@ const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisito
       }
     })
     setIsSelected((prev) => !prev)
+
+    if(id){
+      const res  = await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
+      console.log(res)
+    }
   }
 
   return (

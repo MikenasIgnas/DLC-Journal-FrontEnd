@@ -28,7 +28,6 @@ const useSetArchivedUserData = () => {
       }
       try {
         const data = await get(fetchUrl, cookies.access_token)
-        console.log(data)
         setData(data)
       } catch (error) {
         console.error('Error fetching data:', error)

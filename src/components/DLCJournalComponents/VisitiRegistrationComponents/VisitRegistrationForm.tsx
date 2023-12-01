@@ -1,18 +1,19 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                                                                                from 'react'
-import { get }                                                                              from '../../../Plugins/helpers'
-import { useCookies }                                                                       from 'react-cookie'
-import { Button, Card, Checkbox, Col, Form, FormInstance, Input, List, Modal, Row, Select } from 'antd'
-import { useSearchParams }                                                                  from 'react-router-dom'
-import { CompaniesType, EmployeesType, UserType }                                           from '../../../types/globalTypes'
-import VisitRegistrationFormItem                                                            from './VisitRegistrationSelect'
-import { PlusCircleOutlined }                                                               from '@ant-design/icons'
-import VisitorsSelectCard                                                                   from './VisitorsSelectCard'
-import VisitPurposeButtons                                                                  from './VisitPurposeButtons'
-import VisitorsListItem                                                                     from './VisitorsListItem'
-import { SearchProps }                                                                      from 'antd/es/input/Search'
+import React                                      from 'react'
+import { get }                                    from '../../../Plugins/helpers'
+import { useCookies }                             from 'react-cookie'
+import { Button, Form, FormInstance, Select }     from 'antd'
+import { useSearchParams }                        from 'react-router-dom'
+import { CompaniesType, EmployeesType, UserType } from '../../../types/globalTypes'
+import VisitRegistrationFormItem                  from './VisitRegistrationSelect'
+import { PlusCircleOutlined }                     from '@ant-design/icons'
+import VisitorsList                               from './VisitorsList'
+import CollocationsList                           from './CollocationsList'
+import ItemList                                   from './ItemList'
+import VisitorAdditionModal                       from './VisitorAdditionModal'
+import VisitPurposeList                           from './VisitPurposeList'
 
 type VisitRegistrationFormProps = {
   form: FormInstance<any>
@@ -42,7 +43,6 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
   const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationsType[]>()
   const [guestsImput, setGuestsInput]                     = React.useState<string>('')
   const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
-  const { Search }                                        = Input
 
   React.useEffect(() => {
     (async () => {
@@ -101,25 +101,6 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
 
   const canBiringCompany = uniquePermissions.includes('Įleisti Trečius asmenis')
 
-  const onClientsGuestsAddition: SearchProps['onSearch'] = (value) => {
-    setClientsGuests([...clientsGuests, value])
-    setGuestsInput('')
-  }
-
-  const onCarPlatesAddition: SearchProps['onSearch'] = (value) => {
-    setCarPlates([...carPlates, value])
-    setCarPlatesInput('')
-  }
-
-  const removeCarPlates = (index: number) => {
-    const filtered = carPlates.filter((el, i) => index !== i)
-    setCarPlates(filtered)
-  }
-
-  const removeGuest = (index: number) => {
-    const filtered = clientsGuests.filter((el, i) => index !== i)
-    setClientsGuests(filtered)
-  }
   return (
     <div>
       <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -156,117 +137,39 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
         }
       </div>
       <Button icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>Pridėti Lankytoją</Button>
-      {
-        selectedVisitors && selectedVisitors?.length > 0 &&
-        <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-          <Form.List name='visitors'>
-            {(fields, {remove}) => (
-              <List
-                dataSource={fields}
-                renderItem={(item) => <VisitorsListItem form={form} item={item} remove={remove}/>}
-              />
-            )}
-          </Form.List>
-        </Card>
+      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList form={form}/>}
+      {uniquePermissions.length > 0 && <VisitPurposeList uniquePermissions={uniquePermissions}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations && companiesColocations}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && !canBiringCompany && <div style={{color: 'red'}}>Negali būti palydos</div>}
+      {selectedVisitors && selectedVisitors?.length > 0 && canBiringCompany &&
+        <ItemList
+          cardTitle={'Pridėti palydą'}
+          inputValue={guestsImput}
+          inputPlaceHolder={'Pridėti palydą'}
+          setInputValue={setGuestsInput}
+          list={clientsGuests}
+          setListItems={setClientsGuests}
+        />
       }
-      {uniquePermissions.length > 0 &&
-        <Card style={{margin: '10px', backgroundColor: '#f9f9f9'}} title={'Vizito Tikslas'}>
-          <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-            {uniquePermissions?.map((el, i) => <VisitPurposeButtons buttonText={el} key={i} buttonWidth={(100 / permissions.length) - 5}/>)}
-          </div>
-        </Card>
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId === 'T72' &&
+        <ItemList
+          cardTitle={'Pridėti automobilį'}
+          inputValue={carPlatesInput}
+          inputPlaceHolder={'Pridėti automobilį'}
+          setInputValue={setCarPlatesInput}
+          list={carPlates}
+          setListItems={setCarPlates}
+        />
       }
-      {
-        selectedVisitors && selectedVisitors?.length > 0 &&
-        <Card title={'Kolokacijos'} style={{margin: '10px', backgroundColor: '#f9f9f9'}} >
-          <div style={{display: 'flex', justifyContent: 'space-around', height: '100%'}}>
-            {companiesColocations?.map((el, i) => {
-              const objEntries = Object.entries(el)
-              return(
-                <Card style={{margin: '10px'}} key={i} title={objEntries[0][0]}>
-                  <Form.Item name={['visitCollocation', objEntries[0][0]]} >
-                    <Checkbox.Group options={objEntries[0][1]} key={i}/>
-                  </Form.Item>
-                </Card>
-              )})
-            }
-          </div>
-        </Card>
-      }
-      { selectedVisitors && selectedVisitors?.length > 0 && !canBiringCompany &&<div style={{color: 'red'}}>Negali būti palydos</div>}
-      {
-        selectedVisitors && selectedVisitors?.length > 0 && canBiringCompany &&
-          <Card title='Pridėti palydą' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-            <Search
-              value={guestsImput}
-              onChange={(e) => setGuestsInput(e.target.value)}
-              placeholder='Pridėti palydą'
-              onSearch={onClientsGuestsAddition}
-              enterButton={<div>Pridėti</div>}
-            />
-            {
-              clientsGuests.length > 0 &&
-              <List
-                style={{marginTop: '50px'}}
-                dataSource={clientsGuests}
-                renderItem={(item, index) =>
-                  <List.Item actions={[<Button type='link' onClick={() => removeGuest(index)}>Ištrinti</Button>]}>
-                    <List.Item.Meta style={{flex: '0 0'}} title={item}/>
-                  </List.Item>}
-              />
-            }
-          </Card>
-
-      }
-      {
-        selectedVisitors && selectedVisitors?.length > 0 && addressId === 'T72' &&
-          <Card title='Pridėti automobilį' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-            <Search
-              value={carPlatesInput}
-              onChange={(e) => setCarPlatesInput(e.target.value)}
-              placeholder='Pridėti automobilį'
-              onSearch={onCarPlatesAddition}
-              enterButton={<div>Pridėti</div>}
-            />
-            {
-              carPlates.length > 0 &&
-              <List
-                style={{marginTop: '50px'}}
-                dataSource={carPlates}
-                renderItem={(item, index) =>
-                  <List.Item actions={[<Button onClick={() => removeCarPlates(index)} type='link'>Ištrinti</Button>]}>
-                    <List.Item.Meta style={{flex: '0 0'}} title={item}/>
-                  </List.Item>}
-              />
-            }
-          </Card>
-
-      }
-      <div>
-        <Modal
-          title='Modal 1000px width'
-          open={open}
-          onOk={() => setOpen(false)}
-          onCancel={() => setOpen(false)}
-          width={'85%'}
-        >
-          <Input onChange={searchEmployee}/>
-          <Row gutter={[16, 16]}>
-            {clientsEmployees?.map((employee) => (!searchEmployeeValue || employee.name.toLowerCase().includes(searchEmployeeValue)) &&
-            <Col key={employee.employeeId} span={6}>
-              <VisitorsSelectCard
-                form={form}
-                setSelectedVisitors={setSelectedVisitors}
-                name={employee.name}
-                lastName={employee.lastName}
-                occupation={employee.occupation}
-                item={employee}
-              />
-            </Col>
-            )}
-          </Row>
-        </Modal>
-      </div>
+      <VisitorAdditionModal
+        open={open}
+        clientsEmployees={clientsEmployees}
+        form={form}
+        setOpen={setOpen}
+        searchEmployee={searchEmployee}
+        setSelectedVisitors={setSelectedVisitors}
+        searchEmployeeValue={searchEmployeeValue}
+      />
     </div>
   )
 }

@@ -49,8 +49,8 @@ const VisitsTableRows = ({
         <Typography> {HighlightText(filter, visitingClient)}</Typography>
       </td>
       <td>
-        {visitors.map((el) =>
-          <Typography key={el.selectedVisitor.employeeId}>{HighlightText(filter, `${el.selectedVisitor?.name}`)}</Typography>
+        {visitors?.map((el) =>
+          <Typography key={el.selectedVisitor.employeeId}>{HighlightText(filter, `${el.selectedVisitor?.name} ${el.selectedVisitor?.lastName}`)}</Typography>
         )}
       </td>
       <td>
