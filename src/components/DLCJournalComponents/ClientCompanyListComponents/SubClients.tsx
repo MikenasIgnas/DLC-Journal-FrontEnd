@@ -70,7 +70,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
   }
 
   return (
-    <div style={{width: '49%'}}>
+    <div style={{width: '100%'}}>
       <Divider>Sub Klientai</Divider>
       <List
         dataSource={subClients}

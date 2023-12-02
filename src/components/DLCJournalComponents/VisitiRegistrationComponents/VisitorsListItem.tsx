@@ -31,7 +31,7 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
       <List.Item
         style={{flex: '0 0'}}
         actions={[
-          <Form.Item noStyle name={[item.name, 'idType']} rules={[{ required: true, message: 'Būtina pasirinkti dokumento tipą' }]} >
+          <Form.Item noStyle name={[item.name, 'idType']} >
             <Select placeholder='Dokumento tipas' style={{ width: '200px' }} options={indetificationOptions} />
           </Form.Item>,
           <Button onClick={() => setVisible(true)}>Pasirašyti</Button>,

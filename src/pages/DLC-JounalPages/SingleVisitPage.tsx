@@ -1,19 +1,20 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
-import React                                    from 'react'
-import { useParams }                            from 'react-router-dom'
-import { Avatar, Button, Card, Form, List }     from 'antd'
-import { Badge, ConfigProvider, Descriptions }  from 'antd'
-import type { DescriptionsProps }               from 'antd'
-import { useCookies }                           from 'react-cookie'
-import { get, post }                            from '../../Plugins/helpers'
-import { EmployeesType }                        from '../../types/globalTypes'
-import VisitorAdditionModal                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionModal'
-import ItemList                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
+import React                                                  from 'react'
+import { useParams }                                          from 'react-router-dom'
+import { Avatar, Button, Card, Checkbox, Form, List, Select } from 'antd'
+import { Badge, ConfigProvider, Descriptions }                from 'antd'
+import type { DescriptionsProps }                             from 'antd'
+import { useCookies }                                         from 'react-cookie'
+import { get }                                                from '../../Plugins/helpers'
+import { EmployeesType }                                      from '../../types/globalTypes'
+import VisitorAdditionModal                                   from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionModal'
+import ItemList                                               from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
+import CollocationsList                                       from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
 
 type CollocationType = {
-  [key:string] :        string[]
+  [key:string] :  string[]
 }
 
 type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
@@ -92,13 +93,8 @@ const SingleVisitPage = () => {
 
   React.useEffect(() => {
     fetchData()
-  }, [id, open])
+  }, [id, selectedVisitors, open])
 
-  const idTypes = [
-    {value: 'Darbuotojos pažymėjimas', label: 'Darbuotojos pažymėjimas'},
-    {value: 'Tapatybės kortelė', label: 'Tapatybės kortelė'},
-    {value: 'Pasas', label: 'Pasas'},
-  ]
 
   const deleteVisitor = async(employeeId: string | undefined) => {
     if (visitData && visitData.length > 0) {
@@ -116,21 +112,6 @@ const SingleVisitPage = () => {
   const items: DescriptionsProps['items'] = [
     {
       key:      '1',
-      label:    'Įmonė',
-      children: visitData?.[0].visitingClient,
-    },
-    {
-      key:      '2',
-      label:    'Vizito tikslas',
-      children: visitData?.[0].visitPurpose.map((el, i) => <div key={i}>{el}</div>),
-    },
-    {
-      key:      '3',
-      label:    'Adresas',
-      children: visitData?.[0].visitAddress,
-    },
-    {
-      key:      '4',
       label:    'Statusas',
       children: <ConfigProvider theme ={{
         components: {
@@ -149,48 +130,74 @@ const SingleVisitPage = () => {
       </ConfigProvider>,
     },
     {
-      key:      '5',
+      key:      '2',
+      label:    'Įmonė',
+      children: visitData?.[0].visitingClient,
+    },
+    {
+      key:      '3',
       label:    'Adresas',
       children: visitData?.[0].visitAddress,
     },
     {
-      key:      '6',
+      key:      '4',
       label:    'Sukūrimo data',
       children: `${visitData?.[0].creationDate} ${visitData?.[0].creationTime}`,
     },
     {
-      key:      '7',
+      key:      '5',
       label:    'Pradžios laikas',
-      children: `${visitData?.[0].startDate} ${visitData?.[0].startTime}`,
+      children: `${visitData?.[0].startDate || ''} ${visitData?.[0].startTime || ''}`,
+    },
+    {
+      key:      '6',
+      label:    'Pabaigos laikas',
+      children: `${visitData?.[0]?.endDate || ''} ${visitData?.[0].endTime || ''}`,
+    },
+    {
+      key:      '7',
+      label:    'Lydintis asmuo',
+      children: visitData?.[0].dlcEmployees,
     },
     {
       key:      '8',
-      label:    'Pabaigos laikas',
-      children: `${visitData?.[0].endDate} ${visitData?.[0].endTime}`,
+      label:    'Vizito tikslas',
+      children: <div>{visitData?.[0]?.visitPurpose?.map((el, i) => <p key={i}>{el}</p>)}</div>,
     },
   ]
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
 
+  const identificationOptions = [
+    {value: 'Pasas', label: 'Pasas'},
+    {value: 'Tapatybės kortelė', label: 'Tapatybės kortelė'},
+    {value: 'Darbuotojo pažymėjimas', label: 'Darbuotojo pažymėjimas'},
+  ]
+
+  const transformedArray = Object.entries(visitData?.[0]?.visitCollocation || {}).map(([key, value]) => ({
+    [key]: value.map((el) => ({[el]: true})),
+  }))
   return (
     <Form form={form} >
-      <Descriptions style={{backgroundColor: '#ffffff'}} title='Vizito informacija' items={items} />
+      <Descriptions style={{backgroundColor: '#f9f9f9', margin: '10px', padding: '10px'}} title='Vizito informacija' items={items} />
       <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}} extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitData?.[0].visitors}
           renderItem={(item) =>
             <List.Item
-              actions={[<Button type='link' onClick={() => deleteVisitor(item.selectedVisitor.employeeId)}>Ištrinti</Button>]}
+              actions={[
+                <Select style={{width: '150px'}} defaultValue={item?.idType} options={identificationOptions}/>,
+                <Button type='link' onClick={() => deleteVisitor(item.selectedVisitor.employeeId)}>Ištrinti</Button>,
+              ]}
             >
               <List.Item.Meta
                 avatar={<Avatar src={''} />}
                 title={<p>{item.selectedVisitor.name} {item.selectedVisitor.lastName}</p>}
                 description={item.selectedVisitor.occupation}
               />
-              <div>content</div>
+              <div style={{width: '150px'}}>{item?.selectedVisitor?.permissions?.map((el, i) => <p key={i}>{el}</p>)}</div>
             </List.Item>
-
           }
         />
       </Card>
@@ -214,6 +221,40 @@ const SingleVisitPage = () => {
         url={'updateCarPlates'}
         removeUrl={'removeCarPlates'}
       />
+
+      <Form.List
+        name='asd'
+        initialValue={transformedArray}
+      >
+        {(fields) => {
+          return fields?.map(({ key, name, ...restField }, index) => {
+            const objEntries = Object.entries(transformedArray[index])
+            return (
+              <Card title={'Kolokacijos'} style={{margin: '10px', backgroundColor: '#f9f9f9'}} >
+                <div style={{display: 'flex', justifyContent: 'space-around', height: '100%'}}>
+                  {/* {transformedArray?.map((el, i) => {
+                    const objEntries = Object.entries(el)
+                    console.log(objEntries)
+                    return(
+                      <Card style={{margin: '10px'}} key={i} title={objEntries[0][0]}>
+                        <Form.Item name={['visitCollocation', objEntries[0][0]]} >
+                          <Checkbox.Group options={objEntries[0][1]} key={i}/>
+                        </Form.Item>
+                      </Card>
+                    )})
+                  } */}
+
+                  <Card style={{margin: '10px'}} key={i} title={objEntries[0][0]}>
+                    <Form.Item name={['visitCollocation', objEntries[0][0]]} >
+                      <Checkbox.Group options={objEntries[0][1]} key={i}/>
+                    </Form.Item>
+                  </Card>
+                </div>
+              </Card>
+            )
+          })
+        }}
+      </Form.List>
       <VisitorAdditionModal
         open={open}
         clientsEmployees={clientsEmployees}
@@ -222,7 +263,7 @@ const SingleVisitPage = () => {
         setSelectedVisitors={setSelectedVisitors}
         searchEmployeeValue={searchEmployeeValue}
       />
-      <div>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
           <Button onClick={async () => { await changeVisitsState('startVisit'); fetchData() }}>Pradėti vizitą</Button>
         )}

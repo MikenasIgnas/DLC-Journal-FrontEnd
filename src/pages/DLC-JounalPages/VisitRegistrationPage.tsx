@@ -5,10 +5,42 @@ import VisitRegistrationForm                    from '../../components/DLCJourna
 import { getCurrentDate, getCurrentTime, post } from '../../Plugins/helpers'
 import { useCookies }                           from 'react-cookie'
 import { useNavigate }                          from 'react-router'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
-import { useSearchParams } from 'react-router-dom'
+import SuccessMessage                           from '../../components/UniversalComponents/SuccessMessage'
+import { useSearchParams }                      from 'react-router-dom'
+import { EmployeesType }                        from '../../types/globalTypes'
 
+type CollocationType = {
+  [key:string] :        string[]
+}
 
+type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+
+type VisitorsType = {
+ idType: string;
+ selectedVisitor:EmployeesType
+}
+
+type VisitsType = {
+    id:               string;
+    visitPurpose:     string[];
+    visitStatus:      VisitStatusType;
+    visitors:         VisitorsType[];
+    dlcEmployees:     string;
+    visitAddress:     string;
+    visitingClient:   string;
+    clientsGuests:    string[];
+    carPlates:        string[];
+    signature:        string;
+    visitCollocation: CollocationType
+    visitorsIdType:   string;
+    creationDate:     string;
+    creationTime:     string;
+    startDate:        string;
+    startTime:        string;
+    endDate:          string;
+    endTime:          string;
+    companyId:        number;
+}
 const VisitRegistrationPage= () => {
   const [form]                            = Form.useForm()
   const { token }                         = theme.useToken()
@@ -19,30 +51,29 @@ const VisitRegistrationPage= () => {
   const [messageApi, contextHolder]       = message.useMessage()
   const [searchParams]                    = useSearchParams()
   const companyId                         = searchParams.get('companyId')
-
-  const registerVisit = async(values: any) => {
+  const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
-    if(companyId && visitPurpose && JSON.parse(visitPurpose).length > 0){
-      values.visitPurpose = JSON.parse(visitPurpose)
+    if(companyId && (values?.visitors && values?.visitors.length > 0) ){
+      values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : null
       values.visitStatus = 'processing'
       values.creationDate = getCurrentDate()
       values.creationTime = getCurrentTime()
       values.clientsGuests = clientsGuests
       values.carPlates = carPlates
-      values.companyId = companyId
+      values.companyId = Number(companyId)
       const res = await post('postVisitDetails', values, cookies.access_token )
       if(!res.error){
         localStorage.clear()
-        console.log('asd')
         navigate(`/DLC Žurnalas/Vizitai/${res.data}`)
       }
     }else{
       messageApi.error({
         type:    'error',
-        content: 'Nepasirinktas vizito tikslas',
+        content: 'Nepasirinkti įmonės darbuotojai',
       })
     }
   }
+
   const contentStyle: React.CSSProperties = {
     lineHeight:      '260px',
     textAlign:       'center',
@@ -53,6 +84,7 @@ const VisitRegistrationPage= () => {
     marginTop:       16,
     width:           '100%',
   }
+
   return (
     <div style={contentStyle}>
       <Card style={{width: '100% '}}>

@@ -3,9 +3,9 @@ import React                          from 'react'
 import { Card, Avatar, FormInstance } from 'antd'
 import Meta                           from 'antd/es/card/Meta'
 import { EmployeesType }              from '../../../types/globalTypes'
-import { useParams } from 'react-router-dom'
-import { post } from '../../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
+import { useParams }                  from 'react-router-dom'
+import { post }                       from '../../../Plugins/helpers'
+import { useCookies }                 from 'react-cookie'
 
 type VisitorsSelectCardProps = {
     name:                 string;
@@ -18,35 +18,48 @@ type VisitorsSelectCardProps = {
 
 const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisitors, form}:VisitorsSelectCardProps) => {
   const [isSelected, setIsSelected] = React.useState(false)
-  const [cookies] = useCookies(['access_token'])
+  const [cookies]                   = useCookies(['access_token'])
   const { id }                      = useParams()
-  const handleCardClick = async() => {
-    setSelectedVisitors((prevSelectedVisitors) => {
-      if (isSelected) {
-        const updatedSelectedVisitors = prevSelectedVisitors?.filter(
-          (selectedItem) => selectedItem !== item
-        )
 
-        form.setFieldsValue({
-          visitors: updatedSelectedVisitors?.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
-        })
-        return updatedSelectedVisitors || []
-      } else {
-        const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
-        form.setFieldsValue({
-          visitors: updatedSelectedVisitors.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
-        })
-        return updatedSelectedVisitors
-      }
-    })
-    setIsSelected((prev) => !prev)
+  const handleCardClick = async () => {
+    if(!id){
+      setSelectedVisitors((prevSelectedVisitors) => {
+        if (isSelected) {
+          const updatedSelectedVisitors = prevSelectedVisitors?.filter(
+            (selectedItem) => selectedItem !== item
+          )
 
-    if(id){
-      const res  = await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
-      console.log(res)
+          form.setFieldsValue({
+            visitors: updatedSelectedVisitors?.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
+          })
+          return updatedSelectedVisitors || []
+        } else {
+          const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
+          form.setFieldsValue({
+            visitors: updatedSelectedVisitors.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
+          })
+          return updatedSelectedVisitors
+        }
+      })
+    }
+
+    setIsSelected((prev) => !prev) // Toggle isSelected
+
+    if (id) {
+      await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
+      setSelectedVisitors((prevSelectedVisitors) => {
+        if (isSelected) {
+          const updatedSelectedVisitors = prevSelectedVisitors?.filter(
+            (selectedItem) => selectedItem !== item
+          )
+          return updatedSelectedVisitors || []
+        } else {
+          const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
+          return updatedSelectedVisitors
+        }
+      })
     }
   }
-
   return (
     <Card style={{ width: 300, marginTop: 16, border: isSelected ? '2px solid blue' : '1px solid #e8e8e8'}} onClick={handleCardClick}>
       <Meta

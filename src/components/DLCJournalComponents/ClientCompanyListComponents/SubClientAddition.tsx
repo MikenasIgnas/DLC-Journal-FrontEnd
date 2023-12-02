@@ -19,9 +19,6 @@ const SubClientAddition = ({modalState, setModalState, selectedValue, handleChan
 
   return (
     <div style={{display: 'flex', justifyContent: 'space-evenly' }}>
-      <div style={{width: '50%', display: 'flex',justifyContent: 'center'}}>
-        <Button onClick={() => setModalState({...modalState, isEmployeeAdditionModalOpen: true})}>Pridėti darbuotoją</Button>
-      </div>
       <div style={{display: 'flex', justifyContent: 'space-evenly', width: '50%'}}>
         <div>
           <Button onClick={() => setModalState({...modalState, isModalOpen: true})}>Pridėti Naują Sub Klientą</Button>

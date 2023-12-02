@@ -14,7 +14,6 @@ type ClientsEmployeeListProps = {
   employeeRemoved:        (id: string) => void
   setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
   editClientsEmployee: boolean
-
 }
 
 const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeListProps) => {
@@ -38,7 +37,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   }
 
   return (
-    <div style={{width: '49%'}}>
+    <div style={{width: '100%'}}>
       <Divider>Darbuotojai</Divider>
       <List
         dataSource={list}

@@ -16,11 +16,11 @@ import VisitorAdditionModal                       from './VisitorAdditionModal'
 import VisitPurposeList                           from './VisitPurposeList'
 
 type VisitRegistrationFormProps = {
-  form: FormInstance<any>
+  form:             FormInstance<any>
   setClientsGuests: React.Dispatch<React.SetStateAction<string[]>>
-  clientsGuests: string[];
-  setCarPlates: React.Dispatch<React.SetStateAction<string[]>>
-  carPlates: string[]
+  clientsGuests:    string[];
+  setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
+  carPlates:        string[]
 }
 
 type CollocationsType = {
@@ -46,8 +46,8 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
 
   React.useEffect(() => {
     (async () => {
-      const companies =     await get('getCompanies', cookies.access_token)
-      const dlcEmployees =  await get('getAllUsers', cookies.access_token)
+      const companies     = await get('getCompanies', cookies.access_token)
+      const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       const singleCompany = await get(`SingleCompanyPage/${companyId}`, cookies.access_token)
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
@@ -100,7 +100,6 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
   })
 
   const canBiringCompany = uniquePermissions.includes('Įleisti Trečius asmenis')
-
   return (
     <div>
       <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -136,7 +135,7 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
         </>
         }
       </div>
-      <Button icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>Pridėti Lankytoją</Button>
+      <Button style={{margin: '10px'}} icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>Pridėti Lankytoją</Button>
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList form={form}/>}
       {uniquePermissions.length > 0 && <VisitPurposeList uniquePermissions={uniquePermissions}/>}
       {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations && companiesColocations}/>}

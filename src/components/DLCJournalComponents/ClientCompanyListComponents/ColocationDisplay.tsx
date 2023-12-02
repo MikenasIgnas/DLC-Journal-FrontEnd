@@ -18,7 +18,7 @@ const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => 
   const totalItemCount = locationData?.reduce((count, obj) => count + Object.values(obj)[0].length, 0)
 
   return (
-    <div style={{width: '49%'}}>
+    <div style={{width: '100%'}}>
       {locationData && <Divider>{locationName}</Divider>}
       <Card style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #d9d9d9'}} >
         {collocations?.map((el, i) =>

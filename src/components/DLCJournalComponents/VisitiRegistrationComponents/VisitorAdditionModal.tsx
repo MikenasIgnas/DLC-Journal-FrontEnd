@@ -1,18 +1,17 @@
 /* eslint-disable max-len */
+import React                                    from 'react'
 import { Col, FormInstance, Input, Modal, Row } from 'antd'
-import React from 'react'
-import VisitorsSelectCard from './VisitorsSelectCard'
-import { EmployeesType } from '../../../types/globalTypes'
-
+import VisitorsSelectCard                       from './VisitorsSelectCard'
+import { EmployeesType }                        from '../../../types/globalTypes'
 
 type VisitorAdditionModalProps = {
-    open: boolean
-    clientsEmployees:  EmployeesType[] | undefined
-    form: FormInstance<any>
-    setOpen: (value: React.SetStateAction<boolean>) => void
-    searchEmployee: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    setSelectedVisitors: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
-    searchEmployeeValue: string | undefined
+    open:                 boolean
+    clientsEmployees:     EmployeesType[] | undefined
+    form:                 FormInstance<any>
+    setOpen:              (value: React.SetStateAction<boolean>) => void
+    searchEmployee:       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    setSelectedVisitors:  React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    searchEmployeeValue:  string | undefined
 }
 
 const VisitorAdditionModal = ({open, clientsEmployees, form, setOpen, searchEmployee, setSelectedVisitors, searchEmployeeValue}: VisitorAdditionModalProps) => {

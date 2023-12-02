@@ -10,6 +10,7 @@ type CollocationFormListProps = {
 }
 
 const EditableCollocationFormList = ({collocations, collocationsSites}: CollocationFormListProps) => {
+  console.log(collocations)
   return (
     <div style={{display: 'flex'}} >
       { collocations?.map((colocation, i) =>
