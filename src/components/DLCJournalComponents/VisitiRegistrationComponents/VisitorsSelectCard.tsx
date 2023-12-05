@@ -22,46 +22,34 @@ const VisitorsSelectCard = ({name, lastName, occupation, item, setSelectedVisito
   const { id }                      = useParams()
 
   const handleCardClick = async () => {
-    if(!id){
+    if (!id) {
       setSelectedVisitors((prevSelectedVisitors) => {
-        if (isSelected) {
-          const updatedSelectedVisitors = prevSelectedVisitors?.filter(
-            (selectedItem) => selectedItem !== item
-          )
+        const updatedSelectedVisitors = isSelected
+          ? prevSelectedVisitors?.filter((selectedItem) => selectedItem !== item)
+          : [...(prevSelectedVisitors || []), item]
 
-          form.setFieldsValue({
-            visitors: updatedSelectedVisitors?.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
-          })
-          return updatedSelectedVisitors || []
-        } else {
-          const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
-          form.setFieldsValue({
-            visitors: updatedSelectedVisitors.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
-          })
-          return updatedSelectedVisitors
-        }
+        form.setFieldsValue({
+          visitors: updatedSelectedVisitors?.map((visitor) => ({ idType: null, selectedVisitor: visitor })),
+        })
+
+        return updatedSelectedVisitors || []
       })
     }
-
-    setIsSelected((prev) => !prev) // Toggle isSelected
 
     if (id) {
       await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
       setSelectedVisitors((prevSelectedVisitors) => {
-        if (isSelected) {
-          const updatedSelectedVisitors = prevSelectedVisitors?.filter(
-            (selectedItem) => selectedItem !== item
-          )
-          return updatedSelectedVisitors || []
-        } else {
-          const updatedSelectedVisitors = [...(prevSelectedVisitors || []), item]
-          return updatedSelectedVisitors
-        }
+        const updatedSelectedVisitors = isSelected
+          ? prevSelectedVisitors?.filter((selectedItem) => selectedItem !== item)
+          : [...(prevSelectedVisitors || []), item]
+
+        return updatedSelectedVisitors
       })
     }
+    setIsSelected((prev) => !prev)
   }
   return (
-    <Card style={{ width: 300, marginTop: 16, border: isSelected ? '2px solid blue' : '1px solid #e8e8e8'}} onClick={handleCardClick}>
+    <Card style={{ width: 300, marginTop: 16, border: isSelected ? '2px solid blue' : '1px solid #e8e8e8'}} onClick={() => handleCardClick()}>
       <Meta
         avatar={<Avatar src='https://xsgames.co/randomusers/avatar.php?g=pixel&key=1' />}
         title= {`${name} ${lastName}`}

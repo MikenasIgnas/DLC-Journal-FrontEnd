@@ -51,6 +51,7 @@ const VisitRegistrationPage= () => {
   const [messageApi, contextHolder]       = message.useMessage()
   const [searchParams]                    = useSearchParams()
   const companyId                         = searchParams.get('companyId')
+
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
     if(companyId && (values?.visitors && values?.visitors.length > 0) ){
@@ -62,10 +63,12 @@ const VisitRegistrationPage= () => {
       values.carPlates = carPlates
       values.companyId = Number(companyId)
       const res = await post('postVisitDetails', values, cookies.access_token )
+      console.log(values)
       if(!res.error){
         localStorage.clear()
-        navigate(`/DLC Žurnalas/Vizitai/${res.data}`)
+        navigate(`/DLC Žurnalas/Vizitai/${res.data}?visitAddress=${values.visitAddress}`)
       }
+      console.log(values)
     }else{
       messageApi.error({
         type:    'error',

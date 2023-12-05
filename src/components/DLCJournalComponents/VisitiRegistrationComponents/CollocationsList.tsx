@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React                    from 'react'
 import { Card, Checkbox, Form}  from 'antd'
 
@@ -16,7 +17,7 @@ const CollocationsList = ({companiesColocations}: CollocationsListProps) => {
         {companiesColocations?.map((el, i) => {
           const objEntries = Object.entries(el)
           return(
-            <Card style={{margin: '10px'}} key={i} title={objEntries[0][0]}>
+            <Card style={{margin: '10px', width: '100%'}} key={i} title={objEntries[0][0]}>
               <Form.Item name={['visitCollocation', objEntries[0][0]]} >
                 <Checkbox.Group options={objEntries[0][1]} key={i}/>
               </Form.Item>

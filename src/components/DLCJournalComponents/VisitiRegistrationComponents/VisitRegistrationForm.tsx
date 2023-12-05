@@ -138,7 +138,7 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
       <Button style={{margin: '10px'}} icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>Pridėti Lankytoją</Button>
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList form={form}/>}
       {uniquePermissions.length > 0 && <VisitPurposeList uniquePermissions={uniquePermissions}/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations && companiesColocations}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={ companiesColocations}/>}
       {selectedVisitors && selectedVisitors?.length > 0 && !canBiringCompany && <div style={{color: 'red'}}>Negali būti palydos</div>}
       {selectedVisitors && selectedVisitors?.length > 0 && canBiringCompany &&
         <ItemList

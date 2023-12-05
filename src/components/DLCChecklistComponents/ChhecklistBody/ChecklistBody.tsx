@@ -22,6 +22,8 @@ const ChecklistBody = () => {
         const filteredValues =          latestHistoryItemValues?.find((item) => Object.keys(item).includes(String(el.id)))
         const radioValues =             filteredValues ? filteredValues[el.id] : undefined
         const alreadyFilledValues =     data && JSON.parse(data).values[el?.id]
+
+
         return (
           <Card
             style={{ marginTop: 16, backgroundColor: defaultTheme ? '#191919': '', color: defaultTheme ? 'white' : 'black'}}

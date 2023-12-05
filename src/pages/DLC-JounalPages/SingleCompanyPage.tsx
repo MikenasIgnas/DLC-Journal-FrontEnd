@@ -204,7 +204,6 @@ const SingleCompanyPage = () => {
             edit={modalState.edit}
           />}
       >
-
         <Tabs defaultActiveKey='1' items={items}/>
       </Card>
     </Form>
