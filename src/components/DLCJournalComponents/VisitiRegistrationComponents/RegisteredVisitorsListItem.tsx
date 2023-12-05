@@ -62,7 +62,7 @@ const RegisteredVisitorsListItem = ({signature, edit, idType, identificationOpti
           title={<p>{name} {lastName}</p>}
           description={occupation}
         />
-        <div style={{width: '150px'}}>{permissions?.map((el, i) => <p key={i}>{el}</p>)}</div>
+        <div style={{width: '150px'}}>{permissions?.map((el, i) => <div key={i}>{el}</div>)}</div>
       </List.Item>
       <Modal
         footer={false}

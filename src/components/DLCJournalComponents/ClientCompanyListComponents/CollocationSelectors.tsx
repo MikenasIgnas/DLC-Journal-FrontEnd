@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Checkbox, Collapse, ConfigProvider, Form } from 'antd'
+import { Checkbox, Col, Collapse, ConfigProvider, Form, Row } from 'antd'
 import React from 'react'
 
 type ColocationSelectorsProps = {
@@ -15,7 +15,7 @@ const ColocationSelectors = ({collocationSite, colocationPremises, colocationId 
   const { Panel } = Collapse
   return(
     <div key={colocationId}>
-      <Collapse style={{marginBottom: '10px', marginTop: '10px', width: '200px'}}>
+      <Collapse style={{marginBottom: '10px', marginTop: '10px', width: '360px'}}>
         <Panel style={{padding: '10px'}} header={collocationSite} key={colocationId}>
           <Form.List
             name={collocationSite}
@@ -33,7 +33,11 @@ const ColocationSelectors = ({collocationSite, colocationPremises, colocationId 
                         },
                       }}>
                         <Form.Item name={[name, premise.premiseName]}>
-                          <Checkbox.Group options={premise.racks} style={{display: 'block'}} />
+                          <Checkbox.Group options={premise.racks} style={{
+                            display:             'grid',
+                            gridTemplateColumns: 'repeat(3, 1fr)',
+                            gap:                 '8px',
+                          }}/>
                         </Form.Item>
                       </ConfigProvider>
                     </Panel>

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                              from 'react'
-import { Button, ConfigProvider, Menu, MenuProps, Space } from 'antd'
+import { Button, ConfigProvider, Divider, Menu, MenuProps, Space } from 'antd'
 import { Layout }                                         from 'antd'
 import { Link, useLocation, useNavigate }                 from 'react-router-dom'
 import { clearFilleChecklistdData, get }                  from '../../../Plugins/helpers'
@@ -13,7 +13,7 @@ import { setUserEmail, setUsername, setUsersRole }        from '../../../auth/Au
 import { setDefaultTheme }                                from '../../../auth/ThemeReducer/ThemeReducer'
 import PageContainer                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                              from 'antd/es/layout/Sider'
-import {  ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
+import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
 import SideBarHead                                        from './SideBarComponents/SideBarHead'
 const { Content, Footer } = Layout
 
@@ -104,11 +104,19 @@ const PageLayout = ({children}:PageLayoutProps) => {
         }}
       >
         <Layout hasSider>
-          <Sider style={{height: '100vh'}} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-            <SideBarHead collapsed={collapsed}/>
-            <Menu defaultSelectedKeys={['1']} mode='inline' items={items} />
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-              <Button onClick={userLogOut}>Atsijungti</Button>
+          <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+            <div style={{display: 'flex', flexDirection: 'column' ,justifyContent: 'space-between', height: '95%'}} >
+              <div>
+                <SideBarHead collapsed={collapsed}/>
+                <Menu defaultSelectedKeys={['1']} mode='inline' items={items} />
+              </div>
+              <div>
+                <Divider/>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+                  {!collapsed && <div style={{fontSize: '15px'}}>{userName}</div>}<LogoutOutlined style={{fontSize: '20px'}} onClick={userLogOut}/>
+                </div>
+                <Divider/>
+              </div>
             </div>
           </Sider>
           <Layout className='Layout'>
@@ -119,11 +127,11 @@ const PageLayout = ({children}:PageLayoutProps) => {
                   <PageContainer pageTitle={pageTitle && pageTitles.includes(pageTitle) ? pageTitle : '' }>
                     {children}
                   </PageContainer>
-                  <Footer className={defaultTheme ? 'PageLayoutFooterDark': 'PageLayoutFooteLight'}>
-                  Premises Checklist ©2023 Created by Data Logistics Center
-                  </Footer>
                 </>
               }
+              <Footer className={defaultTheme ? 'PageLayoutFooterDark': 'PageLayoutFooteLight'}>
+                  DLC Journal ©2023 Created by Data Logistics Center
+              </Footer>
             </Content>
           </Layout>
         </Layout>

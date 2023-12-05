@@ -12,9 +12,9 @@ const TableColumns = () => {
   return(
     <>
       <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
-      <th style={{ width: 150, padding: '12px 6px' }}>Klientas</th>
+      <th style={{ width: 100, padding: '12px 6px' }}>Klientas</th>
       <th style={{ width: 200, padding: '12px 6px' }}>Kliento Darbuotojas</th>
-      <th style={{ width: 200, padding: '12px 6px' }}>Vizito Tikslas</th>
+      <th style={{ width: 130, padding: '12px 6px' }}>Vizito Tikslas</th>
       <th style={{ width: 70, padding: '12px 6px' }}>Adresas</th>
       <th style={{ width: 100, padding: '12px 6px' }}>Pradžios Data</th>
       <th style={{ width: 70, padding: '12px 6px' }}>Pradžios Laikas</th>

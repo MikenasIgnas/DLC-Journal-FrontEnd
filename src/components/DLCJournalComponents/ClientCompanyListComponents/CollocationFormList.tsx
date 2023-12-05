@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                                                  from 'react'
-import { Checkbox, Col, ConfigProvider, Divider, Form, Row }  from 'antd'
+import { Card, Checkbox, Col, ConfigProvider, Divider, Form, Row }  from 'antd'
 import { CollocationsType, CollocationsSites }                from '../../../types/globalTypes'
 
 
@@ -29,12 +29,12 @@ const EditableCollocationFormList = ({collocations, collocationsSites}: Collocat
                 })}
               >
                 {(fields) => (
-                  <Row gutter={[16, 16]} style={{display: 'flex', justifyContent: 'space-evenly'}} >
+                  <Row gutter={[16, 16]} style={{display: 'flex'}} >
                     {fields.map(({ name, ...rest }, index) => {
                       const premise = colocation.premises[index]
                       return (
                         <Col span={10} key={index}>
-                          <div>
+                          <Card>
                             <Divider>
                               {premise.premiseName}
                             </Divider>
@@ -47,7 +47,7 @@ const EditableCollocationFormList = ({collocations, collocationsSites}: Collocat
                                 <Checkbox.Group options={premise.racks} style={{display: 'block'}}/>
                               </Form.Item>
                             </ConfigProvider>
-                          </div>
+                          </Card>
                         </Col>
                       )})}
                   </Row>

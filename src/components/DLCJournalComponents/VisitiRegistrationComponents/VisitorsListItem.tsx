@@ -63,7 +63,7 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
       visitors: updatedVisitors,
     })
   }
-
+  console.log(form.getFieldValue('visitors')[item.name].selectedVisitor.permissions)
   return (
     <>
       <List.Item
@@ -92,7 +92,7 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
           title={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.name} {form.getFieldValue('visitors')[item.name].selectedVisitor.lastName}</div>}
           description={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.occupation}</div>}
         />
-        <div>{form.getFieldValue('visitors')[item.name].selectedVisitor.permissions}</div>
+        <div>{form.getFieldValue('visitors')[item.name].selectedVisitor.permissions.map((el:any) => <div>{el}</div>)}</div>
         <Modal
           open={visible}
           onCancel={oncancel}

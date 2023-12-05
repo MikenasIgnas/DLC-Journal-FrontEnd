@@ -40,7 +40,7 @@ const ListItem = ({
         style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
         actions={[
           showDrawer ? <Button type='link' onClick={() => showDrawer(listItemId, employeeId)} key={employeeId}>Peržiūrėti</Button>
-            : <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>peržiūrėti</Link>,
+            : <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
           subClient === true && <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={employeeId}> Perkelti </Button>,
           <Button type='link' onClick={() => deleteListItem(listItemId, employeeId)} key={employeeId}>Ištrinti</Button>,
         ]}>

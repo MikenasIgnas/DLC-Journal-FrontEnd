@@ -85,6 +85,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
       onOk={() => setModalState({...modalState, isModalOpen: false})}
       onCancel={() => setModalState({...modalState, isModalOpen: false})}
       footer={false}
+      width={'45%'}
     >
       <Form form={form} onFinish={addCompany}>
         <div>

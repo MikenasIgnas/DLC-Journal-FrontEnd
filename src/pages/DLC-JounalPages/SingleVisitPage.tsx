@@ -264,7 +264,6 @@ const SingleVisitPage = () => {
       values.startDate = values?.startDate?.format('YYYY/MM/DD')
       values.startTime = values?.startTime?.format('HH:mm')
       values.visitors = updateIdTypes
-
       await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)
       await fetchData()
     }
@@ -284,7 +283,9 @@ const SingleVisitPage = () => {
             <Button htmlType='submit'>{!edit ? 'Edit' : 'Save'}</Button>
           </div>} items={items}
       />
-      <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}} extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
+      <Card
+        title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}
+        extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitData?.[0].visitors}
           renderItem={(item, i) =>
@@ -304,7 +305,14 @@ const SingleVisitPage = () => {
           }
         />
       </Card>
-      {!edit ? <SelectedCollocationList selectedCollocations={filteredArray} edit={edit}/> : <CollocationsList companiesColocations={companiesColocations} /> }
+      {!edit ?
+        <SelectedCollocationList
+          selectedCollocations={filteredArray}
+          edit={edit}
+        /> :
+        <CollocationsList companiesColocations={companiesColocations}
+        />
+      }
       <ItemList
         cardTitle={'Pridėti palydą'}
         inputValue={guestsImput}
