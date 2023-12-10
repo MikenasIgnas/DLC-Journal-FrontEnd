@@ -46,19 +46,18 @@ const childTableStyle = StyleSheet.create({
 })
 
 type PDFTableProps = {
-  tableData: HistoryDataType[] | undefined
+  tableData:  HistoryDataType[] | undefined
   fetchedPremisesData: {
-    routes: null;
-    areas: null;
+    routes:   null;
+    areas:    null;
     problems: null;
-    todo: null;
+    todo:     null;
   }
   fileName?: string | undefined,
   specificDate: string | undefined
 }
 
 const PDFTable = ({tableData, fetchedPremisesData, fileName, specificDate}: PDFTableProps) => {
-
   return(
     <Document>
       <Page size='A4' style={styles.page}>

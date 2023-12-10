@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import React                                        from 'react'
-import { Button, Form, Input }                      from 'antd'
+import React                   from 'react'
+import { Button, Form, Input } from 'antd'
 
 type SingleCompaniesTitleProps = {
     companyTitle:       string | undefined;

@@ -5,17 +5,17 @@ import { get }              from './helpers'
 import { UserType }         from '../types/globalTypes'
 
 const useSetArchivedUserData = () => {
-  const [data, setData] =   React.useState<UserType[]>()
+  const [data, setData]   = React.useState<UserType[]>()
   const [count, setCount] = React.useState<number>()
-  const [cookies] =         useCookies(['access_token'])
-  const [searchParams] =    useSearchParams()
+  const [cookies]         = useCookies(['access_token'])
+  const [searchParams]    = useSearchParams()
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page =          searchParams.get('page') || 1
-      const limit =         searchParams.get('limit') || 10
-      const selectFilter =  searchParams.get('selectFilter')
-      const searchFilter =  searchParams.get('filter')
+      const page          = searchParams.get('page') || 1
+      const limit         = searchParams.get('limit') || 10
+      const selectFilter  = searchParams.get('selectFilter')
+      const searchFilter  = searchParams.get('filter')
 
       let fetchUrl = `getArchivedUsers?page=${page}&limit=${limit}`
 

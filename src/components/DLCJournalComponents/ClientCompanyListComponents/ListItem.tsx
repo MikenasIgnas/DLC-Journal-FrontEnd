@@ -1,22 +1,22 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import { Avatar, Button, List }         from 'antd'
-import SubClientTag                     from './SubClientTag'
-import { Link }                         from 'react-router-dom'
+import React                    from 'react'
+import { Avatar, Button, List } from 'antd'
+import SubClientTag             from './SubClientTag'
+import { Link }                 from 'react-router-dom'
 
 type ListItemProps = {
-  showDrawer?: (listItemId: string | undefined, itemId?: string | undefined) => void
-  deleteListItem: (listItemId: string | undefined, itemId: string | undefined) => void
-  listItemId: string | undefined;
-  employeeId?: string | undefined;
-  photo: string | undefined;
-  title: string | React.ReactNode;
-  description: string;
-  subClient?: boolean
+  showDrawer?:              (listItemId: string | undefined, itemId?: string | undefined) => void
+  deleteListItem:           (listItemId: string | undefined, itemId: string | undefined) => void
+  listItemId:               string | undefined;
+  employeeId?:              string | undefined;
+  photo:                    string | undefined;
+  title:                    string | React.ReactNode;
+  description:              string;
+  subClient?:               boolean
   removeFormSubClientList?: (subClientId: string | undefined) => void
-  photosFolder: string;
-  altImage: string;
-  parentCompanyId?: string | undefined
+  photosFolder:             string;
+  altImage:                 string;
+  parentCompanyId?:         string | undefined
 };
 
 const ListItem = ({

@@ -13,10 +13,10 @@ type AreaProblemsInputsProps = {
 const { TextArea } = Input
 
 const AreaProblemsInputs = ({ reaction, name, dutiesId }:AreaProblemsInputsProps) => {
-  const today =         new Date()
-  const currentTime =   `${today.getHours()}:${today.getMinutes()}`
-  const defaultTheme =  useAppSelector((state) => state.theme.value)
-  const isDesktop = window.innerWidth < 650
+  const today         = new Date()
+  const currentTime   = `${today.getHours()}:${today.getMinutes()}`
+  const defaultTheme  = useAppSelector((state) => state.theme.value)
+  const isDesktop     = window.innerWidth < 650
   return (
     <div className='AreaProblemsInputsContainer'>
       <div className='AreaProblemsInputsContainer'>

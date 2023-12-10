@@ -4,10 +4,10 @@ import ColocationDisplay      from './ColocationDisplay'
 import { ColocationDataType } from '../../../types/globalTypes'
 
 type ClientsCollocationsProps = {
-    J13locationName:string
-    T72locationName:string
-    J13locationData: ColocationDataType[] | undefined
-    T72locationData: ColocationDataType[] | undefined
+    J13locationName:  string | undefined
+    T72locationName:  string | undefined
+    J13locationData:  ColocationDataType[] | undefined
+    T72locationData:  ColocationDataType[] | undefined
 }
 
 const ClientsCollocations = ({J13locationData, J13locationName, T72locationData, T72locationName}:ClientsCollocationsProps) => {

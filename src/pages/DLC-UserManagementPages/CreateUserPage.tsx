@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import { Button, Card, ConfigProvider, Form, Input, Select, message }   from 'antd'
-import React                                                            from 'react'
-import { getCurrentDate, post }                                         from '../../Plugins/helpers'
-import { useNavigate }                                                  from 'react-router-dom'
-import { useAppSelector }                                               from '../../store/hooks'
-import { useCookies }                                                   from 'react-cookie'
-import SuccessMessage                                                   from '../../components/UniversalComponents/SuccessMessage'
+import { Button, Card, ConfigProvider, Form, Input, Select, message } from 'antd'
+import React                                                          from 'react'
+import { getCurrentDate, post }                                       from '../../Plugins/helpers'
+import { useNavigate }                                                from 'react-router-dom'
+import { useAppSelector }                                             from '../../store/hooks'
+import { useCookies }                                                 from 'react-cookie'
+import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {
@@ -30,13 +30,13 @@ type FormValuesType = {
 }
 
 const CreateUserPage = () => {
-  const [form] =                            Form.useForm()
-  const [messageApi, contextHolder] =       message.useMessage()
-  const [cookies] =                         useCookies(['access_token'])
-  const navigate =                          useNavigate()
-  const [loginError, setLoginError] =       React.useState(false)
-  const [errorMessage, setErrorMessage] =   React.useState('')
-  const defaultTheme =                      useAppSelector((state) => state.theme.value)
+  const [form]                          = Form.useForm()
+  const [messageApi, contextHolder]     = message.useMessage()
+  const [cookies]                       = useCookies(['access_token'])
+  const navigate                        = useNavigate()
+  const [loginError, setLoginError]     = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
+  const defaultTheme                    = useAppSelector((state) => state.theme.value)
 
   const onFinish = async (values: FormValuesType) => {
     try{

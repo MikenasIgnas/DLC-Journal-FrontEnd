@@ -6,6 +6,275 @@
   box-sizing: border-box;
 }
 
+.EmployeeListContainer{
+  width: 100%;
+}
+.ClientsEmployeesTabContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  .EmployeeAdditionButton{
+    width: 50%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+
+.TableColumnWidth100px{
+  width: 100px;
+  padding: 12px 6px;
+}
+.TableColumnWidth70px{
+  width: 100px;
+  padding: 12px 6px;
+}
+.TableColumnWidth150px{
+  width: 150px;
+  padding: 12px 6px;
+}
+.TableColumnWidth200px{
+  width: 150px;
+  padding: 12px 6px;
+}
+.TableColumnWidth250px{
+  width: 250px;
+  padding: 12px 6px;
+}
+.TableColumnWidth130px{
+  width: 130px;
+  padding: 12px 6px;
+}
+
+.DisplayFlex{
+  display: flex;
+}
+
+.CollocationSelectorCollapse{
+  margin-bottom: 10px;
+  margin-top: 10px;
+  width: 360px;
+  .CollocationSelectorPannel{
+    padding: 10px;
+    .ColocationPremisesCollapse{
+      margin-top: 5px;
+      .CollocationSelectorCheckboxes{
+        display:               grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap:                   8px;
+      }
+    }
+  }
+}
+
+.DLCJournalStartPageContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.CompaniesListPageContainer{ 
+  width: 97%;
+}
+.SingleClientsEmployeePageContainer{
+  display: flex;
+  align-items: center;
+  .SingleClientsEmployeeCard{
+    width: 800px;
+    height: 500px;
+    .EditButton{
+      display: flex;
+      margin-left: auto;
+    }
+    .Divider{
+      height: 150px;
+    }
+    .ClientsEmployeesContainer{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+    .ClientsEployeesInfoContainer{
+      width: 100%;
+    }
+    .PermissionsCheckboxes{
+      width: 100%;
+      display: flex;
+      justify-content: space-evenly;
+    }
+  }
+}
+.ColocationDisplayContainer{
+  width: 100%;
+  .CollocationDisplayCard{
+    display: flex;
+    justify-content: space-between;
+    border-radius: 1px solid #d9d9d9;
+    .CollocationDisplayFooter{
+      display: flex;
+      justify-content: flex-end;
+    }
+    .CollocationDisplayCounter{
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+    }
+  }
+}
+.SubClientAdditionContainer{
+  display: flex;
+  justify-content: space-evenly;
+  .SubClientAdditionBody{
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
+    .SubClientAdditionSelect{
+      width: 100%;
+    }
+  }
+}
+.SubClientsContainer{
+  width: 100%;
+}
+.SubClientsTabContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.CollocationsListCard{
+  margin: 10px;
+  background-color: #f9f9f9;
+  .CollocationsListCardBody{
+    display: flex;
+    justify-content: space-around;
+    height: 100%;
+    .CollocationItemCard{
+      margin:10px;
+      width:100%;
+    }
+  }
+}
+.RegisteredVisitorsSelect{
+  width: 150px;
+}
+.RegisteredVisitorsPermissions{
+  width: 150px;
+}
+
+.SelectedCollocationListContainer{
+ margin: 10px;
+ background-color: #f9f9f9;
+ .SelectedCollocationListBody{
+  display: flex;
+  justify-content: space-around;
+  height: 100%;
+  .SelectedCollocationListItem{
+    margin: 10px;
+    width: 100%;
+  }
+ }
+}
+
+.VisitDateItemContainer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .DatePickerContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+.VisitRegistrationFormContainer{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  .VisitRegistrationFormItem{
+    width: 100%;
+  }
+  .AddVisitorButton{
+    margin: 10px;
+  }
+}
+.ErrorText{
+  color: red;
+  padding: 15px;
+  font-size: 17px;
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+.VisitorsListItemContainer{
+  flex: 0 0;
+  .VisitorsListItemSelect{
+    width: 200px;
+  }
+  .SignatureContainer{
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .CheckIcon{
+      color: #4de44d;
+      font-size: 17px;
+    }
+    .PreviewIcon{
+      font-size: 17px;
+    }
+    .DeleteIcon{
+      color: red;
+      font-size: 17px;
+    }
+  }
+  .VisitorsListItem{
+    flex: 0 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+.VisitorsCardSelected{
+  width: 300px;
+  margin-top: 16px;
+  border: 2px solid blue !important;
+}
+
+.VisitorsCardDeselected{
+  width: 300px;
+  margin-top: 16px;
+  border: 1px solid #e8e8e8 !important;
+}
+
+.PageLayoutSliderBody{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  .LogedInUserContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    .UserDisplay{
+      width: 500px;
+      font-size: 15px;
+    }
+    .LogOutIcon{
+      font-size: 20px;
+    }
+  }
+}
+:where(.css-dev-only-do-not-override-1fz0m7t).ant-menu-light.ant-menu-root.ant-menu-inline{
+  border-inline-end: none;
+}
 .LoaderContainer{
   height: 94vh;
   display: flex;
@@ -74,6 +343,12 @@ display: flex;
 }
 :where(.css-dev-only-do-not-override-htwhyh).ant-collapse .ant-collapse-content>.ant-collapse-content-box {
    padding: 0px
+}
+:where(.css-dev-only-do-not-override-1fz0m7t).ant-menu-horizontal {
+  line-height: 46px;
+  border: 0;
+  border-bottom:none;
+  box-shadow: none;
 }
 .ChecklistHistoryInputsMainContainer{
   display: flex ; 
@@ -343,7 +618,7 @@ thead[class*="ant-table-thead"] th{
     .PageLayoutContentLight{
       width: 100%;
       height: 100%;
-      min-height: 100vh;
+      min-height: calc(100vh - 64px);
       display: flex;
       justify-content: space-between;
       flex-direction: column;

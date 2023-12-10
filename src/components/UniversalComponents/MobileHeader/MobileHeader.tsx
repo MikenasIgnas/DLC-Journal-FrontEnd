@@ -10,14 +10,14 @@ type MobileHeaderProps = {
   headerClass:  string,
   menuItems:    ItemType[],
   menuItems2:   ItemType[],
-  Logout: () => Promise<void>,
+  Logout:       () => Promise<void>,
 }
 
 const MobileHeader = ({menuItems2, Logout}: MobileHeaderProps) => {
-  const width =           window.innerWidth
+  const width           = window.innerWidth
   const [open, setOpen] = React.useState(false)
-  const userName =        useAppSelector((state)=> state.auth.username)
-  const defaultTheme =    useAppSelector((state)=> state.theme.value)
+  const userName        = useAppSelector((state)=> state.auth.username)
+  const defaultTheme    = useAppSelector((state)=> state.theme.value)
 
   return (
     <div style={{

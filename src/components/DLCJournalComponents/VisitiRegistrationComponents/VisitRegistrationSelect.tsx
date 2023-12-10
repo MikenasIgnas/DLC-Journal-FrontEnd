@@ -11,8 +11,14 @@ type VisitRegistrationFormItemProps = {
     } [] | undefined
     fieldValue:         string
     updateValue?:       boolean | ((prevValue: any, curValue: any) => boolean)
-    onSelect?:          (values: any, data: any) => void
-    onChange?:          (value: string[], option: any) => void;
+    onSelect?:          (values: string, data: any) => void
+    onChange?:          ((value: string[], option: {
+      value: string | undefined;
+      label: string | undefined;
+  } | {
+      value: string | undefined;
+      label: string | undefined;
+  }[]) => void) | undefined
     validationMessage:  string;
     mode?: 'multiple' | 'tags' | undefined;
 }

@@ -6,27 +6,26 @@ import { DeleteOutlined, EyeOutlined }            from '@ant-design/icons'
 import { get }                                    from '../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
 import { setChecklistPhotos }                     from '../../../auth/FetchedDataReducer/fetchedDataReducer'
-import PhotoUploader                              from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 import PreviewModal                               from './PreviewModal'
 
 const { TextArea } = Input
 
 type AreaProblemsInputsProps = {
-  reaction:     string | undefined,
-  name:         number,
-  edit:         boolean,
-  dutiesId:     number | undefined,
+  reaction: string | undefined,
+  name:     number,
+  edit:     boolean,
+  dutiesId: number | undefined,
 };
 
 const HistoryProblemInputs = ({ reaction,name, edit, dutiesId }:AreaProblemsInputsProps) => {
-  const dispatch =                                useAppDispatch()
-  const defaultTheme =                            useAppSelector((state) => state.theme.value)
-  const checklistPhotos =                         useAppSelector((state)=> state.fetchedData.checklistPhotos)
-  const hasPhotoId =                              checklistPhotos?.find((photo) => photo.photoId === String(dutiesId))
-  const [previewPhoto, setPreviewPhoto] =         React.useState(false)
-  const [isPhotoUploaded, setIsPhotoUploaded] =   React.useState(false)
-  const [cookies] =                               useCookies(['access_token'])
-  const isMobile =                                window.innerWidth < 650
+  const dispatch                              = useAppDispatch()
+  const defaultTheme                          = useAppSelector((state) => state.theme.value)
+  const checklistPhotos                       = useAppSelector((state)=> state.fetchedData.checklistPhotos)
+  const hasPhotoId                            = checklistPhotos?.find((photo) => photo.photoId === String(dutiesId))
+  const [previewPhoto, setPreviewPhoto]       = React.useState(false)
+  const [isPhotoUploaded, setIsPhotoUploaded] = React.useState(false)
+  const [cookies]                             = useCookies(['access_token'])
+  const isMobile                              = window.innerWidth < 650
 
   const deletePhoto = () => {
     const hasPhotoId = checklistPhotos?.filter((photo) => photo.photoId !== String(dutiesId))

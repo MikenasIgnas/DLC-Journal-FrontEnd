@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-plusplus */
-import React      from 'react'
-import { Modal }  from 'antd'
+import React     from 'react'
+import { Modal } from 'antd'
 
 type FinishModalProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,

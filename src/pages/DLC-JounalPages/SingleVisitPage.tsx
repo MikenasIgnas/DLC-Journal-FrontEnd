@@ -9,12 +9,13 @@ import type { DescriptionsProps }              from 'antd'
 import { useCookies }                          from 'react-cookie'
 import { get, post }                           from '../../Plugins/helpers'
 import { EmployeesType, UserType }             from '../../types/globalTypes'
-import VisitorAdditionModal                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionModal'
 import ItemList                                from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
 import CollocationsList                        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
 import VisitDateItem                           from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitDateItem'
 import SelectedCollocationList                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/SelectedCollocationList'
 import RegisteredVisitorsListItem              from '../../components/DLCJournalComponents/VisitiRegistrationComponents/RegisteredVisitorsListItem'
+import VisitorAdditionList                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
+import filterPermisions                        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
 
 type CollocationType = {
   [key:string] :  string[]
@@ -57,10 +58,10 @@ type CollocationsType = {
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
   const [visitData, setVisitData]                             = React.useState<VisitsType[]>()
-  const [open, setOpen]                                       = React.useState(false)
+  const [addVisitors, setAddVisitors]                         = React.useState(false)
   const [clientsEmployees, setClientsEmployees]               = React.useState<EmployeesType[]>()
   const { id }                                                = useParams()
-  const [selectedVisitors, setSelectedVisitors]               = React.useState<EmployeesType[]>()
+  const [selectedVisitors, setSelectedVisitors]               = React.useState<number[]>([])
   const [guestsImput, setGuestsInput]                         = React.useState<string>('')
   const [carPlatesInput, setCarPlatesInput]                   = React.useState<string>('')
   const [form]                                                = Form.useForm()
@@ -73,7 +74,8 @@ const SingleVisitPage = () => {
   const [dlcEmployees, setDlcEmployees]                       = React.useState<UserType[]>()
   const [searchParams, setSearchParams]                       = useSearchParams()
   const visitAddress                                          = searchParams.get('visitAddress')
-
+  const filteredPermisions                                    = filterPermisions(visitData?.[0].visitors)
+  const canBringCompany                                       = filteredPermisions.includes('Įleisti Trečius asmenis')
   const addresses = [
     {
       value: 'J13',
@@ -84,10 +86,9 @@ const SingleVisitPage = () => {
       label: 'T72',
     },
   ]
-
   const fetchData = async () => {
     try {
-      const singleVisit = await get(`getSingleVisit/${id}`, cookies.access_token)
+      const singleVisit   = await get(`getSingleVisit/${id}`, cookies.access_token)
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       setVisitData(singleVisit.data)
       setCarPlates(singleVisit.data[0]?.carPlates)
@@ -131,10 +132,10 @@ const SingleVisitPage = () => {
     fetchData()
   }, [open, selectedVisitors, edit, visitAddress])
 
-  const permissions = visitData?.[0].visitors?.flatMap((el) => el.selectedVisitor.permissions)
-  const uniquePermissions = permissions?.filter((permission, index, arr) => arr.indexOf(permission) === index)
-    .map((permission) => ({ label: permission, value: permission }))
 
+  const removeVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.filter((el) => el !== id))
+  }
   const deleteVisitor = async(employeeId: string | undefined) => {
     if (visitData && visitData.length > 0) {
       const updatedVisitData = [...visitData]
@@ -143,6 +144,7 @@ const SingleVisitPage = () => {
           (el) => el.selectedVisitor.employeeId !== employeeId
         )
         setVisitData(updatedVisitData)
+        removeVisitor(Number(employeeId))
         await get(`deleteVisitor?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
       }
     }
@@ -156,7 +158,18 @@ const SingleVisitPage = () => {
     setSearchParams(`visitAddress=${value}`)
     await fetchData()
   }
-
+  const getUniquePermissions = () => {
+    const filteredVisits: string[] = []
+    visitData?.[0].visitors?.map(( {selectedVisitor: { permissions }} ) => {
+      permissions.map(item => {
+        if (!filteredVisits.includes(item)) {
+          filteredVisits.push(item)
+        }
+      })
+    })
+    const mapped = filteredVisits.map((el) => ({value: el, label: el}))
+    return mapped
+  }
   const items: DescriptionsProps['items'] = [
     {
       key:      '1',
@@ -237,7 +250,8 @@ const SingleVisitPage = () => {
               mode='multiple'
               style={{width: '250px'}}
               value={visitData?.[0]?.visitPurpose}
-              options={uniquePermissions}/>
+              options={getUniquePermissions()}
+            />
           </Form.Item>
         }
       </div>,
@@ -262,8 +276,10 @@ const SingleVisitPage = () => {
         selectedVisitor: el.selectedVisitor,
       }))
       values.startDate = values?.startDate?.format('YYYY/MM/DD')
-      values.startTime = values?.startTime?.format('HH:mm')
       values.visitors = updateIdTypes
+      values.startTime = values?.startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+
       await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)
       await fetchData()
     }
@@ -272,6 +288,9 @@ const SingleVisitPage = () => {
   const filteredArray = updatedTransformedArray?.filter(obj => {
     return Object.values(obj).some(value => Array.isArray(value) && value.length > 0)
   })
+  const addVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.includes(id) ? prev : [...prev, id])
+  }
 
   return (
     <Form form={form} onFinish={saveChanges}>
@@ -283,9 +302,18 @@ const SingleVisitPage = () => {
             <Button htmlType='submit'>{!edit ? 'Edit' : 'Save'}</Button>
           </div>} items={items}
       />
+      {addVisitors && clientsEmployees && clientsEmployees?.length > 0 &&
+      <VisitorAdditionList
+        clientsEmployees={clientsEmployees}
+        searchEmployee={searchEmployee}
+        searchEmployeeValue={searchEmployeeValue}
+        addVisitor={addVisitor}
+        removeVisitor={removeVisitor}
+      />
+      }
       <Card
         title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}
-        extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
+        extra={<Button onClick={() => setAddVisitors(true)} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitData?.[0].visitors}
           renderItem={(item, i) =>
@@ -313,34 +341,32 @@ const SingleVisitPage = () => {
         <CollocationsList companiesColocations={companiesColocations}
         />
       }
-      <ItemList
-        cardTitle={'Pridėti palydą'}
-        inputValue={guestsImput}
-        inputPlaceHolder={'Pridėti palydą'}
-        setInputValue={setGuestsInput}
-        list={clientsGuests}
-        setListItems={setClientsGuests}
-        url={'updateClientsGests'}
-        removeUrl={'removeClientsGuest'}
-      />
-      <ItemList
-        cardTitle={'Pridėti automobilį'}
-        inputValue={carPlatesInput}
-        inputPlaceHolder={'Pridėti automobilį'}
-        setInputValue={setCarPlatesInput}
-        list={carPlates}
-        setListItems={setCarPlates}
-        url={'updateCarPlates'}
-        removeUrl={'removeCarPlates'}
-      />
-      <VisitorAdditionModal
-        open={open}
-        clientsEmployees={clientsEmployees}
-        form={form} setOpen={setOpen }
-        searchEmployee={searchEmployee}
-        setSelectedVisitors={setSelectedVisitors}
-        searchEmployeeValue={searchEmployeeValue}
-      />
+      {canBringCompany ?
+        <ItemList
+          cardTitle={'Pridėti palydą'}
+          inputValue={guestsImput}
+          inputPlaceHolder={'Pridėti palydą'}
+          setInputValue={setGuestsInput}
+          list={clientsGuests}
+          setListItems={setClientsGuests}
+          url={'updateClientsGests'}
+          removeUrl={'removeClientsGuest'}
+        />
+        : <div className='ErrorText'>Negali būti palydos</div>
+      }
+      {
+        visitData?.[0].visitAddress === 'T72' &&
+        <ItemList
+          cardTitle={'Pridėti automobilį'}
+          inputValue={carPlatesInput}
+          inputPlaceHolder={'Pridėti automobilį'}
+          setInputValue={setCarPlatesInput}
+          list={carPlates}
+          setListItems={setCarPlates}
+          url={'updateCarPlates'}
+          removeUrl={'removeCarPlates'}
+        />
+      }
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
           <Button onClick={async () => { await changeVisitsState('startVisit'); fetchData() }}>Pradėti vizitą</Button>

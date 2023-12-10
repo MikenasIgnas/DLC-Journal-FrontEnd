@@ -10,9 +10,9 @@ type ChecklistNavigationButtonsProps = {
 }
 
 const ChecklistNavigationButtons = ({previousPage}:ChecklistNavigationButtonsProps) => {
-  const totalRoomsInArea =        useAppSelector((state) => state.route.totalRoomsInArea[state.route.routeNumber - 1])
-  const [searchParams] =          useSearchParams()
-  const defaultTheme =            useAppSelector((state) => state.theme.value)
+  const totalRoomsInArea        = useAppSelector((state) => state.route.totalRoomsInArea[state.route.routeNumber - 1])
+  const [searchParams]          = useSearchParams()
+  const defaultTheme            = useAppSelector((state) => state.theme.value)
   const currentProgressUrlParam = searchParams.get('progress')
   return (
     <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : 'white'}} className='ButtonConainer'>

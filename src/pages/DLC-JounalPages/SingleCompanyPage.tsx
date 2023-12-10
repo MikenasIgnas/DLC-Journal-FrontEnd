@@ -4,13 +4,13 @@ import React                                                                  fr
 import { get, post, uploadPhoto }                                             from '../../Plugins/helpers'
 import { useCookies }                                                         from 'react-cookie'
 import { useParams }                                                          from 'react-router-dom'
-import { Card, Form, Tabs, TabsProps, UploadFile, message }                         from 'antd'
+import { Card, Form, Tabs, TabsProps, UploadFile }                            from 'antd'
 import { CollocationsSites, CollocationsType, CompaniesType, ModalStateType } from '../../types/globalTypes'
 import { useForm }                                                            from 'antd/es/form/Form'
 import ClientsCollocationsTab                                                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
 import ClientsEmployeesTab                                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab                                                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
-import SingleCompanyTitle from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import SingleCompanyTitle                                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -18,58 +18,57 @@ type SubClientStateType = {
 }
 
 type EmployeesType = {
-  _id:            string;
-  companyId:      string;
-  name:           string;
-  lastName:       string;
-  occupation:     string;
-  employeeId:     string;
-  permissions:    string[];
+  _id:         string;
+  companyId:   string;
+  name:        string;
+  lastName:    string;
+  occupation:  string;
+  employeeId:  string;
+  permissions: string[];
 }
 
 type CompanyFormType = {
-  companyName?:         string,
-  companyDescription?:  string,
-  companyPhoto?:        string,
+  companyName?:        string,
+  companyDescription?: string,
+  companyPhoto?:       string,
   J13?: {
-    [key: string]: string[];
+    [key: string]:     string[];
   }[];
   T72?: {
-    [key: string]: string[];
+    [key: string]:     string[];
   }[];
 };
 
 
 const SingleCompanyPage = () => {
-  const [cookies] =                                                         useCookies(['access_token'])
-  const {id} =                                                              useParams()
-  const [company, setCompany] =                                             React.useState<CompaniesType>()
-  const [employeesList, setEmployeesList] =                                 React.useState<EmployeesType[]>([])
-  const [form] =                                                            useForm()
-  const [collocations, setCollocations] =                                   React.useState<CollocationsType[]>()
-  const [fileList, setFileList] =                                           React.useState<UploadFile[]>([])
-  const [messageApi, contextHolder] =                                       message.useMessage()
-  const [mainCompanies, setMainCompanies] =                                 React.useState<CompaniesType[]>([])
-  const [editClientsEmployee, setEditClientsEmployee] =                     React.useState(false)
-  const [subClientState, setSubClientState] =                               React.useState<SubClientStateType>({
+  const [cookies]                                     = useCookies(['access_token'])
+  const {id}                                          = useParams()
+  const [company, setCompany]                         = React.useState<CompaniesType>()
+  const [employeesList, setEmployeesList]             = React.useState<EmployeesType[]>([])
+  const [form]                                        = useForm()
+  const [collocations, setCollocations]               = React.useState<CollocationsType[]>()
+  const [fileList, setFileList]                       = React.useState<UploadFile[]>([])
+  const [mainCompanies, setMainCompanies]             = React.useState<CompaniesType[]>([])
+  const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
+  const [subClientState, setSubClientState]           = React.useState<SubClientStateType>({
     mainCompanyAddedAsSubClient:  false,
     subClientChangedToMainClient: false,
   })
-  const [modalState, setModalState] =                                       React.useState<ModalStateType>({
-    editClientsEmployee:         false,
-    edit:                        false,
-    isEmployeeAdditionModalOpen: false,
-    isCompanyAdded:              false,
-    isModalOpen:                 false,
+  const [modalState, setModalState]                   = React.useState<ModalStateType>({
+    editClientsEmployee:       false,
+    edit:                      false,
+    openEmployeeAdditionModal: false,
+    isCompanyAdded:            false,
+    isModalOpen:               false,
   })
 
   React.useEffect(() => {
     (async () => {
       try{
-        const singleCompany =     await get(`SingleCompanyPage/${id}`, cookies.access_token)
-        const companyEmployees =  await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
-        const allCollocations =   await get('getCollocations', cookies.access_token)
-        const allMainCompanies =  await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
+        const singleCompany     = await get(`SingleCompanyPage/${id}`, cookies.access_token)
+        const companyEmployees  = await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
+        const allCollocations   = await get('getCollocations', cookies.access_token)
+        const allMainCompanies  = await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
         setCollocations(allCollocations.data[0].colocations)
         setCompany(singleCompany.data)
         setEmployeesList(companyEmployees.data)
@@ -83,11 +82,9 @@ const SingleCompanyPage = () => {
     modalState.isModalOpen,
     subClientState.mainCompanyAddedAsSubClient,
     subClientState.subClientChangedToMainClient,
-    modalState.isEmployeeAdditionModalOpen,
+    modalState.openEmployeeAdditionModal,
     cookies.access_token,
   ])
-
-
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
@@ -97,7 +94,7 @@ const SingleCompanyPage = () => {
     setEmployeesList(newEmployeesList)
   }
 
-  const filterCompanyData = (obj: CompanyFormType): CompanyFormType => {
+  const filterCompanyData = (obj: CompanyFormType) => {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {
       filteredObj.J13 = []
@@ -134,16 +131,9 @@ const SingleCompanyPage = () => {
     if(modalState.edit){
       const filteredCompanyData = filterCompanyData(values)
       filteredCompanyData.companyName = values.companyName
-      const res = await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
-
+      await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
       if(fileList[0]){
         await uploadPhoto(fileList[0], false, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
-      }
-      if(!res.error){
-        messageApi.success({
-          type:    'success',
-          content: 'Išsaugota',
-        })
       }
     }
   }

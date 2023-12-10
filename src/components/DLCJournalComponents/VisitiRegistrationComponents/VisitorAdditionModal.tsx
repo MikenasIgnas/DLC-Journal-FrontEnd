@@ -1,20 +1,30 @@
 /* eslint-disable max-len */
-import React                                    from 'react'
-import { Col, FormInstance, Input, Modal, Row } from 'antd'
-import VisitorsSelectCard                       from './VisitorsSelectCard'
-import { EmployeesType }                        from '../../../types/globalTypes'
+import React                        from 'react'
+import { Col, Input, Modal, Row }   from 'antd'
+import VisitorsSelectCard           from './VisitorsSelectCard'
+import { EmployeesType }            from '../../../types/globalTypes'
 
 type VisitorAdditionModalProps = {
     open:                 boolean
     clientsEmployees:     EmployeesType[] | undefined
-    form:                 FormInstance<any>
     setOpen:              (value: React.SetStateAction<boolean>) => void
     searchEmployee:       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    setSelectedVisitors:  React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
     searchEmployeeValue:  string | undefined
+    setPermissions?:      React.Dispatch<React.SetStateAction<string[]>>
+    addVisitor:           (id:number) => void
+    removeVisitor:        (id:number) => void
 }
 
-const VisitorAdditionModal = ({open, clientsEmployees, form, setOpen, searchEmployee, setSelectedVisitors, searchEmployeeValue}: VisitorAdditionModalProps) => {
+const VisitorAdditionModal = ({
+  open,
+  clientsEmployees,
+  setOpen,
+  searchEmployee,
+  searchEmployeeValue,
+  setPermissions,
+  addVisitor,
+  removeVisitor,
+}: VisitorAdditionModalProps) => {
   return (
     <div>
       <Modal
@@ -29,12 +39,13 @@ const VisitorAdditionModal = ({open, clientsEmployees, form, setOpen, searchEmpl
           {clientsEmployees?.map((employee) => (!searchEmployeeValue || employee.name.toLowerCase().includes(searchEmployeeValue)) &&
         <Col key={employee.employeeId} span={6}>
           <VisitorsSelectCard
-            form={form}
-            setSelectedVisitors={setSelectedVisitors}
+            setPermissions={setPermissions}
             name={employee.name}
             lastName={employee.lastName}
             occupation={employee.occupation}
             item={employee}
+            addVisitor={addVisitor}
+            removeVisitor={removeVisitor}
           />
         </Col>
           )}

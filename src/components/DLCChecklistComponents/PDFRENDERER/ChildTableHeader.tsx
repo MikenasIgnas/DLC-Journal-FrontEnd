@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
-import React from 'react'
-import {Text, View, StyleSheet } from '@react-pdf/renderer'
+import React                      from 'react'
+import {Text, View, StyleSheet }  from '@react-pdf/renderer'
 
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({

@@ -1,25 +1,25 @@
 /* eslint-disable max-len */
-import { Button, Checkbox, DatePicker, Form, Input, Modal, UploadFile }           from 'antd'
-import { useForm }                                                    from 'antd/es/form/Form'
-import React                                                          from 'react'
-import { useCookies }                                                 from 'react-cookie'
-import { EmployeesType, ModalStateType }                              from '../../../types/globalTypes'
-import { post, uploadPhoto }                                          from '../../../Plugins/helpers'
-import PhotoUploader                                                  from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import { Button, Checkbox, DatePicker, Form, Input, Modal, UploadFile } from 'antd'
+import { useForm }                                                      from 'antd/es/form/Form'
+import React                                                            from 'react'
+import { useCookies }                                                   from 'react-cookie'
+import { EmployeesType, ModalStateType }                                from '../../../types/globalTypes'
+import { post, uploadPhoto }                                            from '../../../Plugins/helpers'
+import PhotoUploader                                                    from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type EmployeesAdditionModal = {
-    setModalState:   React.Dispatch<React.SetStateAction<ModalStateType>>;
-    modalState:      ModalStateType;
-    companyName:    string | undefined;
-    companyId:      string | null;
-    urlPath:        string;
+    setModalState: React.Dispatch<React.SetStateAction<ModalStateType>>;
+    modalState:    ModalStateType;
+    companyName:   string | undefined;
+    companyId:     string | null;
+    urlPath:       string;
 }
 
 const EmployeesAdditionModal = ({setModalState, modalState, companyName, companyId, urlPath}: EmployeesAdditionModal) => {
-  const [form] =                    useForm()
-  const [cookies] =                 useCookies(['access_token'])
+  const [form]                    = useForm()
+  const [cookies]                 = useCookies(['access_token'])
   const [uploading, setUploading] = React.useState(false)
-  const [fileList, setFileList] =   React.useState<UploadFile[]>([])
+  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
 
   const addEmployees = async(values: EmployeesType) => {
     if(companyId){
@@ -29,7 +29,7 @@ const EmployeesAdditionModal = ({setModalState, modalState, companyName, company
       if(fileList[0]){
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
       }
-      setModalState({...modalState, isEmployeeAdditionModalOpen: false})
+      setModalState({...modalState, openEmployeeAdditionModal: false})
     }
   }
 
@@ -40,8 +40,8 @@ const EmployeesAdditionModal = ({setModalState, modalState, companyName, company
       title='Pridėkite įmonės darbuotoją'
       centered
       open
-      onOk={() => setModalState({...modalState, isEmployeeAdditionModalOpen: false})}
-      onCancel={() => setModalState({...modalState, isEmployeeAdditionModalOpen: false})}
+      onOk={() => setModalState({...modalState, openEmployeeAdditionModal: false})}
+      onCancel={() => setModalState({...modalState, openEmployeeAdditionModal: false})}
       footer={false}
       style={{textAlign: 'center'}}
     >

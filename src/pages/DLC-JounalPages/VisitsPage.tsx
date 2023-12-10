@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem }         from '../../Plugins/helpers'
+import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
@@ -11,17 +11,17 @@ import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 const TableColumns = () => {
   return(
     <>
-      <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Klientas</th>
-      <th style={{ width: 200, padding: '12px 6px' }}>Kliento Darbuotojas</th>
-      <th style={{ width: 130, padding: '12px 6px' }}>Vizito Tikslas</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Adresas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Pradžios Data</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Pradžios Laikas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Pabaigos Data</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Pabaigos Laikas</th>
-      <th style={{ width: 150, padding: '12px 6px' }}>Lydintysis</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Veiksmai</th>
+      <th className='TableColumnWidth100px'>Statusas</th>
+      <th className='TableColumnWidth100px'>Klientas</th>
+      <th className='TableColumnWidth200px'>Kliento Darbuotojas</th>
+      <th className='TableColumnWidth130px'>Vizito Tikslas</th>
+      <th className='TableColumnWidth70px'>Adresas</th>
+      <th className='TableColumnWidth100px'>Pradžios Data</th>
+      <th className='TableColumnWidth70px'>Pradžios Laikas</th>
+      <th className='TableColumnWidth100px'>Pabaigos Data</th>
+      <th className='TableColumnWidth70px'>Pabaigos Laikas</th>
+      <th className='TableColumnWidth150px'>Lydintysis</th>
+      <th className='TableColumnWidth70px'>Veiksmai</th>
     </>
   )
 }
@@ -42,11 +42,12 @@ const tableSorter = [
 ]
 
 const VisitPage = () => {
-  const [cookies] =                           useCookies(['access_token'])
-  const [searchParams, setSearchParams] =     useSearchParams()
-  const page =                                searchParams.get('page')
-  const navigate =                            useNavigate()
-  const {data, count, setData} =     useSetVisitsData()
+  const [cookies]                       = useCookies(['access_token'])
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page                            = searchParams.get('page')
+  const navigate                        = useNavigate()
+  const {data, count, setData}          = useSetVisitsData()
+
   return (
     <FullTable
       tableSorter={tableSorter}
@@ -76,4 +77,3 @@ const VisitPage = () => {
 }
 
 export default VisitPage
-

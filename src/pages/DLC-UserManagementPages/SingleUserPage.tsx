@@ -30,14 +30,14 @@ type SingleUserType = {
 }
 
 const SingleUserPage = () => {
-  const [form] =                      Form.useForm()
+  const [form]                      = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
-  const [cookies] =                   useCookies(['access_token'])
-  const {id} =                    useParams()
-  const [loading, setLoading] =       React.useState(false)
-  const usersRole =                   useAppSelector((state)=> state.auth.usersRole)
-  const defaultTheme =                useAppSelector((state)=> state.theme.value)
-  const singleUser =                  useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
+  const [cookies]                   = useCookies(['access_token'])
+  const {id}                        = useParams()
+  const [loading, setLoading]       = React.useState(false)
+  const usersRole                   = useAppSelector((state)=> state.auth.usersRole)
+  const defaultTheme                = useAppSelector((state)=> state.theme.value)
+  const singleUser                  = useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
       const editedValues = {

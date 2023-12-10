@@ -1,24 +1,27 @@
-import { Card, Form, FormInstance, List } from 'antd'
-import React from 'react'
-import VisitorsListItem from './VisitorsListItem'
+import React                    from 'react'
+import { Card, Form, List }     from 'antd'
+import VisitorsListItem         from './VisitorsListItem'
+import useCheckCompanyEmployees from '../../../Plugins/useCheckCompanyEmployees'
 
 
-type VisitorsListProps = {
-    form: FormInstance<any>
-}
-
-const VisitorsList = ({form}: VisitorsListProps) => {
+const VisitorsList = () => {
+  const isCompaniesEmployees = useCheckCompanyEmployees()
   return (
-    <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-      <Form.List name='visitors'>
-        {(fields, {remove}) => (
-          <List
-            dataSource={fields}
-            renderItem={(item) => <VisitorsListItem form={form} item={item} remove={remove}/>}
-          />
-        )}
-      </Form.List>
-    </Card>
+    <>
+      {
+        isCompaniesEmployees &&
+        <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
+          <Form.List name='visitors'>
+            {(fields) => (
+              <List
+                dataSource={fields}
+                renderItem={(item) => <VisitorsListItem item={item}/>}
+              />
+            )}
+          </Form.List>
+        </Card>
+      }
+    </>
   )
 }
 

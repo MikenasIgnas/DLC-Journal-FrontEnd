@@ -7,10 +7,10 @@ import { useAppSelector }                                               from '..
 import { useCookies }                                                   from 'react-cookie'
 
 const ChecklistStartPage = () => {
-  const navigate =                                useNavigate()
-  const defaultPageTheme =                        useAppSelector((state) => state.theme.value)
-  const [totalAreasCount, setTotalAreasCount] =   React.useState(0)
-  const [cookies, ,removeCookie] =                useCookies(['access_token'])
+  const navigate                              = useNavigate()
+  const defaultPageTheme                      = useAppSelector((state) => state.theme.value)
+  const [totalAreasCount, setTotalAreasCount] = React.useState(0)
+  const [cookies, ,removeCookie]              = useCookies(['access_token'])
 
   React.useEffect(() => {
     (async () => {

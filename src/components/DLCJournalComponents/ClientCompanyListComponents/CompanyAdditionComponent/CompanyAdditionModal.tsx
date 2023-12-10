@@ -12,16 +12,16 @@ type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
     collocations:       CollocationsType[] | undefined
-    setModalState:  React.Dispatch<React.SetStateAction<ModalStateType>>
-    modalState: ModalStateType
+    setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>
+    modalState:         ModalStateType
 }
 
 type CompanyFormType = {
-  companyName?:         string,
-  companyDescription?:  string,
-  companyPhoto?:        string,
+  companyName?:           string,
+  companyDescription?:    string,
+  companyPhoto?:          string,
   subClient?: {
-    subClientId: string;
+    subClientId:          string;
     subClientCompanyName: string
     }[]
   J13?: {
@@ -33,12 +33,12 @@ type CompanyFormType = {
 };
 
 const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setModalState, modalState}: AdditionModalProps) => {
-  const [cookies] =                       useCookies(['access_token'])
-  const [form] =                          useForm()
-  const [uploading, setUploading] =       React.useState(false)
-  const [fileList, setFileList] =         React.useState<UploadFile[]>([])
+  const [cookies]                 = useCookies(['access_token'])
+  const [form]                    = useForm()
+  const [uploading, setUploading] = React.useState(false)
+  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
 
-  function filterObject(obj: CompanyFormType): CompanyFormType {
+  const filterObject = (obj: CompanyFormType): CompanyFormType => {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {
       filteredObj.J13 = []
@@ -66,6 +66,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
     }
     return filteredObj
   }
+
   const addCompany = async(values: CompanyFormType) => {
     const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName

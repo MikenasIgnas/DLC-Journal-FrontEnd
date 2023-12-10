@@ -1,26 +1,26 @@
 /* eslint-disable max-len */
-import React                                    from 'react'
-import { PDFDownloadLink }                      from '@react-pdf/renderer'
-import { get }                                  from '../../../Plugins/helpers'
-import { HistoryDataType }                      from '../../../types/globalTypes'
-import { useCookies }                           from 'react-cookie'
-import { Button, DatePicker, DatePickerProps }  from 'antd'
-import { RangePickerProps }                     from 'antd/es/date-picker'
-import customParseFormat                        from 'dayjs/plugin/customParseFormat'
-import PDFTable                                 from './PDFTable'
-import type { TimeRangePickerProps }            from 'antd'
-import dayjs                                    from 'dayjs'
+import React                         from 'react'
+import { PDFDownloadLink }           from '@react-pdf/renderer'
+import { get }                       from '../../../Plugins/helpers'
+import { HistoryDataType }           from '../../../types/globalTypes'
+import { useCookies }                from 'react-cookie'
+import { Button, DatePicker }        from 'antd'
+import customParseFormat             from 'dayjs/plugin/customParseFormat'
+import PDFTable                      from './PDFTable'
+import type { TimeRangePickerProps } from 'antd'
+import dayjs                         from 'dayjs'
+
 dayjs.extend(customParseFormat)
 const { RangePicker } = DatePicker
 
 const PDFGenerator = () => {
-  const [cookies] = useCookies(['access_token'])
-  const [reportData, setPDFData] = React.useState<HistoryDataType[]>()
-  const [buttonText, setButtonText] = React.useState('Generuoti ataskaitą')
-  const [specificDate, setSpecificDate] = React.useState('')
-  const currentDate = reportData?.[0]?.startDate
-  const dateInAMonth = reportData?.[reportData?.length -1]?.startDate
-  const fileName = `Patalpu tikrinimo ataskaita ${currentDate} - ${dateInAMonth}`
+  const [cookies]                                     = useCookies(['access_token'])
+  const [reportData, setPDFData]                      = React.useState<HistoryDataType[]>()
+  const [buttonText, setButtonText]                   = React.useState('Generuoti ataskaitą')
+  const [specificDate, setSpecificDate]               = React.useState('')
+  const currentDate                                   = reportData?.[0]?.startDate
+  const dateInAMonth                                  = reportData?.[reportData?.length -1]?.startDate
+  const fileName                                      = `Patalpu tikrinimo ataskaita ${currentDate} - ${dateInAMonth}`
   const [fetchedPremisesData, setFetchedPremisesData] = React.useState({
     routes:   null,
     areas:    null,
@@ -46,9 +46,8 @@ const PDFGenerator = () => {
     })()
   }, [])
 
-
   const onChange = async(
-    value: DatePickerProps['value'] | RangePickerProps['value'],
+    _: any,
     dateString: [string, string] | string,
   ) => {
     setButtonText(`Generuoti ${dateString[0]} - ${dateString[1]} ataskaitą`)
@@ -75,5 +74,3 @@ const PDFGenerator = () => {
 }
 
 export default PDFGenerator
-
-

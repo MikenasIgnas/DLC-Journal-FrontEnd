@@ -10,31 +10,31 @@ import { useCookies }                                                           
 import Loader                                                                                                              from '../../components/UniversalComponents/Loader/Loader'
 import HistoryRouteTab                                                                                                     from '../../components/DLCChecklistComponents/HisotryPageElements/HistoryRouteTab'
 import UserWhoFilled                                                                                                       from '../../components/DLCChecklistComponents/HisotryPageElements/UserWhoFilled'
-import TabName from '../../components/DLCChecklistComponents/HisotryPageElements/TabName'
+import TabName                                                                                                             from '../../components/DLCChecklistComponents/HisotryPageElements/TabName'
 
 const SingleHistoryPage = () => {
-  const { id } =                          useParams()
-  const dispatch =                        useAppDispatch()
-  const [cookies] =                       useCookies(['access_token'])
-  const [loading, setLoading] =           React.useState(false)
-  const [isUpdated, setIsUpdated] =       React.useState(false)
-  const [filledUser, setFilledUser] =     React.useState()
-  const routes =                          useAppSelector((state) => state.fetchedData.Routes)
-  const defaultPageTheme =                useAppSelector((state) => state.theme.value)
+  const { id }                          = useParams()
+  const dispatch                        = useAppDispatch()
+  const [cookies]                       = useCookies(['access_token'])
+  const [loading, setLoading]           = React.useState(false)
+  const [isUpdated, setIsUpdated]       = React.useState(false)
+  const [filledUser, setFilledUser]     = React.useState()
+  const routes                          = useAppSelector((state) => state.fetchedData.Routes)
+  const defaultPageTheme                = useAppSelector((state) => state.theme.value)
   const [searchParams, setSearchParams] = useSearchParams()
-  const tabUrlParam =                     searchParams.get('tab')
+  const tabUrlParam                     = searchParams.get('tab')
 
   React.useEffect(() => {
     if (id) {
       (async () => {
         try{
           setLoading(true)
-          const filledChecklistData =   await get(`getSingleHistoryELementData/${id}`, cookies.access_token)
-          const checklistPhotos =       await get(`getPhotos/${id}`, cookies.access_token)
-          const resRoutes =             await get('routeData', cookies.access_token)
-          const resAreas =              await get('areasData', cookies.access_token)
-          const resProblems =           await get('problemsData', cookies.access_token)
-          const resTodo =               await get('todoData', cookies.access_token)
+          const filledChecklistData = await get(`getSingleHistoryELementData/${id}`, cookies.access_token)
+          const checklistPhotos     = await get(`getPhotos/${id}`, cookies.access_token)
+          const resRoutes           = await get('routeData', cookies.access_token)
+          const resAreas            = await get('areasData', cookies.access_token)
+          const resProblems         = await get('problemsData', cookies.access_token)
+          const resTodo             = await get('todoData', cookies.access_token)
           if(!filledChecklistData.error && !resRoutes.error && !resAreas.error && !resProblems.error && !resTodo.error && !checklistPhotos.error){
             dispatch(setRoute(resRoutes.data))
             dispatch(setPossibleProblems(resProblems.data))
@@ -63,7 +63,6 @@ const SingleHistoryPage = () => {
   }
 
   const tabItems = routes ? [filledUser, ...routes] : []
-
   return (
     <div className='SingleHistoryPageContainer'>
       {id &&

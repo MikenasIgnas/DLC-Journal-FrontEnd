@@ -1,6 +1,5 @@
-import React, { Fragment } from 'react'
-import {Text, View, StyleSheet } from '@react-pdf/renderer'
-import { HistoryDataType } from '../../../types/globalTypes'
+import React, { Fragment }        from 'react'
+import {Text, View, StyleSheet }  from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
   invoiceNoContainer: {

@@ -4,7 +4,7 @@ import { Form, Input } from 'antd'
 type clientsEmployeesDataDisplayProps = {
     label:        string;
     employeeData: string | undefined;
-    edit?:         boolean;
+    edit?:        boolean;
     formItemName: string;
 }
 

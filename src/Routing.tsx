@@ -37,9 +37,9 @@ const Routing = () => {
       if (token) {
         try {
           const decodedToken: TokenType = jwtDecode(token)
-          const expirationTime =  decodedToken.exp * 1000
-          const currentTime =     Date.now()
-          const timeRemaining =   expirationTime - currentTime
+          const expirationTime  = decodedToken.exp * 1000
+          const currentTime     = Date.now()
+          const timeRemaining   = expirationTime - currentTime
           if (timeRemaining <= 0) {
             localStorage.clear()
             removeCookie('access_token')

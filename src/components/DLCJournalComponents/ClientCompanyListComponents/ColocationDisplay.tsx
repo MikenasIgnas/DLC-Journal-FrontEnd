@@ -1,26 +1,26 @@
 /* eslint-disable max-len */
-import React                  from 'react'
-import { Card, Divider, List }            from 'antd'
-import { ColocationDataType } from '../../../types/globalTypes'
+import React                    from 'react'
+import { Card, Divider, List }  from 'antd'
+import { ColocationDataType }   from '../../../types/globalTypes'
 
 type ColocationViewProps = {
-    locationName: string;
+    locationName: string | undefined;
     locationData: ColocationDataType[] | undefined;
 }
 
 const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => {
   const collocations = locationData?.map(obj => {
-    const key = Object.keys(obj)[0]
-    const values = obj[key]
+    const key     = Object.keys(obj)[0]
+    const values  = obj[key]
     return { key, values }
   })
 
   const totalItemCount = locationData?.reduce((count, obj) => count + Object.values(obj)[0].length, 0)
 
   return (
-    <div style={{width: '100%'}}>
+    <div className='ColocationDisplayContainer'>
       {locationData && <Divider>{locationName}</Divider>}
-      <Card style={{display: 'flex', justifyContent: 'space-between', border: '1px solid #d9d9d9'}} >
+      <Card className='CollocationDisplayCard' >
         {collocations?.map((el, i) =>
           <div key={i}>
             {<List
@@ -28,7 +28,7 @@ const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => 
               size='small'
               header={<strong>{el.key}</strong>}
               footer={
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                <div className='CollocationDisplayFooter'>
                   <strong>{`Spintos: ${el.values.length}`}</strong>
                 </div>
               }
@@ -41,7 +41,7 @@ const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => 
               }/>}
           </div>
         )}
-        <div style={{display: 'flex', justifyContent: 'space-between', marginTop: '15px'}}>
+        <div className='CollocationDisplayCounter'>
           <strong>{`Kolokacijos ${locationName}: ${locationData?.length}`}</strong>
           <strong>{`Spintos: ${totalItemCount}`}</strong>
         </div>

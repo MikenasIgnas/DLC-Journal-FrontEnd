@@ -4,21 +4,21 @@ import Box                  from '@mui/joy/Box'
 import { Tag, Typography }  from 'antd'
 import { useSearchParams }  from 'react-router-dom'
 import HighlightText        from '../../UniversalComponents/HighlightText'
-import { VisitorsType } from '../../../types/globalTypes'
+import { VisitorsType }     from '../../../types/globalTypes'
 
 type VisitsTableRowsProps = {
-    visitId:          string;
-    visitStatus:      string | undefined;
-    visitingClient:   string;
-    visitAddress:     string;
-    dlcEmployees:     string;
-    rowMenu?:         React.ReactNode
-    visitors:         VisitorsType[];
-    visitStartDate:   string;
-    visitStartTime:   string;
-    visitEndDate:     string;
-    visitEndTime:     string;
-    visitPurpose:     string[];
+    visitId:        string;
+    visitStatus:    string | undefined;
+    visitingClient: string;
+    visitAddress:   string;
+    dlcEmployees:   string;
+    rowMenu?:       React.ReactNode
+    visitors:       VisitorsType[];
+    visitStartDate: string;
+    visitStartTime: string;
+    visitEndDate:   string;
+    visitEndTime:   string;
+    visitPurpose:   string[];
 }
 
 const VisitsTableRows = ({
@@ -35,8 +35,8 @@ const VisitsTableRows = ({
   visitEndTime,
   visitPurpose,
 }: VisitsTableRowsProps) => {
-  const [searchParams] =  useSearchParams()
-  const filter =          searchParams.get('filter')
+  const [searchParams]  = useSearchParams()
+  const filter          = searchParams.get('filter')
   return (
     <tr key={visitId}>
       <td style={{padding: '12px' }}>

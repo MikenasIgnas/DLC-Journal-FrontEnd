@@ -8,14 +8,14 @@ type TabNameProps = {
 }
 
 const TabName = ({itemId}:TabNameProps) => {
-  const filledData =        useAppSelector((state)=> state.fetchedData.FilledData)
-  const filteredByRoute =   filledData?.filter((el) => el.routeNumber === itemId)
-  let routeProblemCount =   0
+  const filledData      = useAppSelector((state)=> state.fetchedData.FilledData)
+  const filteredByRoute = filledData?.filter((el) => el.routeNumber === itemId)
+  let routeProblemCount = 0
 
   filteredByRoute?.forEach(obj => {
-    const values =        Object.values(obj.values)
+    const values        = Object.values(obj.values)
     const nestedObjects = values.flatMap(arr => arr)
-    const trueValues =    nestedObjects.filter(nestedObj => Object.values(nestedObj)[0] === true)
+    const trueValues    = nestedObjects.filter(nestedObj => Object.values(nestedObj)[0] === true)
     routeProblemCount += trueValues.length
   })
 

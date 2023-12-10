@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
-import React                    from 'react'
-import { AppstoreAddOutlined }  from '@ant-design/icons'
-import { Button}                from 'antd'
-import CompanyAdditionModal     from './CompanyAdditionModal'
-import { CollocationsType, ModalStateType }     from '../../../../types/globalTypes'
+import React                                from 'react'
+import { AppstoreAddOutlined }              from '@ant-design/icons'
+import { Button}                            from 'antd'
+import CompanyAdditionModal                 from './CompanyAdditionModal'
+import { CollocationsType, ModalStateType } from '../../../../types/globalTypes'
 
 type CompanyAdditionProps = {
   postUrl:            string;
   additionModalTitle: string;
-  setModalState:       React.Dispatch<React.SetStateAction<ModalStateType>>
-  modalState:          ModalStateType
+  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>
+  modalState:         ModalStateType
   collocations:       CollocationsType[] | undefined
 }
 const CompanyAddition = ({postUrl, additionModalTitle, collocations, setModalState, modalState}:CompanyAdditionProps) => {

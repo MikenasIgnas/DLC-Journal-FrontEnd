@@ -3,23 +3,22 @@ import React                                                                    
 import { Button, Checkbox, Col, Divider, Drawer, Form, Input, Row, UploadFile } from 'antd'
 import { useForm }                                                              from 'antd/es/form/Form'
 import { EmployeesType }                                                        from '../../../types/globalTypes'
-import { get, post, uploadPhoto } from '../../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
-import { useSearchParams } from 'react-router-dom'
-import PhotoUploader from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import { get, post, uploadPhoto }                                               from '../../../Plugins/helpers'
+import { useCookies }                                                           from 'react-cookie'
+import { useSearchParams }                                                      from 'react-router-dom'
+import PhotoUploader                                                            from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 
 type ClientsEmployeeDrawerProps = {
-    onClose:        () => void
-    companyName:    string | undefined;
-    setOpen:        React.Dispatch<React.SetStateAction<boolean>>
-    open:           boolean
+    onClose:                () => void
+    companyName:            string | undefined;
+    open:                   boolean
     setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
-    editClientsEmployee: boolean
+    editClientsEmployee:    boolean
 }
 
 interface DescriptionItemProps {
-    title:            string;
-    content:          React.ReactNode;
+    title:   string;
+    content: React.ReactNode;
 }
 
 const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
@@ -29,16 +28,16 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const ClientsEmployeeDrawer = ({ onClose, companyName, setOpen, open, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
-  const [form] = useForm()
-  const options =                                       ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti Trečius asmenis']
-  const [fileList, setFileList] =                       React.useState<UploadFile[]>([])
-  const [cookies] =                                     useCookies(['access_token'])
-  const [uploading, setUploading] =                     React.useState(false)
-  const [employee, setEmployee] =                       React.useState<EmployeesType>()
-  const [searchParams] =                                useSearchParams()
-  const employeeId =                                    searchParams.get('employeeId')
-  const companyId =                                     searchParams.get('companyId')
+const ClientsEmployeeDrawer = ({ onClose, companyName, open, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
+  const [form]                    = useForm()
+  const options                   = ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti Trečius asmenis']
+  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
+  const [cookies]                 = useCookies(['access_token'])
+  const [uploading, setUploading] = React.useState(false)
+  const [employee, setEmployee]   = React.useState<EmployeesType>()
+  const [searchParams]            = useSearchParams()
+  const employeeId                = searchParams.get('employeeId')
+  const companyId                 = searchParams.get('companyId')
 
   React.useEffect(() => {
     (async () => {

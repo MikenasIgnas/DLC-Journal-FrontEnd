@@ -7,40 +7,8 @@ import { useCookies }                           from 'react-cookie'
 import { useNavigate }                          from 'react-router'
 import SuccessMessage                           from '../../components/UniversalComponents/SuccessMessage'
 import { useSearchParams }                      from 'react-router-dom'
-import { EmployeesType }                        from '../../types/globalTypes'
+import { VisitsType }                           from '../../types/globalTypes'
 
-type CollocationType = {
-  [key:string] :        string[]
-}
-
-type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
-
-type VisitorsType = {
- idType: string;
- selectedVisitor:EmployeesType
-}
-
-type VisitsType = {
-    id:               string;
-    visitPurpose:     string[];
-    visitStatus:      VisitStatusType;
-    visitors:         VisitorsType[];
-    dlcEmployees:     string;
-    visitAddress:     string;
-    visitingClient:   string;
-    clientsGuests:    string[];
-    carPlates:        string[];
-    signature:        string;
-    visitCollocation: CollocationType
-    visitorsIdType:   string;
-    creationDate:     string;
-    creationTime:     string;
-    startDate:        string;
-    startTime:        string;
-    endDate:          string;
-    endTime:          string;
-    companyId:        number;
-}
 const VisitRegistrationPage= () => {
   const [form]                            = Form.useForm()
   const { token }                         = theme.useToken()
@@ -54,7 +22,7 @@ const VisitRegistrationPage= () => {
 
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
-    if(companyId && (values?.visitors && values?.visitors.length > 0) ){
+    if(companyId && (values?.visitors && values?.visitors.length > 0)){
       values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : null
       values.visitStatus = 'processing'
       values.creationDate = getCurrentDate()
@@ -63,12 +31,10 @@ const VisitRegistrationPage= () => {
       values.carPlates = carPlates
       values.companyId = Number(companyId)
       const res = await post('postVisitDetails', values, cookies.access_token )
-      console.log(values)
       if(!res.error){
         localStorage.clear()
         navigate(`/DLC Žurnalas/Vizitai/${res.data}?visitAddress=${values.visitAddress}`)
       }
-      console.log(values)
     }else{
       messageApi.error({
         type:    'error',

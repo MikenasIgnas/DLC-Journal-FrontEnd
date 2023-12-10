@@ -1,13 +1,13 @@
-import React                    from 'react'
-import { CssVarsProvider }      from '@mui/joy/styles'
-import CssBaseline              from '@mui/joy/CssBaseline'
-import Box                      from '@mui/joy/Box'
-import Typography               from '@mui/joy/Typography'
-import BreadCrumbz              from '../../UniversalComponents/BreadCrumbz'
+import React               from 'react'
+import { CssVarsProvider } from '@mui/joy/styles'
+import CssBaseline         from '@mui/joy/CssBaseline'
+import Box                 from '@mui/joy/Box'
+import Typography          from '@mui/joy/Typography'
+import BreadCrumbz         from '../../UniversalComponents/BreadCrumbz'
 
 type PageContainerProps = {
-  children: React.ReactNode
-  pageTitle: string | undefined;
+  children:   React.ReactNode
+  pageTitle:  string | undefined;
 }
 
 const PageContainer = ({children, pageTitle}:PageContainerProps) => {

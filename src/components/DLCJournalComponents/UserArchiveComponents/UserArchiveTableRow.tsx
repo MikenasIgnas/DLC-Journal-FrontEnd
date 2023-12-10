@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React                from 'react'
-import Checkbox             from '@mui/joy/Checkbox'
 import { Tag, Typography }  from 'antd'
 import HighlightText        from '../../UniversalComponents/HighlightText'
 import { useSearchParams }  from 'react-router-dom'
@@ -17,9 +16,8 @@ type UersTableProps = {
 }
 
 const UserArchiveTableRows = ({dateCreated, dateDeleted, email, id, status, userRole, username, rowMenu}: UersTableProps) => {
-  const [searchParams] =            useSearchParams()
-  const filter =                    searchParams.get('filter')
-
+  const [searchParams] = useSearchParams()
+  const filter =         searchParams.get('filter')
   return (
     <tr key={id}>
       <td style={{padding: '12px'}}>

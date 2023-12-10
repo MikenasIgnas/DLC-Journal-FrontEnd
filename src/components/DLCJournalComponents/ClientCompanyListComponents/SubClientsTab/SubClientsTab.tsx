@@ -1,33 +1,55 @@
 /* eslint-disable max-len */
-import React                                                from 'react'
-import SubClients                                           from '../SubClients'
-import { CollocationsSites, CompaniesType, ModalStateType } from '../../../../types/globalTypes'
-import CompanyAdditionModal                                 from '../CompanyAdditionComponent/CompanyAdditionModal'
-import SubClientAddition                                    from '../SubClientAddition'
-import { post }                                             from '../../../../Plugins/helpers'
-import { useCookies }                                       from 'react-cookie'
+import React                                                                            from 'react'
+import SubClients                                                                       from '../SubClients'
+import { CollocationsSites, CompaniesType, ModalStateType, SubClientsCollocationsType } from '../../../../types/globalTypes'
+import CompanyAdditionModal                                                             from '../CompanyAdditionComponent/CompanyAdditionModal'
+import SubClientAddition                                                                from '../SubClientAddition'
+import { post }                                                                         from '../../../../Plugins/helpers'
+import { useCookies }                                                                   from 'react-cookie'
 
 type SubClientStateType = {
-    mainCompanyAddedAsSubClient:  boolean,
-    subClientChangedToMainClient: boolean,
-  }
+  mainCompanyAddedAsSubClient:  boolean,
+  subClientChangedToMainClient: boolean,
+}
 
-  type SubClientsTabProps = {
-    parentCompanyId:    string | undefined;
-    setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>;
-    modalState:         ModalStateType
-    subClientState:     SubClientStateType
-    setSubClientState:  React.Dispatch<React.SetStateAction<SubClientStateType>>
-    collocationsSites:  CollocationsSites
-    mainCompanies:      CompaniesType[]
-    setMainCompanies:   React.Dispatch<React.SetStateAction<CompaniesType[]>>
-  }
+type SubClientsTabProps = {
+  parentCompanyId:    string | undefined;
+  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>;
+  modalState:         ModalStateType
+  subClientState:     SubClientStateType
+  setSubClientState:  React.Dispatch<React.SetStateAction<SubClientStateType>>
+  collocationsSites:  CollocationsSites
+  mainCompanies:      CompaniesType[]
+  setMainCompanies:   React.Dispatch<React.SetStateAction<CompaniesType[]>>
+}
 
 const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClientState, subClientState, collocationsSites, mainCompanies, setMainCompanies}: SubClientsTabProps) => {
-  const [cookies]                           = useCookies(['access_token'])
-  const [selectedValue, setSelectedValue]   = React.useState(null)
-  const subClientsCollocations              = []
-  let index                                 = 1
+  const [cookies]                                         = useCookies(['access_token'])
+  const [selectedValue, setSelectedValue]                 = React.useState(null)
+  const [subClientsCollocations, setSubClientsCollocations] = React.useState<SubClientsCollocationsType>([])
+  React.useEffect(() => {
+    const newSubClientsCollocations = []
+    let newIndex = 1
+
+    for (const site in collocationsSites) {
+      const premisesData = collocationsSites[site]
+      const premisesArray = premisesData?.map(premiseData => {
+        const premiseName = Object.keys(premiseData)[0]
+        const racks = premiseData[premiseName]
+        return {
+          premiseName,
+          racks,
+        }
+      })
+
+      newSubClientsCollocations.push({
+        site,
+        id:       `${newIndex++}`,
+        premises: premisesArray,
+      })
+    }
+    setSubClientsCollocations(newSubClientsCollocations)
+  }, [collocationsSites])
 
   const mainCompaniesOptions = mainCompanies?.map((el) => {
     return{
@@ -39,7 +61,6 @@ const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClient
   const handleChange = async(value: string) => {
     const selectedMainCompany   = mainCompanies?.filter((el) => el.id === value)
     const remainingCompanies    = mainCompanies?.filter((el) => el.id !== value)
-
     if(remainingCompanies){
       setMainCompanies(remainingCompanies)
       const res =await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${parentCompanyId}`, selectedMainCompany?.[0].companyInfo, cookies.access_token)
@@ -47,27 +68,10 @@ const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClient
         setSubClientState({...subClientState, mainCompanyAddedAsSubClient: !subClientState.mainCompanyAddedAsSubClient})
       }
     }
-
-  }
-  for (const site in collocationsSites) {
-    const premisesData  = collocationsSites[site]
-    const premisesArray = premisesData?.map(premiseData => {
-      const premiseName = Object.keys(premiseData)[0]
-      const racks = premiseData[premiseName]
-      return {
-        premiseName,
-        racks,
-      }
-    })
-    subClientsCollocations.push({
-      site,
-      id:       `${index++}`,
-      premises: premisesArray,
-    })
   }
 
   return (
-    <div style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+    <div className='SubClientsTabContainer'>
       {modalState.isModalOpen &&
         <CompanyAdditionModal
           setModalState={setModalState}
@@ -86,6 +90,7 @@ const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClient
         handleSelect={()=> setSelectedValue(null)}
       />
       <SubClients
+        subClientsCollocations={collocationsSites}
         subClientState={subClientState}
         setSubClientState={setSubClientState}
         setModalState={setModalState}

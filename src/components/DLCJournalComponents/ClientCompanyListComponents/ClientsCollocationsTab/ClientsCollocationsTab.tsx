@@ -1,18 +1,17 @@
 /* eslint-disable max-len */
-import React                  from 'react'
-import ClientsCollocations    from '../ClientsCollocations'
-import { CollocationsSites, CollocationsType, ColocationDataType, ModalStateType } from '../../../../types/globalTypes'
-import EditableCollocationFormList from '../CollocationFormList'
-import { Button } from 'antd'
+import React                                                                        from 'react'
+import ClientsCollocations                                                          from '../ClientsCollocations'
+import { CollocationsSites, CollocationsType, ColocationDataType, ModalStateType }  from '../../../../types/globalTypes'
+import EditableCollocationFormList                                                  from '../CollocationFormList'
 
 type ClientsCollocationsProps = {
-    J13locationName:    string
-    T72locationName:    string
-    J13locationData:    ColocationDataType[] | undefined
-    T72locationData:    ColocationDataType[] | undefined
-    edit:               ModalStateType;
-    collocations:       CollocationsType[] | undefined
-    collocationsSites:  CollocationsSites
+    J13locationName:   string | undefined
+    T72locationName:   string | undefined
+    J13locationData:   ColocationDataType[] | undefined
+    T72locationData:   ColocationDataType[] | undefined
+    edit:              ModalStateType;
+    collocations:      CollocationsType[] | undefined
+    collocationsSites: CollocationsSites
 }
 
 

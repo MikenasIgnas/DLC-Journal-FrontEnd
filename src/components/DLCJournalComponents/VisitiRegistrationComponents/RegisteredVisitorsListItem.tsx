@@ -3,56 +3,73 @@
 import React                                                from 'react'
 import { Button, Form, List, Select, Image, Avatar, Modal } from 'antd'
 import SignatureCanvas                                      from 'react-signature-canvas'
-import { useCookies } from 'react-cookie'
-import { post } from '../../../Plugins/helpers'
-import { useParams } from 'react-router'
-
+import { useCookies }                                       from 'react-cookie'
+import { get, post }                                        from '../../../Plugins/helpers'
+import { useParams }                                        from 'react-router'
 
 type RegisteredVisitorsListItemProps = {
-    signature:              string;
-    edit:                   boolean;
-    idType:                 string;
-    identificationOptions:  {value:string, label:string}[];
-    employeeId:             string | undefined;
-    name:                   string;
-    lastName:               string;
-     occupation:            string;
-     permissions:           string[]
-     deleteVisitor:         (employeeId: string | undefined) => void
-     index:                 number
+  signature:              string | null | undefined;
+  edit:                   boolean;
+  idType:                 string | null;
+  identificationOptions:  {value:string, label: string}[];
+  employeeId:             string | undefined;
+  name:                   string;
+  lastName:               string;
+  occupation:             string;
+  permissions:            string[]
+  deleteVisitor:          (employeeId: string | undefined) => void
+  index:                  number
 }
 
-const RegisteredVisitorsListItem = ({signature, edit, idType, identificationOptions, employeeId, name, lastName, occupation, permissions, deleteVisitor, index }: RegisteredVisitorsListItemProps) => {
-  const {id}                = useParams()
-  const [cookies]           = useCookies(['access_token'])
-  const signatureCanvasRef  = React.useRef<any>(null)
-  const [open, setOpen]     = React.useState(false)
-
-  const oncancel = async() => {
+const RegisteredVisitorsListItem = ({
+  signature,
+  edit,
+  idType,
+  identificationOptions,
+  employeeId,
+  name,
+  lastName,
+  occupation,
+  permissions,
+  deleteVisitor,
+  index,
+}: RegisteredVisitorsListItemProps) => {
+  const {id}                                = useParams()
+  const [cookies]                           = useCookies(['access_token'])
+  const signatureCanvasRef                  = React.useRef<any>(null)
+  const [open, setOpen]                     = React.useState(false)
+  const [savedSignature, setSavedSignature] = React.useState<string| undefined | null>(signature)
+  const onOk = async() => {
     if(signatureCanvasRef.current){
       const signature = {
         signature: signatureCanvasRef.current.toDataURL(),
       }
       const res = await post(`addSignature?visitId=${id}&employeeId=${employeeId}`,signature, cookies.access_token)
+      setSavedSignature(signatureCanvasRef.current.toDataURL())
       if(!res.error){
         setOpen(false)
       }
     }
   }
 
+  const onModalOpen = () => {
+    setOpen(true)
+  }
+
+  const deleteSignature = async() => {
+    await get(`deleteSignature?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
+    setSavedSignature(null)
+  }
   return (
     <>
       <List.Item
         actions={[
           <div>
-            <Image
-              width={150}
-              src={signature || (signatureCanvasRef?.current?.isEmpty() ? undefined : signatureCanvasRef?.current?.toDataURL())}
-            />
-            <Button onClick={() => setOpen(true)}>Pasirašyti</Button>
+            {savedSignature && <Image width={150} src={savedSignature}/>}
+            {!savedSignature ? <Button onClick={onModalOpen}>Pasirašyti</Button> : <Button onClick={deleteSignature}>Ištrinti</Button>}
           </div>,
-          <Form.Item name={['visitors', index, 'idType']} initialValue={idType}>
-            <Select disabled={!edit} style={{width: '150px'}} options={identificationOptions}/>
+          <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
+            <Select disabled={!edit} options={identificationOptions}/>
           </Form.Item>,
           <Button type='link' onClick={() => deleteVisitor(employeeId)}>Ištrinti</Button>,
         ]}
@@ -62,11 +79,10 @@ const RegisteredVisitorsListItem = ({signature, edit, idType, identificationOpti
           title={<p>{name} {lastName}</p>}
           description={occupation}
         />
-        <div style={{width: '150px'}}>{permissions?.map((el, i) => <div key={i}>{el}</div>)}</div>
+        <div className='RegisteredVisitorsPermissions'>{permissions?.map((el, i) => <div key={i}>{el}</div>)}</div>
       </List.Item>
       <Modal
-        footer={false}
-        onCancel={oncancel}
+        onOk={onOk}
         open={open}
       >
         <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />

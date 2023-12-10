@@ -29,18 +29,17 @@ type FormValuesType = {
     repeatPassword: string,
 }
 const EditUserProfilePage = () => {
-
-  const dispatch =                                useAppDispatch()
-  const [form] =                                  Form.useForm()
-  const [messageApi, contextHolder] =             message.useMessage()
-  const [cookies] =                               useCookies(['access_token'])
-  const token =                                   cookies.access_token
-  const decodedToken:TokenType =                  jwtDecode(token)
-  const [loading, setLoading] =                   React.useState(false)
-  const defaultTheme =                            useAppSelector((state)=> state.theme.value)
-  const [loginError, setLoginError] =             React.useState(false)
-  const [errorMessage, setErrorMessage] =         React.useState('')
-  const userProfileData =                         useFetch<FormValuesType>(`FindUser/${decodedToken.id}`, setLoading)
+  const dispatch                        = useAppDispatch()
+  const [form]                          = Form.useForm()
+  const [messageApi, contextHolder]     = message.useMessage()
+  const [cookies]                       = useCookies(['access_token'])
+  const token                           = cookies.access_token
+  const decodedToken:TokenType          = jwtDecode(token)
+  const [loading, setLoading]           = React.useState(false)
+  const defaultTheme                    = useAppSelector((state)=> state.theme.value)
+  const [loginError, setLoginError]     = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
+  const userProfileData                 = useFetch<FormValuesType>(`FindUser/${decodedToken.id}`, setLoading)
 
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){

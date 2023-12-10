@@ -13,9 +13,9 @@ type LoginValuesType = {
 }
 
 const LoginPage = () => {
-  const [,setCookie] =                     useCookies(['access_token'])
-  const [loginError, setLoginError] =       React.useState(false)
-  const [errorMessage, setErrorMessage] =   React.useState('')
+  const [,setCookie]                    = useCookies(['access_token'])
+  const [loginError, setLoginError]     = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async(values: LoginValuesType) => {
     try{

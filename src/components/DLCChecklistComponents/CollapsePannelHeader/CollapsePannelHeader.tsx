@@ -8,7 +8,7 @@ type CollapsePannelHeaderProps = {
 }
 
 const CollapsePannelHeader = ({problemCount, duty}:CollapsePannelHeaderProps) => {
-  const defaultPageTheme =        useAppSelector((state) => state.theme.value)
+  const defaultPageTheme =  useAppSelector((state) => state.theme.value)
 
   return (
     <div style={{color: defaultPageTheme ? 'white': 'black'}} className='CollapsePannelHeader'>

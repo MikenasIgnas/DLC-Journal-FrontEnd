@@ -11,18 +11,18 @@ import { DownOutlined }                                     from '@ant-design/ic
 import ListItem                                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/ListItem'
 
 const CompaniesListPage = () => {
-  const [loading, setLoading] =               React.useState(false)
-  const [cookies] =                           useCookies(['access_token'])
-  const [companies, setCompanies] =           React.useState<CompaniesType[]>([])
-  const position: PaginationPosition =        'bottom'
-  const align: PaginationAlign =              'center'
-  const [collocations, setCollocations] =     React.useState<CollocationsType[]>()
-  const [modalState, setModalState] =         React.useState<ModalStateType>({
-    editClientsEmployee:         false,
-    edit:                        false,
-    isEmployeeAdditionModalOpen: false,
-    isCompanyAdded:              false,
-    isModalOpen:                 false,
+  const [loading, setLoading]           = React.useState(false)
+  const [cookies]                       = useCookies(['access_token'])
+  const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
+  const position: PaginationPosition    = 'bottom'
+  const align: PaginationAlign          = 'center'
+  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
+  const [modalState, setModalState]     = React.useState<ModalStateType>({
+    editClientsEmployee:       false,
+    edit:                      false,
+    openEmployeeAdditionModal: false,
+    isCompanyAdded:            false,
+    isModalOpen:               false,
   })
 
   React.useEffect(() => {
@@ -68,7 +68,7 @@ const CompaniesListPage = () => {
   })
 
   return (
-    <div style={{width: '97%'}}>
+    <div className='CompaniesListPageContainer'>
       <CompanyAddition
         modalState={modalState}
         postUrl={'addCompany'}
@@ -106,5 +106,3 @@ const CompaniesListPage = () => {
 }
 
 export default CompaniesListPage
-
-

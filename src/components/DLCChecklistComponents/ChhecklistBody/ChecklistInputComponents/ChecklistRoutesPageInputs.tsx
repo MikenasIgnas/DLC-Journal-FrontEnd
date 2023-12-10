@@ -28,7 +28,7 @@ const ChecklistInputs = ({
   alreadyFilledValues,
 }:InputProps) => {
   const [noSelected, setNoSelected] = React.useState(false)
-  const defaultTheme =                useAppSelector((state) => state.theme.value)
+  const defaultTheme                = useAppSelector((state) => state.theme.value)
   return (
     <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : 'white'}} className='ChecklistHistoryInputsMainContainer'>
       <div className='ChecklistHistoryInputsContainer'>

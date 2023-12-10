@@ -1,14 +1,14 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Form, message }                    from 'antd'
-import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
-import FilledHistoryData                    from './FilledHistoryData'
-import { post }                             from '../../../Plugins/helpers'
-import { useParams }                        from 'react-router-dom'
-import { useCookies }                       from 'react-cookie'
-import { setProblemCount }                  from '../../../auth/FetchedDataReducer/fetchedDataReducer'
-import SuccessMessage                       from '../../UniversalComponents/SuccessMessage'
+import React                              from 'react'
+import { Form, message }                  from 'antd'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import FilledHistoryData                  from './FilledHistoryData'
+import { post }                           from '../../../Plugins/helpers'
+import { useParams }                      from 'react-router-dom'
+import { useCookies }                     from 'react-cookie'
+import { setProblemCount }                from '../../../auth/FetchedDataReducer/fetchedDataReducer'
+import SuccessMessage                     from '../../UniversalComponents/SuccessMessage'
 
 type AreasComponentProps = {
   routeID:      number | undefined,
@@ -23,14 +23,15 @@ type ValuesType = {
 };
 
 const HistoryRouteTab = ({ routeID, itemId, setIsUpdated }:AreasComponentProps) => {
-  const { id } =                        useParams()
-  const [cookies] =                     useCookies(['access_token'])
-  const [form] =                        Form.useForm()
-  const areas =                         useAppSelector((state) => state.fetchedData.Areas)?.filter((el) => el.routesId === routeID)
-  const filledData =                    useAppSelector((state) => state.fetchedData.FilledData)
-  const mapped =                        filledData?.map((el)=> el.values)
-  const dispatch =                      useAppDispatch()
-  const [messageApi, contextHolder] =   message.useMessage()
+  const { id }                      = useParams()
+  const [cookies]                   = useCookies(['access_token'])
+  const [form]                      = Form.useForm()
+  const areas                       = useAppSelector((state) => state.fetchedData.Areas)?.filter((el) => el.routesId === routeID)
+  const filledData                  = useAppSelector((state) => state.fetchedData.FilledData)
+  const mapped                      = filledData?.map((el)=> el.values)
+  const dispatch                    = useAppDispatch()
+  const [messageApi, contextHolder] = message.useMessage()
+
   const onFinish = async(values:ValuesType) => {
     const updatedData = mapped?.map(obj => {
       return Object.keys(obj).reduce((updatedObj:any, key) => {

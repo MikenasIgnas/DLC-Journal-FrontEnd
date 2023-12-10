@@ -14,15 +14,15 @@ type VisitDateItemProps = {
 
 const VisitDateItem = ({edit, date, time, dateFormItemName, timeFormItemName}:VisitDateItemProps) => {
   return (
-    <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+    <div className='VisitDateItemContainer'>
       {!edit ?
-        <div style={{display: 'flex'}}>
+        <div className='DisplayFlex'>
           <div>{date || ''}</div>
           <div>{time || ''}</div>
         </div> :
         (
           date && time &&
-          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div className='DatePickerContainer'>
             <Form.Item name={dateFormItemName} initialValue={dayjs(date)}>
               <DatePicker/>
             </Form.Item>

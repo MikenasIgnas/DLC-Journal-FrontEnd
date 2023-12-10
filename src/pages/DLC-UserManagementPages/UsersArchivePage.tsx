@@ -1,38 +1,31 @@
 /* eslint-disable max-len */
-import React                              from 'react'
-import { get }                            from '../../Plugins/helpers'
-import { useCookies }                     from 'react-cookie'
-import { UserType }                       from '../../types/globalTypes'
-import FullTable                          from '../../components/Table/TableComponents/FullTable'
-import { useNavigate, useSearchParams }   from 'react-router-dom'
-import UserArchiveTableRows               from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
-import RowMenu                            from '../../components/Table/TableComponents/RowMenu'
-import { useAppSelector }                 from '../../store/hooks'
-import useSetUsersData from '../../Plugins/useSetUsersData'
-import useSetArchivedUserData from '../../Plugins/useSetArchivedUserData'
+import React                            from 'react'
+import FullTable                        from '../../components/Table/TableComponents/FullTable'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import UserArchiveTableRows             from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
+import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
+import useSetArchivedUserData           from '../../Plugins/useSetArchivedUserData'
 
 const TableColumns = () => {
   return(
     <>
-      <th style={{ width: 250, padding: '12px 6px' }}>Prisijungimas</th>
-      <th style={{ width: 250, padding: '12px 6px' }}>El. Paštas</th>
-      <th style={{ width: 150, padding: '12px 6px' }}>Darbuotojas</th>
-      <th style={{ width: 120, padding: '12px 6px' }}>Rolė</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Sukurta</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Ištrinta</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Veiksmai</th>
+      <th className='TableColumnWidth250px'>Prisijungimas</th>
+      <th className='TableColumnWidth250px'>El. Paštas</th>
+      <th className='TableColumnWidth150px'>Darbuotojas</th>
+      <th className='TableColumnWidth130px'>Rolė</th>
+      <th className='TableColumnWidth100px'>Statusas</th>
+      <th className='TableColumnWidth100px'>Sukurta</th>
+      <th className='TableColumnWidth100px'>Ištrinta</th>
+      <th className='TableColumnWidth100px'>Veiksmai</th>
     </>
   )
 }
 
 const UsersArchivePage = () => {
-  const [documentsCount, setDocumentsCount] = React.useState<number | undefined>()
-  const [searchParams, setSearchParams] =     useSearchParams()
-  const page =                                searchParams.get('page')
-  const navigate =                            useNavigate()
-  const {data, count} =                       useSetArchivedUserData()
-
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page                            = searchParams.get('page')
+  const navigate                        = useNavigate()
+  const {data, count}                   = useSetArchivedUserData()
 
   const tableSorter = [
     {
@@ -40,6 +33,7 @@ const UsersArchivePage = () => {
       filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
     },
   ]
+
   return (
     <FullTable
       tableColumns={<TableColumns />}

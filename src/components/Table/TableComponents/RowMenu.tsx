@@ -5,8 +5,8 @@ import IconButton                                        from '@mui/joy/IconButt
 import MoreHorizRoundedIcon                              from '@mui/icons-material/MoreHorizRounded'
 
 type RowMenuType ={
-  navigate: () => void;
-  deleteItem?: () => Promise<void>
+  navigate:     () => void;
+  deleteItem?:  () => Promise<void>
 }
 
 const RowMenu = ({navigate, deleteItem}: RowMenuType) => {

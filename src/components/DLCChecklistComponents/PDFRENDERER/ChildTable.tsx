@@ -6,39 +6,36 @@ import { AreaType, HistoryDataType, PossibleProblemsType, RouteType, TodoType } 
 import ChildTableHeader                                                         from './ChildTableHeader'
 
 type ChildTableProps = {
-  tableData: HistoryDataType[] | undefined
-  children?: React.ReactNode
+  tableData:  HistoryDataType[] | undefined
+  children?:  React.ReactNode
   tableStyle: TableStyleType
-  table: HistoryDataType
+  table:      HistoryDataType
   fetchedPremisesData: {
-    routes: null | RouteType[];
-    areas: null | AreaType[];
+    routes:   null | RouteType[];
+    areas:    null | AreaType[];
     problems: null | PossibleProblemsType[];
-    todo: null | TodoType[];
+    todo:     null | TodoType[];
   }
 }
 
 type TableStyleType = {
   tableContainer: {
-      flexDirection: 'row';
-      flexWrap: 'wrap';
-      marginTop: number;
-      borderWidth: number;
-      borderColor: string;
+      flexDirection:  'row';
+      flexWrap:       'wrap';
+      marginTop:      number;
+      borderWidth:    number;
+      borderColor:    string;
   };
 }
 
-
 const ChildTable = ({ tableStyle, table, fetchedPremisesData }: ChildTableProps) => {
-  const areas = fetchedPremisesData.areas
-  const problems = fetchedPremisesData.problems
-  const todo = fetchedPremisesData.todo
-  const filteredData = table.filledData.map(item => ({
+  const areas         = fetchedPremisesData.areas
+  const problems      = fetchedPremisesData.problems
+  const todo          = fetchedPremisesData.todo
+  const filteredData  = table.filledData.map(item => ({
     ...item,
     values: Object.entries(item.values)
-      .map(([key, objects]) => ({
-        [key]: objects.filter(obj => !Object.values(obj).includes(false)),
-      }))
+      .map(([key, objects]) => ({[key]: objects.filter(obj => !Object.values(obj).includes(false))}))
       .reduce((acc, val) => {
         if (Object.values(val)[0].length > 0) {
           Object.assign(acc, val)
@@ -46,7 +43,6 @@ const ChildTable = ({ tableStyle, table, fetchedPremisesData }: ChildTableProps)
         return acc
       }, {}),
   }))
-
   return(
     <View key={table.id} style={tableStyle.tableContainer}>
       {

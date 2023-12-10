@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
-import React                                                  from 'react'
+import React                                                        from 'react'
 import { Card, Checkbox, Col, ConfigProvider, Divider, Form, Row }  from 'antd'
-import { CollocationsType, CollocationsSites }                from '../../../types/globalTypes'
+import { CollocationsType, CollocationsSites }                      from '../../../types/globalTypes'
 
 
 type CollocationFormListProps = {
-    collocations:   CollocationsType[] | undefined;
+    collocations:      CollocationsType[] | undefined;
     collocationsSites: CollocationsSites
 }
 
 const EditableCollocationFormList = ({collocations, collocationsSites}: CollocationFormListProps) => {
   return (
-    <div style={{display: 'flex'}} >
+    <div className='DisplayFlex' >
       { collocations?.map((colocation, i) =>
         <div key={i} >
           <div>
@@ -29,7 +29,7 @@ const EditableCollocationFormList = ({collocations, collocationsSites}: Collocat
                 })}
               >
                 {(fields) => (
-                  <Row gutter={[16, 16]} style={{display: 'flex'}} >
+                  <Row gutter={[16, 16]}>
                     {fields.map(({ name, ...rest }, index) => {
                       const premise = colocation.premises[index]
                       return (

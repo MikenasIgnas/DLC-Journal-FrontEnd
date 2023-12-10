@@ -1,21 +1,21 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import { Box, FormControl, FormLabel }  from '@mui/joy'
-import TableFilters                     from './TableFilters'
-import { FilterOptions }                from '../../../types/globalTypes'
-import { Input }                        from 'antd'
-import { useSearchParams }              from 'react-router-dom'
-import useDelay                         from '../../../Plugins/useDelay'
+import React                           from 'react'
+import { Box, FormControl, FormLabel } from '@mui/joy'
+import TableFilters                    from './TableFilters'
+import { FilterOptions }               from '../../../types/globalTypes'
+import { Input }                       from 'antd'
+import { useSearchParams }             from 'react-router-dom'
+import useDelay                        from '../../../Plugins/useDelay'
 
 type TableControlsProps = {
-  tableSorter:    FilterOptions;
+  tableSorter:  FilterOptions;
 }
 
 const TableControls = ({tableSorter}: TableControlsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const page =                            searchParams.get('page')
-  const limit =                           searchParams.get('limit')
-  const delay =                           useDelay()
+  const page                            = searchParams.get('page')
+  const limit                           = searchParams.get('limit')
+  const delay                           = useDelay()
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     delay( async() => {
@@ -30,7 +30,6 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
   return (
     <React.Fragment>
       <Box
-        className='SearchAndFilters-tabletUp'
         sx={{
           borderRadius: 'sm',
           py:           2,
@@ -38,9 +37,8 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
             xs: 'none',
             sm: 'flex',
           },
-          flexWrap: 'wrap',
-          gap:      1.5,
-          '& > *':  {
+          gap:     1.5,
+          '& > *': {
             minWidth: {
               xs: '120px',
               md: '160px',
@@ -49,7 +47,7 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
         }}
       >
         <FormControl sx={{ flex: 1 }} size='sm'>
-          <FormLabel>Search for order</FormLabel>
+          <FormLabel>Ieškoti</FormLabel>
           <Input allowClear onChange={onChange} />
         </FormControl>
         {<TableFilters tableSorter={tableSorter}/>}

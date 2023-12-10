@@ -1,17 +1,19 @@
 /* eslint-disable max-len */
-import { Card } from 'antd'
-import React from 'react'
-import VisitPurposeButtons from './VisitPurposeButtons'
+import React                from 'react'
+import { Card, Form }       from 'antd'
+import VisitPurposeButtons  from './VisitPurposeButtons'
+import { VisitsType }       from '../../../types/globalTypes'
+import filterPermisions     from './filterPermisions'
 
-type VisitPurposeListProps = {
-    uniquePermissions: string[]
-}
+const VisitPurposeList = () => {
+  const form                = Form.useFormInstance<VisitsType>()
+  const values              = Form.useWatch('visitors', form)
+  const filteredPermisions  = filterPermisions(values)
 
-const VisitPurposeList = ({uniquePermissions}: VisitPurposeListProps) => {
   return (
     <Card style={{margin: '10px', backgroundColor: '#f9f9f9'}} title={'Vizito Tikslas'}>
       <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-        {uniquePermissions?.map((el, i) => <VisitPurposeButtons buttonText={el} key={i} buttonWidth={(100 / uniquePermissions.length) - 5}/>)}
+        {filteredPermisions?.map((el, i) => <VisitPurposeButtons buttonText={el} key={i} buttonWidth={(100 / filteredPermisions.length) - 5}/>)}
       </div>
     </Card>
   )

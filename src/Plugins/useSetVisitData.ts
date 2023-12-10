@@ -5,20 +5,19 @@ import { get }              from './helpers'
 import { VisitsType }       from '../types/globalTypes'
 
 const useSetVisitsData = () => {
-  const [data, setData] =         React.useState<VisitsType[]>()
-  const [count, setCount] =       React.useState<number>()
-  const [cookies] =               useCookies(['access_token'])
-  const [searchParams] =          useSearchParams()
-  const [loading, setLoading] =   React.useState(false)
+  const [data, setData]       = React.useState<VisitsType[]>()
+  const [count, setCount]     = React.useState<number>()
+  const [cookies]             = useCookies(['access_token'])
+  const [searchParams]        = useSearchParams()
+  const [loading, setLoading] = React.useState(false)
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page =          searchParams.get('page') || 1
-      const limit =         searchParams.get('limit') || 10
-      const selectFilter =  searchParams.get('selectFilter')
-      const searchFilter =  searchParams.get('filter')
-
-      let fetchUrl = `visitsData?page=${page}&limit=${limit}`
+      const page          = searchParams.get('page') || 1
+      const limit         = searchParams.get('limit') || 10
+      const selectFilter  = searchParams.get('selectFilter')
+      const searchFilter  = searchParams.get('filter')
+      let fetchUrl        = `visitsData?page=${page}&limit=${limit}`
 
       if (searchFilter) {
         fetchUrl += `&filter=${searchFilter}`

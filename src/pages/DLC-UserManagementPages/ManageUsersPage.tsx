@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                              from 'react'
-import { useNavigate, useSearchParams }   from 'react-router-dom'
-import FullTable                          from '../../components/Table/TableComponents/FullTable'
-import UersTableRows                      from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import RowMenu                            from '../../components/Table/TableComponents/RowMenu'
-import useSetUsersData                    from '../../Plugins/useSetUsersData'
+import React                            from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import FullTable                        from '../../components/Table/TableComponents/FullTable'
+import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
+import useSetUsersData                  from '../../Plugins/useSetUsersData'
 
 const tableColumnNames = [
   {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},
@@ -21,7 +21,7 @@ const TableColumns = () => {
       {tableColumnNames.map((el, i) => (
         <th key={i} style={{ width: el.itemWidth, padding: '12px 6px' }}>{el.itemName}</th>
       ))}
-      <th style={{ width: 100, padding: '12px 6px' }}>Veiksmai</th>
+      <th className='TableColumnWidth100px'>Veiksmai</th>
     </>
   )
 }
@@ -34,10 +34,10 @@ const tableSorter = [
 ]
 
 const ManageUsersPage = () => {
-  const [searchParams, setSearchParams] =   useSearchParams()
-  const page =                              searchParams.get('page')
-  const navigate =                          useNavigate()
-  const {data, count} =                     useSetUsersData()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page                            = searchParams.get('page')
+  const navigate                        = useNavigate()
+  const {data, count}                   = useSetUsersData()
 
   return (
     <>
@@ -67,4 +67,3 @@ const ManageUsersPage = () => {
 }
 
 export default ManageUsersPage
-

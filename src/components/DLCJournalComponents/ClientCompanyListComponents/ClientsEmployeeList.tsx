@@ -13,13 +13,14 @@ type ClientsEmployeeListProps = {
   list:                   EmployeesType[] | undefined
   employeeRemoved:        (id: string) => void
   setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
-  editClientsEmployee: boolean
+  editClientsEmployee:    boolean
 }
 
 const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeListProps) => {
-  const [cookies] =                           useCookies(['access_token'])
-  const [open, setOpen] =                     React.useState(false)
-  const [, setSearchParams] =                 useSearchParams()
+  const [cookies]           = useCookies(['access_token'])
+  const [open, setOpen]     = React.useState(false)
+  const [, setSearchParams] = useSearchParams()
+
   const showDrawer = ( employeeId: string | undefined, companyId: string | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     setOpen(true)
@@ -37,7 +38,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   }
 
   return (
-    <div style={{width: '100%'}}>
+    <div className='EmployeeListContainer'>
       <Divider>Darbuotojai</Divider>
       <List
         dataSource={list}
@@ -63,7 +64,6 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
           companyName={companyName}
           onClose={onClose}
           open={open}
-          setOpen={setOpen}
         />
       }
     </div>

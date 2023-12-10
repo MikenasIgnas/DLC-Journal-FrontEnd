@@ -13,21 +13,21 @@ type CameraToolProps = {
   dutiesId: number | undefined;
 };
 type SpecificPhotoType = {
-  photo: string,
-  photoId: string
+  photo:    string,
+  photoId:  string
 }
 const CameraTool = ({ dutiesId }: CameraToolProps) => {
-  const [numberOfCameras, setNumberOfCameras] =   React.useState(0)
-  const [photo, setPhoto] =                       React.useState<string | null>(null)
-  const [photoId, setPhotoId] =                   React.useState<string | null>(null)
-  const [showImage, setShowImage] =               React.useState<boolean>(false)
-  const [showCamera, setShowCamera] =             React.useState(false)
-  const camera =                                  React.useRef<CameraType>(null)
-  const [isPhotoDeleted, setIsPhotoDeleted] =     React.useState(false)
-  const [hasPhoto, setHasPhoto] =                 React.useState(false)
-  const [hasOldPhoto, setHasOldPhoto] =           React.useState<ChecklistPhotosType>()
-  const latesPhotos =                             useAppSelector((state) => state.fetchedData.latestPhotos)
-  const [cookies] =                               useCookies(['access_token'])
+  const [numberOfCameras, setNumberOfCameras] = React.useState(0)
+  const [photo, setPhoto]                     = React.useState<string | null>(null)
+  const [photoId, setPhotoId]                 = React.useState<string | null>(null)
+  const [showImage, setShowImage]             = React.useState<boolean>(false)
+  const [showCamera, setShowCamera]           = React.useState(false)
+  const camera                                = React.useRef<CameraType>(null)
+  const [isPhotoDeleted, setIsPhotoDeleted]   = React.useState(false)
+  const [hasPhoto, setHasPhoto]               = React.useState(false)
+  const [hasOldPhoto, setHasOldPhoto]         = React.useState<ChecklistPhotosType>()
+  const latesPhotos                           = useAppSelector((state) => state.fetchedData.latestPhotos)
+  const [cookies]                             = useCookies(['access_token'])
 
   React.useEffect(() => {
     const localStoragePhotos = localStorage.getItem('photos')

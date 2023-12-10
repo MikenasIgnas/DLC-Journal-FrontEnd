@@ -10,8 +10,8 @@ type TableFiltersProps = {
 
 const TableFilters = ({tableSorter}: TableFiltersProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const page =                            searchParams.get('page')
-  const limit =                           searchParams.get('limit')
+  const page                            = searchParams.get('page')
+  const limit                           = searchParams.get('limit')
 
   const filterByStatus = async(selectFilter: string) => {
     if (selectFilter) {

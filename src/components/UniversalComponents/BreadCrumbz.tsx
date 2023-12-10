@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
-import React from 'react'
-import { Box, Link } from '@mui/joy'
+import React                        from 'react'
+import { Box, Link }                from '@mui/joy'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Breadcrumbs } from '@mui/joy'
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded'
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded'
+import { Breadcrumbs }              from '@mui/joy'
+import ChevronRightRoundedIcon      from '@mui/icons-material/ChevronRightRounded'
+import HomeRoundedIcon              from '@mui/icons-material/HomeRounded'
 
 const BreadcrumbsLinks = () => {
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location    = useLocation()
+  const navigate    = useNavigate()
   const decodedPath = decodeURIComponent(location.pathname)
-  const pathParts = decodedPath.split('/')
+  const pathParts   = decodedPath.split('/')
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Breadcrumbs size='sm' aria-label='breadcrumbs' separator={false} sx={{ pl: 0 }}>

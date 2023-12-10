@@ -5,7 +5,7 @@ import { SearchProps }                from 'antd/es/input/Search'
 import { get, post }                  from '../../../Plugins/helpers'
 import { useParams }                  from 'react-router-dom'
 import { useCookies }                 from 'react-cookie'
-const { Search } =      Input
+const { Search } =  Input
 
 type ItemListProps = {
     cardTitle:        string;

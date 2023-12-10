@@ -8,20 +8,20 @@ import RowMenu                          from '../../components/Table/TableCompon
 import useSetChecklistHistoryData       from '../../Plugins/useSetChecklistHistoryData'
 
 const ChecklistHistoryPage = () => {
-  const [searchParams, setSearchParams] =     useSearchParams()
-  const page =                                searchParams.get('page')
-  const navigate =                            useNavigate()
-  const {data, count} =                       useSetChecklistHistoryData()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page                            = searchParams.get('page')
+  const navigate                        = useNavigate()
+  const {data, count}                   = useSetChecklistHistoryData()
 
   const TableColumns = () => {
     return(
       <>
-        <th style={{ width: 220, padding: '12px 6px' }}>Darbuotojas</th>
-        <th style={{ width: 220, padding: '12px 6px' }}>Pradėta</th>
-        <th style={{ width: 150, padding: '12px 6px' }}>Baigta</th>
-        <th style={{ width: 120, padding: '12px 6px' }}>Užtrukta</th>
-        <th style={{ width: 100, padding: '12px 6px' }}>Problemos</th>
-        <th style={{ width: 100, padding: '12px 6px' }}>Veiksmai</th>
+        <th className='TableColumnWidth200px'>Darbuotojas</th>
+        <th className='TableColumnWidth200px'>Pradėta</th>
+        <th className='TableColumnWidth150px'>Baigta</th>
+        <th className='TableColumnWidth130px'>Užtrukta</th>
+        <th className='TableColumnWidth100px'>Problemos</th>
+        <th className='TableColumnWidth100px'>Veiksmai</th>
       </>
     )
   }
@@ -32,7 +32,7 @@ const ChecklistHistoryPage = () => {
       filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
     },
   ]
-  console.log(data)
+
   return (
     <>
       <PDFGenerator/>
@@ -59,11 +59,9 @@ const ChecklistHistoryPage = () => {
             }
           />
         ))}
-
       />
     </>
   )
 }
 
 export default ChecklistHistoryPage
-

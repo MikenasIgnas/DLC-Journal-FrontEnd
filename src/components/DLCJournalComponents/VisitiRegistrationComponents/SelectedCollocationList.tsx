@@ -8,17 +8,30 @@ type CollocationsType = {
 
 type SelectedCollocationListProps = {
     selectedCollocations: CollocationsType[] | undefined
-    edit: boolean
+    edit:                 boolean
 }
 
 const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocationListProps) => {
+  const mixedRacks = [
+    {premise: 'C1', racks: ['S2.6']},
+    {premise: 'RA2', racks: ['S7.4']},
+    {premise: 'RA2', racks: ['S8.1']},
+    {premise: 'DC5', racks: ['S1.1']},
+    {premise: 'DC5', racks: ['S2.3']},
+  ]
   return (
-    <Card title={'Kolokacijos'} style={{margin: '10px', backgroundColor: '#f9f9f9'}} >
-      <div style={{display: 'flex', justifyContent: 'space-around', height: '100%'}}>
+    <Card title={'Kolokacijos'} className='SelectedCollocationListContainer' >
+      <div className='SelectedCollocationListBody'>
         {selectedCollocations?.map((el, i) => {
           const objEntries = Object.entries(el)
+          const mix = mixedRacks.some((rack) => rack.premise === objEntries[0][0] && rack.racks.some((value) => objEntries[0][1].includes(value)))
           return(
-            <Card style={{ margin: '10px', width: '100%' }} key={i} title={objEntries[0][0]}>
+            <Card className='SelectedCollocationListItem' key={i} title={
+              <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div>{objEntries[0][0]}</div>
+                {mix ? <div className='ErrorText'>Reikalinga DLC inžinieriaus palyda</div> : null}
+              </div>}
+            >
               <Form.Item initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
                 <Checkbox.Group>
                   {objEntries[0][1].map((option, index) => (

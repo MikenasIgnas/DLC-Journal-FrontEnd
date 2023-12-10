@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React, { useState }                from 'react'
-import { Divider, List }                  from 'antd'
-import { get }                            from '../../../Plugins/helpers'
-import { CompaniesType, ModalStateType }  from '../../../types/globalTypes'
-import { useCookies }                     from 'react-cookie'
-import { useSearchParams }                from 'react-router-dom'
-import SubClientsDrawer                   from './SubClientsDrawer'
-import ListItem                           from './ListItem'
+import React, { useState }                                  from 'react'
+import { Divider, List }                                    from 'antd'
+import { get }                                              from '../../../Plugins/helpers'
+import { CollocationsSites, ColocationDataType, CompaniesType, ModalStateType } from '../../../types/globalTypes'
+import { useCookies }                                       from 'react-cookie'
+import { useSearchParams }                                  from 'react-router-dom'
+import SubClientsDrawer                                     from './SubClientsDrawer'
+import ListItem                                             from './ListItem'
 
 type SubClientStateType = {
   mainCompanyAddedAsSubClient:  boolean,
@@ -14,14 +14,18 @@ type SubClientStateType = {
 }
 
 type SubClientsProps = {
-  parentCompanyId:    string | undefined;
-  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>;
-  modalState:         ModalStateType
-  subClientState:     SubClientStateType
-  setSubClientState:  React.Dispatch<React.SetStateAction<SubClientStateType>>
+  parentCompanyId:          string | undefined;
+  setModalState:            React.Dispatch<React.SetStateAction<ModalStateType>>;
+  modalState:               ModalStateType
+  subClientState:           SubClientStateType
+  setSubClientState:        React.Dispatch<React.SetStateAction<SubClientStateType>>
+  subClientsCollocations :  {
+    J13?: ColocationDataType[];
+    T72?: ColocationDataType[];
+  }
 }
 
-const SubClients = ({setModalState, modalState, parentCompanyId, subClientState, setSubClientState}: SubClientsProps) => {
+const SubClients = ({setModalState, modalState, parentCompanyId, subClientState, setSubClientState, subClientsCollocations}: SubClientsProps) => {
   const [open, setOpen] =                 useState(false)
   const [subClients, setSubClients] =     React.useState<CompaniesType[]>()
   const [cookies] =                       useCookies()
@@ -70,7 +74,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
   }
 
   return (
-    <div style={{width: '100%'}}>
+    <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>
       <List
         dataSource={subClients}
@@ -93,6 +97,7 @@ const SubClients = ({setModalState, modalState, parentCompanyId, subClientState,
         }}/>
       { open &&
       <SubClientsDrawer
+        subClientsCollocations={subClientsCollocations}
         setModalState={setModalState}
         modalState={modalState}
         subClientId={subClientId}

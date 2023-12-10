@@ -1,11 +1,11 @@
-import React                            from 'react'
-import { UploadOutlined }               from '@ant-design/icons'
-import { Button, Upload }               from 'antd'
+import React                                    from 'react'
+import { UploadOutlined }                       from '@ant-design/icons'
+import { Button, Upload }                       from 'antd'
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface'
 
 type CompanyPhotoUploaderProps = {
-  setFileList: React.Dispatch<React.SetStateAction<UploadFile<RcFile>[]>>
-  fileList: UploadFile<RcFile>[]
+  setFileList:  React.Dispatch<React.SetStateAction<UploadFile<RcFile>[]>>
+  fileList:     UploadFile<RcFile>[]
 }
 
 const PhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => {

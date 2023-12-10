@@ -2,27 +2,22 @@
 /* eslint-disable react/jsx-key */
 import React                                          from 'react'
 import { Avatar, Button, Form, List, Modal, Select }  from 'antd'
-import { FormInstance, FormListFieldData }            from 'antd/es/form'
+import { FormListFieldData }                          from 'antd/es/form'
 import SignatureCanvas                                from 'react-signature-canvas'
-import { EmployeesType }                              from '../../../types/globalTypes'
+import { VisitorsType }                               from '../../../types/globalTypes'
 import { CheckOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons'
+import { useSearchParams } from 'react-router-dom'
 
 type VisitorsListItemProps = {
-  item:   FormListFieldData
-  remove: (index: number | number[]) => void
-  form:   FormInstance<any>
+  item:     FormListFieldData
 }
 
-type VisitorsType = {
-  idType:          string;
-  signature:       string;
-  selectedVisitor: EmployeesType
-}
+const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
+  const [visible, setVisible]     = React.useState(false)
+  const signatureCanvasRef        = React.useRef<any>(null)
+  const form                      = Form.useFormInstance()
+  const visitors: VisitorsType[]  = form.getFieldValue('visitors')
 
-const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
-  const [visible, setVisible]   = React.useState(false)
-  const signatureCanvasRef      = React.useRef<any>(null)
-  const vistors: VisitorsType[] = form.getFieldValue('visitors')
   const indetificationOptions   = [
     { value: 'Pasas', label: 'Pasas' },
     { value: 'Tapatybės Kortelė', label: 'Tapatybės Kortelė' },
@@ -32,11 +27,12 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
     if (visible && signatureCanvasRef.current) {
       const signatureDataUrl = signatureCanvasRef.current.toDataURL()
       if (signatureDataUrl) {
-        const updatedVisitors = vistors.map((visitor, index) => {
+        const updatedVisitors = visitors.map((visitor, index) => {
           if (index === item.name) {
             return {
-              ...visitor,
-              signature: signatureDataUrl,
+              idType:          visitor.idType,
+              selectedVisitor: visitor.selectedVisitor,
+              signature:       signatureDataUrl,
             }
           }
           return visitor
@@ -48,13 +44,15 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
       setVisible(false)
     }
   }
+
   const deleteSignature = () => {
     signatureCanvasRef.current.clear()
-    const updatedVisitors = vistors.map((visitor, index) => {
+    const updatedVisitors = visitors.map((visitor, index) => {
       if (index === item.name) {
         return {
-          ...visitor,
-          signature: null,
+          idType:          visitor.idType,
+          selectedVisitor: visitor.selectedVisitor,
+          signature:       undefined,
         }
       }
       return visitor
@@ -63,36 +61,36 @@ const VisitorsListItem = ({ item, remove, form }: VisitorsListItemProps) => {
       visitors: updatedVisitors,
     })
   }
-  console.log(form.getFieldValue('visitors')[item.name].selectedVisitor.permissions)
+
   return (
     <>
       <List.Item
-        style={{flex: '0 0'}}
+        key={item.key}
+        className='VisitorsListItemContainer'
         actions={[
           <Form.Item noStyle name={[item.name, 'idType']}>
-            <Select placeholder='Dokumento tipas' style={{ width: '200px' }} options={indetificationOptions} />
+            <Select placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={indetificationOptions} />
           </Form.Item>,
           <div>
             {form.getFieldValue('visitors')[item.name].signature ? (
-              <div style={{ width: '100px', display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
-                <CheckOutlined style={{ color: '#4de44d', fontSize: '17px' }} />
-                <EyeOutlined style={{ fontSize: '17px' }} onClick={() => setVisible(true)} />
-                <DeleteOutlined onClick={deleteSignature} style={{ color: 'red', fontSize: '17px' }} />
+              <div className='SignatureContainer'>
+                <CheckOutlined className='CheckIcon'/>
+                <EyeOutlined className='PreviewIcon' onClick={() => setVisible(true)} />
+                <DeleteOutlined className='DeleteIcon' onClick={deleteSignature}/>
               </div>
             ) : (
               <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
             )}
           </div>,
-          <Button onClick={() => remove(item.name)} type='link'>Ištrinti</Button>,
         ]}
       >
         <List.Item.Meta
-          style={{flex: '0 0'}}
+          className='VisitorsListItem'
           avatar={<Avatar src={''} />}
           title={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.name} {form.getFieldValue('visitors')[item.name].selectedVisitor.lastName}</div>}
           description={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.occupation}</div>}
         />
-        <div>{form.getFieldValue('visitors')[item.name].selectedVisitor.permissions.map((el:any) => <div>{el}</div>)}</div>
+        <div>{form.getFieldValue('visitors')[item.name].selectedVisitor.permissions.map((el: string, i: number) => <div key={i}>{el}</div>)}</div>
         <Modal
           open={visible}
           onCancel={oncancel}

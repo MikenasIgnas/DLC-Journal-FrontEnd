@@ -9,7 +9,7 @@ type TableHeadProps = {
 }
 
 const TableHead = ({tableColumns}:TableHeadProps) => {
-  const [order, setOrder] =       React.useState<Order>('desc')
+  const [order, setOrder] = React.useState<Order>('desc')
   return (
     <thead>
       <tr>

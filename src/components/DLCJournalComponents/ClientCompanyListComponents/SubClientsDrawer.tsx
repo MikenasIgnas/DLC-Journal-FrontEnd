@@ -1,36 +1,41 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import { Drawer, Row, Col, Divider, Button, Form, Input, List } from 'antd'
-import React                                                    from 'react'
-import { get }                                                  from '../../../Plugins/helpers'
-import { useParams }                                            from 'react-router-dom'
-import { useCookies }                                           from 'react-cookie'
-import { CompaniesType, EmployeesType, ModalStateType }         from '../../../types/globalTypes'
-import EmployeesAdditionModal                                   from './EmployeeAdditionModal'
-import { useForm }                                              from 'antd/es/form/Form'
-import ListItem from './ListItem'
+import { Drawer, Row, Col, Divider, Button, Form, Input, List }             from 'antd'
+import React                                                                from 'react'
+import { get }                                                              from '../../../Plugins/helpers'
+import { useParams }                                                        from 'react-router-dom'
+import { useCookies }                                                       from 'react-cookie'
+import { ColocationDataType, CompaniesType, EmployeesType, ModalStateType } from '../../../types/globalTypes'
+import EmployeesAdditionModal                                               from './EmployeeAdditionModal'
+import { useForm }                                                          from 'antd/es/form/Form'
+import ListItem                                                             from './ListItem'
+import ClientsCollocations                                                  from './ClientsCollocations'
 
 type SubClientsDrawerProps = {
-    onClose:        () => void;
-    open:           boolean;
-    subClientId:    string | null;
-    setModalState:   React.Dispatch<React.SetStateAction<ModalStateType>>;
-    modalState:      ModalStateType;
+    onClose:                () => void;
+    open:                   boolean;
+    subClientId:            string | null;
+    setModalState:          React.Dispatch<React.SetStateAction<ModalStateType>>;
+    modalState:             ModalStateType;
+    subClientsCollocations: {
+      J13?: ColocationDataType[];
+      T72?: ColocationDataType[];
+    }
 }
 interface DescriptionItemProps {
-    title:            string;
-    content:          React.ReactNode;
-    formItemName:     string | undefined;
-    initialValue:     string | undefined;
+    title:        string;
+    content:      React.ReactNode;
+    formItemName: string | undefined;
+    initialValue: string | undefined;
 }
 
-const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState}:SubClientsDrawerProps) => {
-  const [subClient, setSubClient] =                   React.useState<CompaniesType>()
-  const [cookies] =                                   useCookies()
-  const {id} =                                        useParams()
+const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState, subClientsCollocations}:SubClientsDrawerProps) => {
+  const {id}                                        = useParams()
+  const [subClient, setSubClient]                   = React.useState<CompaniesType>()
+  const [cookies]                                   = useCookies()
   const [subClientEmployees, setSubClientEmployees] = React.useState<EmployeesType[]>()
-  const [edit, setEdit] =                             React.useState(false)
-  const [form] =                                      useForm()
+  const [edit, setEdit]                             = React.useState(false)
+  const [form]                                      = useForm()
 
   const DescriptionItem = ({ title, content, formItemName, initialValue }: DescriptionItemProps) => (
     <Row>
@@ -47,7 +52,7 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
     (async () => {
       try{
         const res  = await get(`getSingleSubClient?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
-        const res2 = await get(`getSubClientsEmployees?subClientId=${subClientId}`, cookies.access_token)
+        const res2 = await get(`getSingleCompaniesEmployees/${subClientId}`, cookies.access_token)
         if(!res.error && !res2.error[0]){
           setSubClient(res.data)
           setSubClientEmployees(res2.data)
@@ -56,7 +61,7 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
         console.log(err)
       }
     })()
-  },[modalState.isEmployeeAdditionModalOpen, subClientId, edit, open])
+  },[modalState.openEmployeeAdditionModal, subClientId, edit, open])
 
   const subClientEmployeeRemoved = (id:string) => {
     if(subClientEmployees){
@@ -72,7 +77,6 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
       subClientEmployeeRemoved(employeeId)
     }
   }
-
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
       <Divider >Imonės Profilis</Divider>
@@ -80,10 +84,10 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
           <div>
             <Button onClick={() => setEdit(!edit)} type='link'>Edit</Button>
-            <a href={`/SingleCompanyPage/${subClientId}`}>Pilnas Profilis</a>
+            <a href={`/DLC Žurnalas/Įmonių_Sąrašas/${subClientId}`}>Pilnas Profilis</a>
           </div>
         </div>
-        {modalState.isEmployeeAdditionModalOpen &&
+        {modalState.openEmployeeAdditionModal &&
         <EmployeesAdditionModal
           setModalState={setModalState}
           modalState={modalState}
@@ -116,20 +120,14 @@ const SubClientsDrawer = ({onClose, open, subClientId, setModalState, modalState
           </div>
         </div>
         <Divider >Kolokacijos</Divider>
-        {/* {
-          !edit ?
-            <div style={{display: 'flex'}}>
-              <ColocationDisplay locationName={'J13'} locationData={subClient?.companyInfo.J13}/>
-              <ColocationDisplay locationName={' T72'} locationData={subClient?.companyInfo.T72}/>
-            </div> :
-            <EditableCollocationFormList
-              collocations={collocations}
-              collocationsSites={collocationsSites}
-            />
-        } */}
+        <ClientsCollocations
+          J13locationName={'J13'}
+          J13locationData={subClientsCollocations?.J13}
+          T72locationName={'T72'}
+          T72locationData={subClientsCollocations?.T72}
+        />
       </Form>
       <Divider >Darbuotojai</Divider>
-      <Button style={{display: 'flex', margin: 'auto', marginBottom: '10px'}} onClick={() => setModalState({...modalState, isEmployeeAdditionModalOpen: true})}>Pridėti darbuotoją</Button>
       <List
         dataSource={subClientEmployees}
         bordered

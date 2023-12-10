@@ -7,17 +7,17 @@ import CollapsePannelHeader                     from '../CollapsePannelHeader/Co
 import ChecklistHistoryItemHeader               from './ChecklistHistoryItemHeader'
 
 type ProblemsComponentProps = {
-  routeID:        number | undefined,
-  areasID:        number | undefined,
-  areaName:       string | undefined,
-  itemId:         string | undefined,
+  routeID:  number | undefined,
+  areasID:  number | undefined,
+  areaName: string | undefined,
+  itemId:   string | undefined,
 };
 
 interface HistoryInputValues {
-  [x: number]:    boolean,
-  ticketNr?:      number,
-  notes?:         number,
-  time?:          number,
+  [x: number]:  boolean,
+  ticketNr?:    number,
+  notes?:       number,
+  time?:        number,
 }
 
 interface RadioValues {
@@ -27,14 +27,14 @@ interface RadioValues {
 const FilledHistoryData = ({
   routeID, areasID, areaName, itemId,
 }:ProblemsComponentProps) => {
-  const { Panel } =                     Collapse
-  const defaultPageTheme =              useAppSelector((state) => state.theme.value)
-  const filledData =                    useAppSelector((state)=> state.fetchedData.FilledData)
-  const possibleProblemsTable =         useAppSelector((state) => state.fetchedData.possibleProblems)
-  const todo =                          useAppSelector((state) => state.fetchedData.ToDo)?.filter((el) => el.areasId === areasID)
-  const filteredByRoute =               filledData?.filter((el) => el.routeNumber === routeID).map((el) => el.values)
-  const [edit, setEdit] =               React.useState(false)
-  const [activeKey, setActiveKey] =     React.useState<string[]>()
+  const { Panel }                 = Collapse
+  const defaultPageTheme          = useAppSelector((state) => state.theme.value)
+  const filledData                = useAppSelector((state)=> state.fetchedData.FilledData)
+  const possibleProblemsTable     = useAppSelector((state) => state.fetchedData.possibleProblems)
+  const todo                      = useAppSelector((state) => state.fetchedData.ToDo)?.filter((el) => el.areasId === areasID)
+  const filteredByRoute           = filledData?.filter((el) => el.routeNumber === routeID).map((el) => el.values)
+  const [edit, setEdit]           = React.useState(false)
+  const [activeKey, setActiveKey] = React.useState<string[]>()
 
   return (
     <div style={{marginBottom: '10px'}} >
