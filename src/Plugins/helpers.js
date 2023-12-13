@@ -116,7 +116,45 @@ const deleteTableItem = async(id, setTableItems, tableItems, cookie, url, url2, 
     }
     tableItemRemoved(id)
   }
-
+}
+const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
+  if(startDate && startTime && endDate && endTime){
+    const startDateTime = new Date(`${startDate} ${startTime}`)
+    const endDateTime = new Date(`${endDate} ${endTime}`)
+    const timeDifference = Number(endDateTime) - Number(startDateTime)
+    const hours = Math.floor(timeDifference / (1000 * 60 * 60))
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))
+    const result = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+    return result
+  }else{
+    return
+  }
 }
 
-export { get, post,getCurrentDate, getCurrentTime, clearFilleChecklistdData, validateUser, postImage, uploadPhoto, deleteTableItem }
+const convertUTCtoLocalTime = (utcTimestamp, timezone) => {
+  if(utcTimestamp){
+    const dateObject = new Date(utcTimestamp)
+    const localTimeString = dateObject.toLocaleString('en-US', {
+      timeZone: timezone,
+      hour:     'numeric',
+      minute:   'numeric',
+      hour12:   false,
+    })
+    return localTimeString
+  }
+}
+
+export {
+  get,
+  post,
+  getCurrentDate,
+  getCurrentTime,
+  clearFilleChecklistdData,
+  validateUser,
+  postImage,
+  uploadPhoto,
+  deleteTableItem,
+  calculateTimeDifference,
+  convertUTCtoLocalTime,
+}
+

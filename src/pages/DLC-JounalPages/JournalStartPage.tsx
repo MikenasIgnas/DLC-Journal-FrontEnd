@@ -11,7 +11,7 @@ const DLCJournalStartPage = () => {
         <JournalStartPageCard navigateLink={'/DLC Žurnalas/Įmonių_Sąrašas'} buttonText={'Įmonių sąrašas'}/>
       </div>
       <div className='DisplayFlex'>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10'} buttonText={'Kolokacijos'}/>
+        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Kolokacijos'} buttonText={'Kolokacijos'}/>
         <JournalStartPageCard navigateLink={'/DLC Žurnalas/Statistika'} buttonText={'Statistika'}/>
       </div>
     </div>

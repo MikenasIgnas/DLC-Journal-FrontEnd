@@ -9,7 +9,7 @@ const ChecklistBody = () => {
   const [searchParams]          = useSearchParams()
   const currentPageUrlParam     = Number(searchParams.get('page'))
   const data                    = localStorage.getItem(`data${currentPageUrlParam}`)
-  const duties                  = useAppSelector((state) => state?.fetchedData?.ToDo?.filter((todo) => currentPageUrlParam === todo.areasId))
+  const duties                  = useAppSelector((state) => state?.fetchedData?.toDo?.filter((todo) => currentPageUrlParam === todo.areasId))
   const possibleProblemsTable   = useAppSelector((state) => state.fetchedData.possibleProblems)
   const latestHistoryItemData   = useAppSelector((state) => state.fetchedData.latestHistoryItemData?.filter((item)=>currentPageUrlParam === item.pageID ))
   const defaultTheme            = useAppSelector((state) => state.theme.value)

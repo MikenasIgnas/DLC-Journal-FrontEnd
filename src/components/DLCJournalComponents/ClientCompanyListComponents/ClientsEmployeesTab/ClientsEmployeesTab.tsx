@@ -1,33 +1,33 @@
 /* eslint-disable max-len */
 import React                              from 'react'
-import ClientsEmployeeList                from '../ClientsEmployeeList'
-import { EmployeesType, ModalStateType }  from '../../../../types/globalTypes'
-import EmployeesAdditionModal             from '../EmployeeAdditionModal'
+import ClientsEmployeeList                from './ClientsEmployeeList'
+import { EmployeesType }                  from '../../../../types/globalTypes'
+import EmployeesAdditionModal             from './EmployeeAdditionModal'
 import { Button }                         from 'antd'
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
+import { setOpenEmployeeAdditionModal }   from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type ClientsEmployeesTabProps = {
     companyName:            string | undefined;
     list:                   EmployeesType[] | undefined
-    employeeRemoved:        (id: string) => void
+    employeeRemoved:        (id: number) => void
     setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
     editClientsEmployee:    boolean
-    modalState:             ModalStateType
-    companyId:              string | undefined
-    setModalState:          React.Dispatch<React.SetStateAction<ModalStateType>>
+    companyId:              number | undefined
   }
-const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved, list, setEditClientsEmployee, modalState, companyId, setModalState}: ClientsEmployeesTabProps) => {
+const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved, list, setEditClientsEmployee, companyId }: ClientsEmployeesTabProps) => {
+  const dispatch = useAppDispatch()
+  const openEmployeeAdditionModal = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
   return (
     <div className='ClientsEmployeesTabContainer'>
       <div className='EmployeeAdditionButton'>
-        <Button onClick={() => setModalState({...modalState, openEmployeeAdditionModal: true})}>Pridėti darbuotoją</Button>
+        <Button onClick={() => dispatch(setOpenEmployeeAdditionModal(true))}>Pridėti darbuotoją</Button>
       </div>
-      {modalState.openEmployeeAdditionModal &&
+      {openEmployeeAdditionModal &&
         <EmployeesAdditionModal
           companyName={companyName}
-          companyId={companyId as string | null}
+          companyId={companyId as number | null}
           urlPath={'addEmployee'}
-          setModalState={setModalState}
-          modalState={modalState}
         />
       }
       <ClientsEmployeeList

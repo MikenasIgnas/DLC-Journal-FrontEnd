@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                                                                                 from 'react'
 import { DatePicker}                                                                         from 'antd'
-import { Bar, BarChart, Brush, CartesianGrid, Legend, ReferenceLine, Tooltip, XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, Brush, CartesianGrid, Legend, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { VisitsType }                                                                        from '../../../types/globalTypes'
 import useGetChartDates                                                                      from '../../../Plugins/useGetChartDates'
 const { RangePicker } = DatePicker
@@ -22,30 +22,37 @@ const VisitsBarChart = ({visits}: VisitsBarChartProps) => {
     const visitCounter = visits?.filter((visit) => visit.endDate === formatDateString(allDates[i])).length || 0
     data.push({ name: formatDateString(allDates[i]), Vizitai: visitCounter })
   }
+  console.log(data)
   return (
-    <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <RangePicker presets={rangePresets} onChange={onRangeChange}/>
-      <BarChart
-        width={1500}
-        height={500}
-        data={data}
-        margin={{
-          top:    5,
-          right:  30,
-          left:   20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray='3 3' />
-        <XAxis dataKey='name' />
-        <YAxis tickCount={3} />
-        <Tooltip />
-        <Legend verticalAlign='top' wrapperStyle={{ lineHeight: '40px' }} />
-        <ReferenceLine y={0} stroke='#000' />
-        <Brush dataKey='name' height={30} stroke='#8884d8' />
-        <Bar dataKey='Vizitai' fill='#8884d8' />
-      </BarChart>
-    </div>
+    <ResponsiveContainer width='100%' height='100%' minWidth={500} minHeight={500}>
+      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        <RangePicker
+          onChange={onRangeChange}
+          presets={rangePresets}
+        />
+        <BarChart
+          width={1500}
+          height={500}
+          data={data}
+          margin={{
+            top:    5,
+            right:  30,
+            left:   20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray='3 3' />
+          <XAxis dataKey='name' />
+          <YAxis tickCount={3} />
+          <Tooltip />
+          <Legend verticalAlign='top' wrapperStyle={{ lineHeight: '40px' }} />
+          <ReferenceLine y={0} stroke='#000' />
+          <Brush dataKey='name' height={30} stroke='#8884d8' />
+          <Bar dataKey='Vizitai' fill='#8884d8' />
+        </BarChart>
+      </div>
+    </ResponsiveContainer>
+
   )
 }
 

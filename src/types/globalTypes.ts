@@ -102,8 +102,8 @@ export type ColocationDataType = {
 
 export type CompaniesType = {
   _id:                    string;
-  id:                     string;
-  parentCompanyId?:       string;
+  id:                     number;
+  parentCompanyId?:       number;
   wasMainClient?:         boolean;
   companyInfo: {
       J13?:               ColocationDataType[];
@@ -149,11 +149,11 @@ export type CompaniesEmlployeesType = {
 
 export type EmployeesType = {
   _id:            string;
-  companyId:      string | undefined;
+  companyId:      number | undefined;
   name:           string;
   lastName:       string;
   occupation:     string;
-  employeeId:     string | undefined;
+  employeeId:     number | undefined;
   permissions:    string[];
   employeePhoto?: string;
   email?:         string;
@@ -169,35 +169,35 @@ export type CollocationType = {
 export type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
 
 export type VisitorsType = {
-  idType?:           string | undefined;
-  signature?:       string | undefined;
-  selectedVisitor:  EmployeesType;
+  idType?:            string | null | undefined;
+  signature?:         string | undefined;
+  selectedVisitor:    EmployeesType;
 };
 
 export type VisitsType = {
-    id:               string;
-    visitPurpose:     string[];
-    visitStatus:      VisitStatusType;
-    visitors:         VisitorsType[];
-    dlcEmployees:     string;
-    visitAddress:     string;
-    visitingClient:   string;
-    clientsGuests:    string[];
-    carPlates:        string[];
-    signature:        string;
-    visitCollocation: CollocationType;
-    visitorsIdType:   string;
-    creationDate:     string;
-    creationTime:     string;
-    startDate:        string;
-    startTime:        string;
-    endDate:          string;
-    endTime:          string;
-    companyId:        number;
+  id:               number;
+  visitPurpose:     string[];
+  visitStatus:      VisitStatusType;
+  visitors:         VisitorsType[];
+  dlcEmployees:     string;
+  visitAddress:     string;
+  visitingClient:   string;
+  clientsGuests:    string[];
+  carPlates:        string[];
+  signature:        string;
+  visitCollocation: CollocationType
+  visitorsIdType:   string;
+  creationDate:     string;
+  creationTime:     string;
+  startDate:        string;
+  startTime:        string;
+  endDate:          string;
+  endTime:          string;
+  companyId:        number;
 }
 
 export type CollocationsType = {
-  id: string;
+  id: number;
   premises: {
     premiseName: string;
     racks: string[]
@@ -228,7 +228,7 @@ export type FilterOptions = {
 }[]
 export type SubClientsCollocationsType = {
   site: string;
-  id: string;
+  id: number;
   premises: {
       premiseName: string;
       racks: string[];

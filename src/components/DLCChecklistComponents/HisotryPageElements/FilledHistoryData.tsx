@@ -29,9 +29,9 @@ const FilledHistoryData = ({
 }:ProblemsComponentProps) => {
   const { Panel }                 = Collapse
   const defaultPageTheme          = useAppSelector((state) => state.theme.value)
-  const filledData                = useAppSelector((state)=> state.fetchedData.FilledData)
+  const filledData                = useAppSelector((state)=> state.fetchedData.filledData)
   const possibleProblemsTable     = useAppSelector((state) => state.fetchedData.possibleProblems)
-  const todo                      = useAppSelector((state) => state.fetchedData.ToDo)?.filter((el) => el.areasId === areasID)
+  const todo                      = useAppSelector((state) => state.fetchedData.toDo)?.filter((el) => el.areasId === areasID)
   const filteredByRoute           = filledData?.filter((el) => el.routeNumber === routeID).map((el) => el.values)
   const [edit, setEdit]           = React.useState(false)
   const [activeKey, setActiveKey] = React.useState<string[]>()

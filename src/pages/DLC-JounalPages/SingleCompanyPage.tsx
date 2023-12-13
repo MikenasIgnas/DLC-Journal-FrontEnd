@@ -1,29 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import React                                                                  from 'react'
-import { get, post, uploadPhoto }                                             from '../../Plugins/helpers'
-import { useCookies }                                                         from 'react-cookie'
-import { useParams }                                                          from 'react-router-dom'
-import { Card, Form, Tabs, TabsProps, UploadFile }                            from 'antd'
-import { CollocationsSites, CollocationsType, CompaniesType, ModalStateType } from '../../types/globalTypes'
-import { useForm }                                                            from 'antd/es/form/Form'
-import ClientsCollocationsTab                                                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
-import ClientsEmployeesTab                                                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
-import SubClientsTab                                                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
-import SingleCompanyTitle                                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import React                                                   from 'react'
+import { get, post, uploadPhoto }                              from '../../Plugins/helpers'
+import { useCookies }                                          from 'react-cookie'
+import { useParams }                                           from 'react-router-dom'
+import { Button, Card, Form, Tabs, TabsProps, UploadFile }     from 'antd'
+import { CollocationsSites, CollocationsType, CompaniesType }  from '../../types/globalTypes'
+import { useForm }                                             from 'antd/es/form/Form'
+import ClientsCollocationsTab                                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
+import ClientsEmployeesTab                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
+import SubClientsTab                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
+import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import { useAppSelector } from '../../store/hooks'
 
-type SubClientStateType = {
-  mainCompanyAddedAsSubClient:  boolean,
-  subClientChangedToMainClient: boolean,
-}
 
 type EmployeesType = {
   _id:         string;
-  companyId:   string;
+  companyId:   number;
   name:        string;
   lastName:    string;
   occupation:  string;
-  employeeId:  string;
+  employeeId:  number;
   permissions: string[];
 }
 
@@ -50,23 +47,15 @@ const SingleCompanyPage = () => {
   const [fileList, setFileList]                       = React.useState<UploadFile[]>([])
   const [mainCompanies, setMainCompanies]             = React.useState<CompaniesType[]>([])
   const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
-  const [subClientState, setSubClientState]           = React.useState<SubClientStateType>({
-    mainCompanyAddedAsSubClient:  false,
-    subClientChangedToMainClient: false,
-  })
-  const [modalState, setModalState]                   = React.useState<ModalStateType>({
-    editClientsEmployee:       false,
-    edit:                      false,
-    openEmployeeAdditionModal: false,
-    isCompanyAdded:            false,
-    isModalOpen:               false,
-  })
-
+  const [edit, setEdit]                               = React.useState(false)
+  const openEmployeeAdditionModal                     = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
+  const setSubClientAdded                         = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
+  const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   React.useEffect(() => {
     (async () => {
       try{
-        const singleCompany     = await get(`SingleCompanyPage/${id}`, cookies.access_token)
-        const companyEmployees  = await get(`getSingleCompaniesEmployees/${id}`, cookies.access_token)
+        const singleCompany     = await get(`getSingleCompany?companyId=${id}`, cookies.access_token)
+        const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
         const allCollocations   = await get('getCollocations', cookies.access_token)
         const allMainCompanies  = await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
         setCollocations(allCollocations.data[0].colocations)
@@ -77,18 +66,13 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[modalState.edit,
-    editClientsEmployee,
-    modalState.isModalOpen,
-    subClientState.mainCompanyAddedAsSubClient,
-    subClientState.subClientChangedToMainClient,
-    modalState.openEmployeeAdditionModal,
-    cookies.access_token,
-  ])
+  },[edit, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, cookies.access_token])
+
+
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
-  const employeeRemoved = (id:string) => {
+  const employeeRemoved = (id: number) => {
     let newEmployeesList = [...employeesList]
     newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
     setEmployeesList(newEmployeesList)
@@ -108,6 +92,7 @@ const SingleCompanyPage = () => {
         }
       }
     }
+
     if (obj.T72) {
       filteredObj.T72 = []
       for (const key in obj.T72) {
@@ -124,11 +109,8 @@ const SingleCompanyPage = () => {
   }
 
   const saveChanges = async(values:CompanyFormType) => {
-    setModalState({
-      ...modalState,
-      edit: !modalState.edit,
-    })
-    if(modalState.edit){
+    setEdit(!edit)
+    if(edit){
       const filteredCompanyData = filterCompanyData(values)
       filteredCompanyData.companyName = values.companyName
       await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
@@ -148,19 +130,13 @@ const SingleCompanyPage = () => {
         companyName={company?.companyInfo?.companyName}
         list={employeesList}
         employeeRemoved={employeeRemoved}
-        modalState={modalState}
         companyId={company?.id}
-        setModalState={setModalState}
       />,
     },
     {
       key:      '2',
       label:    'Sub klientai',
       children: <SubClientsTab
-        subClientState={subClientState}
-        setSubClientState={setSubClientState}
-        setModalState={setModalState}
-        modalState={modalState}
         parentCompanyId={id}
         collocationsSites={collocationsSites}
         mainCompanies={mainCompanies}
@@ -171,7 +147,7 @@ const SingleCompanyPage = () => {
       key:      '3',
       label:    'Kliento Kolokacijos',
       children: <ClientsCollocationsTab
-        edit={modalState}
+        edit={edit}
         J13locationName={'J13'}
         T72locationName={'T72'}
         J13locationData={J13}
@@ -191,10 +167,10 @@ const SingleCompanyPage = () => {
           <SingleCompanyTitle
             companyTitle={company?.companyInfo?.companyName.toUpperCase()}
             companyDescription={company?.companyInfo.companyDescription}
-            edit={modalState.edit}
+            edit={edit}
           />}
       >
-        <Tabs defaultActiveKey='1' items={items}/>
+        <Tabs tabBarExtraContent={<Button htmlType='submit' type='link'>{!edit ? 'Edit' : 'Save'}</Button>} defaultActiveKey='1' items={items}/>
       </Card>
     </Form>
   )

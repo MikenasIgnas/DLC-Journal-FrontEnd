@@ -42,7 +42,7 @@ const ChecklistRoutesPage = () => {
   const currentPageUrlParam             = searchParams.get('page')
   const currentRouteUrlParam            = searchParams.get('route')
   const currentProgressUrlParam         = searchParams.get('progress')
-  const areas                           = useAppSelector((state) => state.fetchedData.Areas)
+  const areas                           = useAppSelector((state) => state.fetchedData.areas)
   const userName                        = useAppSelector((state) => state.auth.username)
   const defaultTheme                    = useAppSelector((state)=> state.theme.value)
   const latestPhotos                    = useAppSelector((state)=> state.fetchedData.latestPhotos)

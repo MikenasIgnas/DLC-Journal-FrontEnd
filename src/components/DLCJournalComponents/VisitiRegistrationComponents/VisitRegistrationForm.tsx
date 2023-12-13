@@ -4,7 +4,7 @@
 import React                                                  from 'react'
 import { get }                                                from '../../../Plugins/helpers'
 import { useCookies }                                         from 'react-cookie'
-import { Form, FormInstance, Select }                         from 'antd'
+import { Button, Form, FormInstance, Select }                 from 'antd'
 import { useSearchParams }                                    from 'react-router-dom'
 import { CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                              from './VisitRegistrationSelect'
@@ -14,6 +14,7 @@ import ItemList                                               from './ItemList'
 import VisitPurposeList                                       from './VisitPurposeList'
 import VisitorAdditionList                                    from './VisitorAdditionList'
 import filterPermisions                                       from './filterPermisions'
+import {addresses}                                            from './StaticSelectOptions'
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
@@ -50,7 +51,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
     (async () => {
       const companies     = await get('getCompanies', cookies.access_token)
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
-      const singleCompany = await get(`SingleCompanyPage/${companyId}`, cookies.access_token)
+      const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
       }else{
@@ -59,26 +60,15 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       setDlcEmployees(dlcEmployees.data)
       setAllCompanies(companies.data)
     })()
-  }, [companyId, selectedVisitors, addressId])
+  }, [companyId, addressId, selectedVisitors])
 
   const companyNames = allCompanies?.map((el)=> {
     return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
   })
-
   const DLCEmployees = dlcEmployees?.map((el) => {
     return {...el, value: el.username, label: el.username}
   })
 
-  const addresses = [
-    {
-      value: 'J13',
-      label: 'J13',
-    },
-    {
-      value: 'T72',
-      label: 'T72',
-    },
-  ]
 
   const selectCompany = async(_: string, option: CompaniesType) => {
     setSearchParams(`companyId=${option.id}`)
@@ -102,8 +92,18 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
   const removeVisitor = (id: number) => {
     setSelectedVisitors((prev) => prev.filter((el) => el !== id))
   }
+  const resetForm = () => {
+    setSelectedVisitors([])
+    setClientsEmployees([])
+    setClientsGuests([])
+    setCarPlates([])
+    form.resetFields()
+    localStorage.removeItem('visitPurpose')
+  }
+
   return (
     <div>
+      <Button onClick={resetForm}> Išvalyti</Button>
       <div className='VisitRegistrationFormContainer'>
         <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
           <Select
@@ -137,7 +137,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
         </>
         }
       </div>
-      {companyId && addressId &&
+      {clientsEmployees && clientsEmployees?.length > 0 &&
       <VisitorAdditionList
         clientsEmployees={clientsEmployees}
         searchEmployee={searchEmployee}
@@ -147,7 +147,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       />
       }
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && <VisitPurposeList/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations}/>}
       {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&

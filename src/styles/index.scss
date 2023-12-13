@@ -128,9 +128,10 @@
 .SubClientAdditionContainer{
   display: flex;
   justify-content: space-evenly;
+  width: 100%;
   .SubClientAdditionBody{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     width: 50%;
     .SubClientAdditionSelect{
       width: 100%;

@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import React from 'react'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, Brush } from 'recharts'
-import { VisitsType } from '../../../types/globalTypes'
-import useGetChartDates from '../../../Plugins/useGetChartDates'
-import { DatePicker } from 'antd'
+import React                                                                                              from 'react'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Brush, ResponsiveContainer } from 'recharts'
+import { VisitsType }                                                                                     from '../../../types/globalTypes'
+import useGetChartDates                                                                                   from '../../../Plugins/useGetChartDates'
+import { DatePicker }                                                                                     from 'antd'
 
 const { RangePicker } = DatePicker
 
@@ -47,38 +47,40 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
   )
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-      <RangePicker
-        onChange={onRangeChange}
-        presets={rangePresets}
-      />
-      <BarChart
-        width={1500}
-        height={500}
-        data={data}
-        margin={{
-          top:    20,
-          right:  30,
-          left:   20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray='3 3' />
-        <XAxis dataKey='name' />
-        <YAxis tickCount={3}/>
-        <ReferenceLine y={0} stroke='#000' />
-        <Brush dataKey='name' height={30} stroke='#8884d8' />
-        <Tooltip />
-        {uniqueCompanies.map((companyName, index) => (
-          <Bar
-            key={companyName}
-            dataKey={companyName}
-            stackId='a'
-            fill={colorPalette[index % colorPalette.length]}
-          />
-        ))}
-      </BarChart>
-    </div>
+    <ResponsiveContainer width='100%' height='100%' minWidth={500} minHeight={500}>
+      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+        <RangePicker
+          onChange={onRangeChange}
+          presets={rangePresets}
+        />
+        <BarChart
+          width={1500}
+          height={500}
+          data={data}
+          margin={{
+            top:    20,
+            right:  30,
+            left:   20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray='3 3' />
+          <XAxis dataKey='name' />
+          <YAxis tickCount={3}/>
+          <ReferenceLine y={0} stroke='#000' />
+          <Brush dataKey='name' height={30} stroke='#8884d8' />
+          <Tooltip />
+          {uniqueCompanies.map((companyName, index) => (
+            <Bar
+              key={companyName}
+              dataKey={companyName}
+              stackId='a'
+              fill={colorPalette[index % colorPalette.length]}
+            />
+          ))}
+        </BarChart>
+      </div>
+    </ResponsiveContainer>
   )
 }
 

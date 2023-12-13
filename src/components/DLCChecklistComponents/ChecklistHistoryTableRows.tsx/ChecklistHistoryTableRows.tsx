@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import React                from 'react'
-import { Tag, Typography }  from 'antd'
-import Box                  from '@mui/joy/Box'
-import HighlightText        from '../../UniversalComponents/HighlightText'
-import { useSearchParams }  from 'react-router-dom'
+import React                        from 'react'
+import { Tag, Typography }          from 'antd'
+import Box                          from '@mui/joy/Box'
+import HighlightText                from '../../UniversalComponents/HighlightText'
+import { useSearchParams }          from 'react-router-dom'
+import { calculateTimeDifference }  from '../../../Plugins/helpers'
 
 type UersTableProps = {
   id:         number;
@@ -26,14 +27,11 @@ const ChecklistHistoryTableRows = ({
   problems,
   rowMenu,
 }: UersTableProps) => {
-  const [searchParams]            = useSearchParams()
-  const [startHour, startMinute]  = startTime ? startTime.split(':').map(Number) : [0, 0]
-  const [endHour, endMinute]      = endTime ? endTime.split(':').map(Number) : [0, 0]
-  const difference                = (endHour * 60 + endMinute) - (startHour * 60 + startMinute)
-  const differenceString          = `${Math.floor(difference / 60)}:${(difference % 60).toString().padStart(2, '0')}`
-  const filter                    = searchParams.get('filter')
-  const fullStartTime             = `${startDate} ${startTime}`
-  const fullEndTime               = `${endDate} ${endTime}`
+  const [searchParams]  = useSearchParams()
+  const filter          = searchParams.get('filter')
+  const fullStartTime   = `${startDate} ${startTime}`
+  const fullEndTime     = `${endDate} ${endTime}`
+  const timeDifferencer = calculateTimeDifference(startDate, startTime, endDate, endTime)
 
   return (
     <tr key={id}>
@@ -50,7 +48,7 @@ const ChecklistHistoryTableRows = ({
         <Typography>{HighlightText(filter, fullEndTime)}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, differenceString)}</Typography>
+        <Typography>{HighlightText(filter, timeDifferencer)}</Typography>
       </td>
       <td>
         <Tag color={problems > 0 ? 'error' : 'success'}>{HighlightText(filter, String(problems))}</Tag>

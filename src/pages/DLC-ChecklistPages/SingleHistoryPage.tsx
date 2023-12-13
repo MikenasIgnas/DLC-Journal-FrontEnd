@@ -19,7 +19,7 @@ const SingleHistoryPage = () => {
   const [loading, setLoading]           = React.useState(false)
   const [isUpdated, setIsUpdated]       = React.useState(false)
   const [filledUser, setFilledUser]     = React.useState()
-  const routes                          = useAppSelector((state) => state.fetchedData.Routes)
+  const routes                          = useAppSelector((state) => state.fetchedData.routes)
   const defaultPageTheme                = useAppSelector((state) => state.theme.value)
   const [searchParams, setSearchParams] = useSearchParams()
   const tabUrlParam                     = searchParams.get('tab')

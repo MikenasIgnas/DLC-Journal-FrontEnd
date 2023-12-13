@@ -6,18 +6,18 @@ import SignatureCanvas                                      from 'react-signatur
 import { useCookies }                                       from 'react-cookie'
 import { get, post }                                        from '../../../Plugins/helpers'
 import { useParams }                                        from 'react-router'
+import { identificationOptions }                            from './StaticSelectOptions'
 
 type RegisteredVisitorsListItemProps = {
-  signature:              string | null | undefined;
+  signature:              string | null | undefined
   edit:                   boolean;
-  idType:                 string | null;
-  identificationOptions:  {value:string, label: string}[];
-  employeeId:             string | undefined;
+  idType:                 string | null | undefined;
+  employeeId:             number | undefined;
   name:                   string;
   lastName:               string;
   occupation:             string;
   permissions:            string[]
-  deleteVisitor:          (employeeId: string | undefined) => void
+  deleteVisitor:          (employeeId: number | undefined) => void
   index:                  number
 }
 
@@ -25,7 +25,6 @@ const RegisteredVisitorsListItem = ({
   signature,
   edit,
   idType,
-  identificationOptions,
   employeeId,
   name,
   lastName,

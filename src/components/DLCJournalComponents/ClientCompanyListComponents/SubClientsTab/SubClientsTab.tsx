@@ -1,36 +1,31 @@
 /* eslint-disable max-len */
-import React                                                                            from 'react'
-import SubClients                                                                       from '../SubClients'
-import { CollocationsSites, CompaniesType, ModalStateType, SubClientsCollocationsType } from '../../../../types/globalTypes'
-import CompanyAdditionModal                                                             from '../CompanyAdditionComponent/CompanyAdditionModal'
-import SubClientAddition                                                                from '../SubClientAddition'
-import { post }                                                                         from '../../../../Plugins/helpers'
-import { useCookies }                                                                   from 'react-cookie'
-
-type SubClientStateType = {
-  mainCompanyAddedAsSubClient:  boolean,
-  subClientChangedToMainClient: boolean,
-}
+import React                                                            from 'react'
+import { CollocationsSites, CompaniesType, SubClientsCollocationsType } from '../../../../types/globalTypes'
+import { post }                                                         from '../../../../Plugins/helpers'
+import { useCookies }                                                   from 'react-cookie'
+import { useAppDispatch, useAppSelector }                               from '../../../../store/hooks'
+import SubClientAdditionModal                                           from '../CompanyAdditionComponent/SubClientAdditionModal'
+import SubClientAddition                                                from './SubClientAddition'
+import SubClients                                                       from './SubClients'
+import { setIsSubClientAdded }                                          from '../../../../auth/AddSubClientReducer/addSubClientReducer'
 
 type SubClientsTabProps = {
   parentCompanyId:    string | undefined;
-  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>;
-  modalState:         ModalStateType
-  subClientState:     SubClientStateType
-  setSubClientState:  React.Dispatch<React.SetStateAction<SubClientStateType>>
   collocationsSites:  CollocationsSites
   mainCompanies:      CompaniesType[]
   setMainCompanies:   React.Dispatch<React.SetStateAction<CompaniesType[]>>
 }
 
-const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClientState, subClientState, collocationsSites, mainCompanies, setMainCompanies}: SubClientsTabProps) => {
-  const [cookies]                                         = useCookies(['access_token'])
-  const [selectedValue, setSelectedValue]                 = React.useState(null)
+const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setMainCompanies}: SubClientsTabProps) => {
+  const [cookies]                                           = useCookies(['access_token'])
+  const [selectedValue, setSelectedValue]                   = React.useState(null)
   const [subClientsCollocations, setSubClientsCollocations] = React.useState<SubClientsCollocationsType>([])
+  const openSubClientAdditionModal                          = useAppSelector((state) => state.modals.openSubClientAdditionModal)
+  const dispatch                                            = useAppDispatch()
+
   React.useEffect(() => {
     const newSubClientsCollocations = []
     let newIndex = 1
-
     for (const site in collocationsSites) {
       const premisesData = collocationsSites[site]
       const premisesArray = premisesData?.map(premiseData => {
@@ -44,7 +39,7 @@ const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClient
 
       newSubClientsCollocations.push({
         site,
-        id:       `${newIndex++}`,
+        id:       newIndex++,
         premises: premisesArray,
       })
     }
@@ -58,43 +53,36 @@ const SubClientsTab = ({modalState, parentCompanyId, setModalState, setSubClient
     }
   })
 
-  const handleChange = async(value: string) => {
+  const handleChange = async(value: number) => {
     const selectedMainCompany   = mainCompanies?.filter((el) => el.id === value)
-    const remainingCompanies    = mainCompanies?.filter((el) => el.id !== value)
-    if(remainingCompanies){
-      setMainCompanies(remainingCompanies)
-      const res =await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${parentCompanyId}`, selectedMainCompany?.[0].companyInfo, cookies.access_token)
-      if(!res.error){
-        setSubClientState({...subClientState, mainCompanyAddedAsSubClient: !subClientState.mainCompanyAddedAsSubClient})
-      }
+    if(selectedMainCompany){
+      setMainCompanies(selectedMainCompany)
+      await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${parentCompanyId}`, selectedMainCompany?.[0].companyInfo, cookies.access_token)
+      dispatch(setIsSubClientAdded(true))
+
     }
+  }
+  const onSelect = () => {
+    setSelectedValue(null)
   }
 
   return (
     <div className='SubClientsTabContainer'>
-      {modalState.isModalOpen &&
-        <CompanyAdditionModal
-          setModalState={setModalState}
-          modalState={modalState}
+      {openSubClientAdditionModal &&
+        <SubClientAdditionModal
           collocations={subClientsCollocations}
           additionModalTitle={'Pridėkite sub klientą'}
           postUrl={`addSubClient?parentCompanyId=${parentCompanyId}`}
         />
       }
       <SubClientAddition
-        setModalState={setModalState}
-        modalState={modalState}
         selectedValue={selectedValue}
         handleChange={handleChange}
         mainCompaniesOptions={mainCompaniesOptions}
-        handleSelect={()=> setSelectedValue(null)}
+        handleSelect={onSelect}
       />
       <SubClients
         subClientsCollocations={collocationsSites}
-        subClientState={subClientState}
-        setSubClientState={setSubClientState}
-        setModalState={setModalState}
-        modalState={modalState}
         parentCompanyId={parentCompanyId}
       />
     </div>

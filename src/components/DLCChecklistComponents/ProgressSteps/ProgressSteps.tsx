@@ -10,8 +10,8 @@ const ProgressSteps = () => {
   const defaultPageTheme        = useAppSelector((state) => state.theme.value)
   const routesNumber            = useAppSelector((state) => state.route.routeNumber)
   const totalRoomsInArea        = useAppSelector((state) => state.route.totalRoomsInArea[state.route.routeNumber - 1])
-  const areas                   = useAppSelector((state) => state.fetchedData.Areas)
-  const routes                  = useAppSelector((state) => state.fetchedData.Routes) as RouteType[]
+  const areas                   = useAppSelector((state) => state.fetchedData.areas)
+  const routes                  = useAppSelector((state) => state.fetchedData.routes) as RouteType[]
   const currentProgressUrlParam = Number(searchParams.get('progress'))
   const currentRoute            = Number(searchParams.get('route'))
   const currentPageUrlParam     = Number(searchParams.get('page'))

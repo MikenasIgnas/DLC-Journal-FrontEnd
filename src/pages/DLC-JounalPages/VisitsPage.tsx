@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem }              from '../../Plugins/helpers'
+import { deleteTableItem, get }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
@@ -20,6 +20,7 @@ const TableColumns = () => {
       <th className='TableColumnWidth70px'>Pradžios Laikas</th>
       <th className='TableColumnWidth100px'>Pabaigos Data</th>
       <th className='TableColumnWidth70px'>Pabaigos Laikas</th>
+      <th className='TableColumnWidth70px'>Užtrukta</th>
       <th className='TableColumnWidth150px'>Lydintysis</th>
       <th className='TableColumnWidth70px'>Veiksmai</th>
     </>
@@ -48,6 +49,11 @@ const VisitPage = () => {
   const navigate                        = useNavigate()
   const {data, count, setData}          = useSetVisitsData()
 
+  const getSingleVisitPDF = async(visitId: number) => {
+    const singleVisit   = await get(`getSingleVisit?visitId=${visitId}`, cookies.access_token)
+    console.log(singleVisit.data)
+  }
+
   return (
     <FullTable
       tableSorter={tableSorter}
@@ -70,9 +76,13 @@ const VisitPage = () => {
           visitEndDate={el.endDate}
           visitEndTime={el.endTime}
           rowMenu={<RowMenu
-            navigate={() => navigate(`${el.id}`)}
-            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')} />} />
-      ))} />
+            navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
+            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
+            getSingleVisitPDF={() => getSingleVisitPDF(el.id)}
+          />}
+        />
+      ))}
+    />
   )
 }
 

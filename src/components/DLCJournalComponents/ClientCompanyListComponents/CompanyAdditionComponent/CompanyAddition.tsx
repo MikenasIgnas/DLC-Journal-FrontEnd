@@ -3,30 +3,30 @@ import React                                from 'react'
 import { AppstoreAddOutlined }              from '@ant-design/icons'
 import { Button}                            from 'antd'
 import CompanyAdditionModal                 from './CompanyAdditionModal'
-import { CollocationsType, ModalStateType } from '../../../../types/globalTypes'
+import { CollocationsType }                 from '../../../../types/globalTypes'
+import { useAppDispatch, useAppSelector }   from '../../../../store/hooks'
+import { setOpenCompaniesAdditionModal }    from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type CompanyAdditionProps = {
   postUrl:            string;
   additionModalTitle: string;
-  setModalState:      React.Dispatch<React.SetStateAction<ModalStateType>>
-  modalState:         ModalStateType
   collocations:       CollocationsType[] | undefined
 }
-const CompanyAddition = ({postUrl, additionModalTitle, collocations, setModalState, modalState}:CompanyAdditionProps) => {
+const CompanyAddition = ({postUrl, additionModalTitle, collocations}:CompanyAdditionProps) => {
+  const dispatch                    = useAppDispatch()
+  const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
   return (
     <div>
       <Button
         style={{display: 'flex', margin: 'auto', marginTop: '10px'}}
         icon={<AppstoreAddOutlined rev='' />}
-        onClick={()=> setModalState({...modalState, isModalOpen: true})}>
+        onClick={()=> dispatch(setOpenCompaniesAdditionModal(true))}>
           Pridėti įmonę
       </Button>
-      {modalState.isModalOpen && <CompanyAdditionModal
+      {openCompaniesAdditionModal && <CompanyAdditionModal
         postUrl={postUrl}
         additionModalTitle={additionModalTitle}
         collocations={collocations}
-        setModalState={setModalState}
-        modalState={modalState}
       />
       }
     </div>

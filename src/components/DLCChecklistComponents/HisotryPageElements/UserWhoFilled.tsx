@@ -6,26 +6,25 @@ import { Link }                 from 'react-router-dom'
 import { useAppSelector }       from '../../../store/hooks'
 import { useCookies }           from 'react-cookie'
 import {jwtDecode}              from 'jwt-decode'
+import { calculateTimeDifference } from '../../../Plugins/helpers'
 
 type UserWhoFilledProps = {
     item: RouteType | undefined,
 }
 
 const UserWhoFilled = ({item}:UserWhoFilledProps) => {
-  const [differencer, setDifference]  = React.useState('')
+  const [differencer, setDifference]  = React.useState<string | undefined>('')
   const problemCount                  = useAppSelector((state)=> state.fetchedData.problemCount)
   const defaultPageTheme              = useAppSelector((state) => state.theme.value)
   const [cookies]                     = useCookies(['access_token'])
   const token                         = cookies.access_token
   const decodedToken:TokenType        = jwtDecode(token)
   const isMobile                      = window.innerWidth < 650
+
   React.useEffect(() => {
     if(item){
-      const [startHour, startMinute]  = item.startTime.split(':').map(Number)
-      const [endHour, endMinute]      = item.endTime.split(':').map(Number)
-      const difference                = (endHour * 60 + endMinute) - (startHour * 60 + startMinute)
-      const differenceString          = `${Math.floor(difference / 60)}:${(difference % 60).toString().padStart(2, '0')}`
-      setDifference(differenceString)
+      const timeDifferencer = calculateTimeDifference(item.startDate, item.startTime, item.endDate, item.endTime)
+      setDifference(timeDifferencer)
     }
   }, [problemCount])
 

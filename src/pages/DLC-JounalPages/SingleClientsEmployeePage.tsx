@@ -8,7 +8,7 @@ import { Avatar, Button, Card, Checkbox, Divider, Form, Input, UploadFile } from
 import { EmployeesType }                                                    from '../../types/globalTypes'
 import { useForm }                                                          from 'antd/es/form/Form'
 import PhotoUploader                                                        from '../../components/UniversalComponents/PhotoUploader/PhotoUploader'
-import ClientsEmployeesDataDisplay                                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesDisplay'
+import ClientsEmployeesDataDisplay                                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsEmployeesDisplay'
 
 const SingleClientsEmployeePage = () => {
   const [searchParams]                = useSearchParams()
@@ -37,8 +37,8 @@ const SingleClientsEmployeePage = () => {
     setEdit(!edit)
     if(edit) {
       if(companyId && employeeId){
-        values.companyId = companyId
-        values.employeeId = employeeId
+        values.companyId = Number(companyId)
+        values.employeeId = Number(employeeId)
         await post('updateClientsEmployee', values, cookies.access_token)
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
       }

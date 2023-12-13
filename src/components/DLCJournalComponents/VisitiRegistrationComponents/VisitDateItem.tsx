@@ -16,9 +16,9 @@ const VisitDateItem = ({edit, date, time, dateFormItemName, timeFormItemName}:Vi
   return (
     <div className='VisitDateItemContainer'>
       {!edit ?
-        <div className='DisplayFlex'>
-          <div>{date || ''}</div>
-          <div>{time || ''}</div>
+        <div className='DisplayFlex' style={{width: '110px', justifyContent: 'space-between'}}>
+          <div>{date}</div>
+          <div>{time}</div>
         </div> :
         (
           date && time &&

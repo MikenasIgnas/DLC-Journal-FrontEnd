@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import PDFGenerator                     from '../../components/DLCChecklistComponents/PDFRENDERER/PDFGenerator'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import ChecklistHistoryTableRows        from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
@@ -34,33 +33,30 @@ const ChecklistHistoryPage = () => {
   ]
 
   return (
-    <>
-      <PDFGenerator/>
-      <FullTable
-        tableColumns={<TableColumns />}
-        currentPage={page}
-        setSearchParams={setSearchParams}
-        documentCount={count}
-        tableSorter={tableSorter}
-        tableRows={data?.map((el) => (
-          <ChecklistHistoryTableRows
-            key={el?.id}
-            id={el?.id}
-            employee={el?.userName}
-            problems={el?.problemCount}
-            startTime={el?.startTime}
-            startDate={el?.startDate}
-            endTime={el?.endTime}
-            endDate={el?.endDate}
-            rowMenu={<RowMenu
-              navigate={() => navigate(`${el?.id}`)}
-              // deleteItem={() => deleteTableItem(el?.id, setFechedData, filledData, cookies.access_token, 'deleteHistoryItem')}
-            />
-            }
+    <FullTable
+      tableColumns={<TableColumns />}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      documentCount={count}
+      tableSorter={tableSorter}
+      tableRows={data?.map((el) => (
+        <ChecklistHistoryTableRows
+          key={el?.id}
+          id={el?.id}
+          employee={el?.userName}
+          problems={el?.problemCount}
+          startTime={el?.startTime}
+          startDate={el?.startDate}
+          endTime={el?.endTime}
+          endDate={el?.endDate}
+          rowMenu={<RowMenu
+            navigate={() => navigate(`${el?.id}`)}
+            // deleteItem={() => deleteTableItem(el?.id, setFechedData, filledData, cookies.access_token, 'deleteHistoryItem')}
           />
-        ))}
-      />
-    </>
+          }
+        />
+      ))}
+    />
   )
 }
 

@@ -8,7 +8,7 @@ type TabNameProps = {
 }
 
 const TabName = ({itemId}:TabNameProps) => {
-  const filledData      = useAppSelector((state)=> state.fetchedData.FilledData)
+  const filledData      = useAppSelector((state)=> state.fetchedData.filledData)
   const filteredByRoute = filledData?.filter((el) => el.routeNumber === itemId)
   let routeProblemCount = 0
 

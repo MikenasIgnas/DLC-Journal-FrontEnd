@@ -6,7 +6,7 @@ import { useAppSelector }   from '../../../store/hooks'
 const PremiseName = () => {
   const [searchParams]      = useSearchParams()
   const currentPageUrlParam = Number(searchParams.get('page'))
-  const areas               = useAppSelector((state) => state.fetchedData.Areas)
+  const areas               = useAppSelector((state) => state.fetchedData.areas)
   const defaultTheme        = useAppSelector((state) => state.theme.value)
   const premiseNameItem     = areas?.find((area) => area.id === currentPageUrlParam)
 
