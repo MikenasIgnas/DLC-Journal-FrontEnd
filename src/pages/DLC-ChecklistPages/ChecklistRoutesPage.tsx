@@ -9,7 +9,7 @@ import { resetReducer, setArea, setPossibleProblems, setRoute, setTodo, setLates
 import CheckilistHeader                                                                                         from '../../components/DLCChecklistComponents/ChecklistHeader/ChecklistHeader'
 import { onIncrementProgressTracker }                                                                           from '../../store/incremetnThunks/thunksIncrement'
 import { onDecrementProgressTracker }                                                                           from '../../store/decrementThunks/thunksDecrement'
-import FinishModal                                                                                              from '../../components/UniversalComponents/FinishModal/FinishModal'
+import FinishModal                                                                                              from '../../components/DLCChecklistComponents/FinishModal/FinishModal'
 import { useCookies }                                                                                           from 'react-cookie'
 import {jwtDecode}                                                                                              from 'jwt-decode'
 import { TokenType }                                                                                            from '../../types/globalTypes'
@@ -44,7 +44,6 @@ const ChecklistRoutesPage = () => {
   const currentProgressUrlParam         = searchParams.get('progress')
   const areas                           = useAppSelector((state) => state.fetchedData.areas)
   const userName                        = useAppSelector((state) => state.auth.username)
-  const defaultTheme                    = useAppSelector((state)=> state.theme.value)
   const latestPhotos                    = useAppSelector((state)=> state.fetchedData.latestPhotos)
 
   const updateMedia = () => {
@@ -180,7 +179,7 @@ const ChecklistRoutesPage = () => {
   return (
     <>
       {isDesktop ?
-        <Card loading={loading} style={{backgroundColor: defaultTheme ? '#191919' : ''}} className='ChecklistCard' >
+        <Card loading={loading} className='ChecklistCard' >
           <Form form={form} onFinish={nextPage}>
             <CheckilistHeader/>
             <ChecklistBody/>

@@ -1,17 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface ModalStateReducer {
-    openEmployeeAdditionModal:  boolean
-    openCompaniesAdditionModal: boolean
-    openSubClientAdditionModal: boolean
-    openClientsEmployeesDrawer: boolean;
+    openEmployeeAdditionModal:    boolean;
+    openCompaniesAdditionModal:   boolean;
+    openSubClientAdditionModal:   boolean;
+    openClientsEmployeesDrawer:   boolean;
+    openCollocationAdditionModal: boolean;
+    openCollocationRemovalModal:  boolean;
 }
 
 const initialState: ModalStateReducer = {
-  openEmployeeAdditionModal:  false,
-  openCompaniesAdditionModal: false,
-  openSubClientAdditionModal: false,
-  openClientsEmployeesDrawer: false,
+  openEmployeeAdditionModal:    false,
+  openCompaniesAdditionModal:   false,
+  openSubClientAdditionModal:   false,
+  openClientsEmployeesDrawer:   false,
+  openCollocationAdditionModal: false,
+  openCollocationRemovalModal:  false,
 }
 
 const modalSlice = createSlice({
@@ -27,6 +31,12 @@ const modalSlice = createSlice({
     setOpenSubClientAdditionModal(state, { payload }: PayloadAction<boolean>) {
       state.openSubClientAdditionModal = payload
     },
+    setOpenCollocationAdditionModal(state, { payload }: PayloadAction<boolean>) {
+      state.openCollocationAdditionModal = payload
+    },
+    setOpenCollocationRemovalModal(state, { payload }: PayloadAction<boolean>) {
+      state.openCollocationRemovalModal = payload
+    },
   },
 })
 
@@ -34,6 +44,8 @@ export const {
   setOpenEmployeeAdditionModal,
   setOpenCompaniesAdditionModal,
   setOpenSubClientAdditionModal,
+  setOpenCollocationAdditionModal,
+  setOpenCollocationRemovalModal,
 } = modalSlice.actions
 
 export default modalSlice.reducer

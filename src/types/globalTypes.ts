@@ -101,24 +101,24 @@ export type ColocationDataType = {
 };
 
 export type CompaniesType = {
-  _id:                    string;
-  id:                     number;
-  parentCompanyId?:       number;
-  wasMainClient?:         boolean;
-  companyInfo: {
-      J13?:               ColocationDataType[];
-      T72?:               ColocationDataType[];
-      companyName:        string;
-      companyDescription: string;
-      companyPhoto:       string;
-      subClient?: {
-      subClientId: string;
-      subClientCompanyName: string
-      }[]
-  };
+  _id:              string;
+  id:               number;
+  parentCompanyId?: number;
+  wasMainClient?:   boolean;
+  companyInfo:      CompanyInfoType;
 };
 
-
+export type CompanyInfoType = {
+  [site: string]: ColocationDataType[] | undefined;
+} & {
+  companyName: string;
+  companyDescription: string;
+  companyPhoto: string;
+  subClient?: {
+    subClientId: string;
+    subClientCompanyName: string;
+  }[];
+};
 export type CompaniesSitesType = {
   _id:                string;
   id:                 string;
@@ -175,25 +175,26 @@ export type VisitorsType = {
 };
 
 export type VisitsType = {
-  id:               number;
-  visitPurpose:     string[];
-  visitStatus:      VisitStatusType;
-  visitors:         VisitorsType[];
-  dlcEmployees:     string;
-  visitAddress:     string;
-  visitingClient:   string;
-  clientsGuests:    string[];
-  carPlates:        string[];
-  signature:        string;
-  visitCollocation: CollocationType
-  visitorsIdType:   string;
-  creationDate:     string;
-  creationTime:     string;
-  startDate:        string;
-  startTime:        string;
-  endDate:          string;
-  endTime:          string;
-  companyId:        number;
+  id:                 number;
+  visitPurpose:       string[];
+  visitStatus:        VisitStatusType;
+  visitors:           VisitorsType[];
+  dlcEmployees:       string;
+  visitAddress:       string;
+  visitingClient:     string;
+  clientsGuests:      string[];
+  carPlates:          string[];
+  signature:          string;
+  visitCollocation:   CollocationType
+  visitorsIdType:     string;
+  creationDate:       string;
+  creationTime:       string;
+  startDate:          string;
+  startTime:          string;
+  endDate:            string;
+  endTime:            string;
+  companyId:          number;
+  scheduledVisitTime: string | undefined;
 }
 
 export type CollocationsType = {

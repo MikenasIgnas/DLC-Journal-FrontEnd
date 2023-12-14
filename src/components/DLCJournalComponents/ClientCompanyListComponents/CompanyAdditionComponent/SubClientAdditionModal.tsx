@@ -38,7 +38,6 @@ const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: Add
   const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
-  console.log(collocations)
   const filterObject = (obj: CompanyFormType): CompanyFormType => {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {

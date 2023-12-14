@@ -1,13 +1,10 @@
 /* eslint-disable max-len */
 import React                    from 'react'
 import { Card, Checkbox, Form}  from 'antd'
-
-type CollocationsType = {
-  [key: string]: string[];
-}
+import { CollocationType }      from '../../../types/globalTypes'
 
 type CollocationsListProps = {
-    companiesColocations: CollocationsType[] | undefined
+    companiesColocations: CollocationType[] | undefined
 }
 
 const CollocationsList = ({companiesColocations}: CollocationsListProps) => {

@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import React              from 'react'
-import { useAppSelector } from '../../../store/hooks'
 
 type CollapsePannelHeaderProps = {
   duty:         string,
@@ -8,10 +7,8 @@ type CollapsePannelHeaderProps = {
 }
 
 const CollapsePannelHeader = ({problemCount, duty}:CollapsePannelHeaderProps) => {
-  const defaultPageTheme =  useAppSelector((state) => state.theme.value)
-
   return (
-    <div style={{color: defaultPageTheme ? 'white': 'black'}} className='CollapsePannelHeader'>
+    <div className='CollapsePannelHeader'>
       <div>{duty}</div>
       <div style={{display: 'flex'}}>
         <div>Problemos:</div>

@@ -6,7 +6,7 @@ import SignatureCanvas                                      from 'react-signatur
 import { useCookies }                                       from 'react-cookie'
 import { get, post }                                        from '../../../Plugins/helpers'
 import { useParams }                                        from 'react-router'
-import { identificationOptions }                            from './StaticSelectOptions'
+import { identificationOptions }                            from '../VisitiRegistrationComponents/StaticSelectOptions'
 
 type RegisteredVisitorsListItemProps = {
   signature:              string | null | undefined

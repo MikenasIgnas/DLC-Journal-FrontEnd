@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import React                                    from 'react'
-import { Button, Card, Form, message, theme }   from 'antd'
-import VisitRegistrationForm                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
-import { getCurrentDate, getCurrentTime, post } from '../../Plugins/helpers'
-import { useCookies }                           from 'react-cookie'
-import { useNavigate }                          from 'react-router'
-import SuccessMessage                           from '../../components/UniversalComponents/SuccessMessage'
-import { useSearchParams }                      from 'react-router-dom'
-import { VisitsType }                           from '../../types/globalTypes'
+import React                                                                from 'react'
+import { Button, Card, Form, message, theme }                               from 'antd'
+import VisitRegistrationForm                                                from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
+import { convertUTCtoLocalDateTime, getCurrentDate, getCurrentTime, post }  from '../../Plugins/helpers'
+import { useCookies }                                                       from 'react-cookie'
+import { useNavigate }                                                      from 'react-router'
+import SuccessMessage                                                       from '../../components/UniversalComponents/SuccessMessage'
+import { useSearchParams }                                                  from 'react-router-dom'
+import { VisitsType }                                                       from '../../types/globalTypes'
 
 const VisitRegistrationPage= () => {
   const [form]                            = Form.useForm()
@@ -22,6 +22,7 @@ const VisitRegistrationPage= () => {
 
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
+
     if(companyId && (values?.visitors && values?.visitors.length > 0)){
       values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : null
       values.visitStatus = 'processing'
@@ -29,6 +30,7 @@ const VisitRegistrationPage= () => {
       values.creationTime = getCurrentTime()
       values.clientsGuests = clientsGuests
       values.carPlates = carPlates
+      values.scheduledVisitTime = convertUTCtoLocalDateTime(values.scheduledVisitTime)
       values.companyId = Number(companyId)
       const res = await post('postVisitDetails', values, cookies.access_token )
       if(!res.error){

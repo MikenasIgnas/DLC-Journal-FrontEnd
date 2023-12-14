@@ -12,7 +12,6 @@ const ChecklistBody = () => {
   const duties                  = useAppSelector((state) => state?.fetchedData?.toDo?.filter((todo) => currentPageUrlParam === todo.areasId))
   const possibleProblemsTable   = useAppSelector((state) => state.fetchedData.possibleProblems)
   const latestHistoryItemData   = useAppSelector((state) => state.fetchedData.latestHistoryItemData?.filter((item)=>currentPageUrlParam === item.pageID ))
-  const defaultTheme            = useAppSelector((state) => state.theme.value)
   const latestHistoryItemValues = latestHistoryItemData?.map((el)=> el.values)
 
   return (
@@ -24,9 +23,9 @@ const ChecklistBody = () => {
         const alreadyFilledValues = data && JSON.parse(data).values[el?.id]
         return (
           <Card
-            style={{ marginTop: 16, backgroundColor: defaultTheme ? '#191919': '', color: defaultTheme ? 'white' : 'black'}}
+            style={{ marginTop: 16 }}
             type='inner'
-            title={<div style={{color: defaultTheme ? 'white': 'black'}}>{el?.duty}</div>}
+            title={<div>{el?.duty}</div>}
             key={el?.id}
           >
             <Form.List

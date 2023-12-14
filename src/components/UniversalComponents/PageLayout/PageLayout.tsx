@@ -1,20 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import {Button, ConfigProvider, Divider, Menu, MenuProps, Space }                 from 'antd'
+import {ConfigProvider, Menu, MenuProps, Space }                          from 'antd'
 import { Layout }                                                         from 'antd'
-import { Link, useLocation, useNavigate, useSearchParams }                                 from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams }                from 'react-router-dom'
 import { clearFilleChecklistdData, get }                                  from '../../../Plugins/helpers'
 import { useCookies }                                                     from 'react-cookie'
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
 import { setUserEmail, setUsername, setUsersRole }                        from '../../../auth/AuthReducer/reducer'
-import { setDefaultTheme }                                                from '../../../auth/ThemeReducer/ThemeReducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
-import SideBarHead                                                        from './SideBarComponents/SideBarHead'
+import SideBar                                                            from './SideBar'
 import { Header } from 'antd/es/layout/layout'
 
 const { Content, Footer } = Layout
@@ -29,7 +28,6 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const navigate                  = useNavigate()
   const dispatch                  = useAppDispatch()
   const [cookies, , removeCookie] = useCookies(['access_token'])
-  const defaultTheme              = useAppSelector((state)=> state.theme.value)
   const userName                  = useAppSelector((state)=> state.auth.username)
   const token                     = cookies.access_token
   const decodedToken:TokenType    = jwtDecode(token)
@@ -50,7 +48,6 @@ const PageLayout = ({children}:PageLayoutProps) => {
           dispatch(setUsername(user.data.username))
           dispatch(setUserEmail(user.data.email))
           dispatch(setUsersRole(user.data.userRole))
-          dispatch(setDefaultTheme(user.data.defaultTheme))
         }
       }catch(err){
         console.log(err)
@@ -83,19 +80,20 @@ const PageLayout = ({children}:PageLayoutProps) => {
     getItem('DLC Žurnalas', 'sub1', <ReadOutlined />, [
       getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
       getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'),
-      getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=3'} >Įmonių sąrašas</Link>, '3'),
-      getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=4&page=1&limit=10'} >Vizitai</Link>, '4'),
-      getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=5'} >Statistika</Link>, '5'),
+      getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=4&page=1&limit=10'} >Vizitai</Link>, '3'),
+      getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=3'} >Įmonių sąrašas</Link>, '4'),
+      getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=3&tabKey=1'} >Kolokacijos</Link>, '5'),
+      getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=5'} >Statistika</Link>, '6'),
     ]),
     getItem('DLC Checklistas', 'sub2', <ScheduleOutlined />, [
-      getItem(<Link to={'DLC Checklistas?menuKey=6'} >Pradėti</Link>, '6'),
-      getItem(<Link to={'DLC Checklistas/Istorija?menuKey=7&page=1&limit=10'} >Istorija</Link>, '7'),
+      getItem(<Link to={'DLC Checklistas?menuKey=6'} >Pradėti</Link>, '7'),
+      getItem(<Link to={'DLC Checklistas/Istorija?menuKey=7&page=1&limit=10'} >Istorija</Link>, '8'),
     ]),
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
-      getItem(<Link to={'/Mano_Profilis?menuKey=8'} >Mano Profilis</Link>, '8'),
-      getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=9'} >Sukurti darbuotoją</Link>, '9'),
-      getItem(<Link to={'/Visi_Darbuotojai?menuKey=10&page=1&limit=10'} >Visi darbuotojai</Link>, '10'),
-      getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=11&page=1&limit=10'} >Darbuotojų archyvas</Link>, '11'),
+      getItem(<Link to={'/Mano_Profilis?menuKey=8'} >Mano Profilis</Link>, '9'),
+      getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=9'} >Sukurti darbuotoją</Link>, '10'),
+      getItem(<Link to={'/Visi_Darbuotojai?menuKey=10&page=1&limit=10'} >Visi darbuotojai</Link>, '11'),
+      getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=11&page=1&limit=10'} >Darbuotojų archyvas</Link>, '12'),
     ]),
   ]
 
@@ -135,7 +133,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
           >
             <div className='PageLayoutSliderBody'>
               <div>
-                <SideBarHead collapsed={collapsed}/>
+                <SideBar collapsed={collapsed}/>
                 <Menu defaultSelectedKeys={['1']} selectedKeys={[`${menuKey}`]} mode='inline' items={siderItems} />
               </div>
             </div>
@@ -145,7 +143,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
               <Menu selectedKeys={[`${menuKey}`]} items={headerItems} />
               <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
             </Header>
-            <Content className={defaultTheme ? 'PageLayoutContentDark' : 'PageLayoutContentLight'}>
+            <Content className='PageLayoutContentLight'>
               {location.pathname === '/' ?
                 <>{children}</> :
                 <>
@@ -154,7 +152,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
                   </PageContainer>
                 </>
               }
-              <Footer className={defaultTheme ? 'PageLayoutFooterDark': 'PageLayoutFooteLight'}>
+              <Footer className='PageLayoutFooteLight'>
                   DLC Journal ©2023 Created by Data Logistics Center
               </Footer>
             </Content>

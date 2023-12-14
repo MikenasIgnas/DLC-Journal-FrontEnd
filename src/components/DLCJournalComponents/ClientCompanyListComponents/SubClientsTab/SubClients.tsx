@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
-import React, { useState }                    from 'react'
-import { Divider, List }                      from 'antd'
-import { get }                                from '../../../../Plugins/helpers'
-import { ColocationDataType, CompaniesType }  from '../../../../types/globalTypes'
-import { useCookies }                         from 'react-cookie'
-import { useSearchParams }                    from 'react-router-dom'
-import SubClientsDrawer                       from './SubClientsDrawer'
-import ListItem                               from './ListItem'
-import { useAppDispatch, useAppSelector }     from '../../../../store/hooks'
+import React, { useState }                            from 'react'
+import { Divider, List }                              from 'antd'
+import { get }                                        from '../../../../Plugins/helpers'
+import { ColocationDataType, CompaniesType }          from '../../../../types/globalTypes'
+import { useCookies }                                 from 'react-cookie'
+import { useSearchParams }                            from 'react-router-dom'
+import SubClientsDrawer                               from './SubClientsDrawer'
+import ListItem                                       from './ListItem'
+import { useAppDispatch, useAppSelector }             from '../../../../store/hooks'
 import { resetIsSubClientAdded, setIsSubClientAdded } from '../../../../auth/AddSubClientReducer/addSubClientReducer'
 
 type SubClientsProps = {
-  parentCompanyId:          string | undefined;
+  parentCompanyId:  string | undefined;
   subClientsCollocations :  {
     J13?: ColocationDataType[];
     T72?: ColocationDataType[];
@@ -55,6 +55,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
       setSubClients(newCompaniesList)
     }
   }
+
   const deletSubClient = async (subClientId: number | undefined, parentCompanyId: number | undefined ) => {
     if(subClientId ){
       await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
@@ -65,7 +66,6 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
   const removeFormSubClientList = async(companyId: number | undefined) => {
     if(companyId){
       await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
-      console.log(subClients)
       dispatch(setIsSubClientAdded(true))
       subClientCompanyRemoved(companyId)
     }
@@ -74,6 +74,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
   const onClose = () => {
     setOpen(false)
   }
+
   return (
     <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>

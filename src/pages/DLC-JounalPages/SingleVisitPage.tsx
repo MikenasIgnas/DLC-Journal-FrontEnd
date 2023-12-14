@@ -10,13 +10,13 @@ import { convertUTCtoLocalTime, get, post }                     from '../../Plug
 import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
 import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
 import CollocationsList                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
-import SelectedCollocationList                                  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/SelectedCollocationList'
-import RegisteredVisitorsListItem                               from '../../components/DLCJournalComponents/VisitiRegistrationComponents/RegisteredVisitorsListItem'
+import SelectedCollocationList                                  from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
+import RegisteredVisitorsListItem                               from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
 import VisitorAdditionList                                      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
 import filterPermisions                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
 import VisitInformationItems                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
-import VisitStatusButton                                        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitStatusButton'
-import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitDescriptionTitle'
+import VisitStatusButton                                        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButton'
+import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -45,6 +45,7 @@ const SingleVisitPage = () => {
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       setVisitData(singleVisit.data)
       setCarPlates(singleVisit.data[0]?.carPlates)
+      setClientsGuests(singleVisit.data[0]?.clientsGuests)
       setDlcEmployees(dlcEmployees.data)
       const companyId = singleVisit.data[0]?.companyId
       const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
@@ -82,7 +83,7 @@ const SingleVisitPage = () => {
   }
 
   const deleteVisitor = async(employeeId: number | undefined) => {
-    if (visitData && visitData.length > 0) {
+    if (visitData) {
       const updatedVisitData = [...visitData]
       if (updatedVisitData[0]?.visitors) {
         updatedVisitData[0].visitors = updatedVisitData[0].visitors.filter(
@@ -109,8 +110,8 @@ const SingleVisitPage = () => {
       values.visitors = updateIdTypes
       values.startDate = values?.startDate?.format('YYYY-MM-DD')
       values.endDate = values?.endDate?.format('YYYY-MM-DD')
-      const localStartTime = convertUTCtoLocalTime(values?.startTime, 'Europe/Vilnius')
-      const localEndTime = convertUTCtoLocalTime(values?.endTime, 'Europe/Vilnius')
+      const localStartTime = convertUTCtoLocalTime(values?.startTime)
+      const localEndTime = convertUTCtoLocalTime(values?.endTime)
       values.startTime = localStartTime
       values.endTime = localEndTime
       await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)

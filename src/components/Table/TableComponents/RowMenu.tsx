@@ -4,23 +4,15 @@ import { DownOutlined, FilePdfOutlined }    from '@ant-design/icons'
 import { Space, type MenuProps, Dropdown }  from 'antd'
 
 type RowMenuType ={
-  navigate:           () => void;
-  deleteItem?:        () => Promise<void>
-  getSingleVisitPDF?: () => Promise<void>
+  navigate:    () => void;
+  deleteItem?: () => Promise<void>
 }
 
-const RowMenu = ({navigate, deleteItem, getSingleVisitPDF}: RowMenuType) => {
+const RowMenu = ({navigate, deleteItem}: RowMenuType) => {
   const onClick: MenuProps['onClick'] = ({ key }) => {
     if(key === '1'){
       navigate()
     }
-
-    if(key === '2'){
-      if(getSingleVisitPDF){
-        getSingleVisitPDF()
-      }
-    }
-
     if(key === '3'){
       if(deleteItem){
         deleteItem()
@@ -45,6 +37,7 @@ const RowMenu = ({navigate, deleteItem, getSingleVisitPDF}: RowMenuType) => {
     },
 
   ]
+
   return (
     <Dropdown menu={{ items, onClick }}>
       <a onClick={(e) => e.preventDefault()}>

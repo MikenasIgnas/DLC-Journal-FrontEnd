@@ -22,7 +22,6 @@ const VisitsBarChart = ({visits}: VisitsBarChartProps) => {
     const visitCounter = visits?.filter((visit) => visit.endDate === formatDateString(allDates[i])).length || 0
     data.push({ name: formatDateString(allDates[i]), Vizitai: visitCounter })
   }
-  console.log(data)
   return (
     <ResponsiveContainer width='100%' height='100%' minWidth={500} minHeight={500}>
       <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>

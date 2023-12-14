@@ -4,7 +4,7 @@
 import React                                                  from 'react'
 import { get }                                                from '../../../Plugins/helpers'
 import { useCookies }                                         from 'react-cookie'
-import { Button, Form, FormInstance, Select }                 from 'antd'
+import { Button, Empty, Form, FormInstance, Select }                 from 'antd'
 import { useSearchParams }                                    from 'react-router-dom'
 import { CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                              from './VisitRegistrationSelect'
@@ -15,6 +15,9 @@ import VisitPurposeList                                       from './VisitPurpo
 import VisitorAdditionList                                    from './VisitorAdditionList'
 import filterPermisions                                       from './filterPermisions'
 import {addresses}                                            from './StaticSelectOptions'
+import { DatePicker }                                         from 'antd'
+
+const { RangePicker } = DatePicker
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
@@ -93,11 +96,12 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
     setSelectedVisitors((prev) => prev.filter((el) => el !== id))
   }
   const resetForm = () => {
+    form.resetFields()
     setSelectedVisitors([])
     setClientsEmployees([])
     setClientsGuests([])
     setCarPlates([])
-    form.resetFields()
+    setIsCompanySelected(false)
     localStorage.removeItem('visitPurpose')
   }
 
@@ -136,16 +140,22 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
           />
         </>
         }
+        {isCompanySelected && addressId === 'T72' &&
+        <Form.Item name='scheduledVisitTime' style={{width: '100%'}}>
+          <DatePicker placeholder={'Planuojama vizito data/laikas'} showTime />
+        </Form.Item>
+        }
       </div>
       {clientsEmployees && clientsEmployees?.length > 0 &&
-      <VisitorAdditionList
-        clientsEmployees={clientsEmployees}
-        searchEmployee={searchEmployee}
-        searchEmployeeValue={searchEmployeeValue}
-        addVisitor={addVisitor}
-        removeVisitor={removeVisitor}
-      />
+        <VisitorAdditionList
+          clientsEmployees={clientsEmployees}
+          searchEmployee={searchEmployee}
+          searchEmployeeValue={searchEmployeeValue}
+          addVisitor={addVisitor}
+          removeVisitor={removeVisitor}
+        />
       }
+      {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations}/>}

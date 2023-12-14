@@ -7,7 +7,7 @@ import { get, post, uploadPhoto }                                               
 import { useCookies }                                                           from 'react-cookie'
 import { useSearchParams }                                                      from 'react-router-dom'
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
+import { useAppSelector }                                                       from '../../../../store/hooks'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
@@ -37,7 +37,6 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const [searchParams]              = useSearchParams()
   const employeeId                  = searchParams.get('employeeId')
   const companyId                   = searchParams.get('companyId')
-  const dispatch                    = useAppDispatch()
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
 
   React.useEffect(() => {
@@ -46,7 +45,6 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
         if(employeeId && companyId){
           const res  = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
           setEmployee(res.data)
-          console.log(res)
         }
       }catch(err){
         console.log(err)

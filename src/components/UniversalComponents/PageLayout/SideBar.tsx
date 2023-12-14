@@ -1,19 +1,25 @@
-import Divider          from '@mui/joy/Divider'
-import LoggedInUser     from './SideBarComponents/SideBarFooter'
-import SideBarBody      from './SideBarComponents/SideBarBody'
-import SideBarContainer from './SideBarComponents/SideBarContainer'
+/* eslint-disable max-len */
+import React            from 'react'
+import IconButton       from '@mui/joy/IconButton'
+import { useNavigate }  from 'react-router'
+import { Typography }   from 'antd'
 
-type SideBarProps = {
-    logOut: () => Promise<void>
+type SideBarHeadProps = {
+  collapsed: boolean;
 }
 
-const SideBar = ({logOut}: SideBarProps) => {
+const SideBar = ({collapsed}:SideBarHeadProps) => {
+  const navigate = useNavigate()
+
   return (
-    <SideBarContainer>
-      <SideBarBody/>
-      <Divider />
-      <LoggedInUser logOut={logOut}/>
-    </SideBarContainer>
+    <>
+      <div style={{ display: 'flex', gap: 1, alignItems: 'center', margin: '10px', justifyContent: 'center' }}>
+        <IconButton onClick={() => navigate('/')} variant='soft' color='primary' size='sm'>
+          <img className='HomePageCover' src='../Images/Logo.png'/>
+        </IconButton>
+        {!collapsed && <Typography >Data Logistics Center</Typography> }
+      </div>
+    </>
   )
 }
 

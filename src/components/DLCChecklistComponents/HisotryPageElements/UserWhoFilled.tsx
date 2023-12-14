@@ -15,7 +15,6 @@ type UserWhoFilledProps = {
 const UserWhoFilled = ({item}:UserWhoFilledProps) => {
   const [differencer, setDifference]  = React.useState<string | undefined>('')
   const problemCount                  = useAppSelector((state)=> state.fetchedData.problemCount)
-  const defaultPageTheme              = useAppSelector((state) => state.theme.value)
   const [cookies]                     = useCookies(['access_token'])
   const token                         = cookies.access_token
   const decodedToken:TokenType        = jwtDecode(token)
@@ -33,19 +32,19 @@ const UserWhoFilled = ({item}:UserWhoFilledProps) => {
       (item?.userRole === 'admin' || item?.userRole === 'SYSADMIN') || (decodedToken.userRole === 'admin' || decodedToken.userRole === 'SYSADMIN')
         ?
         <Link to={`/SingleUserPage/${item?.id}`}>{item?.userName}</Link>
-        : <div style={{color: defaultPageTheme ? 'white' : 'black'}}>{item?.userName}</div>
+        : <div>{item?.userName}</div>
     }
     bordered={false}
-    style={{ backgroundColor: defaultPageTheme ? '#191919': '' , width: isMobile ? '200px' : '300px', marginTop: isMobile ? '15px' : ''}}>
-      <div style={{display: 'flex', width: '160px', justifyContent: 'space-between', color: defaultPageTheme ? 'white': 'black'}}>
+    style={{ width: isMobile ? '200px' : '300px', marginTop: isMobile ? '15px' : ''}}>
+      <div style={{display: 'flex', width: '160px', justifyContent: 'space-between'}}>
         <p>Pradėta: {item?.startDate}</p>
         <p>{item?.startTime}</p>
       </div>
-      <div style={{display: 'flex', width: '160px', justifyContent: 'space-between', color: defaultPageTheme ? 'white': 'black'}}>
+      <div style={{display: 'flex', width: '160px', justifyContent: 'space-between'}}>
         <p>Baigta: {item?.endDate}</p>
         <p>{item?.endTime}</p>
       </div>
-      <div style={{color: defaultPageTheme ? 'white': 'black'}}>
+      <div>
         <p>Užtrukta: {differencer}</p>
         <p>Problemos: {problemCount}</p>
         <p>Rolė: {item?.userRole}</p>

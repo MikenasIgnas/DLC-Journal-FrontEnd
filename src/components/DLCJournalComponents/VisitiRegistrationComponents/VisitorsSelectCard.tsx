@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import React                                        from 'react'
-import { Card, Avatar, FormInstance, Form }               from 'antd'
-import Meta                                         from 'antd/es/card/Meta'
-import { EmployeesType, VisitorsType, VisitsType }  from '../../../types/globalTypes'
-import { useParams }                                from 'react-router-dom'
-import { post }                                     from '../../../Plugins/helpers'
-import { useCookies }                               from 'react-cookie'
+import React                          from 'react'
+import { Card, Avatar, Form }         from 'antd'
+import Meta                           from 'antd/es/card/Meta'
+import { EmployeesType, VisitsType }  from '../../../types/globalTypes'
+import { useParams }                  from 'react-router-dom'
+import { post }                       from '../../../Plugins/helpers'
+import { useCookies }                 from 'react-cookie'
 
 type VisitorsSelectCardProps = {
     name:           string;

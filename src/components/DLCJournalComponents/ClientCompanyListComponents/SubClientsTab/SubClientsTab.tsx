@@ -59,9 +59,9 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
       setMainCompanies(selectedMainCompany)
       await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${parentCompanyId}`, selectedMainCompany?.[0].companyInfo, cookies.access_token)
       dispatch(setIsSubClientAdded(true))
-
     }
   }
+
   const onSelect = () => {
     setSelectedValue(null)
   }

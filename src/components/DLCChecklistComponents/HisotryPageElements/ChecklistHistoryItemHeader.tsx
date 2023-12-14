@@ -15,7 +15,6 @@ type ChecklistHistoryItemHeaderProps = {
   }
 
 const ChecklistHistoryItemHeader = ({areaName, itemId, setEdit, todo, setActiveKey} : ChecklistHistoryItemHeaderProps) => {
-  const defaultPageTheme        = useAppSelector((state)=> state.theme.value)
   const [cookies]               = useCookies(['access_token'])
   const decodedToken:TokenType  = jwtDecode(cookies.access_token)
   const isMobile                = window.innerWidth < 650
@@ -27,7 +26,7 @@ const ChecklistHistoryItemHeader = ({areaName, itemId, setEdit, todo, setActiveK
   }
 
   return (
-    <div style={{color: defaultPageTheme ? 'white': 'black'}} className={isMobile ? 'MobileHistoryItemHeader' : 'DekstopHistoryItemHeader'}>
+    <div className={isMobile ? 'MobileHistoryItemHeader' : 'DekstopHistoryItemHeader'}>
       <div>Patalpa: {areaName}</div>
       { Number(itemId) === decodedToken.id || decodedToken.userRole === 'SYSADMIN' ?
         <div>

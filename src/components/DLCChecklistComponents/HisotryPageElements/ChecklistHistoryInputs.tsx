@@ -27,27 +27,20 @@ const ChecklistHisotoryInputs = ({
   edit,
 }:InputProps) => {
   const [radioButtonValue, setRadioButtonValue] = React.useState(false)
-  const defaultTheme                            = useAppSelector((state) => state.theme.value)
   return (
-    <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : ''}} className='ChecklistHistoryInputsMainContainer'>
+    <div className='ChecklistHistoryInputsMainContainer'>
       <div className='ChecklistHistoryInputsContainer' >
-        <div style={{color: defaultTheme ? 'white' : 'black'}} className='PossibleProblems'>{possibleProblems}</div>
-        <ConfigProvider theme = {{
-          token: {
-            colorBgContainerDisabled: defaultTheme ? 'lightgray' : 'white',
-          },
-        }}>
-          <Form.Item
-            {...rest}
-            name={[name, Number(dutiesId)]}
-            className='ChecklistFormItem'
-          >
-            <Radio.Group className='RadioGroup'>
-              <Radio style={{color: defaultTheme ? 'white' : 'black'}} onChange={() => setRadioButtonValue(false)} disabled={!edit} value={false}>No</Radio>
-              <Radio style={{color: defaultTheme ? 'white' : 'black'}} onChange={() => setRadioButtonValue(true)} disabled={!edit} value={true}>Yes</Radio>
-            </Radio.Group>
-          </Form.Item>
-        </ConfigProvider>
+        <div className='PossibleProblems'>{possibleProblems}</div>
+        <Form.Item
+          {...rest}
+          name={[name, Number(dutiesId)]}
+          className='ChecklistFormItem'
+        >
+          <Radio.Group className='RadioGroup'>
+            <Radio onChange={() => setRadioButtonValue(false)} disabled={!edit} value={false}>No</Radio>
+            <Radio onChange={() => setRadioButtonValue(true)} disabled={!edit} value={true}>Yes</Radio>
+          </Radio.Group>
+        </Form.Item>
       </div>
       {radioButtonValue || !!dutiesId && !!radioValues && !!radioValues[dutiesId] ? (<HistoryProblemInputs edit={edit} dutiesId={dutiesId} reaction={reaction} name={name} />) : ''}
     </div>

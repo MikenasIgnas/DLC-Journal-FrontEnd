@@ -28,9 +28,8 @@ const ChecklistInputs = ({
   alreadyFilledValues,
 }:InputProps) => {
   const [noSelected, setNoSelected] = React.useState(false)
-  const defaultTheme                = useAppSelector((state) => state.theme.value)
   return (
-    <div style={{backgroundColor: defaultTheme ? '#1e1e1e' : 'white'}} className='ChecklistHistoryInputsMainContainer'>
+    <div className='ChecklistHistoryInputsMainContainer'>
       <div className='ChecklistHistoryInputsContainer'>
         <div className='PossibleProblems' >
           {possibleProblems}
@@ -55,8 +54,8 @@ const ChecklistInputs = ({
         >
 
           <Radio.Group buttonStyle='outline' className='RadioGroup'>
-            <Radio style={{color: defaultTheme ? 'white' : 'black'}} onChange={() => setNoSelected(false)} value={false}>Ne</Radio>
-            <Radio style={{color: defaultTheme ? 'white' : 'black'}} onChange={() => setNoSelected(true)} value={true}>Taip</Radio>
+            <Radio onChange={() => setNoSelected(false)} value={false}>Ne</Radio>
+            <Radio onChange={() => setNoSelected(true)} value={true}>Taip</Radio>
           </Radio.Group>
         </Form.Item>
       </div>

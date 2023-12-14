@@ -57,8 +57,9 @@ const ItemList = ({cardTitle, inputPlaceHolder, inputValue, setInputValue, list,
         dataSource={list}
         renderItem={(item, index) =>
           <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(index)}>Ištrinti</Button>]}>
-            <List.Item.Meta style={{flex: '0 0'}} title={item}/>
-          </List.Item>}
+            <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
+          </List.Item>
+        }
       />
       }
     </Card>

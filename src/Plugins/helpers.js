@@ -131,16 +131,31 @@ const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
   }
 }
 
-const convertUTCtoLocalTime = (utcTimestamp, timezone) => {
+const convertUTCtoLocalTime = (utcTimestamp) => {
   if(utcTimestamp){
     const dateObject = new Date(utcTimestamp)
     const localTimeString = dateObject.toLocaleString('en-US', {
-      timeZone: timezone,
+      timeZone: 'Europe/Vilnius',
       hour:     'numeric',
       minute:   'numeric',
       hour12:   false,
     })
     return localTimeString
+  }
+}
+const convertUTCtoLocalDateTime = (utcTimestamp) => {
+  if (utcTimestamp) {
+    const dateObject = new Date(utcTimestamp)
+    const localDateTimeString = dateObject.toLocaleString('en-US', {
+      timeZone: 'Europe/Vilnius',
+      day:      '2-digit',
+      month:    '2-digit',
+      year:     'numeric',
+      hour:     'numeric',
+      minute:   'numeric',
+      hour12:   false,
+    })
+    return localDateTimeString
   }
 }
 
@@ -156,5 +171,6 @@ export {
   deleteTableItem,
   calculateTimeDifference,
   convertUTCtoLocalTime,
+  convertUTCtoLocalDateTime,
 }
 

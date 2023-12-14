@@ -36,7 +36,6 @@ const EditUserProfilePage = () => {
   const token                           = cookies.access_token
   const decodedToken:TokenType          = jwtDecode(token)
   const [loading, setLoading]           = React.useState(false)
-  const defaultTheme                    = useAppSelector((state)=> state.theme.value)
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
   const userProfileData                 = useFetch<FormValuesType>(`FindUser/${decodedToken.id}`, setLoading)
@@ -96,15 +95,11 @@ const EditUserProfilePage = () => {
     <div className='CreateUserPageContainer'>
       <ConfigProvider theme = {{
         token: {
-          colorBgContainer:     defaultTheme ? '#1e1e1e' : 'white',
-          colorText:            defaultTheme ? 'white': 'black',
-          controlItemBgActive:  defaultTheme ? '#2a2a2a' : '#e6f4ff',
           colorTextPlaceholder: '#7d7d7d',
         },
       }}>
         <Card
           loading={loading}
-          headStyle={{textAlign: 'center', backgroundColor: defaultTheme ? '#191919' : 'white', color: defaultTheme ? 'white' : 'black'}}
           title='Mano Profilis'
           bordered={true}
           className='CreateUserCard'>
@@ -141,7 +136,6 @@ const EditUserProfilePage = () => {
               <Select
                 disabled={userProfileData?.userRole === 'admin' || userProfileData?.userRole === 'SYSADMIN' ? false : true}
                 placeholder='Pasirinkti rolę'
-                dropdownStyle={{ backgroundColor: defaultTheme ? '#191919' : 'white' }}
                 options={[
                   { value: 'SYSADMIN', label: 'SYSADMIN' },
                   { value: 'admin', label: 'Admin' },

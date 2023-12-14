@@ -36,7 +36,6 @@ const SingleUserPage = () => {
   const {id}                        = useParams()
   const [loading, setLoading]       = React.useState(false)
   const usersRole                   = useAppSelector((state)=> state.auth.usersRole)
-  const defaultTheme                = useAppSelector((state)=> state.theme.value)
   const singleUser                  = useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
@@ -80,16 +79,13 @@ const SingleUserPage = () => {
     <div className='CreateUserPageContainer'>
       <ConfigProvider theme = {{
         token: {
-          colorBgContainer:     defaultTheme ? '#1e1e1e' : 'white',
-          colorText:            defaultTheme ? 'white' : 'black',
-          controlItemBgActive:  defaultTheme ? '#2a2a2a' : '#e6f4ff',
           colorTextPlaceholder: '#7d7d7d',
         },
       }}>
 
         <Card
           loading={loading}
-          headStyle={{textAlign: 'center', backgroundColor: defaultTheme ? '#191919' : 'white', color: defaultTheme ? 'white' : 'black'}}
+          headStyle={{textAlign: 'center' }}
           title={`Tvarkyti ${singleUser?.username} Profilį`}
           bordered={true}
           className='CreateUserCard'>
@@ -126,7 +122,6 @@ const SingleUserPage = () => {
               <Select
                 disabled={usersRole !== 'user' ? false : true}
                 placeholder='Pasirinkti rolę'
-                dropdownStyle={{ backgroundColor: defaultTheme ? '#191919' : 'white' }}
                 options={[
                   { value: 'system admin', label: 'System Admin' },
                   { value: 'admin', label: 'Admin' },

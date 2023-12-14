@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem, get }              from '../../Plugins/helpers'
+import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
@@ -49,11 +49,6 @@ const VisitPage = () => {
   const navigate                        = useNavigate()
   const {data, count, setData}          = useSetVisitsData()
 
-  const getSingleVisitPDF = async(visitId: number) => {
-    const singleVisit   = await get(`getSingleVisit?visitId=${visitId}`, cookies.access_token)
-    console.log(singleVisit.data)
-  }
-
   return (
     <FullTable
       tableSorter={tableSorter}
@@ -78,7 +73,6 @@ const VisitPage = () => {
           rowMenu={<RowMenu
             navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
             deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
-            getSingleVisitPDF={() => getSingleVisitPDF(el.id)}
           />}
         />
       ))}

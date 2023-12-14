@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import React                                                                                                               from 'react'
 import { useParams, useSearchParams }                                                                                      from 'react-router-dom'
-import { ConfigProvider, Tabs }                                                                                            from 'antd'
+import { Tabs }                                                                                                            from 'antd'
 import { get }                                                                                                             from '../../Plugins/helpers'
 import { useAppDispatch, useAppSelector }                                                                                  from '../../store/hooks'
 import {resetReducer, setArea, setPossibleProblems, setRoute, setTodo,setFilledData, setProblemCount, setChecklistPhotos}  from '../../auth/FetchedDataReducer/fetchedDataReducer'
@@ -20,7 +20,6 @@ const SingleHistoryPage = () => {
   const [isUpdated, setIsUpdated]       = React.useState(false)
   const [filledUser, setFilledUser]     = React.useState()
   const routes                          = useAppSelector((state) => state.fetchedData.routes)
-  const defaultPageTheme                = useAppSelector((state) => state.theme.value)
   const [searchParams, setSearchParams] = useSearchParams()
   const tabUrlParam                     = searchParams.get('tab')
 
@@ -66,12 +65,6 @@ const SingleHistoryPage = () => {
   return (
     <div className='SingleHistoryPageContainer'>
       {id &&
-      <ConfigProvider theme={{
-        token: {
-          paddingLG: 6,
-          colorText: defaultPageTheme ? 'white' : 'black',
-        },
-      }}>
         <Tabs
           tabPosition={'top'}
           onChange={(key) => setSearchParams(`tab=${key}`) }
@@ -94,7 +87,6 @@ const SingleHistoryPage = () => {
             }
           })}
         />
-      </ConfigProvider>
       }
     </div>
   )
