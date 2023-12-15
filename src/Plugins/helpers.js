@@ -143,18 +143,26 @@ const convertUTCtoLocalTime = (utcTimestamp) => {
     return localTimeString
   }
 }
+const convertUTCtoLocalDate = (utcTimestamp) => {
+  if (utcTimestamp) {
+    const dateObject = new Date(utcTimestamp)
+    const day = dateObject.toLocaleString('en-US', { day: '2-digit' })
+    const month = dateObject.toLocaleString('en-US', { month: '2-digit' })
+    const year = dateObject.toLocaleString('en-US', { year: 'numeric' })
+    const localDateTimeString = `${year}-${month}-${day}`
+    return localDateTimeString
+  }
+}
+
 const convertUTCtoLocalDateTime = (utcTimestamp) => {
   if (utcTimestamp) {
     const dateObject = new Date(utcTimestamp)
-    const localDateTimeString = dateObject.toLocaleString('en-US', {
-      timeZone: 'Europe/Vilnius',
-      day:      '2-digit',
-      month:    '2-digit',
-      year:     'numeric',
-      hour:     'numeric',
-      minute:   'numeric',
-      hour12:   false,
-    })
+    const day = dateObject.toLocaleString('en-US', { day: '2-digit' })
+    const month = dateObject.toLocaleString('en-US', { month: '2-digit' })
+    const year = dateObject.toLocaleString('en-US', { year: 'numeric' })
+    const hour = dateObject.toLocaleString('en-US', { hour: '2-digit', hour12: false })
+    const minute = dateObject.toLocaleString('en-US', { minute: 'numeric' })
+    const localDateTimeString = `${year}-${month}-${day}, ${hour}:${minute}`
     return localDateTimeString
   }
 }
@@ -172,5 +180,6 @@ export {
   calculateTimeDifference,
   convertUTCtoLocalTime,
   convertUTCtoLocalDateTime,
+  convertUTCtoLocalDate,
 }
 

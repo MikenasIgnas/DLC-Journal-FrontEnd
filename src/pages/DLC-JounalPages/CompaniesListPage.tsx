@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { ConfigProvider, List, Tree }          from 'antd'
+import { Button, ConfigProvider, List, Tree }          from 'antd'
 import React                                   from 'react'
 import { get }                                 from '../../Plugins/helpers'
 import { useCookies }                          from 'react-cookie'
@@ -60,6 +60,14 @@ const CompaniesListPage = () => {
     }
   })
 
+  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined) => {
+    const buttons = [
+      <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
+      <Button type='link' onClick={() => deleteCompany(listItemId)} key={primaryKey}>Ištrinti</Button>,
+    ]
+    return buttons
+  }
+
   return (
     <div className='CompaniesListPageContainer'>
       <CompanyAddition
@@ -75,7 +83,6 @@ const CompaniesListPage = () => {
           const filter = treeCompanies.filter((el) => el.key === item.id)
           return(
             <ListItem
-              deleteListItem={deleteCompany}
               listItemId={item.id}
               photo={item.companyInfo.companyPhoto}
               description={item?.companyInfo?.companyDescription}
@@ -83,14 +90,14 @@ const CompaniesListPage = () => {
               altImage={'noImage.jpg'}
               primaryKey={item.parentCompanyId}
               title={filter[0].children.length >= 1 ?
-                <ConfigProvider theme={{ token: { colorBgContainer: 'none' }}}>
+                <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree
                     showLine
                     switcherIcon={<DownOutlined rev='' />}
                     defaultExpandedKeys={['0-0-0']}
                     treeData={filter} />
                 </ConfigProvider>
-                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>}/>)
+                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>} listButtons={listButtons }/>)
         }}/>
     </div>
   )

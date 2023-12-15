@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import React            from 'react'
-import { Button }       from 'antd'
-import { get }          from '../../../Plugins/helpers'
-import { useCookies }   from 'react-cookie'
-import { VisitsType }   from '../../../types/globalTypes'
-import { useParams }    from 'react-router'
+import React          from 'react'
+import { Button }     from 'antd'
+import { get }        from '../../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
+import { VisitsType } from '../../../types/globalTypes'
+import { useParams }  from 'react-router'
 
 type VisitStatusButtonProps = {
     fetchData:          () => void;
@@ -14,8 +14,9 @@ type VisitStatusButtonProps = {
 }
 
 const VisitStatusButton = ({ fetchData, buttonText, url, setVisitData}: VisitStatusButtonProps) => {
-  const [cookies]   = useCookies(['access_token'])
-  const {id}        = useParams()
+  const [cookies]                   = useCookies(['access_token'])
+  const {id}                        = useParams()
+
   const changeVisitsState = async (url: string) => {
     try {
       const res = await get(`${url}?visitId=${id}`, cookies.access_token)

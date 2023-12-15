@@ -63,6 +63,7 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
             extra:    genExtra(item.premiseName),
             children: (
               <List
+                style={{overflow: 'auto', maxHeight: '300px'}}
                 dataSource={item.racks}
                 renderItem={(rackItem) => (
                   <List.Item>

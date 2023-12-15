@@ -72,7 +72,6 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
     return {...el, value: el.username, label: el.username}
   })
 
-
   const selectCompany = async(_: string, option: CompaniesType) => {
     setSearchParams(`companyId=${option.id}`)
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${option.id}`, cookies.access_token)
@@ -141,8 +140,8 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
         </>
         }
         {isCompanySelected && addressId === 'T72' &&
-        <Form.Item name='scheduledVisitTime' style={{width: '100%'}}>
-          <DatePicker placeholder={'Planuojama vizito data/laikas'} showTime />
+        <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
+          <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
         </Form.Item>
         }
       </div>

@@ -3,7 +3,7 @@
 // /* eslint-disable max-len */
 import React                                                    from 'react'
 import { useParams, useSearchParams }                           from 'react-router-dom'
-import { Button, Card, Form, List }                             from 'antd'
+import { Button, Card, Form, List, message }                    from 'antd'
 import { Descriptions }                                         from 'antd'
 import { useCookies }                                           from 'react-cookie'
 import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
@@ -17,11 +17,12 @@ import filterPermisions                                         from '../../comp
 import VisitInformationItems                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
 import VisitStatusButton                                        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButton'
 import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
+import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
   const [visitData, setVisitData]                             = React.useState<VisitsType[]>()
-  const [addVisitors, setAddVisitors]                         = React.useState(false)
+  const [openVisitorAddition, setOpenVisitorAddition]         = React.useState(false)
   const [clientsEmployees, setClientsEmployees]               = React.useState<EmployeesType[]>()
   const { id }                                                = useParams()
   const [selectedVisitors, setSelectedVisitors]               = React.useState<number[]>([])
@@ -39,6 +40,8 @@ const SingleVisitPage = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
   const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
+  const [messageApi, contextHolder]                           = message.useMessage()
+
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -54,13 +57,11 @@ const SingleVisitPage = () => {
           [key]: value,
         }))
       setUpdatedTransformedArray(updatedArray)
-
       if(visitAddress === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
       }else{
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
       }
-
       const companiesEmployees =  await get(`getAllClientsEmployees?companyId=${companyId}`, cookies.access_token)
       const filteredArray = companiesEmployees.data.filter((visitor: any) =>
         !singleVisit.data[0].visitors.some(
@@ -127,6 +128,46 @@ const SingleVisitPage = () => {
     setSelectedVisitors((prev) => prev.includes(id) ? prev : [...prev, id])
   }
 
+  const startVisit = async() => {
+    const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null)
+    const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature !== null)
+    if (edit){
+      messageApi.error({
+        type:    'error',
+        content: 'Neišsaugoti duomenys',
+      })
+    }else if(visitData && visitData?.[0]?.visitPurpose.length > 0 && visitData && visitData?.[0]?.visitors.length > 0 && hasId && hasSignatures ) {
+      const res = await get(`startVisit?visitId=${id}`, cookies.access_token)
+      if(!res.error){
+        messageApi.success({
+          type:    'success',
+          content: 'Visitas pradėtas',
+        })
+        await fetchData()
+      }
+    }else if(visitData && visitData?.[0]?.visitors.length <= 0 ){
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinkti įmonės darbuotojai',
+      })
+    }else if (visitData && visitData?.[0]?.visitPurpose.length <= 0 ){
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinktas vizito tikslas',
+      })
+    }else if(!hasId){
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinktas dokumento tipas',
+      })
+    }else if(!hasSignatures){
+      messageApi.error({
+        type:    'error',
+        content: 'Truksta parašo',
+      })
+    }
+  }
+
   return (
     <Form form={form} onFinish={saveChanges}>
       <Descriptions
@@ -134,8 +175,9 @@ const SingleVisitPage = () => {
         title={<VisitDescriptionTitle edit={edit}/>}
         items={items}
       />
-      {addVisitors && clientsEmployees && clientsEmployees?.length > 0 &&
+      {openVisitorAddition && clientsEmployees && clientsEmployees?.length > 0 &&
       <VisitorAdditionList
+        setOpenVisitorAddition={setOpenVisitorAddition}
         clientsEmployees={clientsEmployees}
         searchEmployee={searchEmployee}
         searchEmployeeValue={searchEmployeeValue}
@@ -145,7 +187,7 @@ const SingleVisitPage = () => {
       }
       <Card
         title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}
-        extra={<Button onClick={() => setAddVisitors(true)} type='link' >Pridėti Lankytoją</Button>}>
+        extra={<Button onClick={() => setOpenVisitorAddition(true)} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitData?.[0].visitors}
           renderItem={(item, i) =>
@@ -159,6 +201,7 @@ const SingleVisitPage = () => {
               occupation={item.selectedVisitor.occupation}
               permissions={item.selectedVisitor.permissions}
               deleteVisitor={deleteVisitor}
+              employeePhoto={item.selectedVisitor.employeePhoto}
               index={i}
             />
           }
@@ -201,7 +244,7 @@ const SingleVisitPage = () => {
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         <div style={{ width: '30%', display: 'flex', justifyContent: 'space-around'}}>
           {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
-            <VisitStatusButton url='startVisit' fetchData={fetchData} buttonText={'Pradėti vizitą'} setVisitData={setVisitData}/>
+            <Button onClick={startVisit}>Pradėti vizitą</Button>
           )}
           {visitData?.[0]?.startDate && visitData?.[0]?.startTime && (
             <VisitStatusButton url='prepareVisit' fetchData={fetchData} buttonText={'Paruošti vizitą'} setVisitData={setVisitData}/>
@@ -211,6 +254,7 @@ const SingleVisitPage = () => {
           )}
         </div>
       </div>
+      <SuccessMessage contextHolder={contextHolder} />
     </Form>
   )
 }

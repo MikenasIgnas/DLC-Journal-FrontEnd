@@ -17,19 +17,16 @@ type ClientsEmployeesTabProps = {
   }
 const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved, list, setEditClientsEmployee, companyId }: ClientsEmployeesTabProps) => {
   const dispatch = useAppDispatch()
-  const openEmployeeAdditionModal = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
   return (
     <div className='ClientsEmployeesTabContainer'>
       <div className='EmployeeAdditionButton'>
         <Button onClick={() => dispatch(setOpenEmployeeAdditionModal(true))}>Pridėti darbuotoją</Button>
       </div>
-      {openEmployeeAdditionModal &&
-        <EmployeesAdditionModal
-          companyName={companyName}
-          companyId={companyId as number | null}
-          urlPath={'addEmployee'}
-        />
-      }
+      <EmployeesAdditionModal
+        companyName={companyName}
+        companyId={companyId as number | null}
+        urlPath={'addEmployee'}
+      />
       <ClientsEmployeeList
         setEditClientsEmployee={setEditClientsEmployee}
         editClientsEmployee={editClientsEmployee}

@@ -4,7 +4,7 @@ import VisitorsListItem         from './VisitorsListItem'
 
 const VisitorsList = () => {
   return (
-    <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
+    <Card title='Lankytojai' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
       <Form.List name='visitors'>
         {(fields) => (
           <List

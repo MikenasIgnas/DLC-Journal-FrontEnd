@@ -6,7 +6,7 @@ import { useCookies }                                                   from 're
 import { EmployeesType }                                                from '../../../../types/globalTypes'
 import { post, uploadPhoto }                                            from '../../../../Plugins/helpers'
 import PhotoUploader                                                    from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch }                                               from '../../../../store/hooks'
+import { useAppDispatch, useAppSelector }                                               from '../../../../store/hooks'
 import { setOpenEmployeeAdditionModal }                                 from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type EmployeesAdditionModal = {
@@ -21,6 +21,8 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
   const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
+  const openEmployeeAdditionModal = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
+
   const addEmployees = async(values: EmployeesType) => {
     if(companyId){
       values.companyId = companyId
@@ -39,7 +41,7 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
     <Modal
       title='Pridėkite įmonės darbuotoją'
       centered
-      open
+      open={openEmployeeAdditionModal}
       onOk={() => dispatch(setOpenEmployeeAdditionModal(false))}
       onCancel={() => dispatch(setOpenEmployeeAdditionModal(false))}
       footer={false}

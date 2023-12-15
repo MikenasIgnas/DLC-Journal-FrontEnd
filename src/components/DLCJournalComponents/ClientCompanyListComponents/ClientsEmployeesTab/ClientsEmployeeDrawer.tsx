@@ -3,11 +3,12 @@ import React                                                                    
 import { Button, Checkbox, Col, Divider, Drawer, Form, Input, Row, UploadFile } from 'antd'
 import { useForm }                                                              from 'antd/es/form/Form'
 import { EmployeesType }                                                        from '../../../../types/globalTypes'
-import { get, post, uploadPhoto }                                               from '../../../../Plugins/helpers'
+import { convertUTCtoLocalDate, get, post, uploadPhoto }                                               from '../../../../Plugins/helpers'
 import { useCookies }                                                           from 'react-cookie'
 import { useSearchParams }                                                      from 'react-router-dom'
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppSelector }                                                       from '../../../../store/hooks'
+import { useAppDispatch, useAppSelector }                                                       from '../../../../store/hooks'
+import { setOpenClientsEmployeesDrawer } from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
@@ -38,7 +39,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const employeeId                  = searchParams.get('employeeId')
   const companyId                   = searchParams.get('companyId')
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
-
+  const dipatch                     = useAppDispatch()
   React.useEffect(() => {
     (async () => {
       try{
@@ -65,6 +66,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   }
   const onClose = () => {
     setEditClientsEmployee(false)
+    dipatch(setOpenClientsEmployeesDrawer(false))
   }
 
   return (
@@ -73,7 +75,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
         <Form form={form} onFinish={editUser}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
-                User Profile
+                Darbuotojo Profilis
             </p>
             <Button htmlType='submit' loading={uploading} style={{display: 'flex', marginLeft: 'auto'}} type='link'>{!editClientsEmployee ? 'Edit' : 'Save' }</Button>
           </div>
@@ -110,8 +112,8 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
               <Row>
                 <Col span={12}>
                   {!editClientsEmployee ?
-                    <DescriptionItem title='Gimimo data' content={`${employee?.birthday}`} /> :
-                    <Form.Item name='birthday' initialValue={employee?.birthday} style={{width: '270px', padding: '0px'}} >
+                    <DescriptionItem title='Gimimo data' content={convertUTCtoLocalDate(employee?.birthday)} /> :
+                    <Form.Item name='birthday' initialValue={convertUTCtoLocalDate(employee?.birthday)} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }

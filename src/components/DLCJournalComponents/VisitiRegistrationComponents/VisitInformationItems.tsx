@@ -88,7 +88,7 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
       key:   '7',
       label: 'Lydintis asmuo',
       children:
-          <div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
             {!edit ?
               <div>{visitData?.[0].dlcEmployees}</div> :
               <Form.Item name='dlcEmployees' initialValue={visitData?.[0].dlcEmployees}>

@@ -80,33 +80,33 @@ const PageLayout = ({children}:PageLayoutProps) => {
     getItem('DLC Žurnalas', 'sub1', <ReadOutlined />, [
       getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
       getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'),
-      getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=4&page=1&limit=10'} >Vizitai</Link>, '3'),
-      getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=3'} >Įmonių sąrašas</Link>, '4'),
-      getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=3&tabKey=1'} >Kolokacijos</Link>, '5'),
-      getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=5'} >Statistika</Link>, '6'),
+      getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10'} >Vizitai</Link>, '3'),
+      getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4'} >Įmonių sąrašas</Link>, '4'),
+      getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'),
+      getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'),
     ]),
     getItem('DLC Checklistas', 'sub2', <ScheduleOutlined />, [
-      getItem(<Link to={'DLC Checklistas?menuKey=6'} >Pradėti</Link>, '7'),
-      getItem(<Link to={'DLC Checklistas/Istorija?menuKey=7&page=1&limit=10'} >Istorija</Link>, '8'),
+      getItem(<Link to={'DLC Checklistas?menuKey=7'} >Pradėti</Link>, '7'),
+      getItem(<Link to={'DLC Checklistas/Istorija?menuKey=8&page=1&limit=10'} >Istorija</Link>, '8'),
     ]),
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
-      getItem(<Link to={'/Mano_Profilis?menuKey=8'} >Mano Profilis</Link>, '9'),
-      getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=9'} >Sukurti darbuotoją</Link>, '10'),
-      getItem(<Link to={'/Visi_Darbuotojai?menuKey=10&page=1&limit=10'} >Visi darbuotojai</Link>, '11'),
-      getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=11&page=1&limit=10'} >Darbuotojų archyvas</Link>, '12'),
+      getItem(<Link to={'/Mano_Profilis?menuKey=9'} >Mano Profilis</Link>, '9'),
+      getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10'),
+      getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10'} >Visi darbuotojai</Link>, '11'),
+      getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10'} >Darbuotojų archyvas</Link>, '12'),
     ]),
   ]
 
   const headerItems: MenuItem[] = [
     getItem(
-      <Link to={'/Mano_Profilis?menuKey=12'} className='UserDisplay'>Darbuotojas: {userName}</Link>
-      , '12'),
+      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {userName}</Link>
+      , '13'),
   ]
 
   const headerItems2: MenuItem[] = [
     getItem(
       <LogoutOutlined style={{fontSize: '20px'}} className='LogOutIcon' onClick={userLogOut}/>,
-      '13'),
+      '14'),
   ]
 
   return (

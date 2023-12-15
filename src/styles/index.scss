@@ -138,6 +138,9 @@
     }
   }
 }
+:where(.css-dev-only-do-not-override-qf76go).ant-descriptions .ant-descriptions-item-container {
+  display: inline; 
+}
 .SubClientsContainer{
   width: 100%;
 }

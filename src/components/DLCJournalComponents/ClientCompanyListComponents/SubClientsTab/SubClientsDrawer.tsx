@@ -73,6 +73,15 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
     }
   }
 
+
+  const listButtons = () => {
+    const buttons = [
+      <></>,
+    ]
+    return buttons
+  }
+
+
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
       <Divider >Imonės Profilis</Divider>
@@ -118,7 +127,7 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
         bordered
         renderItem={(item: EmployeesType) => (
           <ListItem
-            deleteListItem={deleteSubClientEmployee}
+            listButtons={listButtons}
             listItemId={item.companyId}
             primaryKey={item.employeeId}
             photo={item.employeePhoto}

@@ -13,9 +13,9 @@ const PhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => 
     maxCount: 1,
     multiple: false,
     onRemove: (file) => {
-      const index = fileList.indexOf(file)
-      const newFileList = fileList.slice()
-      newFileList.splice(index, 1)
+      const index = fileList?.indexOf(file)
+      const newFileList = fileList?.slice()
+      newFileList?.splice(index, 1)
       setFileList(newFileList)
     },
     beforeUpload: (file) => {

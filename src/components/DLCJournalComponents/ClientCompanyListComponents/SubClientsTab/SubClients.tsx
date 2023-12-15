@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React, { useState }                            from 'react'
-import { Divider, List }                              from 'antd'
+import { Button, Divider, List }                              from 'antd'
 import { get }                                        from '../../../../Plugins/helpers'
 import { ColocationDataType, CompaniesType }          from '../../../../types/globalTypes'
 import { useCookies }                                 from 'react-cookie'
@@ -56,9 +56,9 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     }
   }
 
-  const deletSubClient = async (subClientId: number | undefined, parentCompanyId: number | undefined ) => {
+  const deletSubClient = async (subClientId: number | undefined) => {
     if(subClientId ){
-      await get(`deleteCompaniesSubClient?subClientId=${subClientId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
+      await get(`deleteCompany/${subClientId}`, cookies.access_token)
       subClientCompanyRemoved(subClientId)
     }
   }
@@ -75,6 +75,21 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     setOpen(false)
   }
 
+  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined, wasMainClient?: boolean) => {
+    if(wasMainClient){
+      const buttons = [
+        <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={primaryKey}> Perkelti </Button>,
+        <Button type='link' onClick={() => deletSubClient(listItemId)} key={primaryKey}>Ištrinti</Button>,
+      ]
+      return buttons
+    }else{
+      const buttons = [
+        <Button type='link' onClick={() => showDrawer(listItemId)} key={primaryKey}>Peržiūrėti</Button>,
+        <Button type='link' onClick={() => deletSubClient(listItemId)} key={primaryKey}>Ištrinti</Button>,
+      ]
+      return buttons
+    }
+  }
   return (
     <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>
@@ -84,18 +99,16 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
         renderItem={(item) => {
           return(
             <ListItem
-              showDrawer={showDrawer}
-              deleteListItem={deletSubClient}
               listItemId={item?.id}
               primaryKey={item.parentCompanyId}
               photo={item?.companyInfo?.companyPhoto}
               title={item?.companyInfo?.companyName}
               description={item?.companyInfo?.companyDescription}
-              subClient={item?.wasMainClient}
+              wasMainClient={item?.wasMainClient}
               removeFormSubClientList={removeFormSubClientList}
               photosFolder={'../CompanyLogos'}
               altImage={'noImage.jpg'}
-            />
+              listButtons={listButtons} />
           )
         }}/>
       { open &&

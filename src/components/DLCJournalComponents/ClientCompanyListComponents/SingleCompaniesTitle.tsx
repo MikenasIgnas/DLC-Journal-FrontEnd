@@ -1,20 +1,24 @@
 /* eslint-disable max-len */
 import React           from 'react'
-import { Form, Input } from 'antd'
+import { Avatar, Form, Input } from 'antd'
 
 type SingleCompaniesTitleProps = {
     companyTitle:       string | undefined;
     edit:               boolean;
     companyDescription: string | undefined;
+    companyLogo:        string | undefined;
 }
 
-const SingleCompanyTitle = ({companyTitle, companyDescription, edit}: SingleCompaniesTitleProps) => {
+const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo}: SingleCompaniesTitleProps) => {
   return (
     <div >
       {!edit
         ?
         <div>
-          <div style={{fontSize: '20px', marginLeft: '20px'}}>{companyTitle}</div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Avatar src={`../../CompanyLogos/${companyLogo}`}></Avatar>
+            <div style={{fontSize: '20px', marginLeft: '20px'}}>{companyTitle}</div>
+          </div>
           <div>{companyDescription}</div>
         </div>
         :

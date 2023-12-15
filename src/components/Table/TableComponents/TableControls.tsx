@@ -19,7 +19,7 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     delay( async() => {
-      setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value}`)
+      setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value.toLocaleLowerCase()}`)
       if(e.target.value === ''){
         setSearchParams(`page=${page}&limit=${limit}`)
       }

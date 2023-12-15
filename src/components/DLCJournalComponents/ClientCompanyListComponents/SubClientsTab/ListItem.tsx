@@ -1,49 +1,38 @@
 /* eslint-disable max-len */
-import React                    from 'react'
-import { Avatar, Button, List } from 'antd'
-import SubClientTag             from './SubClientTag'
-import { Link }                 from 'react-router-dom'
+import React            from 'react'
+import { Avatar, List } from 'antd'
+import SubClientTag     from './SubClientTag'
 
 type ListItemProps = {
-  showDrawer?:              (listItemId: number | undefined, itemId?: number | undefined) => void
-  deleteListItem:           (listItemId: number | undefined, itemId?: number | undefined) => void
   listItemId:               number | undefined;
   photo:                    string | undefined;
   title:                    string | React.ReactNode;
   description:              string;
-  subClient?:               boolean
+  wasMainClient?:               boolean
   removeFormSubClientList?: (subClientId: number | undefined) => void
   photosFolder:             string;
   altImage:                 string;
   primaryKey?:              number | undefined
+  listButtons: (listItemId: number | undefined, primaryKey : number | undefined, wasMainClient?: boolean) => React.JSX.Element[]
 };
 
 const ListItem = ({
-  showDrawer,
-  deleteListItem,
-  removeFormSubClientList,
   listItemId,
   photo,
   title,
   description,
-  subClient,
   photosFolder,
   altImage,
   primaryKey,
+  listButtons,
+  wasMainClient,
 }: ListItemProps) => {
-
+  const buttons = listButtons(listItemId, primaryKey, wasMainClient)
   return (
     <>
       <List.Item
         style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-        actions={
-          [
-            showDrawer ? <Button type='link' onClick={() => showDrawer(listItemId, primaryKey)} key={primaryKey}>Peržiūrėti</Button>
-              : <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
-            subClient === true && <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={primaryKey}> Perkelti </Button>,
-            <Button type='link' onClick={() => deleteListItem(listItemId, primaryKey)} key={primaryKey}>Ištrinti</Button>,
-          ]
-        }>
+        actions={buttons}>
         <List.Item.Meta
           avatar={
             <div style={{display: 'flex', alignItems: 'center'}}>

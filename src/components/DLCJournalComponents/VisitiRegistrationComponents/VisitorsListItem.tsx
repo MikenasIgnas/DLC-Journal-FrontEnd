@@ -13,10 +13,11 @@ type VisitorsListItemProps = {
 }
 
 const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
-  const [visible, setVisible]     = React.useState(false)
-  const signatureCanvasRef        = React.useRef<any>(null)
-  const form                      = Form.useFormInstance()
-  const visitors: VisitorsType[]  = form.getFieldValue('visitors')
+  const [visible, setVisible]         = React.useState(false)
+  const signatureCanvasRef            = React.useRef<any>(null)
+  const form                          = Form.useFormInstance()
+  const visitors: VisitorsType[]      = form.getFieldValue('visitors')
+  const visitorsItem: VisitorsType    = form.getFieldValue('visitors')[item.name]
 
   const oncancel = () => {
     if (visible && signatureCanvasRef.current) {
@@ -66,9 +67,9 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
           <div style={{display: 'flex', alignItems: 'center', width: '400px', justifyContent: 'space-around'}}>
             <Form.Item noStyle name={[item.name, 'idType']}>
               <Select placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={identificationOptions} />
-            </Form.Item>,
+            </Form.Item>
             <div>
-              {form.getFieldValue('visitors')[item.name].signature ? (
+              {visitorsItem.signature ? (
                 <div className='SignatureContainer'>
                   <CheckOutlined className='CheckIcon'/>
                   <EyeOutlined className='PreviewIcon' onClick={() => setVisible(true)} />
@@ -83,11 +84,11 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
       >
         <List.Item.Meta
           className='VisitorsListItem'
-          avatar={<Avatar src={''} />}
-          title={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.name} {form.getFieldValue('visitors')[item.name].selectedVisitor.lastName}</div>}
-          description={<div>{form.getFieldValue('visitors')[item.name].selectedVisitor.occupation}</div>}
+          avatar={<Avatar shape='square' size={50} src={visitorsItem.selectedVisitor.employeePhoto ? `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` : '../ClientsEmployeesPhotos/noUserImage.jpeg'}/>}
+          title={<div>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</div>}
+          description={<div>{visitorsItem.selectedVisitor.occupation}</div>}
         />
-        <div>Leidimai: {form.getFieldValue('visitors')[item.name].selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
+        <div>Leidimai: {visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
         <Modal
           open={visible}
           onCancel={oncancel}

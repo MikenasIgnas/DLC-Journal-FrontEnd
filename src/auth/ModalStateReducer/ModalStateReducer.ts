@@ -31,6 +31,9 @@ const modalSlice = createSlice({
     setOpenSubClientAdditionModal(state, { payload }: PayloadAction<boolean>) {
       state.openSubClientAdditionModal = payload
     },
+    setOpenClientsEmployeesDrawer(state, { payload }: PayloadAction<boolean>) {
+      state.openClientsEmployeesDrawer = payload
+    },
     setOpenCollocationAdditionModal(state, { payload }: PayloadAction<boolean>) {
       state.openCollocationAdditionModal = payload
     },
@@ -46,6 +49,7 @@ export const {
   setOpenSubClientAdditionModal,
   setOpenCollocationAdditionModal,
   setOpenCollocationRemovalModal,
+  setOpenClientsEmployeesDrawer,
 } = modalSlice.actions
 
 export default modalSlice.reducer

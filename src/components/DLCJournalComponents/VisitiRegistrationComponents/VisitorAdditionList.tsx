@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                    from 'react'
-import { Card, Input, List }    from 'antd'
+import { Button, Card, Input, List }    from 'antd'
 import { EmployeesType }        from '../../../types/globalTypes'
 import VisitorAdditionListItem  from './VisitorAdditionListItem'
 
@@ -10,13 +10,20 @@ type VisitorAdditionListProps = {
     searchEmployeeValue:  string | undefined
     addVisitor:           (id:number) => void
     removeVisitor:        (id:number) => void
+    setOpenVisitorAddition?: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor }: VisitorAdditionListProps) => {
+const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
   return (
-    <Card title={'Įmonės Darbuotojai'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
+    <Card title={
+      <div style={{display: 'flex', justifyContent: 'space-between'}}>
+        <div>Įmonės Darbuotojai</div>
+        {setOpenVisitorAddition && <Button type='link' onClick={() => setOpenVisitorAddition(false)}>Uždaryti</Button>}
+      </div>
+    } style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
       <Input placeholder='Ieškoti' onChange={searchEmployee}/>
       <List
+        style={{overflow: 'auto', maxHeight: '450px'}}
         dataSource={clientsEmployees}
         grid={{
           gutter: 16,
@@ -32,6 +39,7 @@ const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeVa
             item={item}
             addVisitor={addVisitor}
             removeVisitor={removeVisitor}
+            photoFolder='../../ClientsEmployeesPhotos/'
           />
         }>
       </List>

@@ -24,7 +24,7 @@ const VisitRegistrationPage= () => {
     const visitPurpose = localStorage.getItem('visitPurpose')
 
     if(companyId && (values?.visitors && values?.visitors.length > 0)){
-      values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : null
+      values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : []
       values.visitStatus = 'processing'
       values.creationDate = getCurrentDate()
       values.creationTime = getCurrentTime()

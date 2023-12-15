@@ -12,9 +12,10 @@ type VisitorAdditionListItemProps = {
     item:          EmployeesType
     addVisitor:    (id:number) => void
     removeVisitor: (id:number) => void
+    photoFolder:    string;
 }
 
-const VisitorAdditionListItem = ({item, addVisitor, removeVisitor}: VisitorAdditionListItemProps) => {
+const VisitorAdditionListItem = ({item, addVisitor, removeVisitor, photoFolder}: VisitorAdditionListItemProps) => {
   const [cookies]                   = useCookies(['access_token'])
   const {id}                        = useParams()
   const form                        = Form.useFormInstance<VisitsType>()
@@ -53,7 +54,7 @@ const VisitorAdditionListItem = ({item, addVisitor, removeVisitor}: VisitorAddit
       ]}
     >
       <Meta
-        avatar={<Avatar src='https://xsgames.co/randomusers/avatar.php?g=pixel&key=2' />}
+        avatar={<Avatar shape='square' size={90} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
         title={`${item.name} ${item.lastName}`}
         description={item.occupation}
       />
