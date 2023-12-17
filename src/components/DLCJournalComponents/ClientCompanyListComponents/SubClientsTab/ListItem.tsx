@@ -36,11 +36,10 @@ const ListItem = ({
         <List.Item.Meta
           avatar={
             <div style={{display: 'flex', alignItems: 'center'}}>
-              <div style={{marginRight: '10px'}}>{listItemId}</div>
               <Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
             </div>
           }
-          title={<>{title}</>}
+          title={title}
           description={description}
         />
         {primaryKey ? <SubClientTag parentCompanyId={primaryKey}/> : ''}

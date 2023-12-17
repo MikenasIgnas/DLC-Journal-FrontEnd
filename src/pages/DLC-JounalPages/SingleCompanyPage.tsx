@@ -15,13 +15,14 @@ import { useAppSelector } from '../../store/hooks'
 
 
 type EmployeesType = {
-  _id:         string;
-  companyId:   number;
-  name:        string;
-  lastName:    string;
-  occupation:  string;
-  employeeId:  number;
-  permissions: string[];
+  _id:            string;
+  companyId:      number;
+  name:           string;
+  lastName:       string;
+  occupation:     string;
+  employeeId:     number;
+  permissions:    string[];
+  employeePhoto:  string
 }
 
 type CompanyFormType = {
@@ -49,8 +50,9 @@ const SingleCompanyPage = () => {
   const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
   const [edit, setEdit]                               = React.useState(false)
   const openEmployeeAdditionModal                     = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
-  const setSubClientAdded                         = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
+  const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -129,6 +131,7 @@ const SingleCompanyPage = () => {
         editClientsEmployee={editClientsEmployee}
         companyName={company?.companyInfo?.companyName}
         list={employeesList}
+        setEmployeesList={setEmployeesList}
         employeeRemoved={employeeRemoved}
         companyId={company?.id}
       />,

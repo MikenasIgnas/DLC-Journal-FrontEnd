@@ -6,7 +6,7 @@ import { useParams, useSearchParams }                           from 'react-rout
 import { Button, Card, Form, List, message }                    from 'antd'
 import { Descriptions }                                         from 'antd'
 import { useCookies }                                           from 'react-cookie'
-import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
+import { convertUTCtoLocalTime, get, getFile, post }                     from '../../Plugins/helpers'
 import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
 import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
 import CollocationsList                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
@@ -129,8 +129,9 @@ const SingleVisitPage = () => {
   }
 
   const startVisit = async() => {
-    const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null)
-    const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature !== null)
+    const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null && obj.idType !== '')
+    const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature && obj.signature !== null && obj.signature !== undefined)
+    console.log(visitData?.[0]?.visitors)
     if (edit){
       messageApi.error({
         type:    'error',
@@ -163,7 +164,7 @@ const SingleVisitPage = () => {
     }else if(!hasSignatures){
       messageApi.error({
         type:    'error',
-        content: 'Truksta parašo',
+        content: 'Trūksta parašo',
       })
     }
   }

@@ -1,20 +1,22 @@
+/* eslint-disable max-len */
 import React                 from 'react'
-import { Card }              from 'antd'
+import { Button, Card }              from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
 
 type JournalStartPageCardProps = {
     navigateLink: string;
     buttonText:   string;
+    icon:         React.ReactNode
 }
 
-const JournalStartPageCard = ({navigateLink, buttonText}:JournalStartPageCardProps) => {
+const JournalStartPageCard = ({navigateLink, buttonText, icon}:JournalStartPageCardProps) => {
   const navigate = useNavigate()
   return (
     <Card
       hoverable={true}
       onClick={()=> navigate(navigateLink)}
       style={{
-        width:      '400px',
+        width:      '350px',
         height:     '150px',
         fontSize:   '25px',
         textAlign:  'center',
@@ -22,7 +24,7 @@ const JournalStartPageCard = ({navigateLink, buttonText}:JournalStartPageCardPro
         alignItems: 'center',
         margin:     '20px',
       }}>
-      <Link to={navigateLink}>{buttonText}</Link>
+      <Button type='link' style={{fontSize: '25px'}} onClick={() => navigate(navigateLink)} icon={icon}>{buttonText}</Button>
     </Card>
   )
 }

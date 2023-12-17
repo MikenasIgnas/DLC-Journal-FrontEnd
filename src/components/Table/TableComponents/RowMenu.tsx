@@ -6,12 +6,18 @@ import { Space, type MenuProps, Dropdown }  from 'antd'
 type RowMenuType ={
   navigate:    () => void;
   deleteItem?: () => Promise<void>
+  generatePDF?: () => Promise<void>
 }
 
-const RowMenu = ({navigate, deleteItem}: RowMenuType) => {
+const RowMenu = ({navigate, deleteItem, generatePDF}: RowMenuType) => {
   const onClick: MenuProps['onClick'] = ({ key }) => {
     if(key === '1'){
       navigate()
+    }
+    if(key === '2'){
+      if(generatePDF){
+        generatePDF()
+      }
     }
     if(key === '3'){
       if(deleteItem){

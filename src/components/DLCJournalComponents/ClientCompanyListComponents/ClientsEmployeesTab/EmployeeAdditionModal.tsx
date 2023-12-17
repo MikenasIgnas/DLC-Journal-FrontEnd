@@ -21,7 +21,6 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
   const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
-  const openEmployeeAdditionModal = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
 
   const addEmployees = async(values: EmployeesType) => {
     if(companyId){
@@ -30,6 +29,7 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
       await post(urlPath, values, cookies.access_token)
       if(fileList[0]){
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
+        dispatch(setOpenEmployeeAdditionModal(false))
       }
       dispatch(setOpenEmployeeAdditionModal(false))
     }
@@ -41,7 +41,7 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
     <Modal
       title='Pridėkite įmonės darbuotoją'
       centered
-      open={openEmployeeAdditionModal}
+      open
       onOk={() => dispatch(setOpenEmployeeAdditionModal(false))}
       onCancel={() => dispatch(setOpenEmployeeAdditionModal(false))}
       footer={false}

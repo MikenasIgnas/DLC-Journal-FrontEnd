@@ -16,7 +16,7 @@ const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo
         ?
         <div>
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <Avatar src={`../../CompanyLogos/${companyLogo}`}></Avatar>
+            <Avatar src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`}></Avatar>
             <div style={{fontSize: '20px', marginLeft: '20px'}}>{companyTitle}</div>
           </div>
           <div>{companyDescription}</div>

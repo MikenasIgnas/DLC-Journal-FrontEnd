@@ -4,7 +4,7 @@
 import React                                                  from 'react'
 import { get }                                                from '../../../Plugins/helpers'
 import { useCookies }                                         from 'react-cookie'
-import { Button, Empty, Form, FormInstance, Select }                 from 'antd'
+import { Button, Empty, Form, FormInstance, Select }          from 'antd'
 import { useSearchParams }                                    from 'react-router-dom'
 import { CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                              from './VisitRegistrationSelect'
@@ -16,8 +16,6 @@ import VisitorAdditionList                                    from './VisitorAdd
 import filterPermisions                                       from './filterPermisions'
 import {addresses}                                            from './StaticSelectOptions'
 import { DatePicker }                                         from 'antd'
-
-const { RangePicker } = DatePicker
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
@@ -106,7 +104,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
 
   return (
     <div>
-      <Button onClick={resetForm}> Išvalyti</Button>
+      <Button style={{marginLeft: '1000px'}} type='link' onClick={resetForm}> Išvalyti</Button>
       <div className='VisitRegistrationFormContainer'>
         <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
           <Select

@@ -19,6 +19,30 @@ const get = async (url, token) => {
   }
 }
 
+
+const getFile = async (url, token) => {
+  try {
+    const response = await fetch(`http://localhost:4000/${url}`, {
+      method:  'GET',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+
+    if (response.status === 401) {
+      console.error('Unauthorized request')
+      return null
+    }
+
+    const data = await response.blob()
+    return data
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
 const validateUser = async (url, data) => {
   const options = {
     method:  'POST',
@@ -181,5 +205,6 @@ export {
   convertUTCtoLocalTime,
   convertUTCtoLocalDateTime,
   convertUTCtoLocalDate,
+  getFile,
 }
 
