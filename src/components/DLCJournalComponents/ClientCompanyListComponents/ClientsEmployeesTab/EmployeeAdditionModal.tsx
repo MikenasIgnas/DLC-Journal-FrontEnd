@@ -4,9 +4,9 @@ import { useForm }                                                      from 'an
 import React                                                            from 'react'
 import { useCookies }                                                   from 'react-cookie'
 import { EmployeesType }                                                from '../../../../types/globalTypes'
-import { post, uploadPhoto }                                            from '../../../../Plugins/helpers'
+import { convertUTCtoLocalDate, post, uploadPhoto }                     from '../../../../Plugins/helpers'
 import PhotoUploader                                                    from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch, useAppSelector }                                               from '../../../../store/hooks'
+import { useAppDispatch }                                               from '../../../../store/hooks'
 import { setOpenEmployeeAdditionModal }                                 from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type EmployeesAdditionModal = {
@@ -26,6 +26,7 @@ const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdd
     if(companyId){
       values.companyId = companyId
       values.employeePhoto = ''
+      values.birthday = convertUTCtoLocalDate(values.birthday)
       await post(urlPath, values, cookies.access_token)
       if(fileList[0]){
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)

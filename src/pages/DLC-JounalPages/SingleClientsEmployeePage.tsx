@@ -24,7 +24,7 @@ const SingleClientsEmployeePage = () => {
   React.useEffect(() => {
     (async () => {
       const clientsEmployee       = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
-      const employeesCompanyName  = await get(`getClientsEmployeesCompanyName/${companyId}`, cookies.access_token)
+      const employeesCompanyName  = await get(`getClientsEmployeesCompanyName?companyId=${companyId}`, cookies.access_token)
       setEmployee(clientsEmployee.data)
       setCompanyName(employeesCompanyName.data)
     })()

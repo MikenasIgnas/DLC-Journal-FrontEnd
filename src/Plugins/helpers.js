@@ -191,6 +191,42 @@ const convertUTCtoLocalDateTime = (utcTimestamp) => {
   }
 }
 
+
+const generatePDF = async (visitId, token) => {
+  try {
+    const response = await getFile(`generatePDF?visitId=${visitId}`, token)
+    if(response){
+      const blob = new Blob([response], { type: 'visit/pdf' })
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(blob)
+      link.download = 'visit.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  } catch (error) {
+    console.error('Error downloading file:', error)
+  }
+}
+
+const generateCustomPDF = async (dateFrom, dateTo, token) => {
+  try {
+    const response = await getFile(`generateCustomPDF?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
+    if(response){
+      const blob = new Blob([response], { type: 'visit/pdf' })
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(blob)
+      link.download = 'visit.pdf'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  } catch (error) {
+    console.error('Error downloading file:', error)
+  }
+}
+
+
 export {
   get,
   post,
@@ -206,5 +242,7 @@ export {
   convertUTCtoLocalDateTime,
   convertUTCtoLocalDate,
   getFile,
+  generatePDF,
+  generateCustomPDF,
 }
 

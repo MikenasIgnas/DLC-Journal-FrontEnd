@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem, get, getFile }              from '../../Plugins/helpers'
+import { deleteTableItem, generatePDF } from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
@@ -49,23 +49,6 @@ const VisitPage = () => {
   const navigate                        = useNavigate()
   const {data, count, setData}          = useSetVisitsData()
 
-  const generatePDF = async (visitId: number) => {
-    try {
-      const response = await getFile(`generatePDF?visitId=${visitId}`, cookies.access_token)
-      if(response){
-        const blob = new Blob([response], { type: 'visit/pdf' })
-        const link = document.createElement('a')
-        link.href = window.URL.createObjectURL(blob)
-        link.download = 'visit.pdf'
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      }
-    } catch (error) {
-      console.error('Error downloading file:', error)
-    }
-  }
-
   return (
     <FullTable
       tableSorter={tableSorter}
@@ -90,7 +73,7 @@ const VisitPage = () => {
           rowMenu={<RowMenu
             navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
             deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
-            generatePDF={() => generatePDF(el.id)}
+            generatePDF={() => generatePDF(el.id, cookies.access_token)}
           />}
         />
       ))}
