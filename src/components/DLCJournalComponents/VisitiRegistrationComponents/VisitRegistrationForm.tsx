@@ -104,7 +104,6 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
 
   return (
     <div>
-      <Button style={{marginLeft: '1000px'}} type='link' onClick={resetForm}> Išvalyti</Button>
       <div className='VisitRegistrationFormContainer'>
         <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
           <Select
@@ -177,6 +176,10 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
           setListItems={setCarPlates}
         />
       }
+      <div className='VisitRegistrationButtonContainer'>
+        <Button htmlType='submit'>Registruoti</Button>
+        <Button style={{marginLeft: '20px'}} onClick={resetForm}> Išvalyti</Button>
+      </div>
     </div>
   )
 }

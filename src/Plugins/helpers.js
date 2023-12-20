@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 const get = async (url, token) => {
   try {
     const response = await fetch(`http://localhost:4000/${url}`, {

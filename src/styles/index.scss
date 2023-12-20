@@ -202,11 +202,19 @@
   align-items: center;
   .VisitRegistrationFormItem{
     width: 100%;
+    text-align: center;
   }
   .AddVisitorButton{
     margin: 10px;
   }
 }
+
+.VisitRegistrationButtonContainer{
+  display: flex; 
+  width: 100%; 
+  justify-content: center
+}
+
 .ErrorText{
   color: red;
   padding: 15px;
@@ -218,6 +226,7 @@
 }
 .VisitorsListItemContainer{
   flex: 0 0;
+  text-align: center;
   .VisitorsListItemSelect{
     width: 200px;
   }

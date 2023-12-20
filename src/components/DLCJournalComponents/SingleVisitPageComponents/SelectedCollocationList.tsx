@@ -32,7 +32,7 @@ const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocati
                 {mix ? <div className='ErrorText'>Reikalinga DLC inžinieriaus palyda</div> : null}
               </div>}
             >
-              <Form.Item initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
+              <Form.Item rules={[{ required: true, message: 'pasirinkite kolokacijas' }]} initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
                 <Checkbox.Group>
                   {objEntries[0][1].map((option, index) => (
                     <Checkbox disabled={!edit} key={index} value={option}>

@@ -15,9 +15,9 @@ import RegisteredVisitorsListItem                               from '../../comp
 import VisitorAdditionList                                      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
 import filterPermisions                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
 import VisitInformationItems                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
-import VisitStatusButton                                        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButton'
 import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
 import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
+import useVisitValidation                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -40,8 +40,7 @@ const SingleVisitPage = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
   const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
-  const [messageApi, contextHolder]                           = message.useMessage()
-
+  const {validate, contextHolder} = useVisitValidation()
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -79,6 +78,9 @@ const SingleVisitPage = () => {
     fetchData()
   }, [open, selectedVisitors, edit, visitAddress])
 
+
+
+  console.log(visitData)
   const removeVisitor = (id: number) => {
     setSelectedVisitors((prev) => prev.filter((el) => el !== id))
   }
@@ -129,48 +131,28 @@ const SingleVisitPage = () => {
   }
 
   const startVisit = async() => {
-    const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null && obj.idType !== '')
-    const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature && obj.signature !== null && obj.signature !== undefined)
-    console.log(visitData?.[0]?.visitors)
-    if (edit){
-      messageApi.error({
-        type:    'error',
-        content: 'Neišsaugoti duomenys',
-      })
-    }else if(visitData && visitData?.[0]?.visitPurpose.length > 0 && visitData && visitData?.[0]?.visitors.length > 0 && hasId && hasSignatures ) {
-      const res = await get(`startVisit?visitId=${id}`, cookies.access_token)
-      if(!res.error){
-        messageApi.success({
-          type:    'success',
-          content: 'Visitas pradėtas',
-        })
-        await fetchData()
-      }
-    }else if(visitData && visitData?.[0]?.visitors.length <= 0 ){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinkti įmonės darbuotojai',
-      })
-    }else if (visitData && visitData?.[0]?.visitPurpose.length <= 0 ){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinktas vizito tikslas',
-      })
-    }else if(!hasId){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinktas dokumento tipas',
-      })
-    }else if(!hasSignatures){
-      messageApi.error({
-        type:    'error',
-        content: 'Trūksta parašo',
-      })
-    }
+    validate(visitData, edit, fetchData, 'startVisit', 'Vizitas Pradėtas!')
+  }
+  const endVisit = async() => {
+    validate(visitData, edit, fetchData, 'endVisit', 'Vizitas Baigtas!')
   }
 
+  const prepareVisit = async() => {
+    try {
+      const res = await get(`prepareVisit?visitId=${id}`, cookies.access_token)
+      setVisitData(res.data)
+      await fetchData()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault()
+    }
+  }
   return (
-    <Form form={form} onFinish={saveChanges}>
+    <Form form={form} onFinish={saveChanges} onKeyDown={onkeydown}>
       <Descriptions
         style={{backgroundColor: '#f9f9f9', margin: '10px', padding: '10px'}}
         title={<VisitDescriptionTitle edit={edit}/>}
@@ -245,17 +227,17 @@ const SingleVisitPage = () => {
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         <div style={{ width: '30%', display: 'flex', justifyContent: 'space-around'}}>
           {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
-            <Button onClick={startVisit}>Pradėti vizitą</Button>
+            <Button onClick={startVisit}>Pradėti Vizitą</Button>
           )}
           {visitData?.[0]?.startDate && visitData?.[0]?.startTime && (
-            <VisitStatusButton url='prepareVisit' fetchData={fetchData} buttonText={'Paruošti vizitą'} setVisitData={setVisitData}/>
+            <Button onClick={prepareVisit}>Paruošti Vizitą</Button>
           )}
           {visitData?.[0]?.startDate && visitData?.[0]?.startTime && !visitData?.[0]?.endDate && !visitData?.[0]?.endTime && (
-            <VisitStatusButton url='endVisit' fetchData={fetchData} buttonText={'Baigti visitą'} setVisitData={setVisitData}/>
+            <Button onClick={endVisit}>Baigti Vizitą</Button>
           )}
         </div>
       </div>
-      <SuccessMessage contextHolder={contextHolder} />
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

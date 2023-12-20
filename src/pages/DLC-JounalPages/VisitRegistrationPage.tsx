@@ -22,7 +22,6 @@ const VisitRegistrationPage= () => {
 
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
-
     if(companyId && (values?.visitors && values?.visitors.length > 0)){
       values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : []
       values.visitStatus = 'processing'
@@ -47,7 +46,6 @@ const VisitRegistrationPage= () => {
 
   const contentStyle: React.CSSProperties = {
     lineHeight:      '260px',
-    textAlign:       'center',
     color:           token.colorTextTertiary,
     backgroundColor: token.colorFillAlter,
     borderRadius:    token.borderRadiusLG,
@@ -56,10 +54,15 @@ const VisitRegistrationPage= () => {
     width:           '100%',
   }
 
+  const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault()
+    }
+  }
   return (
     <div style={contentStyle}>
       <Card style={{width: '100% '}}>
-        <Form form={form} onFinish={registerVisit}>
+        <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown}>
           <VisitRegistrationForm
             form={form}
             setClientsGuests={setClientsGuests}
@@ -67,7 +70,6 @@ const VisitRegistrationPage= () => {
             setCarPlates={setCarPlates}
             carPlates={carPlates}
           />
-          <Button htmlType='submit'>Registruoti</Button>
         </Form>
       </Card>
       <SuccessMessage contextHolder={contextHolder} />
