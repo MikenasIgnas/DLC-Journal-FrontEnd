@@ -29,22 +29,20 @@ const ListItem = ({
 }: ListItemProps) => {
   const buttons = listButtons(listItemId, primaryKey, wasMainClient)
   return (
-    <>
-      <List.Item
-        style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-        actions={buttons}>
-        <List.Item.Meta
-          avatar={
-            <div style={{display: 'flex', alignItems: 'center'}}>
-              <Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
-            </div>
-          }
-          title={title}
-          description={description}
-        />
-        {primaryKey ? <SubClientTag parentCompanyId={primaryKey}/> : ''}
-      </List.Item>
-    </>
+    <List.Item
+      style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+      actions={buttons}>
+      <List.Item.Meta
+        avatar={
+          <div style={{display: 'flex', alignItems: 'center'}}>
+            <Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
+          </div>
+        }
+        title={title}
+        description={description}
+      />
+      {primaryKey ? <SubClientTag parentCompanyId={primaryKey}/> : ''}
+    </List.Item>
   )
 }
 

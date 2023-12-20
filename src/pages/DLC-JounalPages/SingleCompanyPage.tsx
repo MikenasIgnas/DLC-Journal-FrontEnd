@@ -57,7 +57,6 @@ const SingleCompanyPage = () => {
     (async () => {
       try{
         const singleCompany     = await get(`getSingleCompany?companyId=${id}`, cookies.access_token)
-        console.log(singleCompany)
         const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
         const allCollocations   = await get('getCollocations', cookies.access_token)
         const allMainCompanies  = await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)

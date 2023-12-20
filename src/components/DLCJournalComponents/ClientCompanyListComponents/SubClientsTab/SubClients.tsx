@@ -78,14 +78,15 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
   const listButtons = (listItemId: number | undefined, primaryKey: number | undefined, wasMainClient?: boolean) => {
     if(wasMainClient){
       const buttons = [
-        <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={primaryKey}> Perkelti </Button>,
-        <Button type='link' onClick={() => deletSubClient(listItemId)} key={primaryKey}>Ištrinti</Button>,
+        <Button type='link' onClick={() => showDrawer(listItemId)} key={listItemId}> Peržiūrėti </Button>,
+        <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={listItemId}> Perkelti </Button>,
+        <Button type='link' onClick={() => deletSubClient(listItemId)} key={listItemId}>Ištrinti</Button>,
       ]
       return buttons
     }else{
       const buttons = [
-        <Button type='link' onClick={() => showDrawer(listItemId)} key={primaryKey}>Peržiūrėti</Button>,
-        <Button type='link' onClick={() => deletSubClient(listItemId)} key={primaryKey}>Ištrinti</Button>,
+        <Button type='link' onClick={() => showDrawer(listItemId)} key={listItemId}>Peržiūrėti</Button>,
+        <Button type='link' onClick={() => deletSubClient(listItemId)} key={listItemId}>Ištrinti</Button>,
       ]
       return buttons
     }

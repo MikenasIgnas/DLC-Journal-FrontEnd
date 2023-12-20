@@ -31,11 +31,12 @@ type ClientsEmployeeListProps = {
 }
 
 const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee, setEmployeesList}: ClientsEmployeeListProps) => {
-  const [cookies]           = useCookies(['access_token'])
+  const [cookies]                       = useCookies(['access_token'])
   const [searchParams, setSearchParams] = useSearchParams()
-  const dispatch            = useAppDispatch()
-  const employeeFilter = searchParams.get('employeeFilter')
-  const {id} = useParams()
+  const dispatch                        = useAppDispatch()
+  const employeeFilter                  = searchParams.get('employeeFilter')
+  const companyId                       = searchParams.get('companyId')
+
   const showDrawer = ( employeeId: number | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     dispatch(setOpenClientsEmployeesDrawer(true))
@@ -47,10 +48,10 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       employeeRemoved(employeeId)
     }
   }
-  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined) => {
+  const listButtons = (listItemId: number | undefined) => {
     const buttons = [
-      <Button type='link' onClick={() => showDrawer(listItemId, primaryKey)} key={primaryKey}>Peržiūrėti</Button>,
-      <Button type='link' onClick={() => deleteEmployee(listItemId, primaryKey)} key={primaryKey}>Ištrinti</Button>,
+      <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} key={listItemId}>Peržiūrėti</Button>,
+      <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} key={listItemId}>Ištrinti</Button>,
     ]
     return buttons
   }
@@ -61,7 +62,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
     setEmployeesList(filtered)
     if(e.target.value === ''){
       setSearchParams('')
-      const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
+      const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${companyId}`, cookies.access_token)
       setEmployeesList(companyEmployees.data)
     }
   }
@@ -80,7 +81,6 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
         renderItem={(item) => (
           <ListItem
             listItemId={item.employeeId}
-            primaryKey={item.companyId}
             photo={item.employeePhoto}
             listButtons={listButtons}
             title={HighlightText(employeeFilter, `${item.name} ${item.lastName}`)}

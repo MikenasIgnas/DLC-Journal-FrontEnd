@@ -38,6 +38,10 @@ const CompaniesListPage = () => {
   const companyRemoved = (id:number | undefined) => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
+    newCompaniesList = newCompaniesList.map((item) => {
+      const { parentCompanyId, wasMainClient, ...rest } = item
+      return rest
+    })
     setCompanies(newCompaniesList)
   }
 
@@ -88,7 +92,7 @@ const CompaniesListPage = () => {
               description={item?.companyInfo?.companyDescription}
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
-              primaryKey={item.parentCompanyId}
+              primaryKey={item?.parentCompanyId}
               title={filter[0].children.length >= 1 ?
                 <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree

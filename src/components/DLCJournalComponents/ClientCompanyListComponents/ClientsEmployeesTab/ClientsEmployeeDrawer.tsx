@@ -5,7 +5,7 @@ import { useForm }                                                              
 import { EmployeesType }                                                        from '../../../../types/globalTypes'
 import { convertUTCtoLocalDate, get, post, uploadPhoto }                                               from '../../../../Plugins/helpers'
 import { useCookies }                                                           from 'react-cookie'
-import { useSearchParams }                                                      from 'react-router-dom'
+import { useParams, useSearchParams }                                                      from 'react-router-dom'
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import { useAppDispatch, useAppSelector }                                                       from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer } from '../../../../auth/ModalStateReducer/ModalStateReducer'
@@ -38,13 +38,15 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const [searchParams]              = useSearchParams()
   const employeeId                  = searchParams.get('employeeId')
   const companyId                   = searchParams.get('companyId')
+  const {id}                        = useParams()
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                     = useAppDispatch()
+
   React.useEffect(() => {
     (async () => {
       try{
         if(employeeId && companyId){
-          const res  = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+          const res  = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
           setEmployee(res.data)
         }
       }catch(err){
