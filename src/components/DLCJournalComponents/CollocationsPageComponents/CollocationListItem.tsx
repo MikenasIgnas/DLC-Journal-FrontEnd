@@ -1,11 +1,13 @@
 /* eslint-disable max-len */
-import { DeleteOutlined }                 from '@ant-design/icons'
-import { Collapse, List, Tag, message }   from 'antd'
-import { useAppDispatch }                 from '../../../store/hooks'
-import { setOpenCollocationRemovalModal } from '../../../auth/ModalStateReducer/ModalStateReducer'
-import { useSearchParams }                from 'react-router-dom'
-import SuccessMessage                     from '../../UniversalComponents/SuccessMessage'
-import { setCollocationItem }             from '../../../auth/CollocationItemReducer/collocationItemReducer'
+import { DeleteOutlined, FileExcelOutlined }  from '@ant-design/icons'
+import { Collapse, List, Tag, message }       from 'antd'
+import { useAppDispatch }                     from '../../../store/hooks'
+import { setOpenCollocationRemovalModal }     from '../../../auth/ModalStateReducer/ModalStateReducer'
+import { useSearchParams }                    from 'react-router-dom'
+import SuccessMessage                         from '../../UniversalComponents/SuccessMessage'
+import { setCollocationItem }                 from '../../../auth/CollocationItemReducer/collocationItemReducer'
+import { generateCsv }                        from '../../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
 
 type MatchingCompaniesType = {
   companyName:  string;
@@ -28,9 +30,38 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
   const tabKey                      = searchParams.get('tabKey')
   const dispatch                    = useAppDispatch()
   const [messageApi, contextHolder] = message.useMessage()
+  const [cookies]                   = useCookies(['access_token'])
+
+  const data = [
+    {
+      'Column 1': '1-1',
+      'Column 2': '1-2',
+      'Column 3': '1-3',
+      'Column 4': '1-4',
+    },
+    {
+      'Column 1': '2-1',
+      'Column 2': '2-2',
+      'Column 3': '2-3',
+      'Column 4': '2-4',
+    },
+    {
+      'Column 1': '3-1',
+      'Column 2': '3-2',
+      'Column 3': '3-3',
+      'Column 4': '3-4',
+    },
+    {
+      'Column 1': 4,
+      'Column 2': 5,
+      'Column 3': 6,
+      'Column 4': 7,
+    },
+  ]
 
   const genExtra = (premiseName: string) => (
     <div>
+      <FileExcelOutlined onClick={() => generateCsv('generateSingleCollocationCSV', data, cookies.access_token)}/>
       <DeleteOutlined
         style={{color: 'red'}}
         onClick={ async (event) => {

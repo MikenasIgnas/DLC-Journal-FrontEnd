@@ -21,7 +21,7 @@ const get = async (url, token) => {
 }
 
 
-const getFile = async (url, token) => {
+const getPdfFile = async (url, token) => {
   try {
     const response = await fetch(`http://localhost:4000/${url}`, {
       method:  'GET',
@@ -43,7 +43,36 @@ const getFile = async (url, token) => {
     return null
   }
 }
+const getCsvFile = async (url, data, token) => {
+  const options = {
+    method:  'POST',
+    headers: {
+      'content-type':  'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  }
 
+  const response = await fetch(`http://localhost:4000/${url}`, options)
+  const doc = await response.blob()
+  return doc
+}
+const generateCsv = async (url, data, cookie) => {
+  try {
+    const response = await getCsvFile(url, data, cookie)
+    if(response){
+      const blob = new Blob([response], { type: 'kolokacijos/csv' })
+      const link = document.createElement('a')
+      link.href = window.URL.createObjectURL(blob)
+      link.download = 'kolokacijos.csv'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
+  } catch (error) {
+    console.error('Error downloading file:', error)
+  }
+}
 const validateUser = async (url, data) => {
   const options = {
     method:  'POST',
@@ -195,7 +224,7 @@ const convertUTCtoLocalDateTime = (utcTimestamp) => {
 
 const generatePDF = async (visitId, token) => {
   try {
-    const response = await getFile(`generatePDF?visitId=${visitId}`, token)
+    const response = await getPdfFile(`generatePDF?visitId=${visitId}`, token)
     if(response){
       const blob = new Blob([response], { type: 'visit/pdf' })
       const link = document.createElement('a')
@@ -212,7 +241,7 @@ const generatePDF = async (visitId, token) => {
 
 const generateCustomPDF = async (dateFrom, dateTo, token) => {
   try {
-    const response = await getFile(`generateCustomPDF?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
+    const response = await getPdfFile(`generateCustomPDF?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
     if(response){
       const blob = new Blob([response], { type: 'visit/pdf' })
       const link = document.createElement('a')
@@ -242,8 +271,10 @@ export {
   convertUTCtoLocalTime,
   convertUTCtoLocalDateTime,
   convertUTCtoLocalDate,
-  getFile,
+  getPdfFile,
   generatePDF,
   generateCustomPDF,
+  getCsvFile,
+  generateCsv,
 }
 

@@ -1,6 +1,6 @@
 import React                from 'react'
 import { Button }           from 'antd'
-import { getFile }          from '../../../Plugins/helpers'
+import { getPdfFile }       from '../../../Plugins/helpers'
 import { useCookies }       from 'react-cookie'
 import { FilePdfOutlined }  from '@ant-design/icons'
 import { useParams }        from 'react-router'
@@ -14,7 +14,7 @@ const VisitDescriptionTitle = ({edit}: VisitDescriptionTitleProps) => {
   const {id}      = useParams()
   const generatePDF = async (visitId: number) => {
     try {
-      const response = await getFile(`generatePDF?visitId=${visitId}`, cookies.access_token)
+      const response = await getPdfFile(`generatePDF?visitId=${visitId}`, cookies.access_token)
       if(response){
         const blob = new Blob([response], { type: 'visit/pdf' })
         const link = document.createElement('a')

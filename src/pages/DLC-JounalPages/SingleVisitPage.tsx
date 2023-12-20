@@ -3,10 +3,10 @@
 // /* eslint-disable max-len */
 import React                                                    from 'react'
 import { useParams, useSearchParams }                           from 'react-router-dom'
-import { Button, Card, Form, List, message }                    from 'antd'
+import { Button, Card, Form, List }                             from 'antd'
 import { Descriptions }                                         from 'antd'
 import { useCookies }                                           from 'react-cookie'
-import { convertUTCtoLocalTime, get, getFile, post }                     from '../../Plugins/helpers'
+import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
 import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
 import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
 import CollocationsList                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
@@ -78,9 +78,6 @@ const SingleVisitPage = () => {
     fetchData()
   }, [open, selectedVisitors, edit, visitAddress])
 
-
-
-  console.log(visitData)
   const removeVisitor = (id: number) => {
     setSelectedVisitors((prev) => prev.filter((el) => el !== id))
   }
