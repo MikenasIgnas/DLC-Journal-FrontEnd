@@ -59,28 +59,33 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
     },
   ]
 
+  const onDeleteIconClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, premiseName: string) => {
+    const find = companyCollocation?.find((el) => el.premiseName === premiseName)
+    if( find && find?.racks.length > 0){
+      event.stopPropagation()
+      messageApi.error({
+        type:    'error',
+        content: 'Kolokacijoje negali būti klientų',
+      })
+    }else{
+      item.addressId = tabKey
+      dispatch(setOpenCollocationRemovalModal(true))
+      if(item.addressId && item){
+        event.stopPropagation()
+        dispatch(setCollocationItem(item))
+      }
+    }
+  }
+
+  const onGenerateCsvIconClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    generateCsv('generateSingleCollocationCSV', data, cookies.access_token)
+    event.stopPropagation()
+  }
+
   const genExtra = (premiseName: string) => (
-    <div>
-      <FileExcelOutlined onClick={() => generateCsv('generateSingleCollocationCSV', data, cookies.access_token)}/>
-      <DeleteOutlined
-        style={{color: 'red'}}
-        onClick={ async (event) => {
-          const find = companyCollocation?.find((el) => el.premiseName === premiseName)
-          if( find && find?.racks.length > 0){
-            messageApi.error({
-              type:    'error',
-              content: 'Kolokacijoje negali būti klientų',
-            })
-          }else{
-            item.addressId = tabKey
-            dispatch(setOpenCollocationRemovalModal(true))
-            if(item.addressId && item){
-              dispatch(setCollocationItem(item))
-              event.stopPropagation()
-            }
-          }
-        }}
-      />
+    <div className='SingleCollocationIconContainer'>
+      <FileExcelOutlined style={{color: 'green'}} onClick={onGenerateCsvIconClick}/>
+      <DeleteOutlined style={{color: 'red'}} onClick={ (event) => onDeleteIconClick(event, premiseName)}/>
     </div>
   )
 

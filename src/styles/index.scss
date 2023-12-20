@@ -363,6 +363,12 @@ display: flex;
   border-bottom:none;
   box-shadow: none;
 }
+.SingleCollocationIconContainer{
+  width: 50px; 
+  display: flex; 
+  justify-content: space-between;
+  align-items: center
+}
 .ChecklistHistoryInputsMainContainer{
   display: flex ; 
   width: 100%;
