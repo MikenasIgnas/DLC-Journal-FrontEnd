@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import React                from 'react'
-import Box                  from '@mui/joy/Box'
-import { Tag, Typography }  from 'antd'
-import { useSearchParams }  from 'react-router-dom'
-import HighlightText        from '../../UniversalComponents/HighlightText'
-import { VisitorsType }     from '../../../types/globalTypes'
-import { calculateTimeDifference } from '../../../Plugins/helpers'
+import React                        from 'react'
+import Box                          from '@mui/joy/Box'
+import { Tag, Typography }          from 'antd'
+import { useSearchParams }          from 'react-router-dom'
+import HighlightText                from '../../UniversalComponents/HighlightText'
+import { VisitorsType }             from '../../../types/globalTypes'
+import { calculateTimeDifference }  from '../../../Plugins/helpers'
 
 type VisitsTableRowsProps = {
     visitId:        number;

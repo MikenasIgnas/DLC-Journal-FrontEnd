@@ -241,7 +241,7 @@ const generatePDF = async (visitId, token) => {
 
 const generateCustomPDF = async (dateFrom, dateTo, token) => {
   try {
-    const response = await getPdfFile(`generateCustomPDF?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
+    const response = await getPdfFile(`generateMultipleVisitPdf?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
     if(response){
       const blob = new Blob([response], { type: 'visit/pdf' })
       const link = document.createElement('a')

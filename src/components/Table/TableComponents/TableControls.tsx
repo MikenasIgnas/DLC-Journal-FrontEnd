@@ -43,7 +43,6 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
     } else {
       setPDFDateFrom(undefined)
       setPDFDateTo(undefined)
-      console.log('Clear')
     }
   }
 
