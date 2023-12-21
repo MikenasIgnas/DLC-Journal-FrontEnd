@@ -8,28 +8,28 @@ import { convertUTCtoLocalDate, post, uploadPhoto }                     from '..
 import PhotoUploader                                                    from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import { useAppDispatch }                                               from '../../../../store/hooks'
 import { setOpenEmployeeAdditionModal }                                 from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { useParams } from 'react-router'
 
 type EmployeesAdditionModal = {
     companyName:   string | undefined;
-    companyId:     number | null;
     urlPath:       string;
 }
 
-const EmployeesAdditionModal = ({ companyName, companyId, urlPath}: EmployeesAdditionModal) => {
+const EmployeesAdditionModal = ({ companyName, urlPath}: EmployeesAdditionModal) => {
   const [form]                    = useForm()
   const [cookies]                 = useCookies(['access_token'])
   const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
-
+  const {id}                      = useParams()
   const addEmployees = async(values: EmployeesType) => {
-    if(companyId){
-      values.companyId = companyId
+    if(id){
+      values.companyId = Number(id)
       values.employeePhoto = ''
       values.birthday = convertUTCtoLocalDate(values.birthday)
       await post(urlPath, values, cookies.access_token)
       if(fileList[0]){
-        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
+        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${id}`)
         dispatch(setOpenEmployeeAdditionModal(false))
       }
       dispatch(setOpenEmployeeAdditionModal(false))

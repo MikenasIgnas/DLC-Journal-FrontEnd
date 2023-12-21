@@ -13,7 +13,6 @@ import SubClientsTab                                           from '../../compo
 import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import { useAppSelector } from '../../store/hooks'
 
-
 type EmployeesType = {
   _id:            string;
   companyId:      number;
@@ -36,7 +35,6 @@ type CompanyFormType = {
     [key: string]:     string[];
   }[];
 };
-
 
 const SingleCompanyPage = () => {
   const [cookies]                                     = useCookies(['access_token'])
@@ -69,7 +67,6 @@ const SingleCompanyPage = () => {
       }
     })()
   },[edit, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, cookies.access_token])
-
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
@@ -133,7 +130,6 @@ const SingleCompanyPage = () => {
         list={employeesList}
         setEmployeesList={setEmployeesList}
         employeeRemoved={employeeRemoved}
-        companyId={company?.id}
       />,
     },
     {

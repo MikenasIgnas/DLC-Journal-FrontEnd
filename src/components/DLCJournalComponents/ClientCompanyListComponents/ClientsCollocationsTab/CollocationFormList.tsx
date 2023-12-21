@@ -11,9 +11,9 @@ type CollocationFormListProps = {
 
 const EditableCollocationFormList = ({collocations, collocationsSites}: CollocationFormListProps) => {
   return (
-    <div className='DisplayFlex' >
+    <div style={{width: '100%'}} className='DisplayFlex' >
       { collocations?.map((colocation, i) =>
-        <div key={i} >
+        <div style={{width: '50%'}} key={i} >
           <div>
             <Divider >
               {colocation.site}

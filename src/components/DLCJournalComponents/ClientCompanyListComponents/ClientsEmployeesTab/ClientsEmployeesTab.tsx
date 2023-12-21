@@ -24,10 +24,9 @@ type ClientsEmployeesTabProps = {
     employeeRemoved:        (id: number) => void
     setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
     editClientsEmployee:    boolean
-    companyId:              number | undefined
     setEmployeesList:       React.Dispatch<React.SetStateAction<EmployeesType[]>>
   }
-const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved, list, setEditClientsEmployee, companyId, setEmployeesList }: ClientsEmployeesTabProps) => {
+const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved, list, setEditClientsEmployee, setEmployeesList }: ClientsEmployeesTabProps) => {
   const dispatch = useAppDispatch()
   const openEmployeeAdditionModal = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
   return (
@@ -38,7 +37,6 @@ const ClientsEmployeesTab = ({companyName, editClientsEmployee, employeeRemoved,
       {openEmployeeAdditionModal &&
       <EmployeesAdditionModal
         companyName={companyName}
-        companyId={companyId as number | null}
         urlPath={'addEmployee'}
       />
       }

@@ -62,7 +62,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
       values.employeeId = employee?.employeeId
       await post('updateClientsEmployee', values, cookies.access_token)
       if(fileList[0]){
-        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${employee?.companyId}&employeeId=${employee?.employeeId}`)
+        uploadPhoto(fileList[0], setUploading, setFileList, `updateClientsEmployeesPhoto?companyName=${companyName}&companyId=${employee?.companyId}&employeeId=${employee?.employeeId}`)
       }
     }
   }

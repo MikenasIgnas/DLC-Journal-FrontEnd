@@ -55,7 +55,9 @@
 .CollocationSelectorCollapse{
   margin-bottom: 10px;
   margin-top: 10px;
-  width: 360px;
+  width: 450px;
+  overflow: auto; 
+  max-height: 540px;
   .CollocationSelectorPannel{
     padding: 10px;
     .ColocationPremisesCollapse{

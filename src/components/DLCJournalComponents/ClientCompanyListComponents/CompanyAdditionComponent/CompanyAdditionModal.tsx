@@ -82,7 +82,6 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
   return (
     <Modal
       title={additionModalTitle}
-      centered
       open
       onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
       onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
@@ -100,7 +99,14 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             {collocations?.map((colocation, i) =>
-              colocation.premises ? <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/> : null)}
+              colocation.premises ?
+                <ColocationSelectors
+                  key={i}
+                  collocationSite={colocation.site}
+                  colocationPremises={colocation.premises}
+                  colocationId={colocation.id}/>
+                : null
+            )}
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>

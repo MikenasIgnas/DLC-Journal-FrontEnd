@@ -48,7 +48,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       employeeRemoved(employeeId)
     }
   }
-  const listButtons = (listItemId: number | undefined) => {
+  const listButtons = (listItemId: number | undefined, companyId: number | undefined) => {
     const buttons = [
       <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} key={listItemId}>Peržiūrėti</Button>,
       <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} key={listItemId}>Ištrinti</Button>,
@@ -71,7 +71,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   return (
     <div className='EmployeeListContainer'>
       <Divider>Darbuotojai</Divider>
-      <Input onChange={onChange} placeholder='Ieškoti darubotojo'/>
+      <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
         dataSource={list}
         bordered
@@ -82,7 +82,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
           <ListItem
             listItemId={item.employeeId}
             photo={item.employeePhoto}
-            listButtons={listButtons}
+            listButtons={() => listButtons(item.employeeId, item.companyId)}
             title={HighlightText(employeeFilter, `${item.name} ${item.lastName}`)}
             description={item.occupation}
             photosFolder={'../ClientsEmployeesPhotos'}
