@@ -1,16 +1,15 @@
 /* eslint-disable max-len */
-import React                           from 'react'
-import { Box, FormControl, FormLabel } from '@mui/joy'
-import TableFilters                    from './TableFilters'
-import { FilterOptions }               from '../../../types/globalTypes'
-import { Button, DatePicker, Input }   from 'antd'
-import { useSearchParams }             from 'react-router-dom'
-import useDelay                        from '../../../Plugins/useDelay'
-import dayjs                           from 'dayjs'
-import type { Dayjs }                  from 'dayjs'
-import type { TimeRangePickerProps }   from 'antd'
-import { useCookies }                  from 'react-cookie'
-import { generateCustomPDF } from '../../../Plugins/helpers'
+import React                                    from 'react'
+import { Box, FormControl, FormLabel }          from '@mui/joy'
+import TableFilters                             from './TableFilters'
+import { FilterOptions }                        from '../../../types/globalTypes'
+import { Button, DatePicker, Input, Tooltip }   from 'antd'
+import { useSearchParams }                      from 'react-router-dom'
+import useDelay                                 from '../../../Plugins/useDelay'
+import dayjs                                    from 'dayjs'
+import type { Dayjs }                           from 'dayjs'
+import type { TimeRangePickerProps }            from 'antd'
+import useGenerateMultipleVisitsPDF             from '../../../Plugins/useGenerateMultipleVisitsPDF'
 
 type TableControlsProps = {
   tableSorter:  FilterOptions;
@@ -25,7 +24,7 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
   const delay                           = useDelay()
   const [pdfDateFrom, setPDFDateFrom]   = React.useState<string | undefined>()
   const [pdfDateTo, setPDFDateTo]       = React.useState<string | undefined>()
-  const [cookies]                       = useCookies(['access_token'])
+  const {generateMultipleVisitsPDF, loading}    = useGenerateMultipleVisitsPDF()
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     delay( async() => {
@@ -34,8 +33,8 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
         setSearchParams(`page=${page}&limit=${limit}`)
       }
     })
-
   }
+
   const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
     if (dates) {
       setPDFDateFrom(dateStrings[0])
@@ -81,7 +80,11 @@ const TableControls = ({tableSorter}: TableControlsProps) => {
       <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
         <div style={{display: 'flex'}}>
           <RangePicker presets={rangePresets} onChange={onRangeChange}/>
-          {pdfDateFrom && pdfDateTo && <Button onClick={() => generateCustomPDF(pdfDateFrom, pdfDateTo, cookies.access_token)}>PDF</Button>}
+          {pdfDateFrom && pdfDateTo &&
+          <Tooltip title='Generuoja tik pabaigtus vizitus' color='blue'>
+            <Button loading={loading} onClick={() => generateMultipleVisitsPDF(pdfDateFrom, pdfDateTo)}>PDF</Button>
+          </Tooltip>
+          }
         </div>
       </div>
     </React.Fragment>
