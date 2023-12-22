@@ -7,6 +7,8 @@ import FullTable                        from '../../components/Table/TableCompon
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetVisitsData                 from '../../Plugins/useSetVisitData'
+import useGenerateSingleVisitPDF from '../../Plugins/useGenerateSingleVIsitPDF'
+import PdfGenerator from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 
 const TableColumns = () => {
   return(
@@ -43,14 +45,16 @@ const tableSorter = [
 ]
 
 const VisitPage = () => {
-  const [cookies]                       = useCookies(['access_token'])
-  const [searchParams, setSearchParams] = useSearchParams()
-  const page                            = searchParams.get('page')
-  const navigate                        = useNavigate()
-  const {data, count, setData}          = useSetVisitsData()
+  const [cookies]                         = useCookies(['access_token'])
+  const [searchParams, setSearchParams]   = useSearchParams()
+  const page                              = searchParams.get('page')
+  const navigate                          = useNavigate()
+  const {data, count, setData}            = useSetVisitsData()
+  const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
 
   return (
     <FullTable
+      pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'}/>}
       tableSorter={tableSorter}
       currentPage={page}
       setSearchParams={setSearchParams}
@@ -71,9 +75,10 @@ const VisitPage = () => {
           visitEndDate={el.endDate}
           visitEndTime={el.endTime}
           rowMenu={<RowMenu
+            loading= {loading}
             navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
             deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
-            generatePDF={() => generatePDF(el.id, cookies.access_token)}
+            generatePDF={() => generateSingleVisitPDF(el.id)}
           />}
         />
       ))}

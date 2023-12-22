@@ -44,6 +44,7 @@ const useSetChecklistHistoryData = () => {
       setCount(documents.data)
     })()
   }, [])
+
   return {data, count}
 }
 

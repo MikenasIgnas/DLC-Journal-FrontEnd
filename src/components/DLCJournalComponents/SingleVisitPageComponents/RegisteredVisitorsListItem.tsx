@@ -7,7 +7,6 @@ import { useCookies }                                             from 'react-co
 import { get, post }                                              from '../../../Plugins/helpers'
 import { useParams }                                              from 'react-router'
 import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
-import { VisitsType } from '../../../types/globalTypes'
 
 type RegisteredVisitorsListItemProps = {
   signature:              string | null | undefined
@@ -74,15 +73,19 @@ const RegisteredVisitorsListItem = ({
     }
     setSavedSignature(null)
   }
+
   return (
     <>
       <List.Item
-        className='VisitorsListItemContainer'
+        className='RegisteredVisitorsListItemContainer'
         actions={[
-          <div style={{display: 'flex', width: '450px', alignItems: 'center', justifyContent: 'flex-end'}}>
+          <div style={{display: 'flex', width: '470px', alignItems: 'center', justifyContent: 'flex-end'}}>
             <div>
               {savedSignature && <Image width={150} src={savedSignature}/>}
-              {!savedSignature ? <Button disabled={!edit} onClick={onModalOpen}>Pasirašyti</Button> : <Button disabled={!edit} onClick={deleteSignature}>Ištrinti</Button>}
+              {!savedSignature ?
+                <Button disabled={!edit} onClick={onModalOpen}>Pasirašyti</Button> :
+                <Button style={{marginLeft: '15px'}} disabled={!edit} onClick={deleteSignature}>Ištrinti</Button>
+              }
             </div>
             <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
               <Select disabled={!edit} options={identificationOptions}/>

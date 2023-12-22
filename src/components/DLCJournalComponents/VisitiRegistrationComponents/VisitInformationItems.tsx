@@ -5,24 +5,25 @@ import { Badge, ConfigProvider, Form, Select, Tag } from 'antd'
 import type { DescriptionsProps }                   from 'antd'
 import VisitDateItem                                from '../SingleVisitPageComponents/VisitDateItem'
 import { UserType, VisitsType }                     from '../../../types/globalTypes'
-import { useSearchParams }                          from 'react-router-dom'
+import { Link, useSearchParams }                          from 'react-router-dom'
 import { addresses }                                from './StaticSelectOptions'
 
 const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolean, dlcEmployees: UserType[] | undefined ) => {
+  const [, setSearchParams] = useSearchParams()
+
   const DLCEmployees = dlcEmployees?.map((el) => {
     return {...el, value: el.username, label: el.username}
   })
-  const [, setSearchParams] = useSearchParams()
+
   const changeAddress = async(value:string) => {
     setSearchParams(`visitAddress=${value}`)
   }
-
 
   const getUniquePermissions = () => {
     const filteredVisits: string[] = []
     visitData?.[0].visitors?.map(( {selectedVisitor: { permissions }} ) => {
       permissions.map(item => {
-        if (!filteredVisits.includes(item)) {
+        if (!filteredVisits.includes(item) && item !== 'Įleisti Trečius asmenis' ) {
           filteredVisits.push(item)
         }
       })
@@ -54,7 +55,7 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
     {
       key:      '2',
       label:    'Įmonė',
-      children: visitData?.[0]?.visitingClient,
+      children: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${visitData?.[0]?.companyId}`}>{visitData?.[0]?.visitingClient}</Link>,
     },
     {
       key:      '3',

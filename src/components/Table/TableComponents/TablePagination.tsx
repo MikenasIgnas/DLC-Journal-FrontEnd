@@ -21,7 +21,7 @@ const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => 
   }
 
   return (
-    <>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
       {documentCount &&
         <Pagination
           defaultCurrent={Number(currentPage)}
@@ -30,7 +30,7 @@ const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => 
           showSizeChanger
         />
       }
-    </>
+    </div>
   )
 }
 

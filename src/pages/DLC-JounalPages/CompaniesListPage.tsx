@@ -5,7 +5,6 @@ import { get }                                 from '../../Plugins/helpers'
 import { useCookies }                          from 'react-cookie'
 import { CollocationsType, CompaniesType }     from '../../types/globalTypes'
 import { Link }                                from 'react-router-dom'
-import { PaginationAlign, PaginationPosition } from 'antd/es/pagination/Pagination'
 import CompanyAddition                         from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
 import { DownOutlined }                        from '@ant-design/icons'
 import ListItem                                from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
@@ -15,8 +14,6 @@ const CompaniesListPage = () => {
   const [loading, setLoading]           = React.useState(false)
   const [cookies]                       = useCookies(['access_token'])
   const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
-  const position: PaginationPosition    = 'bottom'
-  const align: PaginationAlign          = 'center'
   const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
 
@@ -81,7 +78,7 @@ const CompaniesListPage = () => {
       />
       <List
         loading={loading}
-        pagination={{ position, align}}
+        pagination={{ position: 'bottom', align: 'center'}}
         dataSource={companies}
         renderItem={(item) => {
           const filter = treeCompanies.filter((el) => el.key === item.id)

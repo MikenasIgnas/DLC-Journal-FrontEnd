@@ -3,14 +3,14 @@ import { useCookies } from 'react-cookie'
 import { getPdfFile } from './helpers'
 import React          from 'react'
 
-const useGenerateMultipleVisitsPDF = () => {
+const useGenerateMultiplePDF = () => {
   const [loading, setLoading] = React.useState(false)
   const [cookies]             = useCookies(['access_token'])
 
-  const generateMultipleVisitsPDF = async (dateFrom: string, dateTo: string) => {
+  const generateMultiplePdf = async (url: string, dateFrom: string, dateTo: string) => {
     try {
       setLoading(true)
-      const response = await getPdfFile(`generateMultipleVisitPdf?dateFrom=${dateFrom}&dateTo=${dateTo}`, cookies.access_token)
+      const response = await getPdfFile(`${url}?dateFrom=${dateFrom}&dateTo=${dateTo}`, cookies.access_token)
       if(response){
         const blob = new Blob([response], { type: 'visit/pdf' })
         const link = document.createElement('a')
@@ -26,7 +26,7 @@ const useGenerateMultipleVisitsPDF = () => {
     }
   }
 
-  return {generateMultipleVisitsPDF, loading}
+  return {generateMultiplePdf, loading}
 }
 
-export default useGenerateMultipleVisitsPDF
+export default useGenerateMultiplePDF

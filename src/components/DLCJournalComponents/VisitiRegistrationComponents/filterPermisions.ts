@@ -4,7 +4,7 @@ export default (visitors?: VisitorsType[]) => {
   const filteredVisits: string[] = []
   visitors?.map(({ selectedVisitor: { permissions } }) => {
     permissions.map(item => {
-      if (!filteredVisits.includes(item)) {
+      if (item !== 'Įleisti Trečius asmenis' && !filteredVisits.includes(item)) {
         filteredVisits.push(item)
       }
     })

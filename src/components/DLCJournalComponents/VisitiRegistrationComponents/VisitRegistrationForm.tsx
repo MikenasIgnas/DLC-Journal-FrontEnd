@@ -1,21 +1,21 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                                                  from 'react'
-import { get }                                                from '../../../Plugins/helpers'
-import { useCookies }                                         from 'react-cookie'
-import { Button, Empty, Form, FormInstance, Select }          from 'antd'
-import { useSearchParams }                                    from 'react-router-dom'
-import { CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
-import VisitRegistrationFormItem                              from './VisitRegistrationSelect'
-import VisitorsList                                           from './VisitorsList'
-import CollocationsList                                       from './CollocationsList'
-import ItemList                                               from './ItemList'
-import VisitPurposeList                                       from './VisitPurposeList'
-import VisitorAdditionList                                    from './VisitorAdditionList'
-import filterPermisions                                       from './filterPermisions'
-import {addresses}                                            from './StaticSelectOptions'
-import { DatePicker }                                         from 'antd'
+import React                                                                   from 'react'
+import { get }                                                                 from '../../../Plugins/helpers'
+import { useCookies }                                                          from 'react-cookie'
+import { Button, Empty, Form, FormInstance, Select }                           from 'antd'
+import { useSearchParams }                                                     from 'react-router-dom'
+import { CollocationType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
+import VisitRegistrationFormItem                                               from './VisitRegistrationSelect'
+import VisitorsList                                                            from './VisitorsList'
+import CollocationsList                                                        from './CollocationsList'
+import ItemList                                                                from './ItemList'
+import VisitPurposeList                                                        from './VisitPurposeList'
+import VisitorAdditionList                                                     from './VisitorAdditionList'
+import filterPermisions                                                        from './filterPermisions'
+import {addresses}                                                             from './StaticSelectOptions'
+import { DatePicker }                                                          from 'antd'
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
@@ -25,9 +25,6 @@ type VisitRegistrationFormProps = {
   carPlates:        string[]
 }
 
-type CollocationsType = {
-  [key: string]: string[];
-}
 
 const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, carPlates}:VisitRegistrationFormProps) => {
   const [cookies]                                         = useCookies(['access_token'])
@@ -40,7 +37,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
   const [searchEmployeeValue, setSearchEmployeeValue]     = React.useState<string | undefined>()
   const [clientsEmployees, setClientsEmployees]           = React.useState<EmployeesType[]>()
   const [isCompanySelected, setIsCompanySelected]         = React.useState(false)
-  const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationsType[]>()
+  const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationType[]>()
   const [guestsImput, setGuestsInput]                     = React.useState<string>('')
   const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
   const form                                              = Form.useFormInstance<VisitsType>()
@@ -53,6 +50,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       const companies     = await get('getCompanies', cookies.access_token)
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
+      localStorage.removeItem('visitPurpose')
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
       }else{
@@ -154,7 +152,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId && <CollocationsList companiesColocations={companiesColocations}/>}
       {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
         <ItemList

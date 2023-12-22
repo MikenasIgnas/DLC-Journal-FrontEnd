@@ -1,15 +1,16 @@
 /* eslint-disable max-len */
-import React                                from 'react'
-import { DownOutlined, FilePdfOutlined }    from '@ant-design/icons'
-import { Space, type MenuProps, Dropdown }  from 'antd'
+import React                                              from 'react'
+import { DownOutlined, FilePdfOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Space, type MenuProps, Dropdown }                from 'antd'
 
 type RowMenuType ={
-  navigate:    () => void;
-  deleteItem?: () => Promise<void>
+  navigate:     () => void;
+  deleteItem?:  () => Promise<void>
   generatePDF?: () => Promise<void>
+  loading?:     boolean
 }
 
-const RowMenu = ({navigate, deleteItem, generatePDF}: RowMenuType) => {
+const RowMenu = ({navigate, deleteItem, generatePDF, loading}: RowMenuType) => {
   const onClick: MenuProps['onClick'] = ({ key }) => {
     if(key === '1'){
       navigate()
@@ -33,7 +34,7 @@ const RowMenu = ({navigate, deleteItem, generatePDF}: RowMenuType) => {
     },
     {
       label: 'PDF',
-      icon:  <FilePdfOutlined/>,
+      icon:  loading ? <LoadingOutlined/> : <FilePdfOutlined/>,
       key:   '2',
     },
     {

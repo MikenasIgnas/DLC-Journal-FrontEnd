@@ -226,6 +226,10 @@
   display: flex;
   justify-content: center;
 }
+.RegisteredVisitorsListItemContainer{
+  flex: 0 0;
+  text-align: left;
+}
 .VisitorsListItemContainer{
   flex: 0 0;
   text-align: center;
@@ -616,6 +620,10 @@ thead[class*="ant-table-thead"] th{
       padding-inline: 0px;
     }
 
+  }
+
+  .HomePageContainer{
+    max-height: calc(100vh - 145px)
   }
   .Layout{
     .PageLayoutHeaedrMenu{

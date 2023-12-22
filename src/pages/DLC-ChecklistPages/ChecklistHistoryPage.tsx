@@ -5,6 +5,7 @@ import FullTable                        from '../../components/Table/TableCompon
 import ChecklistHistoryTableRows        from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetChecklistHistoryData       from '../../Plugins/useSetChecklistHistoryData'
+import PdfGenerator from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 
 const ChecklistHistoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -34,6 +35,7 @@ const ChecklistHistoryPage = () => {
 
   return (
     <FullTable
+      pdfGenerator={<PdfGenerator url={'generateMultipleChecklistHistoryPdf'}/>}
       tableColumns={<TableColumns />}
       currentPage={page}
       setSearchParams={setSearchParams}

@@ -77,6 +77,8 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
         bordered
         pagination={{
           pageSize: 10,
+          position: 'bottom',
+          align:    'center',
         }}
         renderItem={(item) => (
           <ListItem

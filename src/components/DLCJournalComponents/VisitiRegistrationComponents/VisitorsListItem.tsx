@@ -84,11 +84,17 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
       >
         <List.Item.Meta
           className='VisitorsListItem'
-          avatar={<Avatar shape='square' size={50} src={visitorsItem.selectedVisitor.employeePhoto ? `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` : '../ClientsEmployeesPhotos/noUserImage.jpeg'}/>}
+          avatar={
+            <Avatar
+              shape='square' size={50}
+              src={visitorsItem.selectedVisitor.employeePhoto ?
+                `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` :
+                '../ClientsEmployeesPhotos/noUserImage.jpeg'}
+            />}
           title={<div>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</div>}
           description={<div>{visitorsItem.selectedVisitor.occupation}</div>}
         />
-        <div>Leidimai: {visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
+        <div className='DisplayFlex'>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
         <Modal
           open={visible}
           onCancel={oncancel}
