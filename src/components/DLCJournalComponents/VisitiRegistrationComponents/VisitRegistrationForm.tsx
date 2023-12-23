@@ -147,6 +147,7 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
       {clientsEmployees && clientsEmployees?.length > 0 &&
         <VisitorAdditionList
           clientsEmployees={clientsEmployees}
+          setClientsEmployees={setClientsEmployees}
           searchEmployee={searchEmployee}
           searchEmployeeValue={searchEmployeeValue}
           addVisitor={addVisitor}
@@ -154,7 +155,7 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
         />
       }
       {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
       <VisitRegistrationCollocationList

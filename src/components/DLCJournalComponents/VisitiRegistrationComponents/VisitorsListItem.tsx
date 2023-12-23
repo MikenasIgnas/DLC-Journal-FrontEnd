@@ -4,15 +4,17 @@ import React                                              from 'react'
 import { Avatar, Button, Form, List, Modal, Select, Tag } from 'antd'
 import { FormListFieldData }                              from 'antd/es/form'
 import SignatureCanvas                                    from 'react-signature-canvas'
-import { VisitorsType }                                   from '../../../types/globalTypes'
+import { EmployeesType, VisitorsType }                                   from '../../../types/globalTypes'
 import { CheckOutlined, DeleteOutlined, EyeOutlined }     from '@ant-design/icons'
 import {identificationOptions}                            from './StaticSelectOptions'
 
 type VisitorsListItemProps = {
-  item:     FormListFieldData
+  item:                 FormListFieldData
+  setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+  clientsEmployees?:    EmployeesType[] | undefined
 }
 
-const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
+const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees }: VisitorsListItemProps) => {
   const [visible, setVisible]         = React.useState(false)
   const signatureCanvasRef            = React.useRef<any>(null)
   const form                          = Form.useFormInstance()
@@ -57,6 +59,20 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
       visitors: updatedVisitors,
     })
   }
+  const deleteVisitor = async () => {
+    const filter = visitors.filter(
+      (el) => el.selectedVisitor.employeeId !== visitorsItem.selectedVisitor.employeeId
+    )
+
+    form.setFieldsValue({
+      visitors: filter,
+    })
+
+
+    if (setClientsEmployees && clientsEmployees) {
+      setClientsEmployees([...clientsEmployees, visitorsItem.selectedVisitor])
+    }
+  }
 
   return (
     <>
@@ -76,7 +92,10 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
                   <DeleteOutlined className='DeleteIcon' onClick={deleteSignature}/>
                 </div>
               ) : (
-                <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
+                <>
+                  <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
+                  <Button onClick={deleteVisitor}>Pašalinti</Button>
+                </>
               )}
             </div>
           </div>,

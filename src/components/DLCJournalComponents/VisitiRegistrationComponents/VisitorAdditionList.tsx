@@ -11,9 +11,10 @@ type VisitorAdditionListProps = {
     addVisitor:           (id:number) => void
     removeVisitor:        (id:number) => void
     setOpenVisitorAddition?: React.Dispatch<React.SetStateAction<boolean>>
+    setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
 }
 
-const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
+const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
   return (
     <Card title={
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
@@ -40,7 +41,8 @@ const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeVa
             addVisitor={addVisitor}
             removeVisitor={removeVisitor}
             photoFolder='../../ClientsEmployeesPhotos/'
-          />
+            clientsEmployees={clientsEmployees}
+            setClientsEmployees={setClientsEmployees} />
         }>
       </List>
     </Card>

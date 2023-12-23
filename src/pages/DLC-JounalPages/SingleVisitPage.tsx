@@ -157,6 +157,7 @@ const SingleVisitPage = () => {
       />
       {openVisitorAddition && clientsEmployees && clientsEmployees?.length > 0 &&
       <VisitorAdditionList
+        setClientsEmployees={setClientsEmployees}
         setOpenVisitorAddition={setOpenVisitorAddition}
         clientsEmployees={clientsEmployees}
         searchEmployee={searchEmployee}
