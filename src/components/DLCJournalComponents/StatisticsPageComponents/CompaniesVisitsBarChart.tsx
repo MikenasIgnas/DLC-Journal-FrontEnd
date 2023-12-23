@@ -67,9 +67,9 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
           <CartesianGrid strokeDasharray='3 3' />
           <XAxis dataKey='name' />
           <YAxis tickCount={3}/>
+          <Tooltip />
           <ReferenceLine y={0} stroke='#000' />
           <Brush dataKey='name' height={30} stroke='#8884d8' />
-          <Tooltip />
           {uniqueCompanies.map((companyName, index) => (
             <Bar
               key={companyName}

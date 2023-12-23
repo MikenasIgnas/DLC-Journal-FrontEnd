@@ -9,13 +9,13 @@ import { useSearchParams }                                                     f
 import { CollocationType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                               from './VisitRegistrationSelect'
 import VisitorsList                                                            from './VisitorsList'
-import CollocationsList                                                        from './CollocationsList'
 import ItemList                                                                from './ItemList'
 import VisitPurposeList                                                        from './VisitPurposeList'
 import VisitorAdditionList                                                     from './VisitorAdditionList'
 import filterPermisions                                                        from './filterPermisions'
 import {addresses}                                                             from './StaticSelectOptions'
 import { DatePicker }                                                          from 'antd'
+import VisitRegistrationCollocationList                                        from './VisitRegistrationCollocationList'
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
@@ -27,8 +27,7 @@ type VisitRegistrationFormProps = {
   checkedList:      CollocationType
 }
 
-
-const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, carPlates, setCheckedList, checkedList}:VisitRegistrationFormProps) => {
+const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, carPlates, checkedList, setCheckedList }:VisitRegistrationFormProps) => {
   const [cookies]                                         = useCookies(['access_token'])
   const [dlcEmployees, setDlcEmployees]                   = React.useState<UserType[]>()
   const [allCompanies, setAllCompanies]                   = React.useState<CompaniesType[]>()
@@ -80,7 +79,9 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
   const selectAddress = (addressId: string) => {
     const companyId = searchParams.get('companyId')
     setSearchParams(`companyId=${companyId}&addressId=${addressId}`)
+    setCheckedList({})
   }
+
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
@@ -92,6 +93,7 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
   const removeVisitor = (id: number) => {
     setSelectedVisitors((prev) => prev.filter((el) => el !== id))
   }
+
   const resetForm = () => {
     form.resetFields()
     setSelectedVisitors([])
@@ -155,11 +157,13 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
-      <CollocationsList
+      <VisitRegistrationCollocationList
         companiesColocations={companiesColocations}
         setCheckedList={setCheckedList}
         checkedList={checkedList}
-      />}
+      />
+      }
+
       {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
         <ItemList

@@ -11,6 +11,7 @@ const BreadcrumbsLinks = () => {
   const navigate    = useNavigate()
   const decodedPath = decodeURIComponent(location.pathname)
   const pathParts   = decodedPath.split('/')
+  const lastPath = pathParts[pathParts.length - 1]
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Breadcrumbs size='sm' aria-label='breadcrumbs' separator={false} sx={{ pl: 0 }}>
@@ -22,15 +23,27 @@ const BreadcrumbsLinks = () => {
         >
           <HomeRoundedIcon />
         </Link>
-        {pathParts.map((el, index) => (
-          <Link
-            key={index}
-            onClick={() => navigate(pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')+ '?page=1&limit=10')}
-          >
-            {index > 0 && <ChevronRightRoundedIcon fontSize='medium' />}
-            {decodeURIComponent(el)}
-          </Link>
-        ))}
+        {pathParts.map((el, index) => {
+          return(
+            <>
+              {
+                lastPath !== el ?
+                  <Link
+                    key={index}
+                    onClick={() => navigate(pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')+ '?page=1&limit=10')}
+                  >
+                    {index > 0 && <ChevronRightRoundedIcon key={index} fontSize='medium' />}
+                    {decodeURIComponent(el)}
+                  </Link>
+                  :
+                  <>
+                    {index > 0 && <ChevronRightRoundedIcon key={index} fontSize='medium' />}
+                    <div key={index}>{el}</div>
+                  </>
+              }
+            </>
+          )
+        })}
       </Breadcrumbs>
     </Box>
   )

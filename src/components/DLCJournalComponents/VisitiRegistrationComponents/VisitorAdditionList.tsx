@@ -24,7 +24,6 @@ const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeVa
       <Input placeholder='Ieškoti' onChange={searchEmployee}/>
       <List
         style={{overflow: 'auto', maxHeight: '450px'}}
-        dataSource={clientsEmployees}
         grid={{
           gutter: 16,
           xs:     1,
@@ -34,6 +33,7 @@ const VisitorAdditionList = ({clientsEmployees, searchEmployee, searchEmployeeVa
           xl:     6,
           xxl:    3,
         }}
+        dataSource={clientsEmployees}
         renderItem={(item) => ( !searchEmployeeValue || item.name.toLowerCase().includes(searchEmployeeValue)) &&
           <VisitorAdditionListItem
             item={item}

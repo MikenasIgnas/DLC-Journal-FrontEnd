@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                                                                from 'react'
-import { Button, Card, Form, message, theme }                               from 'antd'
+import { Card, Form, message, theme }                                       from 'antd'
 import VisitRegistrationForm                                                from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
 import { convertUTCtoLocalDateTime, getCurrentDate, getCurrentTime, post }  from '../../Plugins/helpers'
 import { useCookies }                                                       from 'react-cookie'
@@ -20,19 +20,21 @@ const VisitRegistrationPage= () => {
   const [searchParams]                    = useSearchParams()
   const companyId                         = searchParams.get('companyId')
   const [checkedList, setCheckedList]     = React.useState<{ [key: string]: string[] }>({})
+
+
   const registerVisit = async(values: VisitsType) => {
-    console.log(values)
     const visitPurpose = localStorage.getItem('visitPurpose')
     if(companyId && (values?.visitors && values?.visitors.length > 0)){
       values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : []
+      values.visitCollocation = checkedList
       values.visitStatus = 'processing'
       values.creationDate = getCurrentDate()
       values.creationTime = getCurrentTime()
       values.clientsGuests = clientsGuests
-      values.visitCollocation = checkedList
       values.carPlates = carPlates
       values.scheduledVisitTime = convertUTCtoLocalDateTime(values.scheduledVisitTime)
       values.companyId = Number(companyId)
+
       const res = await post('postVisitDetails', values, cookies.access_token )
       if(!res.error){
         localStorage.clear()
@@ -66,13 +68,13 @@ const VisitRegistrationPage= () => {
       <Card style={{width: '100% '}}>
         <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown}>
           <VisitRegistrationForm
+            setCheckedList={setCheckedList}
+            checkedList={checkedList}
             form={form}
             setClientsGuests={setClientsGuests}
             clientsGuests={clientsGuests}
             setCarPlates={setCarPlates}
             carPlates={carPlates}
-            setCheckedList={setCheckedList}
-            checkedList={checkedList}
           />
         </Form>
       </Card>

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                                from 'react'
-import { Avatar, Card, Form }               from 'antd'
+import { Avatar, Card, Form, List }               from 'antd'
 import { EmployeesType, VisitsType }        from '../../../types/globalTypes'
 import { useCookies }                       from 'react-cookie'
 import { useParams }                        from 'react-router'
@@ -46,19 +46,21 @@ const VisitorAdditionListItem = ({item, addVisitor, removeVisitor, photoFolder}:
     setIsSelected(false)
   }
   return (
-    <Card
-      style={{ margin: '10px', border: isSelected ? '2px solid blue' : 'none' }}
-      actions={id ? [ <UserAddOutlined onClick={addVisitingClient} key='add' />] : [
-        <UserAddOutlined onClick={addVisitingClient} key='add' />,
-        <DeleteOutlined onClick={removeVisitingClient} key='remove'/>,
-      ]}
-    >
-      <Meta
-        avatar={<Avatar shape='square' size={90} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
-        title={`${item.name} ${item.lastName}`}
-        description={item.occupation}
-      />
-    </Card>
+    <List.Item>
+      <Card
+        style={{ margin: '10px', border: isSelected ? '2px solid blue' : 'none', width: '450px' }}
+        actions={id ? [ <UserAddOutlined onClick={addVisitingClient} key='add' />] : [
+          <UserAddOutlined onClick={addVisitingClient} key='add' />,
+          <DeleteOutlined onClick={removeVisitingClient} key='remove'/>,
+        ]}
+      >
+        <Meta
+          avatar={<Avatar shape='square' size={90} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
+          title={`${item.name} ${item.lastName}`}
+          description={item.occupation}
+        />
+      </Card>
+    </List.Item>
   )
 }
 

@@ -9,7 +9,6 @@ import { useCookies }                                           from 'react-cook
 import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
 import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
 import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
-import CollocationsList                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CollocationsList'
 import SelectedCollocationList                                  from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
 import RegisteredVisitorsListItem                               from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
 import VisitorAdditionList                                      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
@@ -18,6 +17,7 @@ import VisitInformationItems                                    from '../../comp
 import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
 import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
 import useVisitValidation                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
+import CollocationsList                                         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -40,8 +40,7 @@ const SingleVisitPage = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
   const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
-  const {validate, contextHolder}                             = useVisitValidation()
-  const [checkedList, setCheckedList]                         = React.useState<{ [key: string]: string[] }>({})
+  const {validate, contextHolder} = useVisitValidation()
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -109,8 +108,6 @@ const SingleVisitPage = () => {
         selectedVisitor: el.selectedVisitor,
       }))
       values.visitors = updateIdTypes
-
-      values.visitCollocation = checkedList
       values.startDate = values?.startDate?.format('YYYY-MM-DD')
       values.endDate = values?.endDate?.format('YYYY-MM-DD')
       const localStartTime = convertUTCtoLocalTime(values?.startTime)
@@ -194,11 +191,9 @@ const SingleVisitPage = () => {
         <SelectedCollocationList
           selectedCollocations={filteredArray}
           edit={edit}
-          checkedList={checkedList}
-          setCheckedList={setCheckedList}
         /> :
-        <CollocationsList companiesColocations={companiesColocations} setCheckedList={setCheckedList} checkedList={checkedList} />
-
+        <CollocationsList companiesColocations={companiesColocations}
+        />
       }
       {canBringCompany ?
         <ItemList
