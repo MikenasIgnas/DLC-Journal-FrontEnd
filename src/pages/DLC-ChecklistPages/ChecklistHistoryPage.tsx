@@ -28,14 +28,14 @@ const ChecklistHistoryPage = () => {
 
   const tableSorter = [
     {
-      filterName:    'Statusas',
-      filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
+      filterName:    'Problemos',
+      filterOptions: [{ value: 'hasProblems', label: 'Yra Problemų' }, { value: 'noProblems', label: 'Nėra Problemų' }],
     },
   ]
 
   return (
     <FullTable
-      pdfGenerator={<PdfGenerator url={'generateMultipleChecklistHistoryPdf'}/>}
+      pdfGenerator={<PdfGenerator tooltipText ={'Generuo tik problemas turinčias formas'} url={'generateMultipleChecklistHistoryPdf'}/>}
       tableColumns={<TableColumns />}
       currentPage={page}
       setSearchParams={setSearchParams}

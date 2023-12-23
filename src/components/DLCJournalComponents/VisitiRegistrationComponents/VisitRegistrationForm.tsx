@@ -23,10 +23,12 @@ type VisitRegistrationFormProps = {
   clientsGuests:    string[];
   setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
   carPlates:        string[]
+  setCheckedList:   React.Dispatch<React.SetStateAction<CollocationType>>
+  checkedList:      CollocationType
 }
 
 
-const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, carPlates}:VisitRegistrationFormProps) => {
+const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, carPlates, setCheckedList, checkedList}:VisitRegistrationFormProps) => {
   const [cookies]                                         = useCookies(['access_token'])
   const [dlcEmployees, setDlcEmployees]                   = React.useState<UserType[]>()
   const [allCompanies, setAllCompanies]                   = React.useState<CompaniesType[]>()
@@ -152,7 +154,12 @@ const VisitRegistrationForm = ({setClientsGuests, clientsGuests, setCarPlates, c
       {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && addressId && <CollocationsList companiesColocations={companiesColocations}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
+      <CollocationsList
+        companiesColocations={companiesColocations}
+        setCheckedList={setCheckedList}
+        checkedList={checkedList}
+      />}
       {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
         <ItemList

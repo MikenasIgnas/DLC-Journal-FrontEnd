@@ -12,8 +12,12 @@ type TablePaginationProps = {
 const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => {
   const [searchParams, setSearchParams] =  useSearchParams()
   const selectFilter = searchParams.get('selectFilter')
+  const searchFilter = searchParams.get('filter')
+
   const changePage = async(page: number, limit: number) => {
-    if(selectFilter){
+    if(searchFilter){
+      setSearchParams(`page=${page}&limit=${limit}&filter=${searchFilter}`)
+    }else if(selectFilter){
       setSearchParams(`page=${page}&limit=${limit}&selectFilter=${selectFilter}`)
     }else{
       setSearchParams(`page=${page}&limit=${limit}`)

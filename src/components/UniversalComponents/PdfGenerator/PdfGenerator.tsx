@@ -9,10 +9,11 @@ import useGenerateMultiplePDF            from '../../../Plugins/useGenerateMulti
 const { RangePicker } = DatePicker
 
 type PdfGeneratorProps = {
-    url: string
+    url :         string
+    tooltipText:  string
 }
 
-const PdfGenerator = ({url}: PdfGeneratorProps) => {
+const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
   const [pdfDateFrom, setPDFDateFrom]   = React.useState<string | undefined>()
   const [pdfDateTo, setPDFDateTo]       = React.useState<string | undefined>()
   const {generateMultiplePdf, loading}  = useGenerateMultiplePDF()
@@ -37,7 +38,7 @@ const PdfGenerator = ({url}: PdfGeneratorProps) => {
       <div style={{display: 'flex'}}>
         <RangePicker presets={rangePresets} onChange={onRangeChange}/>
         {pdfDateFrom && pdfDateTo &&
-      <Tooltip title='Generuoja tik pabaigtus vizitus' color='blue'>
+      <Tooltip title={tooltipText} color='blue'>
         <Button loading={loading} onClick={() => generateMultiplePdf(url, pdfDateFrom, pdfDateTo)}>PDF</Button>
       </Tooltip>
         }

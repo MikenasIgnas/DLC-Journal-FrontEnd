@@ -92,6 +92,7 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
   return(
     <div>
       <Collapse
+        defaultActiveKey={[`${index}`]}
         items={[
           {
             key:      index,
@@ -99,10 +100,10 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
             extra:    genExtra(item.premiseName),
             children: (
               <List
-                style={{overflow: 'auto', maxHeight: '300px'}}
+                style={{overflow: 'auto', height: '330px'}}
                 dataSource={item.racks}
                 renderItem={(rackItem) => (
-                  <List.Item>
+                  <List.Item >
                     <div>
                       {rackItem}
                     </div>

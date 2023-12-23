@@ -19,8 +19,9 @@ const VisitRegistrationPage= () => {
   const [messageApi, contextHolder]       = message.useMessage()
   const [searchParams]                    = useSearchParams()
   const companyId                         = searchParams.get('companyId')
-
+  const [checkedList, setCheckedList]     = React.useState<{ [key: string]: string[] }>({})
   const registerVisit = async(values: VisitsType) => {
+    console.log(values)
     const visitPurpose = localStorage.getItem('visitPurpose')
     if(companyId && (values?.visitors && values?.visitors.length > 0)){
       values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : []
@@ -28,6 +29,7 @@ const VisitRegistrationPage= () => {
       values.creationDate = getCurrentDate()
       values.creationTime = getCurrentTime()
       values.clientsGuests = clientsGuests
+      values.visitCollocation = checkedList
       values.carPlates = carPlates
       values.scheduledVisitTime = convertUTCtoLocalDateTime(values.scheduledVisitTime)
       values.companyId = Number(companyId)
@@ -69,6 +71,8 @@ const VisitRegistrationPage= () => {
             clientsGuests={clientsGuests}
             setCarPlates={setCarPlates}
             carPlates={carPlates}
+            setCheckedList={setCheckedList}
+            checkedList={checkedList}
           />
         </Form>
       </Card>

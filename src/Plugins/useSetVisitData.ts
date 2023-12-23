@@ -10,13 +10,13 @@ const useSetVisitsData = () => {
   const [cookies]             = useCookies(['access_token'])
   const [searchParams]        = useSearchParams()
   const [loading, setLoading] = React.useState(false)
+  const page                  = searchParams.get('page') || 1
+  const limit                 = searchParams.get('limit') || 10
+  const selectFilter          = searchParams.get('selectFilter')
+  const searchFilter          = searchParams.get('filter')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page          = searchParams.get('page') || 1
-      const limit         = searchParams.get('limit') || 10
-      const selectFilter  = searchParams.get('selectFilter')
-      const searchFilter  = searchParams.get('filter')
       let fetchUrl        = `visitsData?page=${page}&limit=${limit}`
 
       if (searchFilter) {
@@ -46,7 +46,8 @@ const useSetVisitsData = () => {
       setLoading(false)
     })()
   }, [])
-  return {data, count, setData, loading}
+
+  return {data, count, setData, loading, setCount}
 }
 
 export default useSetVisitsData

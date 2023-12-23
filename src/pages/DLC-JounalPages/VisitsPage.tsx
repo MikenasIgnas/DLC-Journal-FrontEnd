@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem, generatePDF } from '../../Plugins/helpers'
+import { deleteTableItem } from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
@@ -54,7 +54,7 @@ const VisitPage = () => {
 
   return (
     <FullTable
-      pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'}/>}
+      pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
       tableSorter={tableSorter}
       currentPage={page}
       setSearchParams={setSearchParams}

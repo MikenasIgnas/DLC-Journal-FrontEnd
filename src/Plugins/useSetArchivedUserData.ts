@@ -43,7 +43,7 @@ const useSetArchivedUserData = () => {
       setCount(documents.data)
     })()
   }, [])
-  return {data, count}
+  return {data, count, setCount}
 }
 
 export default useSetArchivedUserData

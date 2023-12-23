@@ -1,50 +1,40 @@
 /* eslint-disable max-len */
-import React                    from 'react'
+import React from 'react'
 import { Card, Checkbox, Form } from 'antd'
+import { CollocationType } from '../../../types/globalTypes'
+import { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 type CollocationsType = {
-    [key: string]: string[];
-}
+  [key: string]: string[];
+};
 
 type SelectedCollocationListProps = {
-    selectedCollocations: CollocationsType[] | undefined
-    edit:                 boolean
-}
+  selectedCollocations: CollocationsType[] | undefined;
+  edit?: boolean;
+  setCheckedList: React.Dispatch<React.SetStateAction<CollocationType>>;
+  checkedList: CollocationType;
+};
 
-const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocationListProps) => {
-  const mixedRacks = [
-    {premise: 'C1', racks: ['S2.6']},
-    {premise: 'RA2', racks: ['S7.4']},
-    {premise: 'RA2', racks: ['S8.1']},
-    {premise: 'DC5', racks: ['S1.1']},
-    {premise: 'DC5', racks: ['S2.3']},
-  ]
+const SelectedCollocationList = ({ selectedCollocations, edit, checkedList, setCheckedList }: SelectedCollocationListProps) => {
   return (
-    <Card title={'Kolokacijos'} className='SelectedCollocationListContainer' >
-      <div className='SelectedCollocationListBody'>
-        {selectedCollocations?.map((el, i) => {
-          const objEntries = Object.entries(el)
-          const mix = mixedRacks.some((rack) => rack.premise === objEntries[0][0] && rack.racks.some((value) => objEntries[0][1].includes(value)))
-          return(
-            <Card className='SelectedCollocationListItem' key={i} title={
-              <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <div>{objEntries[0][0]}</div>
-                {mix ? <div className='ErrorText'>Reikalinga DLC inžinieriaus palyda</div> : null}
-              </div>}
-            >
-              <Form.Item rules={[{ required: true, message: 'pasirinkite kolokacijas' }]} initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
-                <Checkbox.Group>
-                  {objEntries[0][1].map((option, index) => (
-                    <Checkbox disabled={!edit} key={index} value={option}>
-                      {option}
-                    </Checkbox>
-                  ))}
-                </Checkbox.Group>
-              </Form.Item>
-            </Card>
-          )})
-        }
-      </div>
+    <Card title={'KolokacijosInitial'} className='SelectedCollocationListContainer'>
+      {selectedCollocations?.map((el, i) => {
+        const [premise] = Object.entries(el)[0]
+        const objEntries = Object.entries(el)
+        return (
+          <Card className='CollocationItemCard' key={i} title={premise}>
+            <Form.Item rules={[{ required: true, message: 'pasirinkite kolokacijas' }]} initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
+              <Checkbox.Group>
+                {objEntries[0][1].map((option, index) => (
+                  <Checkbox disabled={!edit} key={index} value={option}>
+                    {option}
+                  </Checkbox>
+                ))}
+              </Checkbox.Group>
+            </Form.Item>
+          </Card>
+        )
+      })}
     </Card>
   )
 }

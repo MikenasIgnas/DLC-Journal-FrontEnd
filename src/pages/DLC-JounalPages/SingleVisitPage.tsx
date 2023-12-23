@@ -40,7 +40,8 @@ const SingleVisitPage = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
   const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
-  const {validate, contextHolder} = useVisitValidation()
+  const {validate, contextHolder}                             = useVisitValidation()
+  const [checkedList, setCheckedList]                         = React.useState<{ [key: string]: string[] }>({})
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -108,6 +109,8 @@ const SingleVisitPage = () => {
         selectedVisitor: el.selectedVisitor,
       }))
       values.visitors = updateIdTypes
+
+      values.visitCollocation = checkedList
       values.startDate = values?.startDate?.format('YYYY-MM-DD')
       values.endDate = values?.endDate?.format('YYYY-MM-DD')
       const localStartTime = convertUTCtoLocalTime(values?.startTime)
@@ -191,9 +194,11 @@ const SingleVisitPage = () => {
         <SelectedCollocationList
           selectedCollocations={filteredArray}
           edit={edit}
+          checkedList={checkedList}
+          setCheckedList={setCheckedList}
         /> :
-        <CollocationsList companiesColocations={companiesColocations}
-        />
+        <CollocationsList companiesColocations={companiesColocations} setCheckedList={setCheckedList} checkedList={checkedList} />
+
       }
       {canBringCompany ?
         <ItemList

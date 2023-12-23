@@ -165,7 +165,7 @@ const SingleCompanyPage = () => {
         title={
           <SingleCompanyTitle
             companyLogo ={company?.companyInfo?.companyPhoto}
-            companyTitle={company?.companyInfo?.companyName.toUpperCase()}
+            companyTitle={company?.companyInfo?.companyName}
             companyDescription={company?.companyInfo.companyDescription}
             edit={edit}
           />}

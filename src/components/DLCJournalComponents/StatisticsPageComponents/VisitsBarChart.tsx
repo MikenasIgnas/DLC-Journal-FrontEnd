@@ -23,34 +23,36 @@ const VisitsBarChart = ({visits}: VisitsBarChartProps) => {
     data.push({ name: formatDateString(allDates[i]), Vizitai: visitCounter })
   }
   return (
-    <ResponsiveContainer width='100%' height='100%' minWidth={500} minHeight={500}>
-      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <RangePicker
-          onChange={onRangeChange}
-          presets={rangePresets}
-        />
-        <BarChart
-          width={1500}
-          height={500}
-          data={data}
-          margin={{
-            top:    5,
-            right:  30,
-            left:   20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray='3 3' />
-          <XAxis dataKey='name' />
-          <YAxis tickCount={3} />
-          <Tooltip />
-          <Legend verticalAlign='top' wrapperStyle={{ lineHeight: '40px' }} />
-          <ReferenceLine y={0} stroke='#000' />
-          <Brush dataKey='name' height={30} stroke='#8884d8' />
-          <Bar dataKey='Vizitai' fill='#8884d8' />
-        </BarChart>
-      </div>
-    </ResponsiveContainer>
+    <div>
+      <ResponsiveContainer width='100%' height='100%' >
+        <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+          <RangePicker
+            onChange={onRangeChange}
+            presets={rangePresets}
+          />
+          <BarChart
+            width={1000}
+            height={500}
+            data={data}
+            margin={{
+              top:    5,
+              right:  30,
+              left:   20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray='3 3' />
+            <XAxis dataKey='name' />
+            <YAxis tickCount={4} />
+            <Tooltip />
+            <Legend verticalAlign='top' wrapperStyle={{ lineHeight: '40px' }} />
+            <ReferenceLine y={0} stroke='#000' />
+            <Brush dataKey='name' height={30} stroke='#8884d8' />
+            <Bar dataKey='Vizitai' fill='#8884d8' />
+          </BarChart>
+        </div>
+      </ResponsiveContainer>
+    </div>
 
   )
 }
