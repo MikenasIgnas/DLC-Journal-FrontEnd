@@ -4,7 +4,7 @@ import React                                              from 'react'
 import { Avatar, Button, Form, List, Modal, Select, Tag } from 'antd'
 import { FormListFieldData }                              from 'antd/es/form'
 import SignatureCanvas                                    from 'react-signature-canvas'
-import { EmployeesType, VisitorsType }                                   from '../../../types/globalTypes'
+import { EmployeesType, VisitorsType }                    from '../../../types/globalTypes'
 import { CheckOutlined, DeleteOutlined, EyeOutlined }     from '@ant-design/icons'
 import {identificationOptions}                            from './StaticSelectOptions'
 

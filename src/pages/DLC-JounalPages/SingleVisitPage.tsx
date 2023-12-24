@@ -143,11 +143,13 @@ const SingleVisitPage = () => {
       console.error(err)
     }
   }
+
   const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
     if(e.key === 'Enter'){
       e.preventDefault()
     }
   }
+
   return (
     <Form form={form} onFinish={saveChanges} onKeyDown={onkeydown}>
       <Descriptions
@@ -157,7 +159,6 @@ const SingleVisitPage = () => {
       />
       {openVisitorAddition && clientsEmployees && clientsEmployees?.length > 0 &&
       <VisitorAdditionList
-        setClientsEmployees={setClientsEmployees}
         setOpenVisitorAddition={setOpenVisitorAddition}
         clientsEmployees={clientsEmployees}
         searchEmployee={searchEmployee}

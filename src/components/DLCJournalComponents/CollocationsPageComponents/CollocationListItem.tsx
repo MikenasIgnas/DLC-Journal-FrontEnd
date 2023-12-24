@@ -7,7 +7,7 @@ import { useSearchParams }                    from 'react-router-dom'
 import SuccessMessage                         from '../../UniversalComponents/SuccessMessage'
 import { setCollocationItem }                 from '../../../auth/CollocationItemReducer/collocationItemReducer'
 import { generateCsv }                        from '../../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
+import { useCookies }                         from 'react-cookie'
 
 type MatchingCompaniesType = {
   companyName:  string;

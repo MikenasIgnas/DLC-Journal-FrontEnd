@@ -43,7 +43,7 @@ const useSetUsersData = () => {
       setCount(documents.data)
     })()
   }, [])
-  return {data, count, setCount}
+  return {data, setData, count, setCount}
 }
 
 export default useSetUsersData

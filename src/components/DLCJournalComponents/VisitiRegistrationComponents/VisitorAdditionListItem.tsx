@@ -52,7 +52,6 @@ const VisitorAdditionListItem = ({item, addVisitor, removeVisitor, photoFolder, 
 
   return (
     <List.Item>
-      AAA
       <Card
         style={{ margin: '10px', width: '450px' }}
         actions={id ? [ <UserAddOutlined onClick={addVisitingClient} key='add' />] : [

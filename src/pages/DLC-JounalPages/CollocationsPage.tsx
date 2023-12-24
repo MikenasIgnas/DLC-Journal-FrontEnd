@@ -19,20 +19,20 @@ type MatchingCompaniesType = {
 }
 
 const CollocationsPage = () => {
-  const [cookies]                                         = useCookies(['access_token'])
-  const [allCollocations, setAllCollocations]             = React.useState<CollocationsType[]>()
-  const [allCompanies, setAllCompanies]                   = React.useState<CompaniesType[]>()
-  const [searchParams, setSearchParams]                   = useSearchParams()
-  const tabKey                                            = searchParams.get('tabKey')
-  const dispatch                                          = useAppDispatch()
-  const openCollocationAdditionModal                      = useAppSelector((state) => state.modals.openCollocationAdditionModal)
-  const openCollocationRemovalModal = useAppSelector((state) => state.modals.openCollocationRemovalModal)
+  const [cookies]                             = useCookies(['access_token'])
+  const [allCollocations, setAllCollocations] = React.useState<CollocationsType[]>()
+  const [allCompanies, setAllCompanies]       = React.useState<CompaniesType[]>()
+  const [searchParams, setSearchParams]       = useSearchParams()
+  const tabKey                                = searchParams.get('tabKey')
+  const dispatch                              = useAppDispatch()
+  const openCollocationAdditionModal          = useAppSelector((state) => state.modals.openCollocationAdditionModal)
+  const openCollocationRemovalModal           = useAppSelector((state) => state.modals.openCollocationRemovalModal)
 
   React.useEffect(() => {
     (async () => {
       try {
-        const companies = await get('getCompanies', cookies.access_token)
-        const collocations = await get('getCollocations', cookies.access_token)
+        const companies     = await get('getCompanies', cookies.access_token)
+        const collocations  = await get('getCollocations', cookies.access_token)
         setAllCollocations(collocations.data[0].colocations)
         setAllCompanies(companies.data)
       } catch (err) {

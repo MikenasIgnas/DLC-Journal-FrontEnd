@@ -6,6 +6,8 @@ import FullTable                        from '../../components/Table/TableCompon
 import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
+import { deleteTableItem } from '../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
 
 const tableColumnNames = [
   {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},
@@ -35,9 +37,10 @@ const tableSorter = [
 
 const ManageUsersPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, count}                   = useSetUsersData()
+  const {data, setData, count}          = useSetUsersData()
 
   return (
     <>
@@ -52,7 +55,7 @@ const ManageUsersPage = () => {
             userRole={el?.userRole}
             username={el?.username}
             rowMenu={<RowMenu
-              // deleteItem={() => deleteTableItem(el?.id, setFechedData, users, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
+              deleteItem={() => deleteTableItem(el?.id, setData, data, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
               navigate={() => navigate(`${el.id}`)} />} />
         ))}
 

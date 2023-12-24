@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
-import React                    from 'react'
-import { Button, Card, Input, List }    from 'antd'
-import { EmployeesType }        from '../../../types/globalTypes'
-import VisitorAdditionListItem  from './VisitorAdditionListItem'
+import React                         from 'react'
+import { Button, Card, Input, List } from 'antd'
+import { EmployeesType }             from '../../../types/globalTypes'
+import VisitorAdditionListItem       from './VisitorAdditionListItem'
 
 type VisitorAdditionListProps = {
-    clientsEmployees:     EmployeesType[] | undefined
-    searchEmployee:       (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    searchEmployeeValue:  string | undefined
-    addVisitor:           (id:number) => void
-    removeVisitor:        (id:number) => void
-    setOpenVisitorAddition?: React.Dispatch<React.SetStateAction<boolean>>
-    setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    clientsEmployees:         EmployeesType[] | undefined
+    searchEmployee:           (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    searchEmployeeValue:      string | undefined
+    addVisitor:               (id:number) => void
+    removeVisitor:            (id:number) => void
+    setOpenVisitorAddition?:  React.Dispatch<React.SetStateAction<boolean>>
+    setClientsEmployees?:     React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
 }
 
 const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
@@ -27,12 +27,12 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
         style={{overflow: 'auto', maxHeight: '450px'}}
         grid={{
           gutter: 16,
-          xs:     1,
+          xs:     2,
           sm:     2,
-          md:     4,
-          lg:     4,
-          xl:     6,
-          xxl:    3,
+          md:     2,
+          lg:     2,
+          xl:     2,
+          xxl:    4,
         }}
         dataSource={clientsEmployees}
         renderItem={(item) => ( !searchEmployeeValue || item.name.toLowerCase().includes(searchEmployeeValue)) &&
