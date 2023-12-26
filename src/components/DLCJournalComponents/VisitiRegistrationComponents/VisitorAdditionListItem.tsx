@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Avatar, Card, Form, List }         from 'antd'
-import { EmployeesType, VisitsType }        from '../../../types/globalTypes'
-import { useCookies }                       from 'react-cookie'
-import { useParams }                        from 'react-router'
-import Meta                                 from 'antd/es/card/Meta'
-import { DeleteOutlined, UserAddOutlined }  from '@ant-design/icons'
-import { post }                             from '../../../Plugins/helpers'
+import React                          from 'react'
+import { Avatar, Card, Form, List }   from 'antd'
+import { EmployeesType, VisitsType }  from '../../../types/globalTypes'
+import { useCookies }                 from 'react-cookie'
+import { useParams }                  from 'react-router'
+import Meta                           from 'antd/es/card/Meta'
+import { UserAddOutlined }            from '@ant-design/icons'
+import { post }                       from '../../../Plugins/helpers'
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
@@ -17,7 +17,7 @@ type VisitorAdditionListItemProps = {
     setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
 }
 
-const VisitorAdditionListItem = ({item, addVisitor, removeVisitor, photoFolder, clientsEmployees, setClientsEmployees}: VisitorAdditionListItemProps) => {
+const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setClientsEmployees}: VisitorAdditionListItemProps) => {
   const [cookies] = useCookies(['access_token'])
   const {id}      = useParams()
   const form      = Form.useFormInstance<VisitsType>()
@@ -42,21 +42,12 @@ const VisitorAdditionListItem = ({item, addVisitor, removeVisitor, photoFolder, 
 
   }
 
-  const removeVisitingClient = () => {
-    removeVisitor(Number(item.employeeId))
-    const updatedVisitors = (visitor || []).filter(obj => obj.selectedVisitor.employeeId !== item.employeeId)
-    form.setFieldsValue({
-      visitors: updatedVisitors,
-    })
-  }
-
   return (
     <List.Item>
       <Card
         style={{ margin: '10px', width: '450px' }}
         actions={id ? [ <UserAddOutlined onClick={addVisitingClient} key='add' />] : [
           <UserAddOutlined onClick={addVisitingClient} key='add' />,
-          <DeleteOutlined onClick={removeVisitingClient} key='remove'/>,
         ]}
       >
         <Meta

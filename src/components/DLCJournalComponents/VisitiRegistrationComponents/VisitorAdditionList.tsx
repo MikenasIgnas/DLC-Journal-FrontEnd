@@ -27,8 +27,8 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
         style={{overflow: 'auto', maxHeight: '450px'}}
         grid={{
           gutter: 16,
-          xs:     2,
-          sm:     2,
+          xs:     1,
+          sm:     1,
           md:     2,
           lg:     2,
           xl:     2,

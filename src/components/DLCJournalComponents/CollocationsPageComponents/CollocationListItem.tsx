@@ -8,6 +8,7 @@ import SuccessMessage                         from '../../UniversalComponents/Su
 import { setCollocationItem }                 from '../../../auth/CollocationItemReducer/collocationItemReducer'
 import { generateCsv }                        from '../../../Plugins/helpers'
 import { useCookies }                         from 'react-cookie'
+import { get } from 'http'
 
 type MatchingCompaniesType = {
   companyName:  string;
@@ -59,7 +60,7 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
     },
   ]
 
-  const onDeleteIconClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>, premiseName: string) => {
+  const onDeleteIconClick = async(event: React.MouseEvent<HTMLSpanElement, MouseEvent>, premiseName: string) => {
     const find = companyCollocation?.find((el) => el.premiseName === premiseName)
     if( find && find?.racks.length > 0){
       event.stopPropagation()

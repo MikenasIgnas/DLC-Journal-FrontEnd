@@ -40,7 +40,8 @@ const SingleVisitPage = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
   const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
-  const {validate, contextHolder} = useVisitValidation()
+  const {validate, contextHolder}                             = useVisitValidation()
+
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)

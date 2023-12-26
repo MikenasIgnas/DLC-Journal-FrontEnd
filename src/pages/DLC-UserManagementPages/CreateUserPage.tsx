@@ -67,7 +67,7 @@ const CreateUserPage = () => {
 
 
       <Card
-        title='Asmeninė informacija'
+        title='Sukurti darbuotoją'
         bordered={true}
         className='CreateUserCard'>
         <Form

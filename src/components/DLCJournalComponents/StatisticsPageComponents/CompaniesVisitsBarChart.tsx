@@ -54,8 +54,8 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
           presets={rangePresets}
         />
         <BarChart
-          width={1000}
-          height={500}
+          width={1300}
+          height={700}
           data={data}
           margin={{
             top:    20,

@@ -2,7 +2,7 @@
 import React                                                          from 'react'
 import { Button, Card, ConfigProvider, Form, Input, Select, message } from 'antd'
 import { post }                                                       from '../../Plugins/helpers'
-import { useAppDispatch, useAppSelector }                             from '../../store/hooks'
+import { useAppDispatch }                                             from '../../store/hooks'
 import { setUsername }                                                from '../../auth/AuthReducer/reducer'
 import { useCookies }                                                 from 'react-cookie'
 import { TokenType }                                                  from '../../types/globalTypes'
@@ -102,6 +102,7 @@ const EditUserProfilePage = () => {
           loading={loading}
           title='Mano Profilis'
           bordered={true}
+          style={{textAlign: 'center'}}
           className='CreateUserCard'>
           <Form
             {...formItemLayout}
@@ -113,7 +114,7 @@ const EditUserProfilePage = () => {
           >
             <Form.Item
               labelAlign='left'
-              name='username'
+              name='employee'
               label='Darbuotojas'
               initialValue={userProfileData?.username}
             >

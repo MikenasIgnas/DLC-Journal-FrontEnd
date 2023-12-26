@@ -37,12 +37,10 @@ const StatisticsPage = () => {
   ]
 
   return (
-    <>
-      <Tabs
-        tabPosition='left'
-        items={tabItems}
-      />
-    </>
+    <Tabs
+      tabPosition='left'
+      items={tabItems}
+    />
   )
 }
 

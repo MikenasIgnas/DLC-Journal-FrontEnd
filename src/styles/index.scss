@@ -237,10 +237,10 @@
     width: 200px;
   }
   .SignatureContainer{
-    width: 100px;
+    width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     .CheckIcon{
       color: #4de44d;
       font-size: 17px;
@@ -783,6 +783,7 @@ thead[class*="ant-table-thead"] th{
       flex-direction: column;
       justify-content: space-between;
       width: 700px;
+      text-align: center;
       .Form{
         max-width: 600px
       }
@@ -872,6 +873,43 @@ thead[class*="ant-table-thead"] th{
   width: 100%;
   padding: 10px;
 }
+
+.VisitPurposeButtonContainer{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+  .VisitPurposeButton{
+    width: 45%;
+    height: 110px;
+  }
+}
+@media screen and (max-width: 600px) {
+
+  .VisitRegistrationFormContainer{
+    display: block;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    .VisitRegistrationFormItem{
+      width: 100%;
+      text-align: center;
+    }
+    .AddVisitorButton{
+      margin: 10px;
+    }
+  }
+  .VisitPurposeButtonContainer{
+    display: block;
+    justify-content: space-between;
+    width: 100%;
+
+    .VisitPurposeButton{
+      width: 100%;
+      height: 70px;
+    }
+  }
+}
 @media only screen and (max-width: 600px) {
   .PageLayoutSpace .Layout .PageLayoutContentDark {
     width: 100%;
@@ -879,7 +917,7 @@ thead[class*="ant-table-thead"] th{
     min-height: 100vh;
     display: block;
     background-color: rgba(0, 0, 0, 0.8784313725);
-}
+    }
     .ChecklistCard {
       width: 100%;
       padding: 10px;
@@ -1010,7 +1048,8 @@ thead[class*="ant-table-thead"] th{
     background: #1a82e3;
     cursor: pointer;
     transition: all 0.2s;
-}
+  }
+
 }
 
 .VisitListItem :hover{

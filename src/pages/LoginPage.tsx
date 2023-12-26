@@ -35,11 +35,10 @@ const LoginPage = () => {
       <Card headStyle={{textAlign: 'center'}} title='Log In' bordered={true} className='LoginPage'>
         <Form
           name='normal_login'
-          initialValues={{ remember: true }}
           onFinish={onFinish}
         >
           <Form.Item
-            name='email'
+            name='loginEmail'
             rules={[
               { required: true, message: 'Please input your Email!' },
               {type: 'email', message: 'The input is not valid E-mail!'},
@@ -48,7 +47,7 @@ const LoginPage = () => {
             <Input type='email' prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
-            name='password'
+            name='loginPassword'
             rules={[{ required: true, message: 'Please input your Password!' }]}
           >
             <Input.Password

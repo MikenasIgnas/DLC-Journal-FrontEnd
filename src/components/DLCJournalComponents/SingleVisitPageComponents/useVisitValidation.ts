@@ -18,7 +18,7 @@ const useVisitValidation =  () => {
   ) => {
     const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null && obj.idType !== '')
     const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature && obj.signature !== null && obj.signature !== undefined)
-    if(visitData && visitData?.[0]?.visitPurpose.length > 0 && visitData && visitData?.[0]?.visitors.length > 0 && hasId && hasSignatures ) {
+    if(visitData && visitData?.[0]?.visitPurpose.length > 0 && visitData && visitData?.[0]?.visitors.length > 0 && hasId && hasSignatures && !edit ) {
       const res = await get(`${url}?visitId=${id}`, cookies.access_token)
       if(!res.error){
         messageApi.success({

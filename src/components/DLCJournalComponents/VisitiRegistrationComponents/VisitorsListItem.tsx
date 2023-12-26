@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable max-len */
 /* eslint-disable react/jsx-key */
 import React                                              from 'react'
-import { Avatar, Button, Form, List, Modal, Select, Tag } from 'antd'
+import { Avatar, Button, Form, List, Modal, Select, Tag, Image } from 'antd'
 import { FormListFieldData }                              from 'antd/es/form'
 import SignatureCanvas                                    from 'react-signature-canvas'
 import { EmployeesType, VisitorsType }                    from '../../../types/globalTypes'
@@ -73,58 +74,57 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees }: Visit
       setClientsEmployees([...clientsEmployees, visitorsItem.selectedVisitor])
     }
   }
-
   return (
-    <>
-      <List.Item
-        key={item.key}
-        className='VisitorsListItemContainer'
-        actions={[
-          <div style={{display: 'flex', alignItems: 'center', width: '400px', justifyContent: 'space-around'}}>
-            <Form.Item noStyle name={[item.name, 'idType']}>
-              <Select placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={identificationOptions} />
-            </Form.Item>
-            <div>
-              {visitorsItem.signature ? (
-                <div className='SignatureContainer'>
-                  <CheckOutlined className='CheckIcon'/>
-                  <EyeOutlined className='PreviewIcon' onClick={() => setVisible(true)} />
+    <List.Item
+      key={item.key}
+      className='VisitorsListItemContainer'
+      actions={[
+        <div style={{display: 'flex', alignItems: 'center', width: '500px', justifyContent: 'space-around'}}>
+          <Form.Item noStyle name={[item.name, 'idType']}>
+            <Select placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={identificationOptions} />
+          </Form.Item>
+          <div style={{width: '500px'}}>
+            {visitorsItem.signature ? (
+              <div className='SignatureContainer'>
+                <div style={{display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
+                  <Image key={item.key} width={150} src={signatureCanvasRef.current.toDataURL()}/>
                   <DeleteOutlined className='DeleteIcon' onClick={deleteSignature}/>
                 </div>
-              ) : (
-                <>
-                  <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
-                  <Button onClick={deleteVisitor}>Pašalinti</Button>
-                </>
-              )}
-            </div>
-          </div>,
-        ]}
+                <Button onClick={deleteVisitor}>Pašalinti darbuotoją</Button>
+              </div>
+            ) : (
+              <div style={{display: 'flex', justifyContent: 'space-evenly',width: '300px' }}>
+                <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
+                <Button onClick={deleteVisitor}>Pašalinti darbuotoją</Button>
+              </div>
+            )}
+          </div>
+        </div>,
+      ]}
+    >
+      <List.Item.Meta
+        className='VisitorsListItem'
+        avatar={
+          <Avatar
+            shape='square' size={50}
+            src={visitorsItem.selectedVisitor.employeePhoto ?
+              `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` :
+              '../ClientsEmployeesPhotos/noUserImage.jpeg'}
+          />}
+        title={<div>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</div>}
+        description={<div>{visitorsItem.selectedVisitor.occupation}</div>}
+      />
+      <div className='DisplayFlex'>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
+      <Modal
+        open={visible}
+        onCancel={oncancel}
+        footer={false}
       >
-        <List.Item.Meta
-          className='VisitorsListItem'
-          avatar={
-            <Avatar
-              shape='square' size={50}
-              src={visitorsItem.selectedVisitor.employeePhoto ?
-                `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` :
-                '../ClientsEmployeesPhotos/noUserImage.jpeg'}
-            />}
-          title={<div>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</div>}
-          description={<div>{visitorsItem.selectedVisitor.occupation}</div>}
-        />
-        <div className='DisplayFlex'>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
-        <Modal
-          open={visible}
-          onCancel={oncancel}
-          footer={false}
-        >
-          <Form.Item name={[item.name, 'signature']}>
-            <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
-          </Form.Item>
-        </Modal>
-      </List.Item>
-    </>
+        <Form.Item name={[item.name, 'signature']}>
+          <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
+        </Form.Item>
+      </Modal>
+    </List.Item>
   )
 }
 

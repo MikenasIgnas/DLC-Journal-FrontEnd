@@ -22,6 +22,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
   const onFinish = async(values: any) => {
     values.racks = racks
     const res = await post('addCollocation', values, cookies.access_token)
+    console.log(res)
     if(!res.error){
       form.resetFields()
       setRacks([])

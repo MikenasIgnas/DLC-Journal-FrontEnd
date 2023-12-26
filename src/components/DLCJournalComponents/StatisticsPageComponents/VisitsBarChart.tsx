@@ -24,15 +24,15 @@ const VisitsBarChart = ({visits}: VisitsBarChartProps) => {
   }
   return (
     <div>
-      <ResponsiveContainer width='100%' height='100%' >
+      <ResponsiveContainer width='100%' height='100%'>
         <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
           <RangePicker
             onChange={onRangeChange}
             presets={rangePresets}
           />
           <BarChart
-            width={1000}
-            height={500}
+            width={1300}
+            height={700}
             data={data}
             margin={{
               top:    5,
