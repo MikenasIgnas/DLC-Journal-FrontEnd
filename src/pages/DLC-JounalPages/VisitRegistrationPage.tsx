@@ -63,6 +63,7 @@ const VisitRegistrationPage= () => {
       e.preventDefault()
     }
   }
+
   return (
     <div style={contentStyle}>
       <Card style={{width: '100% '}}>

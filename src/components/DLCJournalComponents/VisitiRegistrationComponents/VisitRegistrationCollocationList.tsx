@@ -12,6 +12,7 @@ type CollocationsListProps = {
 
 const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList, checkedList }: CollocationsListProps) => {
   const [checkAllStates, setCheckAllStates] = useState<{ [key: string]: boolean }>({})
+
   const onCheckAllChange = (e: CheckboxChangeEvent, values: string[], category: string) => {
     setCheckedList((prev) => ({
       ...prev,
@@ -36,11 +37,7 @@ const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList
 
   return (
     <Card
-      title={
-        <div>
-          Kolokacijos
-        </div>
-      }
+      title='Kolokacijos'
       className='CollocationsListCard'
     >
       <div className='CollocationsListCardBody'>

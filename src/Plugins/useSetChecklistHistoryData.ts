@@ -10,7 +10,7 @@ const useSetChecklistHistoryData = () => {
   const [count, setCount] = React.useState<number>()
   const [cookies]         = useCookies(['access_token'])
   const [searchParams]    = useSearchParams()
-
+  const tableSorter       = searchParams.get('tableSorter')
   React.useEffect(() => {
     const setFetchedData = async () => {
       const page          = searchParams.get('page') || 1
@@ -25,6 +25,9 @@ const useSetChecklistHistoryData = () => {
 
       if(selectFilter){
         fetchUrl += `&selectFilter=${selectFilter}`
+      }
+      if(tableSorter){
+        fetchUrl += `&tableSorter=${tableSorter}`
       }
 
       try {

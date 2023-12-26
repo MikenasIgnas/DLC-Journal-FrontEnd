@@ -6,8 +6,8 @@ import FullTable                        from '../../components/Table/TableCompon
 import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import { deleteTableItem } from '../../Plugins/helpers'
-import { useCookies } from 'react-cookie'
+import { deleteTableItem }              from '../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
 
 const tableColumnNames = [
   {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},

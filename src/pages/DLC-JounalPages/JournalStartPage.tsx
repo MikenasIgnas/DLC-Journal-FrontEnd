@@ -8,7 +8,7 @@ const DLCJournalStartPage = () => {
     <div className='DLCJournalStartPageContainer'>
       <div className='DisplayFlex'>
         <JournalStartPageCard icon={<FileAddOutlined/>} navigateLink={'/DLC Žurnalas/Vizito_Registracija'} buttonText={'Registruoti naują vizitą'}/>
-        <JournalStartPageCard icon={<ReadOutlined />} navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10'} buttonText={'Vizitai'}/>
+        <JournalStartPageCard icon={<ReadOutlined />} navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10&tableSorter=desc'} buttonText={'Vizitai'}/>
         <JournalStartPageCard icon={<UnorderedListOutlined/>} navigateLink={'/DLC Žurnalas/Įmonių_Sąrašas'} buttonText={'Įmonių sąrašas'}/>
       </div>
       <div className='DisplayFlex'>

@@ -14,6 +14,7 @@ const useSetVisitsData = () => {
   const limit                 = searchParams.get('limit') || 10
   const selectFilter          = searchParams.get('selectFilter')
   const searchFilter          = searchParams.get('filter')
+  const tableSorter            = searchParams.get('tableSorter')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -25,6 +26,10 @@ const useSetVisitsData = () => {
 
       if(selectFilter){
         fetchUrl += `&selectFilter=${selectFilter}`
+      }
+
+      if(tableSorter){
+        fetchUrl += `&tableSorter=${tableSorter}`
       }
 
       try {
@@ -46,7 +51,6 @@ const useSetVisitsData = () => {
       setLoading(false)
     })()
   }, [])
-
   return {data, count, setData, loading, setCount}
 }
 

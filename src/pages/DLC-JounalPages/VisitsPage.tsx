@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem } from '../../Plugins/helpers'
+import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetVisitsData                 from '../../Plugins/useSetVisitData'
-import useGenerateSingleVisitPDF from '../../Plugins/useGenerateSingleVIsitPDF'
-import PdfGenerator from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
+import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 
 const TableColumns = () => {
   return(
@@ -51,7 +51,6 @@ const VisitPage = () => {
   const navigate                          = useNavigate()
   const {data, count, setData}            = useSetVisitsData()
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
-
   return (
     <FullTable
       pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
