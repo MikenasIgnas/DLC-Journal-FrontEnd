@@ -47,15 +47,13 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
   )
 
   return (
-    <ResponsiveContainer width='100%' height='100%'>
-      <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-        <RangePicker
-          onChange={onRangeChange}
-          presets={rangePresets}
-        />
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <RangePicker
+        onChange={onRangeChange}
+        presets={rangePresets}
+      />
+      <ResponsiveContainer width='100%' height={400}>
         <BarChart
-          width={1300}
-          height={700}
           data={data}
           margin={{
             top:    20,
@@ -79,8 +77,8 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
             />
           ))}
         </BarChart>
-      </div>
-    </ResponsiveContainer>
+      </ResponsiveContainer>
+    </div>
   )
 }
 
