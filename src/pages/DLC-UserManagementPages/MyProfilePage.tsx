@@ -3,7 +3,7 @@ import React                                                          from 'reac
 import { Button, Card, ConfigProvider, Form, Input, Select, message } from 'antd'
 import { post }                                                       from '../../Plugins/helpers'
 import { useAppDispatch }                                             from '../../store/hooks'
-import { setUsername }                                                from '../../auth/AuthReducer/reducer'
+import { setEmployeeName }                                            from '../../auth/AuthReducer/reducer'
 import { useCookies }                                                 from 'react-cookie'
 import { TokenType }                                                  from '../../types/globalTypes'
 import {jwtDecode}                                                    from 'jwt-decode'
@@ -28,7 +28,7 @@ type FormValuesType = {
     password:       string,
     repeatPassword: string,
 }
-const EditUserProfilePage = () => {
+const MyProfilePage = () => {
   const dispatch                        = useAppDispatch()
   const [form]                          = Form.useForm()
   const [messageApi, contextHolder]     = message.useMessage()
@@ -38,7 +38,7 @@ const EditUserProfilePage = () => {
   const [loading, setLoading]           = React.useState(false)
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
-  const userProfileData                 = useFetch<FormValuesType>(`FindUser/${decodedToken.id}`, setLoading)
+  const userProfileData                 = useFetch<FormValuesType>(`FindUser/${decodedToken.userId}`, setLoading)
 
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
@@ -48,9 +48,9 @@ const EditUserProfilePage = () => {
         userRole: values.userRole,
       }
 
-      const res = await post(`editUserProfile/${decodedToken.id}`, editedValues, cookies.access_token)
-      const res2 = await post(`changedUsername/${decodedToken.id}`, editedValues, cookies.access_token)
-      dispatch(setUsername(values.username))
+      const res = await post(`editUserProfile/${decodedToken.userId}`, editedValues, cookies.access_token)
+      const res2 = await post(`changedUsername/${decodedToken.userId}`, editedValues, cookies.access_token)
+      dispatch(setEmployeeName(values.username))
       if(!res.error && !res2.error){
         messageApi.success({
           type:    'success',
@@ -72,10 +72,9 @@ const EditUserProfilePage = () => {
         passwordOne: values.passwordOne,
         passwordTwo: values.passwordTwo,
       }
-      decodedToken.username = values.username
-      const res = await post(`editUserProfile/${decodedToken.id}`, editedValues, cookies.access_token)
-      const res2 = await post(`changedUsername/${decodedToken.id}`, editedValues, cookies.access_token)
-      dispatch(setUsername(values.username))
+      const res = await post(`editUserProfile/${decodedToken.userId}`, editedValues, cookies.access_token)
+      const res2 = await post(`changedUsername/${decodedToken.userId}`, editedValues, cookies.access_token)
+      dispatch(setEmployeeName(values.username))
       if(!res.error && !res2.error){
         messageApi.success({
           type:    'success',
@@ -183,4 +182,4 @@ const EditUserProfilePage = () => {
   )
 }
 
-export default EditUserProfilePage
+export default MyProfilePage

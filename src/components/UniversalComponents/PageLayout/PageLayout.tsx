@@ -9,7 +9,7 @@ import { useCookies }                                                     from '
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setUsername, setUsersRole }                        from '../../../auth/AuthReducer/reducer'
+import { setUserEmail, setEmployeeName, setUsersRole }                        from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
@@ -28,7 +28,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const navigate                  = useNavigate()
   const dispatch                  = useAppDispatch()
   const [cookies, , removeCookie] = useCookies(['access_token'])
-  const userName                  = useAppSelector((state)=> state.auth.username)
+  const employee                  = useAppSelector((state)=> state.auth.name)
   const token                     = cookies.access_token
   const decodedToken:TokenType    = jwtDecode(token)
   const location                  = useLocation()
@@ -40,21 +40,22 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const [collapsed, setCollapsed] = React.useState(false)
   const [searchParams]            = useSearchParams()
   const menuKey                   = searchParams.get('menuKey')
+
   React.useEffect(() => {
     (async () => {
       try{
-        const user = await get(`FindUser/${decodedToken.id}`, cookies.access_token)
+        const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
         if(!user.error){
-          dispatch(setUsername(user.data.username))
-          dispatch(setUserEmail(user.data.email))
-          dispatch(setUsersRole(user.data.userRole))
+          dispatch(setEmployeeName(user.name))
+          dispatch(setUserEmail(user.email))
+          dispatch(setUsersRole(user.userRole))
         }
       }catch(err){
         console.log(err)
       }
     })()
-  }, [userName])
-
+  }, [employee])
+  console.log(employee)
   const userLogOut = async() => {
     const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
     removeCookie('access_token')
@@ -99,7 +100,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
   const headerItems: MenuItem[] = [
     getItem(
-      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {userName}</Link>
+      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {employee}</Link>
       , '13'),
   ]
 

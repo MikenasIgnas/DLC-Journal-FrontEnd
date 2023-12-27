@@ -4,7 +4,7 @@ import FullTable                        from '../../components/Table/TableCompon
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import UserArchiveTableRows             from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetArchivedUserData           from '../../Plugins/useSetArchivedUserData'
+import useSetUsersData                  from '../../Plugins/useSetUsersData'
 
 const TableColumns = () => {
   return(
@@ -25,7 +25,7 @@ const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, count}                   = useSetArchivedUserData()
+  const {data, count}                   = useSetUsersData()
 
   const tableSorter = [
     {
@@ -41,16 +41,16 @@ const UsersArchivePage = () => {
       setSearchParams={setSearchParams}
       tableRows={data?.map((el) => (
         <UserArchiveTableRows
-          key={el.id}
+          key={el._id}
           id={String(el.id)}
-          dateCreated={el.dateCreated}
+          dateCreated={el.created}
           dateDeleted={el.dateDeleted}
           email={el.email}
-          userRole={el.userRole}
-          username={el.username}
+          roleId={el.roleId}
+          name={el.name}
           rowMenu={<RowMenu
             navigate={() => navigate(`${el.id}`)} />}
-          status={el.status} />
+          status={el.isDisabled} />
       ))}
       documentCount={count}
       tableSorter={tableSorter}

@@ -19,7 +19,7 @@ const LoginPage = () => {
 
   const onFinish = async(values: LoginValuesType) => {
     try{
-      const res = await validateUser('logInUser', values)
+      const res = await validateUser('login', values)
       if(!res.error){
         setCookie('access_token', res.token, { path: '/'})
         axios.defaults.headers.common['Authorization'] = res.token
@@ -38,7 +38,7 @@ const LoginPage = () => {
           onFinish={onFinish}
         >
           <Form.Item
-            name='loginEmail'
+            name='email'
             rules={[
               { required: true, message: 'Please input your Email!' },
               {type: 'email', message: 'The input is not valid E-mail!'},
@@ -47,7 +47,7 @@ const LoginPage = () => {
             <Input type='email' prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
-            name='loginPassword'
+            name='password'
             rules={[{ required: true, message: 'Please input your Password!' }]}
           >
             <Input.Password

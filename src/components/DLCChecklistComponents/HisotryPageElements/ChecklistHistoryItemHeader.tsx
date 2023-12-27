@@ -15,8 +15,6 @@ type ChecklistHistoryItemHeaderProps = {
   }
 
 const ChecklistHistoryItemHeader = ({areaName, itemId, setEdit, todo, setActiveKey} : ChecklistHistoryItemHeaderProps) => {
-  const [cookies]               = useCookies(['access_token'])
-  const decodedToken:TokenType  = jwtDecode(cookies.access_token)
   const isMobile                = window.innerWidth < 650
 
   const editItem = () => {
@@ -28,13 +26,10 @@ const ChecklistHistoryItemHeader = ({areaName, itemId, setEdit, todo, setActiveK
   return (
     <div className={isMobile ? 'MobileHistoryItemHeader' : 'DekstopHistoryItemHeader'}>
       <div>Patalpa: {areaName}</div>
-      { Number(itemId) === decodedToken.id || decodedToken.userRole === 'SYSADMIN' ?
-        <div>
-          <Button type='link' onClick={editItem}>Edit</Button>
-          <Button htmlType='submit' type='link' onClick={() => setEdit(false)}>Save</Button>
-        </div>
-        : ''
-      }
+      <div>
+        <Button type='link' onClick={editItem}>Edit</Button>
+        <Button htmlType='submit' type='link' onClick={() => setEdit(false)}>Save</Button>
+      </div>
     </div>
   )
 }

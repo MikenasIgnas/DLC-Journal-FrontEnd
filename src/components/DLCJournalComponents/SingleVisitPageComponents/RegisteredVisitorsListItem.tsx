@@ -9,17 +9,17 @@ import { useParams }                                              from 'react-ro
 import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
 
 type RegisteredVisitorsListItemProps = {
-  signature:              string | null | undefined
-  edit:                   boolean;
-  idType:                 string | null | undefined;
-  employeeId:             number | undefined;
-  name:                   string;
-  lastName:               string;
-  occupation:             string;
-  permissions:            string[]
-  deleteVisitor:          (employeeId: number | undefined) => void
-  index:                  number
-  employeePhoto:          string | undefined;
+  signature:     string | null | undefined
+  edit:          boolean;
+  idType:        string | null | undefined;
+  employeeId:    number | undefined;
+  name:          string;
+  lastName:      string;
+  occupation:    string;
+  permissions:   string[]
+  deleteVisitor: (employeeId: number | undefined) => void
+  index:         number
+  employeePhoto: string | undefined;
 }
 
 const RegisteredVisitorsListItem = ({

@@ -6,7 +6,7 @@ import FullTable                        from '../../components/Table/TableCompon
 import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import { deleteTableItem }              from '../../Plugins/helpers'
+import { deleteTableItem, getCurrentDate, post }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 
 const tableColumnNames = [
@@ -40,23 +40,44 @@ const ManageUsersPage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, setData, count}          = useSetUsersData()
+  const { data, setData, count }         = useSetUsersData(false)
+
+  const disableUser = async(id:string) => {
+    const tableItemRemoved = (id:string) => {
+      if(data){
+        let newTableItems = [...data]
+        newTableItems = newTableItems.filter(x => x._id !== id)
+        setData(newTableItems)
+      }
+    }
+
+    const statusItems = {
+      id:           id,
+      isDisabled:   true,
+      dateDisabled: getCurrentDate(),
+    }
+
+    if(tableItemRemoved){
+      await post('user/changeStatus', statusItems, cookies.access_token)
+      tableItemRemoved(id)
+    }
+
+  }
 
   return (
     <>
       <FullTable
-        tableRows={data?.map((el) => (
+        tableRows={data?.map((el, index) => (
           <UersTableRows
-            key={el?.key}
-            id={el?.key}
-            dateCreated={el?.dateCreated}
+            key={el?._id}
+            id={index}
+            dateCreated={el?.created}
             email={el?.email}
-            status={el?.status}
-            userRole={el?.userRole}
-            username={el?.username}
+            roleId={el?.roleId}
+            name={el?.name}
             rowMenu={<RowMenu
-              deleteItem={() => deleteTableItem(el?.id, setData, data, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
-              navigate={() => navigate(`${el.id}`)} />} />
+              deleteItem={() => disableUser(el._id )}
+              navigate={() => navigate(`${el._id}`)} />} />
         ))}
 
         currentPage={page}

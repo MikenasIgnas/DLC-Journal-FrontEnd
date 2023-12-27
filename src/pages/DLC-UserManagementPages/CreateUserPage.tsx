@@ -5,6 +5,7 @@ import { getCurrentDate, post }                       from '../../Plugins/helper
 import { useNavigate }                                from 'react-router-dom'
 import { useCookies }                                 from 'react-cookie'
 import SuccessMessage                                 from '../../components/UniversalComponents/SuccessMessage'
+import useSetUserRoles from '../../Plugins/useSetUserRoles'
 
 const formItemLayout = {
   labelCol: {
@@ -35,13 +36,17 @@ const CreateUserPage = () => {
   const navigate                        = useNavigate()
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
+  const {data}                          = useSetUserRoles()
+
+  const roleOptions = data?.map((el) => ({
+    value: el._id,
+    label: el.name,
+  }))
 
   const onFinish = async (values: FormValuesType) => {
     try{
-      values.status = 'active'
       values.dateCreated = getCurrentDate()
-      values.defaultTheme = false
-      const res = await post('createUser', values, cookies.access_token)
+      const res = await post('user/create', values, cookies.access_token)
       if (!res.error) {
         messageApi.success({
           type:    'success',
@@ -50,9 +55,6 @@ const CreateUserPage = () => {
         form.resetFields()
         setLoginError(false)
         setErrorMessage('')
-        setTimeout(() => {
-          navigate('/ManageUsers')
-        },1000)
       }else{
         setLoginError(res.error)
         setErrorMessage(res.message)
@@ -64,8 +66,6 @@ const CreateUserPage = () => {
 
   return (
     <div className='CreateUserPageContainer'>
-
-
       <Card
         title='Sukurti darbuotoją'
         bordered={true}
@@ -80,7 +80,7 @@ const CreateUserPage = () => {
         >
           <Form.Item
             labelAlign='left'
-            name='username'
+            name='name'
             label='Darbuotojas'
             rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
           >
@@ -105,7 +105,7 @@ const CreateUserPage = () => {
           </Form.Item>
           <Form.Item
             labelAlign='left'
-            name='userRole'
+            name='roleId'
             label='Rolė'
             rules={[
               {
@@ -116,16 +116,12 @@ const CreateUserPage = () => {
           >
             <Select
               placeholder='Pasirinkti rolę'
-              options={[
-                { value: 'SYSADMIN', label: 'System Admin' },
-                { value: 'admin', label: 'Admin' },
-                { value: 'user', label: 'User' },
-              ]}
+              options={roleOptions}
             />
           </Form.Item>
           <Form.Item
             labelAlign='left'
-            name='passwordOne'
+            name='password'
             label='Slaptažodis'
             rules={[
               {
@@ -137,7 +133,7 @@ const CreateUserPage = () => {
           >
             <Input.Password placeholder='Slaptažodis' />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             labelAlign='left'
             name='passwordTwo'
             label='Patvirtinti slaptažodį'
@@ -150,7 +146,7 @@ const CreateUserPage = () => {
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('passwordOne') === value) {
+                  if (!value || getFieldValue('password') === value) {
                     return Promise.resolve()
                   }
                   return Promise.reject(new Error('The two passwords that you entered do not match!'))
@@ -159,7 +155,7 @@ const CreateUserPage = () => {
             ]}
           >
             <Input.Password placeholder='Pakartoti slaptažodį'/>
-          </Form.Item>
+          </Form.Item> */}
           <Button htmlType='submit'>
               Sukurti
           </Button>

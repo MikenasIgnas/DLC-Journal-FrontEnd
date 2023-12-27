@@ -68,27 +68,23 @@ export type HistoryDataType = {
 };
 
 export type UserType = {
-  id:                 number;
-  key:                string;
-  email:              string;
-  secret:             string;
-  userRole:           string;
-  username:           string;
-  dateCreated:        string;
-  dateDeleted:        string;
-  status:             string;
-  _id:                string;
+  id:          number;
+  key:         string;
+  email:       string;
+  secret:      string;
+  roleId:      string;
+  name:        string;
+  created: string;
+  dateDeleted: string;
+  isDisabled:  boolean;
+  _id:         string;
 };
 
 export type TokenType = {
-  username:           string;
-  theme:              boolean;
-  secret:             string;
-  userRole:           string;
-  userId:             string;
-  iat:                number;
-  exp:                number;
-  id:                 number;
+  email:  string;
+  exp:    number;
+  iat:    number;
+  userId: string;
 };
 
 export type ChecklistPhotosType = {

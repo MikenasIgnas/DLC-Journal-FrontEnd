@@ -14,11 +14,11 @@ export const useFetch = <T>(url: string, setLoading?: React.Dispatch<React.SetSt
         if(setLoading){
           setLoading(true)
           const response = await get(url, cookies.access_token)
-          setData(response.data)
+          setData(response)
           setLoading(false)
         }else{
           const response = await get(url, cookies.access_token)
-          setData(response.data)
+          setData(response)
         }
       }catch(err){
         console.log(err)

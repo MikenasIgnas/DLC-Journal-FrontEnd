@@ -66,7 +66,7 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
     return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
   })
   const DLCEmployees = dlcEmployees?.map((el) => {
-    return {...el, value: el.username, label: el.username}
+    return {...el, value: el.name, label: el.name}
   })
 
   const selectCompany = async(_: string, option: CompaniesType) => {
