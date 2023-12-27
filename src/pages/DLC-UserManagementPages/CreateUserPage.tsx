@@ -2,7 +2,6 @@
 import { Button, Card, Form, Input, Select, message } from 'antd'
 import React                                          from 'react'
 import { getCurrentDate, post }                       from '../../Plugins/helpers'
-import { useNavigate }                                from 'react-router-dom'
 import { useCookies }                                 from 'react-cookie'
 import SuccessMessage                                 from '../../components/UniversalComponents/SuccessMessage'
 import useSetUserRoles from '../../Plugins/useSetUserRoles'
@@ -33,12 +32,11 @@ const CreateUserPage = () => {
   const [form]                          = Form.useForm()
   const [messageApi, contextHolder]     = message.useMessage()
   const [cookies]                       = useCookies(['access_token'])
-  const navigate                        = useNavigate()
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
-  const {data}                          = useSetUserRoles()
+  const {roles}                          = useSetUserRoles()
 
-  const roleOptions = data?.map((el) => ({
+  const roleOptions = roles?.map((el) => ({
     value: el._id,
     label: el.name,
   }))

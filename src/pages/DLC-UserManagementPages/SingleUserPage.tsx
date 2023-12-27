@@ -1,15 +1,13 @@
 /* eslint-disable max-len */
 import React                                                          from 'react'
-import { useParams }                                                  from 'react-router-dom'
 import { post }                                                       from '../../Plugins/helpers'
 import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
-import {  useAppDispatch, useAppSelector }                                            from '../../store/hooks'
+import {  useAppDispatch }                                            from '../../store/hooks'
 import { useCookies }                                                 from 'react-cookie'
 import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
-import useFetch                                                       from '../../customHooks/useFetch'
 import useSetUserRoles                                                from '../../Plugins/useSetUserRoles'
-import { values } from 'lodash'
-import { setEmployeeName } from '../../auth/AuthReducer/reducer'
+import { setEmployeeName }                                            from '../../auth/AuthReducer/reducer'
+import useSetSingleUser                                               from '../../Plugins/useSetSingleUser'
 
 const formItemLayout = {
   labelCol: {
@@ -22,119 +20,78 @@ const formItemLayout = {
   },
 }
 
-type SingleUserType = {
-  email:          string,
-  password:       string,
-  repeatPassword: string,
-  secret:         string,
-  userRole:       string,
-  name:           string,
-  _id:            string
-}
-
 type FormValuesType = {
   name:           string,
   email:          string,
   userRole:       string,
   password:       string,
   repeatPassword: string,
+  oldPassword:    string,
 }
 
 const SingleUserPage = () => {
   const [form]                      = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
   const [cookies]                   = useCookies(['access_token'])
-  const {id}                        = useParams()
-  const [loading, setLoading]       = React.useState(false)
-  const usersRole                   = useAppSelector((state)=> state.auth.usersRole)
-  const singleUser                  = useFetch<SingleUserType>(`user/getbyId?id=${id}`, setLoading)
-  const {data}                      = useSetUserRoles()
+  const {user, id, loading}         = useSetSingleUser()
+  const {roles}                     = useSetUserRoles()
   const dispatch                    = useAppDispatch()
 
-  const userRoles = data?.map((el) => ({
+  const userRoles = roles?.map((el) => ({
     value: el._id,
     label: el.name,
   }))
-
   const onFinish = async (values: FormValuesType) => {
-    if(!values.password){
-      if(id){
-        if(!values.name){
-          const editValues = {
-            id:    id,
-            email: values.email,
-          }
 
-          const res = await post('user/edit', editValues, cookies.access_token)
-          if(res){
-            messageApi.success({
-              type:    'success',
-              content: 'Išsaugota',
-            })
-          }else{
-            messageApi.success({
-              type:    'error',
-              content: 'Išsaugoti Nepavyko',
-            })
-          }
-        }
-        if(!values.email){
-          const editValues = {
-            id:   id,
-            name: values.name,
-          }
-          const res = await post('user/edit', editValues, cookies.access_token)
-          console.log(res.name)
+    const userInfoValues = {
+      id:    id,
+      email: values.email,
+      name:  values.name,
+    }
+
+    const passwordChangeValues = {
+      id:             id,
+      password:       values.password,
+      repeatPassword: values.repeatPassword,
+      oldPassword:    values?.oldPassword,
+    }
+
+    const endpoint = values.password ? 'auth/changePassword' : 'user/edit'
+    const postData = values.password ? passwordChangeValues : userInfoValues
+
+    try {
+      const res = await post(endpoint, postData, cookies.access_token)
+
+      if (res) {
+        const successMessage = values.password ? 'Slaptažodis pakeistas' : 'Pakeitimai išsaugoti'
+        messageApi.success({
+          type:    'success',
+          content: successMessage,
+        })
+
+        if (!values.password && values.name) {
           dispatch(setEmployeeName(res.name))
-          if(res){
-            messageApi.success({
-              type:    'success',
-              content: 'Išsaugota',
-            })
-          }else{
-            messageApi.success({
-              type:    'error',
-              content: 'Išsaugoti Nepavyko',
-            })
-          }
         }
-        if(values.name && values.email){
-          const editValues = {
-            id:    id,
-            name:  values.name,
-            email: values.email,
-          }
-          const res = await post('user/edit',editValues, cookies.access_token)
-          if(res){
-            messageApi.success({
-              type:    'success',
-              content: 'Išsaugota',
-            })
-          }else{
-            messageApi.success({
-              type:    'error',
-              content: 'Išsaugoti Nepavyko',
-            })
-          }
-        }
+      } else {
+        messageApi.error({
+          type:    'error',
+          content: 'Nepavyko išsaugoti',
+        })
       }
-    }else{
-      const passwordChangeValues = {
-        password:       values.password,
-        repeatPassword: values.repeatPassword,
-        oldPassword:    singleUser?.password,
-      }
-      if(id){
-        const res = await post('auth/changePassword', passwordChangeValues, cookies.access_token)
-        if(res){
-          messageApi.success({
-            type:    'success',
-            content: 'Išsaugota',
-          })
-        }
-      }
+    } catch (error) {
+      messageApi.error({
+        type:    'error',
+        content: 'Error',
+      })
     }
   }
+
+  React.useEffect(() => {
+    form.setFieldsValue({
+      name:  user?.name,
+      email: user?.email,
+    })
+  }, [user?.email, user?.name, form])
 
   return (
     <div className='CreateUserPageContainer'>
@@ -143,11 +100,10 @@ const SingleUserPage = () => {
           colorTextPlaceholder: '#7d7d7d',
         },
       }}>
-
         <Card
           loading={loading}
           headStyle={{textAlign: 'center' }}
-          title={`Tvarkyti ${singleUser?.name} Profilį`}
+          title={id ? `Tvarkyti ${user?.name} Profilį` : 'Mano Profilis'}
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -162,7 +118,7 @@ const SingleUserPage = () => {
               labelAlign='left'
               name='name'
               label='Darbuotojas'
-              initialValue={singleUser?.name}
+              initialValue={user?.name}
             >
               <Input placeholder='Darbuotojas'/>
             </Form.Item>
@@ -170,21 +126,29 @@ const SingleUserPage = () => {
               labelAlign='left'
               name='email'
               label='E-mail'
-              initialValue={singleUser?.email}
+              initialValue={user?.email}
+              key={user?.email}
             >
-              <Input placeholder='Darbuotojo el. paštas' />
+              <Input placeholder='Darbuotojo el. paštas'/>
             </Form.Item>
             <Form.Item
               labelAlign='left'
               name='userRole'
               label='Rolė'
-              initialValue={singleUser?.userRole}
+              initialValue={user?.userRole}
             >
               <Select
-                disabled={usersRole !== 'user' ? false : true}
                 placeholder='Pasirinkti rolę'
                 options={userRoles}
               />
+            </Form.Item>
+            <Form.Item
+              labelAlign='left'
+              name='oldPassword'
+              label='Senas slaptažodis'
+              hasFeedback
+            >
+              <Input.Password placeholder='Senas slaptažodis'/>
             </Form.Item>
             <Form.Item
               labelAlign='left'

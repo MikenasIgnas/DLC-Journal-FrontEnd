@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React               from 'react'
 import { useCookies }      from 'react-cookie'
 import { useSearchParams } from 'react-router-dom'
@@ -5,7 +6,7 @@ import { get }             from './helpers'
 import { UserType }        from '../types/globalTypes'
 
 const useSetUsersData = (isDisabled?: boolean) => {
-  const [data, setData]   = React.useState<UserType[]>()
+  const [users, setUsers]   = React.useState<UserType[]>()
   const [count, setCount] = React.useState<number>()
   const [cookies]         = useCookies(['access_token'])
   const [searchParams]    = useSearchParams()
@@ -20,7 +21,7 @@ const useSetUsersData = (isDisabled?: boolean) => {
 
       let fetchUrl = `user/getAll?page=${page}&limit=${limit}`
 
-      if(isDisabled){
+      if(isDisabled !== undefined){
         fetchUrl += `&isDisabled${isDisabled}`
       }
 
@@ -38,10 +39,10 @@ const useSetUsersData = (isDisabled?: boolean) => {
 
       try {
         const data = await get(fetchUrl, cookies.access_token)
-        setData(data)
+        setUsers(data)
         if(isDisabled !== undefined){
           const filterData = data.filter((el:UserType) => el.isDisabled !== true)
-          setData(filterData)
+          setUsers(filterData)
         }
 
       } catch (error) {
@@ -54,12 +55,16 @@ const useSetUsersData = (isDisabled?: boolean) => {
 
   React.useEffect(() => {
     (async () => {
-      const documents = await get('user/getAll/count', cookies.access_token)
+      let fetchUrl = 'user/getAll/count'
+      if(isDisabled !== undefined) {
+        fetchUrl += `?isDisabled=${isDisabled}`
+      }
+      const documents = await get(fetchUrl, cookies.access_token)
       setCount(documents)
     })()
   }, [])
 
-  return {data, setData, count, setCount}
+  return {users, setUsers, count, setCount}
 }
 
 export default useSetUsersData

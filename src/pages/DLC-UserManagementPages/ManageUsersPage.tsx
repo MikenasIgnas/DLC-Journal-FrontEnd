@@ -6,7 +6,7 @@ import FullTable                        from '../../components/Table/TableCompon
 import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import { deleteTableItem, getCurrentDate, post }              from '../../Plugins/helpers'
+import { getCurrentDate, post }         from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 
 const tableColumnNames = [
@@ -40,14 +40,14 @@ const ManageUsersPage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const { data, setData, count }         = useSetUsersData(false)
+  const { users, setUsers, count }      = useSetUsersData(false)
 
   const disableUser = async(id:string) => {
     const tableItemRemoved = (id:string) => {
-      if(data){
-        let newTableItems = [...data]
+      if(users){
+        let newTableItems = [...users]
         newTableItems = newTableItems.filter(x => x._id !== id)
-        setData(newTableItems)
+        setUsers(newTableItems)
       }
     }
 
@@ -65,28 +65,27 @@ const ManageUsersPage = () => {
   }
 
   return (
-    <>
-      <FullTable
-        tableRows={data?.map((el, index) => (
-          <UersTableRows
-            key={el?._id}
-            id={index}
-            dateCreated={el?.created}
-            email={el?.email}
-            roleId={el?.roleId}
-            name={el?.name}
-            rowMenu={<RowMenu
-              deleteItem={() => disableUser(el._id )}
-              navigate={() => navigate(`${el._id}`)} />} />
-        ))}
-
-        currentPage={page}
-        setSearchParams={setSearchParams}
-        tableColumns={<TableColumns />}
-        documentCount={count}
-        tableSorter={tableSorter}
-      />
-    </>
+    <FullTable
+      tableRows={users?.map((el, index) => (
+        <UersTableRows
+          key={el?._id}
+          id={index}
+          dateCreated={el?.created}
+          email={el?.email}
+          roleId={el?.roleId}
+          name={el?.name}
+          rowMenu={<RowMenu
+            deleteItem={() => disableUser(el._id )}
+            navigate={() => navigate(`${el._id}`)}
+          />}
+        />
+      ))}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      tableColumns={<TableColumns />}
+      documentCount={count}
+      tableSorter={tableSorter}
+    />
   )
 }
 

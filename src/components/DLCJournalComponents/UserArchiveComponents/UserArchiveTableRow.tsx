@@ -7,7 +7,7 @@ import useSetRole                 from '../../../Plugins/useSetSingleRole'
 import { convertUTCtoLocalDate }  from '../../../Plugins/helpers'
 
 type UersTableProps = {
-    id:           string;
+    id:           number;
     dateCreated:  string;
     dateDeleted:  string;
     email:        string;
@@ -25,7 +25,7 @@ const UserArchiveTableRows = ({dateCreated, dateDeleted, email, id, status, role
   return (
     <tr key={id}>
       <td style={{padding: '12px'}}>
-        <Typography>{HighlightText(filter, id)}</Typography>
+        <Typography>{HighlightText(filter, String(id))}</Typography>
       </td>
       <td>
         <Typography>{HighlightText(filter, email)}</Typography>

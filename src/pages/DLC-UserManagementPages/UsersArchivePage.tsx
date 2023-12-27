@@ -25,7 +25,7 @@ const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, count}                   = useSetUsersData()
+  const {users, count}                  = useSetUsersData()
 
   const tableSorter = [
     {
@@ -36,21 +36,23 @@ const UsersArchivePage = () => {
 
   return (
     <FullTable
-      tableColumns={<TableColumns />}
+      tableColumns={<TableColumns/>}
       currentPage={page}
       setSearchParams={setSearchParams}
-      tableRows={data?.map((el) => (
+      tableRows={users?.map((el, index) => (
         <UserArchiveTableRows
           key={el._id}
-          id={String(el.id)}
+          id={index}
           dateCreated={el.created}
           dateDeleted={el.dateDeleted}
           email={el.email}
           roleId={el.roleId}
           name={el.name}
           rowMenu={<RowMenu
-            navigate={() => navigate(`${el.id}`)} />}
-          status={el.isDisabled} />
+            navigate={() => navigate(`${el._id}`)}
+          />}
+          status={el.isDisabled}
+        />
       ))}
       documentCount={count}
       tableSorter={tableSorter}

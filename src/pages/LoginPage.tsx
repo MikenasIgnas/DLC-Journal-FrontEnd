@@ -26,7 +26,7 @@ const LoginPage = () => {
       }
     }catch (err){
       setLoginError(true)
-      setErrorMessage('Invalid Username or Password')
+      setErrorMessage('Neteisingas prisijungimas arba slaptažodis')
     }
   }
 

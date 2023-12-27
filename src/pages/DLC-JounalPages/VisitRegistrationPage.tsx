@@ -21,7 +21,6 @@ const VisitRegistrationPage= () => {
   const companyId                         = searchParams.get('companyId')
   const [checkedList, setCheckedList]     = React.useState<{ [key: string]: string[] }>({})
 
-
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
     if(companyId && (values?.visitors && values?.visitors.length > 0)){

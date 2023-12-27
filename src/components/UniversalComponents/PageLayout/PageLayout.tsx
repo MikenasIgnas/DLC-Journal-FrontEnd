@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import {ConfigProvider, Menu, MenuProps, Space }                          from 'antd'
+import {ConfigProvider, Menu, MenuProps, Space, message }                          from 'antd'
 import { Layout }                                                         from 'antd'
 import { Link, useLocation, useNavigate, useSearchParams }                from 'react-router-dom'
 import { clearFilleChecklistdData, get }                                  from '../../../Plugins/helpers'
@@ -26,9 +26,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const PageLayout = ({children}:PageLayoutProps) => {
   const navigate                  = useNavigate()
-  const dispatch                  = useAppDispatch()
   const [cookies, , removeCookie] = useCookies(['access_token'])
-  const employee                  = useAppSelector((state)=> state.auth.name)
   const token                     = cookies.access_token
   const decodedToken:TokenType    = jwtDecode(token)
   const location                  = useLocation()
@@ -40,22 +38,29 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const [collapsed, setCollapsed] = React.useState(false)
   const [searchParams]            = useSearchParams()
   const menuKey                   = searchParams.get('menuKey')
+  const employee                  = useAppSelector((state)=> state.auth.name)
+  const dispatch                  = useAppDispatch()
 
   React.useEffect(() => {
     (async () => {
       try{
         const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
-        if(!user.error){
+        if(user){
           dispatch(setEmployeeName(user.name))
           dispatch(setUserEmail(user.email))
           dispatch(setUsersRole(user.userRole))
+        }else{
+          message.error({
+            content: 'Nepavyko',
+            type:    'error',
+          })
         }
       }catch(err){
         console.log(err)
       }
     })()
-  }, [employee])
-  console.log(employee)
+  }, [])
+
   const userLogOut = async() => {
     const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
     removeCookie('access_token')
@@ -91,7 +96,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
       getItem(<Link to={'DLC Checklistas/Istorija?menuKey=8&page=1&limit=10&tableSorter=desc'} >Istorija</Link>, '8'),
     ]),
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
-      getItem(<Link to={'/Mano_Profilis?menuKey=9'} >Mano Profilis</Link>, '9'),
+      getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
       getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10'),
       getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10&tableSorter=desc'} >Visi darbuotojai</Link>, '11'),
       getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10&tableSorter=desc'} >Darbuotojų archyvas</Link>, '12'),

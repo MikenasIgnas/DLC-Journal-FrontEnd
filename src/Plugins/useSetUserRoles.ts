@@ -9,8 +9,8 @@ interface Role {
 }
 
 const useSetUserRoles = () => {
-  const [data, setData]   = React.useState<Role[]>()
-  const [cookies]         = useCookies(['access_token'])
+  const [roles, setData]    = React.useState<Role[]>()
+  const [cookies]           = useCookies(['access_token'])
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -26,7 +26,7 @@ const useSetUserRoles = () => {
   }, [cookies.access_token])
 
 
-  return {data}
+  return {roles}
 }
 
 export default useSetUserRoles

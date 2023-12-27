@@ -10,7 +10,6 @@ import ChecklistRoutesPage              from './pages/DLC-ChecklistPages/Checkli
 import SingleHistoryPage                from './pages/DLC-ChecklistPages/SingleHistoryPage'
 import CreateUserPage                   from './pages/DLC-UserManagementPages/CreateUserPage'
 import ManageUsersPage                  from './pages/DLC-UserManagementPages/ManageUsersPage'
-import MyProfilePage                    from './pages/DLC-UserManagementPages/MyProfilePage'
 import SingleUserPage                   from './pages/DLC-UserManagementPages/SingleUserPage'
 import PageLayout                       from './components/UniversalComponents/PageLayout/PageLayout'
 import UsersArchivePage                 from './pages/DLC-UserManagementPages/UsersArchivePage'
@@ -82,7 +81,7 @@ const Routing = () => {
 
               <Route path='/Darbuotojų_Archyvas' element={<UsersArchivePage/>}/>
               <Route path='/Visi_Darbuotojai' element={<ManageUsersPage/>}/>
-              <Route path='/Mano_Profilis' element={<MyProfilePage/>}/>
+              <Route path='/Mano_Profilis/:id' element={<SingleUserPage/>}/>
               <Route path='/Visi_Darbuotojai/:id' element={<SingleUserPage/>}/>
               <Route path='/Darbuotojų_Archyvas/:id' element={<SingleUserPage/>}/>
               <Route path='/Sukurti_Darbuotoją' element={<CreateUserPage/>}/>
