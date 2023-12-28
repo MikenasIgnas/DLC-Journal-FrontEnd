@@ -8,6 +8,8 @@ import SuccessMessage                                                 from '../.
 import useSetUserRoles                                                from '../../Plugins/useSetUserRoles'
 import { setEmployeeName }                                            from '../../auth/AuthReducer/reducer'
 import useSetSingleUser                                               from '../../Plugins/useSetSingleUser'
+import { jwtDecode }                                                  from 'jwt-decode'
+import { TokenType }                                                  from '../../types/globalTypes'
 
 const formItemLayout = {
   labelCol: {
@@ -36,6 +38,8 @@ const SingleUserPage = () => {
   const {user, id, loading}         = useSetSingleUser()
   const {roles}                     = useSetUserRoles()
   const dispatch                    = useAppDispatch()
+  const token:TokenType             = jwtDecode(cookies.access_token)
+  const logedInUser                 = token.userId === id
 
   const userRoles = roles?.map((el) => ({
     value: el._id,
@@ -50,7 +54,6 @@ const SingleUserPage = () => {
     }
 
     const passwordChangeValues = {
-      id:             id,
       password:       values.password,
       repeatPassword: values.repeatPassword,
       oldPassword:    values?.oldPassword,
@@ -142,42 +145,46 @@ const SingleUserPage = () => {
                 options={userRoles}
               />
             </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='oldPassword'
-              label='Senas slaptažodis'
-              hasFeedback
-            >
-              <Input.Password placeholder='Senas slaptažodis'/>
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='password'
-              label='Keisti Slaptažodį'
-              hasFeedback
-            >
-              <Input.Password placeholder='Slaptažodis'/>
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='repeatPassword'
-              label='Patvirtinti Slaptažodį'
-              dependencies={['password']}
-              hasFeedback
-              rules={[
+            {logedInUser &&
+            <>
+              <Form.Item
+                labelAlign='left'
+                name='oldPassword'
+                label='Senas slaptažodis'
+                hasFeedback
+              >
+                <Input.Password placeholder='Senas slaptažodis'/>
+              </Form.Item>
+              <Form.Item
+                labelAlign='left'
+                name='password'
+                label='Keisti Slaptažodį'
+                hasFeedback
+              >
+                <Input.Password placeholder='Slaptažodis'/>
+              </Form.Item>
+              <Form.Item
+                labelAlign='left'
+                name='repeatPassword'
+                label='Patvirtinti Slaptažodį'
+                dependencies={['password']}
+                hasFeedback
+                rules={[
 
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve()
-                    }
-                    return Promise.reject(new Error('The two passwords that you entered do not match!'))
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder='Pakartoti slaptažodį'/>
-            </Form.Item>
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve()
+                      }
+                      return Promise.reject(new Error('The two passwords that you entered do not match!'))
+                    },
+                  }),
+                ]}
+              >
+                <Input.Password placeholder='Pakartoti slaptažodį'/>
+              </Form.Item>
+            </>
+            }
             <Button htmlType='submit'>
               Išsaugoti
             </Button>

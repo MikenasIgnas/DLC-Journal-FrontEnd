@@ -131,29 +131,29 @@ const CreateUserPage = () => {
           >
             <Input.Password placeholder='Slaptažodis' />
           </Form.Item>
-          {/* <Form.Item
+          <Form.Item
             labelAlign='left'
-            name='passwordTwo'
+            name='repeatPassword'
             label='Patvirtinti slaptažodį'
             dependencies={['password']}
             hasFeedback
             rules={[
               {
                 required: true,
-                message:  'Please confirm your password!',
+                message:  'Patvirtinkit slaptažodį',
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('The two passwords that you entered do not match!'))
+                  return Promise.reject(new Error('Slaptažodžiai nesutampa'))
                 },
               }),
             ]}
           >
             <Input.Password placeholder='Pakartoti slaptažodį'/>
-          </Form.Item> */}
+          </Form.Item>
           <Button htmlType='submit'>
               Sukurti
           </Button>

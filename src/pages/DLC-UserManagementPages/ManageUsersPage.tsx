@@ -16,6 +16,7 @@ const tableColumnNames = [
   {itemName: 'Rolė', itemWidth: 120, itemValue: 'userRole'},
   {itemName: 'Statusas', itemWidth: 100, itemValue: 'status'},
   {itemName: 'Sukurta', itemWidth: 100, itemValue: 'dateCreated'},
+  {itemName: '', itemWidth: 100, itemValue: ''},
 ]
 const TableColumns = () => {
   return(
