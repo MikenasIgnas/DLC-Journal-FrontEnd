@@ -1,15 +1,14 @@
 /* eslint-disable max-len */
-import React                                                          from 'react'
-import { post }                                                       from '../../Plugins/helpers'
-import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
-import {  useAppDispatch }                                            from '../../store/hooks'
-import { useCookies }                                                 from 'react-cookie'
-import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
-import useSetUserRoles                                                from '../../Plugins/useSetUserRoles'
-import { setEmployeeName }                                            from '../../auth/AuthReducer/reducer'
-import useSetSingleUser                                               from '../../Plugins/useSetSingleUser'
-import { jwtDecode }                                                  from 'jwt-decode'
-import { TokenType }                                                  from '../../types/globalTypes'
+import React                                                              from 'react'
+import { post }                                                           from '../../Plugins/helpers'
+import { Card, Form, Input, Button, message, ConfigProvider, Checkbox }   from 'antd'
+import {  useAppDispatch, useAppSelector }                                from '../../store/hooks'
+import { useCookies }                                                     from 'react-cookie'
+import SuccessMessage                                                     from '../../components/UniversalComponents/SuccessMessage'
+import { setEmployeeName, setIsAdmin }                                                from '../../auth/AuthReducer/reducer'
+import useSetSingleUser                                                   from '../../Plugins/useSetSingleUser'
+import { jwtDecode }                                                      from 'jwt-decode'
+import { TokenType }                                                      from '../../types/globalTypes'
 
 const formItemLayout = {
   labelCol: {
@@ -24,11 +23,13 @@ const formItemLayout = {
 
 type FormValuesType = {
   name:           string,
+  username:       string,
   email:          string,
   userRole:       string,
   password:       string,
   repeatPassword: string,
   oldPassword:    string,
+  isAdmin:        boolean
 }
 
 const SingleUserPage = () => {
@@ -36,21 +37,18 @@ const SingleUserPage = () => {
   const [messageApi, contextHolder] = message.useMessage()
   const [cookies]                   = useCookies(['access_token'])
   const {user, id, loading}         = useSetSingleUser()
-  const {roles}                     = useSetUserRoles()
   const dispatch                    = useAppDispatch()
   const token:TokenType             = jwtDecode(cookies.access_token)
   const logedInUser                 = token.userId === id
+  const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
 
-  const userRoles = roles?.map((el) => ({
-    value: el._id,
-    label: el.name,
-  }))
   const onFinish = async (values: FormValuesType) => {
-
     const userInfoValues = {
-      id:    id,
-      email: values.email,
-      name:  values.name,
+      id:       id,
+      email:    values.email,
+      name:     values.name,
+      isAdmin:  values.isAdmin,
+      username: values.username,
     }
 
     const passwordChangeValues = {
@@ -74,6 +72,7 @@ const SingleUserPage = () => {
 
         if (!values.password && values.name) {
           dispatch(setEmployeeName(res.name))
+          dispatch(setIsAdmin(res.isAdmin))
         }
       } else {
         messageApi.error({
@@ -91,10 +90,12 @@ const SingleUserPage = () => {
 
   React.useEffect(() => {
     form.setFieldsValue({
-      name:  user?.name,
-      email: user?.email,
+      name:     user?.name,
+      username: user?.username,
+      email:    user?.email,
+      idAdmin:  user?.isAdmin,
     })
-  }, [user?.email, user?.name, form])
+  }, [user?.email, user?.name, user?.username, user?.isAdmin, isAdmin,form])
 
   return (
     <div className='CreateUserPageContainer'>
@@ -106,7 +107,7 @@ const SingleUserPage = () => {
         <Card
           loading={loading}
           headStyle={{textAlign: 'center' }}
-          title={id ? `Tvarkyti ${user?.name} Profilį` : 'Mano Profilis'}
+          title={logedInUser ? 'Mano Profilis' : `Darbuotojas: ${user?.name}`}
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -122,28 +123,37 @@ const SingleUserPage = () => {
               name='name'
               label='Darbuotojas'
               initialValue={user?.name}
+              rules={[{required: true, message: 'Privaloma įvesti darbtuotojo vardą/pavardę'}]}
             >
-              <Input placeholder='Darbuotojas'/>
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Darbuotojas'/>
+            </Form.Item>
+            <Form.Item
+              labelAlign='left'
+              name='username'
+              label='Vartotojo vardas'
+              rules={[{required: true, message: 'Privaloma įvesti vartotojo vardą'}]}
+              initialValue={user?.username}
+            >
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Vartotojo vardas'/>
             </Form.Item>
             <Form.Item
               labelAlign='left'
               name='email'
               label='E-mail'
               initialValue={user?.email}
+              rules={[{required: true, message: 'Privaloma įvesti el. paštą'}]}
               key={user?.email}
             >
-              <Input placeholder='Darbuotojo el. paštas'/>
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Darbuotojo el. paštas'/>
             </Form.Item>
             <Form.Item
-              labelAlign='left'
-              name='userRole'
               label='Rolė'
-              initialValue={user?.userRole}
+              labelAlign='left'
+              initialValue={user?.isAdmin}
+              name='isAdmin'
+              valuePropName='checked'
             >
-              <Select
-                placeholder='Pasirinkti rolę'
-                options={userRoles}
-              />
+              <Checkbox disabled={isAdmin ? false : true}>Admin</Checkbox>
             </Form.Item>
             {logedInUser &&
             <>

@@ -48,7 +48,7 @@ const useSetChecklistHistoryData = () => {
     })()
   }, [])
 
-  return {data, count, setCount}
+  return {data, setData, count, setCount}
 }
 
 export default useSetChecklistHistoryData

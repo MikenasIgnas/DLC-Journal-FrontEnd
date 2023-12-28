@@ -4,11 +4,12 @@ import { get }             from './helpers'
 import { useParams } from 'react-router-dom'
 
 type SingleUserType = {
+    name:           string,
     email:          string,
+    username:       string,
+    isAdmin:        boolean,
     password:       string,
     repeatPassword: string,
-    userRole:       string,
-    name:           string,
     _id:            string
 }
 

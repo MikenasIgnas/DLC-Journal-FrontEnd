@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
-import { Button, Card, Form, Input, Select, message } from 'antd'
-import React                                          from 'react'
-import { getCurrentDate, post }                       from '../../Plugins/helpers'
-import { useCookies }                                 from 'react-cookie'
-import SuccessMessage                                 from '../../components/UniversalComponents/SuccessMessage'
-import useSetUserRoles from '../../Plugins/useSetUserRoles'
+import { Button, Card, Checkbox, Form, Input, message } from 'antd'
+import React                                            from 'react'
+import { getCurrentDate, post }                         from '../../Plugins/helpers'
+import { useCookies }                                   from 'react-cookie'
+import SuccessMessage                                   from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {
@@ -20,12 +19,11 @@ const formItemLayout = {
 type FormValuesType = {
     username:     string,
     email:        string,
-    userRole:     string,
+    idAdmin:      boolean,
     passwordOne:  string,
     passwordTwo:  string,
     status:       string,
     dateCreated:  string,
-    defaultTheme: boolean,
 }
 
 const CreateUserPage = () => {
@@ -34,12 +32,6 @@ const CreateUserPage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
-  const {roles}                          = useSetUserRoles()
-
-  const roleOptions = roles?.map((el) => ({
-    value: el._id,
-    label: el.name,
-  }))
 
   const onFinish = async (values: FormValuesType) => {
     try{
@@ -82,7 +74,15 @@ const CreateUserPage = () => {
             label='Darbuotojas'
             rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
           >
-            <Input placeholder='Darbuotojo vardas'/>
+            <Input placeholder='Darbuotojo vardas/pavardė'/>
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='username'
+            label='Prisijungimas'
+            rules={[{ required: true, message: 'Please input username!', whitespace: true }]}
+          >
+            <Input placeholder='Prisijungimas'/>
           </Form.Item>
           <Form.Item
             labelAlign='left'
@@ -102,20 +102,13 @@ const CreateUserPage = () => {
             <Input placeholder='Darbuotojo el. paštas'/>
           </Form.Item>
           <Form.Item
-            labelAlign='left'
-            name='roleId'
             label='Rolė'
-            rules={[
-              {
-                required: true,
-                message:  'Please select a role!',
-              },
-            ]}
+            labelAlign='left'
+            initialValue={false}
+            name='isAdmin'
+            valuePropName='checked'
           >
-            <Select
-              placeholder='Pasirinkti rolę'
-              options={roleOptions}
-            />
+            <Checkbox>Admin</Checkbox>
           </Form.Item>
           <Form.Item
             labelAlign='left'

@@ -38,13 +38,12 @@ const LoginPage = () => {
           onFinish={onFinish}
         >
           <Form.Item
-            name='email'
+            name='login'
             rules={[
               { required: true, message: 'Please input your Email!' },
-              {type: 'email', message: 'The input is not valid E-mail!'},
             ]}
           >
-            <Input type='email' prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
+            <Input prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
             name='password'
@@ -56,11 +55,15 @@ const LoginPage = () => {
               placeholder='Password'
             />
           </Form.Item>
+
           {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           <Form.Item className='loginButtons'>
             <Button type='primary' htmlType='submit' className='login-form-button'>
               Log in
             </Button>
+            <a href=''>
+          Forgot password
+            </a>
           </Form.Item>
         </Form>
       </Card>

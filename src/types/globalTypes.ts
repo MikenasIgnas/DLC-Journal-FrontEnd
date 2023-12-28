@@ -68,16 +68,15 @@ export type HistoryDataType = {
 };
 
 export type UserType = {
-  id:          number;
-  key:         string;
-  email:       string;
-  secret:      string;
-  roleId:      string;
-  name:        string;
-  created:     string;
-  deleted:     string;
-  isDisabled:  boolean;
-  _id:         string;
+  id:             number;
+  email:          string;
+  isAdmin:        boolean;
+  name:           string;
+  username:       string;
+  created:        string;
+  disabledDate:   string;
+  isDisabled:     boolean;
+  _id:            string;
 };
 
 export type TokenType = {

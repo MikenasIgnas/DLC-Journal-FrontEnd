@@ -1,16 +1,18 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                            from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import FullTable                        from '../../components/Table/TableComponents/FullTable'
-import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import { getCurrentDate, post }         from '../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
+import React                                from 'react'
+import { useNavigate, useSearchParams }     from 'react-router-dom'
+import FullTable                            from '../../components/Table/TableComponents/FullTable'
+import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import RowMenu                              from '../../components/Table/TableComponents/RowMenu'
+import useSetUsersData                      from '../../Plugins/useSetUsersData'
+import { getCurrentDate, post }             from '../../Plugins/helpers'
+import { useCookies }                       from 'react-cookie'
+import usersRowMenuItems                    from '../../components/DLCJournalComponents/UserManagementComponents/usersRowMenuItems'
+import { useAppSelector } from '../../store/hooks'
 
 const tableColumnNames = [
-  {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},
+  {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'username'},
   {itemName: 'El. Paštas', itemWidth: 270, itemValue: 'email'},
   {itemName: 'Darbuotojas', itemWidth: 150, itemValue: 'username'},
   {itemName: 'Rolė', itemWidth: 120, itemValue: 'userRole'},
@@ -18,6 +20,7 @@ const tableColumnNames = [
   {itemName: 'Sukurta', itemWidth: 100, itemValue: 'dateCreated'},
   {itemName: '', itemWidth: 100, itemValue: ''},
 ]
+
 const TableColumns = () => {
   return(
     <>
@@ -42,6 +45,8 @@ const ManageUsersPage = () => {
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
   const { users, setUsers, count }      = useSetUsersData(false)
+  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const rowMenuItems                    = usersRowMenuItems(isAdmin)
 
   const disableUser = async(id:string) => {
     const tableItemRemoved = (id:string) => {
@@ -53,9 +58,9 @@ const ManageUsersPage = () => {
     }
 
     const statusItems = {
-      id:         id,
-      isDisabled: true,
-      deleted:    getCurrentDate(),
+      id:           id,
+      isDisabled:   true,
+      disabledDate: getCurrentDate(),
     }
 
     if(tableItemRemoved){
@@ -72,11 +77,13 @@ const ManageUsersPage = () => {
           key={el?._id}
           id={index}
           dateCreated={el?.created}
+          username={el.username}
           email={el?.email}
-          roleId={el?.roleId}
+          isAdmin={el?.isAdmin}
           name={el?.name}
           status={el.isDisabled}
           rowMenu={<RowMenu
+            items={rowMenuItems}
             deleteItem={() => disableUser(el._id)}
             navigate={() => navigate(`${el._id}`)} />}
         />

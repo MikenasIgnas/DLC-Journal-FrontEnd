@@ -4,7 +4,9 @@ import FullTable                        from '../../components/Table/TableCompon
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import UersTableRows from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import archivedUsersRowMenuItems        from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
+import { useAppSelector } from '../../store/hooks'
 
 const TableColumns = () => {
   return(
@@ -26,6 +28,8 @@ const UsersArchivePage = () => {
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
   const {users, count}                  = useSetUsersData()
+  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
 
   const tableSorter = [
     {
@@ -44,14 +48,16 @@ const UsersArchivePage = () => {
           key={el._id}
           id={index}
           dateCreated={el.created}
-          dateDeleted={el.deleted}
+          disabledDate={el.disabledDate}
           email={el.email}
-          roleId={el.roleId}
+          username={el.username}
+          isAdmin={el.isAdmin}
           name={el.name}
+          status={el.isDisabled}
           rowMenu={<RowMenu
             navigate={() => navigate(`${el._id}`)}
+            items={rowMenuItems}
           />}
-          status={el.isDisabled}
         />
       ))}
       documentCount={count}

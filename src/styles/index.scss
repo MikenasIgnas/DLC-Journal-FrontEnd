@@ -466,6 +466,7 @@ display: flex;
 
   .loginButtons{
     display: flex;
+    flex-direction: column;
     justify-content: center;
   }
 }
@@ -1017,6 +1018,7 @@ thead[class*="ant-table-thead"] th{
     
       .loginButtons{
         display: flex;
+        flex-direction: column;
         justify-content: center;
       }
     }

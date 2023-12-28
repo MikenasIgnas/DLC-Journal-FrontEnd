@@ -9,7 +9,7 @@ import { useCookies }                                                     from '
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setEmployeeName, setUsersRole }                        from '../../../auth/AuthReducer/reducer'
+import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }                        from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
@@ -47,6 +47,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
         const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
         if(user){
           dispatch(setEmployeeName(user.name))
+          dispatch(setIsAdmin(user.isAdmin))
           dispatch(setUserEmail(user.email))
           dispatch(setUsersRole(user.userRole))
         }else{

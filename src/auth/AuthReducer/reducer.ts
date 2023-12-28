@@ -2,18 +2,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AuthReducer {
-    id?:         string,
-    secret?:     string,
-    name?:       string | null,
-    userEmail?:  string,
-    usersRole?:  string,
-    routeNumber: number,
-    edit:        boolean,
+    id?:          string,
+    secret?:      string,
+    name?:        string | null,
+    userEmail?:   string,
+    usersRole?:   string,
+    routeNumber:  number,
+    edit:         boolean,
+    isAdmin:      boolean | null
   }
 
 const initialState: AuthReducer = {
   routeNumber: 1,
   edit:        true,
+  isAdmin:     null,
 }
 const authSlice = createSlice({
   name:     'auth',
@@ -42,6 +44,9 @@ const authSlice = createSlice({
     setPostEdit (state, { payload }: PayloadAction<boolean>){
       state.edit = payload
     },
+    setIsAdmin (state, { payload }: PayloadAction<boolean>){
+      state.isAdmin = payload
+    },
   },
 })
 
@@ -52,6 +57,7 @@ export const {
   setUserEmail,
   setUsersRole,
   setPostEdit,
+  setIsAdmin,
 } = authSlice.actions
 
 export default authSlice.reducer
