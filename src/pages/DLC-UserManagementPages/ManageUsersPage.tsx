@@ -52,9 +52,9 @@ const ManageUsersPage = () => {
     }
 
     const statusItems = {
-      id:           id,
-      isDisabled:   true,
-      dateDisabled: getCurrentDate(),
+      id:         id,
+      isDisabled: true,
+      deleted:    getCurrentDate(),
     }
 
     if(tableItemRemoved){
@@ -74,10 +74,10 @@ const ManageUsersPage = () => {
           email={el?.email}
           roleId={el?.roleId}
           name={el?.name}
+          status={el.isDisabled}
           rowMenu={<RowMenu
-            deleteItem={() => disableUser(el._id )}
-            navigate={() => navigate(`${el._id}`)}
-          />}
+            deleteItem={() => disableUser(el._id)}
+            navigate={() => navigate(`${el._id}`)} />}
         />
       ))}
       currentPage={page}

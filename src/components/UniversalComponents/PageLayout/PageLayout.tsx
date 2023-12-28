@@ -51,7 +51,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
           dispatch(setUsersRole(user.userRole))
         }else{
           message.error({
-            content: 'Nepavyko',
+            content: 'Nepavyko rasti vartotojo',
             type:    'error',
           })
         }

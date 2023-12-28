@@ -74,8 +74,8 @@ export type UserType = {
   secret:      string;
   roleId:      string;
   name:        string;
-  created: string;
-  dateDeleted: string;
+  created:     string;
+  deleted:     string;
   isDisabled:  boolean;
   _id:         string;
 };

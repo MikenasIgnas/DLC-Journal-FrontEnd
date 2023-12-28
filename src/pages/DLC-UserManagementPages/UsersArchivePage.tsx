@@ -2,9 +2,9 @@
 import React                            from 'react'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import UserArchiveTableRows             from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetUsersData                  from '../../Plugins/useSetUsersData'
+import UersTableRows from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 
 const TableColumns = () => {
   return(
@@ -40,11 +40,11 @@ const UsersArchivePage = () => {
       currentPage={page}
       setSearchParams={setSearchParams}
       tableRows={users?.map((el, index) => (
-        <UserArchiveTableRows
+        <UersTableRows
           key={el._id}
           id={index}
           dateCreated={el.created}
-          dateDeleted={el.dateDeleted}
+          dateDeleted={el.deleted}
           email={el.email}
           roleId={el.roleId}
           name={el.name}

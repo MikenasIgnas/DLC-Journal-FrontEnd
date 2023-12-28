@@ -7,10 +7,10 @@ import { UserType }        from '../types/globalTypes'
 
 const useSetUsersData = (isDisabled?: boolean) => {
   const [users, setUsers]   = React.useState<UserType[]>()
-  const [count, setCount] = React.useState<number>()
-  const [cookies]         = useCookies(['access_token'])
-  const [searchParams]    = useSearchParams()
-  const tableSorter       = searchParams.get('tableSorter')
+  const [count, setCount]   = React.useState<number>()
+  const [cookies]           = useCookies(['access_token'])
+  const [searchParams]      = useSearchParams()
+  const tableSorter         = searchParams.get('tableSorter')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
