@@ -107,7 +107,7 @@ const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList
 
           return (
             <Card className='CollocationItemCard' key={i} title={category}>
-              {hasMatchingRack && (
+              {hasMatchingRack && companiesWithMatchingRacks.size > 1 && (
                 <Tag key={`${category}-tag`} color='blue'>
                 Reikalinga DLC inžinieriaus palyda
                 </Tag>
