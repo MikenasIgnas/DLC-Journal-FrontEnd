@@ -71,8 +71,9 @@ const SingleUserPage = () => {
         })
 
         if (!values.password && values.name) {
-          dispatch(setEmployeeName(res.name))
-          dispatch(setIsAdmin(res.isAdmin))
+          if(logedInUser){
+            dispatch(setEmployeeName(res.name))
+          }
         }
       } else {
         messageApi.error({
