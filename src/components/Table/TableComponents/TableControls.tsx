@@ -6,7 +6,6 @@ import { FilterOptions }               from '../../../types/globalTypes'
 import { Input }                       from 'antd'
 import { useSearchParams }             from 'react-router-dom'
 import useDelay                        from '../../../Plugins/useDelay'
-import PdfGenerator                    from '../../UniversalComponents/PdfGenerator/PdfGenerator'
 
 type TableControlsProps = {
   tableSorter:    FilterOptions;

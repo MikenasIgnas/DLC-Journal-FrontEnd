@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import { Button, ConfigProvider, List, Tree }  from 'antd'
-import React                                   from 'react'
-import { get }                                 from '../../Plugins/helpers'
-import { useCookies }                          from 'react-cookie'
-import { CollocationsType, CompaniesType }     from '../../types/globalTypes'
-import { Link }                                from 'react-router-dom'
-import CompanyAddition                         from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
-import { DownOutlined }                        from '@ant-design/icons'
-import ListItem                                from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
-import { useAppSelector }                      from '../../store/hooks'
+import { Button, Input, List }             from 'antd'
+import React                               from 'react'
+import { get }                             from '../../Plugins/helpers'
+import { useCookies }                      from 'react-cookie'
+import { CollocationsType, CompaniesType } from '../../types/globalTypes'
+import { Link }                            from 'react-router-dom'
+import CompanyAddition                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
+import ListItem                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
+import { useAppSelector }                  from '../../store/hooks'
+import ChildCompaniesTree                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
+import useDelay                            from '../../Plugins/useDelay'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]           = React.useState(false)
@@ -16,6 +17,7 @@ const CompaniesListPage = () => {
   const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
   const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const delay                           = useDelay()
 
   React.useEffect(() => {
     (async () => {
@@ -23,8 +25,10 @@ const CompaniesListPage = () => {
         setLoading(true)
         const allComapnies = await get('getCompanies', cookies.access_token)
         const collocations = await get('getCollocations', cookies.access_token)
+
+        const mainCompanies = allComapnies.data.filter((el: CompaniesType) => el.parentCompanyId !== null || el.parentCompanyId !== undefined )
         setCollocations(collocations.data[0].colocations)
-        setCompanies(allComapnies.data)
+        setCompanies(mainCompanies)
         setLoading(false)
       }catch(err){
         console.log(err)
@@ -47,26 +51,32 @@ const CompaniesListPage = () => {
     companyRemoved(companyId)
   }
 
-  const treeCompanies = companies?.map((el, i) => {
-    const childCompanies = companies.filter((ele) => ele.parentCompanyId === el.id)
-    return{
-      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}`}>{el.companyInfo.companyName}</Link>,
-      key:      el.id,
-      children: childCompanies.map((elem, index) => {
-        return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
-          key:   `${i+1} - ${index}`,
-        }
-      }),
-    }
-  })
-
   const listButtons = (listItemId: number | undefined, primaryKey: number | undefined) => {
     const buttons = [
       <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
       <Button type='link' onClick={() => deleteCompany(listItemId)} key={primaryKey}>Ištrinti</Button>,
     ]
     return buttons
+  }
+
+  const searchForCompany = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value.toLowerCase()
+    delay( async() => {
+      if (searchTerm === '') {
+        const allCompanies = await get('getCompanies', cookies.access_token)
+        setCompanies(allCompanies.data)
+      } else {
+        const allCompanies =  await get('getCompanies', cookies.access_token)
+        const foundCompany = companies.filter((elem) => elem.companyInfo.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
+        setCompanies(foundCompany)
+        foundCompany.map((el) => {
+          const childCompanies = allCompanies.data?.filter((ele: CompaniesType) => ele.parentCompanyId === el.id)
+          if(childCompanies){
+            setCompanies([...foundCompany, ...childCompanies])
+          }
+        })
+      }
+    })
   }
 
   return (
@@ -76,12 +86,12 @@ const CompaniesListPage = () => {
         collocations={collocations}
         additionModalTitle={'Pridėkite įmonę'}
       />
+      <Input onChange={searchForCompany} style={{marginTop: '10px', marginBottom: '10px'}} placeholder='Ieškoti įmonės' allowClear/>
       <List
         loading={loading}
         pagination={{ position: 'bottom', align: 'center'}}
         dataSource={companies}
         renderItem={(item) => {
-          const filter = treeCompanies.filter((el) => el.key === item.id)
           return(
             <ListItem
               listItemId={item.id}
@@ -90,15 +100,10 @@ const CompaniesListPage = () => {
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
               primaryKey={item?.parentCompanyId}
-              title={filter[0].children.length >= 1 ?
-                <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
-                  <Tree
-                    showLine
-                    switcherIcon={<DownOutlined rev='' />}
-                    defaultExpandedKeys={['0-0-0']}
-                    treeData={filter} />
-                </ConfigProvider>
-                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>} listButtons={listButtons }/>)
+              listButtons={listButtons}
+              title={<ChildCompaniesTree companies={companies} item={item}/>}
+            />
+          )
         }}/>
     </div>
   )

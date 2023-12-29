@@ -6,7 +6,7 @@ import { get }                                                                 f
 import { useCookies }                                                          from 'react-cookie'
 import { Button, Empty, Form, FormInstance, Select }                           from 'antd'
 import { useSearchParams }                                                     from 'react-router-dom'
-import { CollocationType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
+import { CollocationType, CollocationsType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                               from './VisitRegistrationSelect'
 import VisitorsList                                                            from './VisitorsList'
 import ItemList                                                                from './ItemList'
@@ -45,12 +45,15 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
   const values                                            = Form.useWatch('visitors', form)
   const filteredPermisions                                = filterPermisions(values)
   const canBringCompany                                   = filteredPermisions.includes('Įleisti Trečius asmenis')
+  const [allCollocations, setAllCollocations]             = React.useState<CollocationsType[]>()
 
   React.useEffect(() => {
     (async () => {
       const companies     = await get('getCompanies', cookies.access_token)
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
+      const collocations  = await get('getCollocations', cookies.access_token)
+      setAllCollocations(collocations.data[0].colocations)
       localStorage.removeItem('visitPurpose')
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
@@ -159,6 +162,8 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
       {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
       <VisitRegistrationCollocationList
+        allCompanies={allCompanies}
+        allCollocations={allCollocations}
         companiesColocations={companiesColocations}
         setCheckedList={setCheckedList}
         checkedList={checkedList}

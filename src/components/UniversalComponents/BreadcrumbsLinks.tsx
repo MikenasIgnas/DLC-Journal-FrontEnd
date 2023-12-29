@@ -11,7 +11,7 @@ const BreadcrumbsLinks = () => {
   const lastPath        = pathParts[pathParts.length - 1]
   const items = [
     {
-      title: <Link to={'/'}><HomeOutlined/></Link>,
+      title: <Link to={'/DLC Žurnalas?menyKey=1'}><HomeOutlined/></Link>,
     },
   ]
 

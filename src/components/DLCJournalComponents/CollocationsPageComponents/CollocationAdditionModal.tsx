@@ -11,6 +11,12 @@ type CollocationAdditionModalProps = {
   tabKey: string | null
 }
 
+type FormValuesType = {
+  addressId: string;
+  premise: string;
+  racks: string[]
+}
+
 const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
   const dispatch = useAppDispatch()
   const [racks, setRacks]            = React.useState<string[]>([])
@@ -19,10 +25,9 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
   const [form]                       = Form.useForm()
   const openCollocationAdditionModal = useAppSelector((state) => state.modals.openCollocationAdditionModal)
 
-  const onFinish = async(values: any) => {
+  const onFinish = async(values: FormValuesType) => {
     values.racks = racks
     const res = await post('addCollocation', values, cookies.access_token)
-    console.log(res)
     if(!res.error){
       form.resetFields()
       setRacks([])
@@ -38,6 +43,12 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
     dispatch(setOpenCollocationAdditionModal(false))
   }
 
+  const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault()
+    }
+  }
+
   return (
     <Modal
       width={1000}
@@ -47,7 +58,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
       onCancel={onCancel}
       footer={false}
     >
-      <Form form={form} onFinish={onFinish}>
+      <Form form={form} onFinish={onFinish} onKeyDown={onkeydown}>
         <Form.Item name='addressId' rules={[{ required: true, message: 'Pasirinkite adresą'}]}>
           <Select placeholder='Pasirinkite adresą' style={{width: '100%'}} options={tabKey === '1' ? [{value: '1', label: 'J13'}] : [{value: '2', label: 'T72'}] }/>
         </Form.Item>

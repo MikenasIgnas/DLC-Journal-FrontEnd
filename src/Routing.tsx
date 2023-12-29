@@ -64,7 +64,6 @@ const Routing = () => {
         ? (
           <PageLayout>
             <Routes>
-              <Route path='/' element={<HomePage />} />
               <Route path='DLC Žurnalas' element={<DLCJournalStartPage />}/>
               <Route path='DLC Žurnalas/Vizito_Registracija' element={<VisitRegistrationPage/>}/>
               <Route path='DLC Žurnalas/Įmonių_Sąrašas' element={<CompaniesListPage/>}/>
