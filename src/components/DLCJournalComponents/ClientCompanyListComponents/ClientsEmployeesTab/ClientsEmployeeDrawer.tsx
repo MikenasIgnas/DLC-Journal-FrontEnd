@@ -53,7 +53,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
         console.log(err)
       }
     })()
-  },[editClientsEmployee, openClientsEmployeesDrawer])
+  },[editClientsEmployee, openClientsEmployeesDrawer, uploading])
 
   const editUser = async(values: EmployeesType) => {
     setEditClientsEmployee(!editClientsEmployee)
@@ -84,26 +84,26 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
           <p className='site-description-item-profile-p'>Asmeninė informacija</p>
           <div style={{display: 'flex', justifyContent: 'space-between', padding: '15px'}}>
             <div>
-              {!editClientsEmployee ? '' : <PhotoUploader setFileList={setFileList} fileList={fileList}/>}
               <Col span={12}>
                 <img
                   style={{width: '100px'}}
                   src={`../../ClientsEmployeesPhotos/${employee?.employeePhoto ? employee?.employeePhoto : 'noUserImage.jpeg'}`}
                   alt='err' />
               </Col>
+              {!editClientsEmployee ? '' : <PhotoUploader setFileList={setFileList} fileList={fileList}/>}
             </div>
             <div>
               <Row>
                 <Col span={12}>
                   {!editClientsEmployee ?
                     <DescriptionItem title='Vardas' content={`${employee?.name}`} /> :
-                    <Form.Item name='name' initialValue={employee?.name} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Vardas' labelAlign='left' name='name' initialValue={employee?.name} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
                   {!editClientsEmployee ?
                     <DescriptionItem title='Pavardė' content={`${employee?.lastName}`} /> :
-                    <Form.Item name='lastName' initialValue={employee?.lastName} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Pavardė' labelAlign='left' name='lastName' initialValue={employee?.lastName} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -115,7 +115,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
                 <Col span={12}>
                   {!editClientsEmployee ?
                     <DescriptionItem title='Gimimo data' content={convertUTCtoLocalDate(employee?.birthday)} /> :
-                    <Form.Item name='birthday' initialValue={convertUTCtoLocalDate(employee?.birthday)} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Gimimo data' labelAlign='left' name='birthday' initialValue={convertUTCtoLocalDate(employee?.birthday)} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -125,7 +125,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
                 <Col span={12}>
                   {!editClientsEmployee ?
                     <DescriptionItem title='Pareigos' content={`${employee?.occupation}`} /> :
-                    <Form.Item name='occupation' initialValue={employee?.occupation} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Pareigos' labelAlign='left' name='occupation' initialValue={employee?.occupation} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -135,7 +135,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
                 <Col span={24}>
                   {!editClientsEmployee ?
                     <DescriptionItem title='Pastabos' content={`${employee?.notes ? employee?.notes : '-'}`} /> :
-                    <Form.Item name='notes' initialValue={employee?.notes} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Pastabos' labelAlign='left' name='notes' initialValue={employee?.notes} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -158,7 +158,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
             <Col span={12}>
               {!editClientsEmployee ?
                 <DescriptionItem title='El. Paštas' content={`${employee?.email}`} /> :
-                <Form.Item name='email' initialValue={employee?.email} style={{width: '270px', padding: '0px'}} >
+                <Form.Item label='El. Paštas' labelAlign='left' name='email' initialValue={employee?.email} style={{width: '270px', padding: '0px'}} >
                   <Input/>
                 </Form.Item>
               }
@@ -166,7 +166,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
             <Col span={12}>
               {!editClientsEmployee ?
                 <DescriptionItem title='Tel. Numeris' content={`${employee?.phoneNr}`} /> :
-                <Form.Item name='phoneNr' initialValue={employee?.phoneNr} style={{width: '270px', padding: '0px'}} >
+                <Form.Item label='Tel. Numeris' labelAlign='left' name='phoneNr' initialValue={employee?.phoneNr} style={{width: '270px', padding: '0px'}} >
                   <Input/>
                 </Form.Item>
               }

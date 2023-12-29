@@ -4,9 +4,9 @@
 import React                                                                   from 'react'
 import { get }                                                                 from '../../../Plugins/helpers'
 import { useCookies }                                                          from 'react-cookie'
-import { Button, Empty, Form, FormInstance, Select }                           from 'antd'
+import { Button, Empty, Form, FormInstance, Select, Tag }                      from 'antd'
 import { useSearchParams }                                                     from 'react-router-dom'
-import { CollocationType, CollocationsType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
+import { CollocationType, CompaniesType, EmployeesType, UserType, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                               from './VisitRegistrationSelect'
 import VisitorsList                                                            from './VisitorsList'
 import ItemList                                                                from './ItemList'
@@ -45,15 +45,11 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
   const values                                            = Form.useWatch('visitors', form)
   const filteredPermisions                                = filterPermisions(values)
   const canBringCompany                                   = filteredPermisions.includes('Įleisti Trečius asmenis')
-  const [allCollocations, setAllCollocations]             = React.useState<CollocationsType[]>()
-
   React.useEffect(() => {
     (async () => {
       const companies     = await get('getCompanies', cookies.access_token)
       const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
-      const collocations  = await get('getCollocations', cookies.access_token)
-      setAllCollocations(collocations.data[0].colocations)
       localStorage.removeItem('visitPurpose')
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
@@ -76,6 +72,9 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
     setSearchParams(`companyId=${option.id}`)
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${option.id}`, cookies.access_token)
     setClientsEmployees(companiesEmployees.data)
+    setSelectedVisitors([])
+    localStorage.removeItem('visitPurpose')
+    form.setFieldValue('visitAddress', null)
     setIsCompanySelected(true)
   }
 
@@ -157,20 +156,26 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
           removeVisitor={removeVisitor}
         />
       }
-      {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
-      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
+      {clientsEmployees && clientsEmployees?.length <= 0 && selectedVisitors && selectedVisitors.length <= 0 &&
+      <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      }
+      {selectedVisitors && selectedVisitors?.length > 0 &&
+      <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>
+      }
+      {selectedVisitors && selectedVisitors?.length > 0 && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
       <VisitRegistrationCollocationList
-        allCompanies={allCompanies}
-        allCollocations={allCollocations}
         companiesColocations={companiesColocations}
         setCheckedList={setCheckedList}
         checkedList={checkedList}
       />
       }
 
-      {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
+      {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany &&
+      <div style={{ textAlign: 'center', margin: '30px'}}>
+        <Tag color='error'>Klientas negali turėti palydos</Tag>
+      </div>
+      }
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
         <ItemList
           cardTitle={'Pridėti palydą'}

@@ -14,8 +14,8 @@ type ColocationSelectorsProps = {
 const ColocationSelectors = ({collocationSite, colocationPremises, colocationId }: ColocationSelectorsProps) => {
   const { Panel } = Collapse
   return(
-    <div key={colocationId}>
-      <Collapse className='CollocationSelectorCollapse'>
+    <div style={{width: '100%'}} key={colocationId}>
+      <Collapse style={{width: '100%'}} className='CollocationSelectorCollapse'>
         <Panel className='CollocationSelectorPannel' header={collocationSite} key={colocationId}>
           <Form.List
             name={collocationSite}

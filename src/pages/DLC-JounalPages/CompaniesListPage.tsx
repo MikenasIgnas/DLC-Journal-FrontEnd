@@ -46,15 +46,15 @@ const CompaniesListPage = () => {
     setCompanies(newCompaniesList)
   }
 
-  const deleteCompany = async(companyId: number | undefined) => {
-    await get(`deleteCompany/${companyId}`, cookies.access_token)
+  const deleteCompany = async(companyId: number | undefined, parentCompanyId: number | undefined) => {
+    await get(`deleteCompany?companyId=${companyId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
     companyRemoved(companyId)
   }
 
-  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined) => {
+  const listButtons = (listItemId: number | undefined, parentCompanyId: number | undefined) => {
     const buttons = [
       <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
-      <Button type='link' onClick={() => deleteCompany(listItemId)} key={primaryKey}>Ištrinti</Button>,
+      <Button type='link' onClick={() => deleteCompany(listItemId, parentCompanyId)} key={listItemId}>Ištrinti</Button>,
     ]
     return buttons
   }

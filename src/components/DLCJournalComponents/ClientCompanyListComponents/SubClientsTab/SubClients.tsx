@@ -58,7 +58,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
 
   const deletSubClient = async (subClientId: number | undefined) => {
     if(subClientId ){
-      await get(`deleteCompany/${subClientId}`, cookies.access_token)
+      await get(`deleteCompany?companyId=${subClientId}`, cookies.access_token)
       subClientCompanyRemoved(subClientId)
     }
   }
