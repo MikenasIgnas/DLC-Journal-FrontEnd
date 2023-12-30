@@ -61,9 +61,14 @@ const LoginPage = () => {
           </Form.Item>
           {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           <Form.Item className='loginButtons'>
-            <Button type='primary' htmlType='submit' className='login-form-button'>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <Button type='primary' htmlType='submit' className='login-form-button'>
               Log in
-            </Button>
+              </Button>
+              <Button onClick={() => navigate('/ResetPassword')} type='link' style={{textAlign: 'center'}} className='login-form-forgot' href=''>
+               Pamiršau slaptažodį
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </Card>

@@ -37,6 +37,7 @@ const SingleUserPage = () => {
   const [loading, setLoading]       = React.useState(false)
   const usersRole                   = useAppSelector((state)=> state.auth.usersRole)
   const singleUser                  = useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
+
   const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
     if(!values.passwordOne){
       const editedValues = {
@@ -62,6 +63,7 @@ const SingleUserPage = () => {
         passwordOne: values.passwordOne,
         passwordTwo: values.passwordTwo,
       }
+
       if(id){
         const res = await post(`editUserProfile/${id}`, editedValues, cookies.access_token)
         const res2 = await post(`changedUsername/${id}`, editedValues, cookies.access_token)

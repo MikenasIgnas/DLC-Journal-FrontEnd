@@ -111,11 +111,12 @@
   }
 }
 .ColocationDisplayContainer{
-  width: 100%;
+  width: 49%;
   .CollocationDisplayCard{
     display: flex;
     justify-content: space-between;
     border-radius: 1px solid #d9d9d9;
+    min-height: 283px;
     .CollocationDisplayFooter{
       display: flex;
       justify-content: flex-end;
