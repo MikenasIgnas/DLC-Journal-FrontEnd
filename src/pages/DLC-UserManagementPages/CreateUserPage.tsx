@@ -36,7 +36,7 @@ const CreateUserPage = () => {
   const onFinish = async (values: FormValuesType) => {
     try{
       values.dateCreated = getCurrentDate()
-      const res = await post('user/create', values, cookies.access_token)
+      const res = await post('user', values, cookies.access_token)
       if (!res.error) {
         messageApi.success({
           type:    'success',

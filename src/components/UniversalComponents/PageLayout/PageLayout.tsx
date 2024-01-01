@@ -44,7 +44,8 @@ const PageLayout = ({children}:PageLayoutProps) => {
   React.useEffect(() => {
     (async () => {
       try{
-        const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
+        const user = await get(`user?id=${decodedToken.userId}`, cookies.access_token)
+        console.log(user)
         if(user){
           dispatch(setEmployeeName(user.name))
           dispatch(setIsAdmin(user.isAdmin))

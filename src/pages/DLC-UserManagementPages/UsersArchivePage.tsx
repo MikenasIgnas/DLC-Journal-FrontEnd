@@ -3,10 +3,12 @@ import React                            from 'react'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetUsersData                  from '../../Plugins/useSetUsersData'
 import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import archivedUsersRowMenuItems        from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }               from '../../store/hooks'
+import { deleteItem }                   from '../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
+import useSetAllUsersData               from '../../Plugins/useSetAllUsersData'
 
 const TableColumns = () => {
   return(
@@ -27,16 +29,31 @@ const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {users, count}                  = useSetUsersData()
   const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
   const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
-
+  const [cookies]                       = useCookies(['access_token'])
+  const { users, setUsers, count }      = useSetAllUsersData()
   const tableSorter = [
     {
       filterName:    'Statusas',
       filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
     },
   ]
+  const deleteUser = async(id:string) => {
+    const tableItemRemoved = (id:string) => {
+      if(users){
+        let newTableItems = [...users]
+        newTableItems = newTableItems.filter(x => x._id !== id)
+        setUsers(newTableItems)
+      }
+    }
+
+    if(tableItemRemoved){
+      await deleteItem(`user?id=${id}`, cookies.access_token)
+      tableItemRemoved(id)
+    }
+
+  }
 
   return (
     <FullTable
@@ -46,7 +63,7 @@ const UsersArchivePage = () => {
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el._id}
-          id={index}
+          id={index + 1}
           dateCreated={el.created}
           disabledDate={el.disabledDate}
           email={el.email}
@@ -57,6 +74,7 @@ const UsersArchivePage = () => {
           rowMenu={<RowMenu
             navigate={() => navigate(`${el._id}`)}
             items={rowMenuItems}
+            deleteItem={() => deleteUser(el._id)}
           />}
         />
       ))}

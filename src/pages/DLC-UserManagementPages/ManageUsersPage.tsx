@@ -5,11 +5,11 @@ import { useNavigate, useSearchParams }     from 'react-router-dom'
 import FullTable                            from '../../components/Table/TableComponents/FullTable'
 import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                              from '../../components/Table/TableComponents/RowMenu'
-import useSetUsersData                      from '../../Plugins/useSetUsersData'
 import { getCurrentDate, post }             from '../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import usersRowMenuItems                    from '../../components/DLCJournalComponents/UserManagementComponents/usersRowMenuItems'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }                   from '../../store/hooks'
+import useSetAllUsersData                   from '../../Plugins/useSetAllUsersData'
 
 const tableColumnNames = [
   {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'username'},
@@ -35,7 +35,7 @@ const TableColumns = () => {
 const tableSorter = [
   {
     filterName:    'Rolė',
-    filterOptions: [{ value: 'user', label: 'user' }, { value: 'admin', label: 'admin' }, { value: 'SYSADMIN', label: 'SYSADMIN' }],
+    filterOptions: [{ value: 1, label: 'user' }, { value: 2, label: 'admin' }],
   },
 ]
 
@@ -44,7 +44,7 @@ const ManageUsersPage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const { users, setUsers, count }      = useSetUsersData(false)
+  const { users, setUsers, count }      = useSetAllUsersData(false)
   const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
   const rowMenuItems                    = usersRowMenuItems(isAdmin)
 
@@ -75,7 +75,7 @@ const ManageUsersPage = () => {
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el?._id}
-          id={index}
+          id={index + 1}
           dateCreated={el?.created}
           username={el.username}
           email={el?.email}

@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import { get }             from './helpers'
 import { UserType }        from '../types/globalTypes'
 
-const useSetUsersData = (isDisabled?: boolean) => {
+const useSetAllUsersData = (isDisabled?: boolean) => {
   const [users, setUsers]   = React.useState<UserType[]>()
   const [count, setCount]   = React.useState<number>()
   const [cookies]           = useCookies(['access_token'])
@@ -18,7 +18,7 @@ const useSetUsersData = (isDisabled?: boolean) => {
       const limit         = searchParams.get('limit') || 10
       const searchFilter  = searchParams.get('filter')
       const selectFilter  = searchParams.get('selectFilter')
-      let fetchUrl        = `user?page=${page}&limit=${limit}`
+      let fetchUrl        = `allUsers?page=${page}&limit=${limit}`
 
 
       if(isDisabled !== undefined){
@@ -68,4 +68,4 @@ const useSetUsersData = (isDisabled?: boolean) => {
   return {users, setUsers, count, setCount}
 }
 
-export default useSetUsersData
+export default useSetAllUsersData
