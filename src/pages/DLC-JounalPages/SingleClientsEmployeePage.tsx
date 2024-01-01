@@ -8,25 +8,23 @@ import { Avatar, Button, Card, Checkbox, Divider, Form, Input, UploadFile } from
 import { EmployeesType }                                                    from '../../types/globalTypes'
 import { useForm }                                                          from 'antd/es/form/Form'
 import PhotoUploader                                                        from '../../components/UniversalComponents/PhotoUploader/PhotoUploader'
-import ClientsEmployeesDataDisplay from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesDisplay'
-
-
+import ClientsEmployeesDataDisplay                                          from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsEmployeesDisplay'
 
 const SingleClientsEmployeePage = () => {
-  const [searchParams] =                useSearchParams()
-  const companyId =                     searchParams.get('companyId')
-  const employeeId =                    searchParams.get('employeeId')
-  const [cookies] =                     useCookies(['access_token'])
-  const [employee, setEmployee] =       React.useState<EmployeesType | undefined>()
+  const [searchParams]                = useSearchParams()
+  const companyId                     = searchParams.get('companyId')
+  const employeeId                    = searchParams.get('employeeId')
+  const [cookies]                     = useCookies(['access_token'])
+  const [employee, setEmployee]       = React.useState<EmployeesType | undefined>()
   const [companyName, setCompanyName] = React.useState()
-  const [edit, setEdit] =               React.useState(false)
-  const [fileList, setFileList] =       React.useState<UploadFile[]>([])
-  const [uploading, setUploading] =     React.useState(false)
+  const [edit, setEdit]               = React.useState(false)
+  const [fileList, setFileList]       = React.useState<UploadFile[]>([])
+  const [uploading, setUploading]     = React.useState(false)
 
   React.useEffect(() => {
     (async () => {
-      const clientsEmployee = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
-      const employeesCompanyName = await get(`getClientsEmployeesCompanyName/${companyId}`, cookies.access_token)
+      const clientsEmployee       = await get(`getClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
+      const employeesCompanyName  = await get(`getClientsEmployeesCompanyName?companyId=${companyId}`, cookies.access_token)
       setEmployee(clientsEmployee.data)
       setCompanyName(employeesCompanyName.data)
     })()
@@ -39,8 +37,8 @@ const SingleClientsEmployeePage = () => {
     setEdit(!edit)
     if(edit) {
       if(companyId && employeeId){
-        values.companyId = companyId
-        values.employeeId = employeeId
+        values.companyId = Number(companyId)
+        values.employeeId = Number(employeeId)
         await post('updateClientsEmployee', values, cookies.access_token)
         uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
       }
@@ -48,13 +46,13 @@ const SingleClientsEmployeePage = () => {
   }
 
   return(
-    <div style={{display: 'flex', alignItems: 'center'}}>
-      <Card style={{ width: 800, height: 500 }} loading={uploading}>
+    <div className='SingleClientsEmployeePageContainer'>
+      <Card className='SingleClientsEmployeeCard'>
         { employee &&
         <Form onFinish={editUser} form={form}>
-          <Button loading={uploading} htmlType='submit' style={{display: 'flex', marginLeft: 'auto'}} type='link'>{!edit ? 'Edit' : 'Save' }</Button>
-          <div style={{display: 'flex'}}>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center'}}>
+          <Button loading={uploading} htmlType='submit' className='EditButton' type='link'>{!edit ? 'Edit' : 'Save' }</Button>
+          <div className='DisplayFlex'>
+            <div className='ClientsEmployeesContainer'>
               {<Avatar size={150} shape='square' src={<img src={`../ClientsEmployeesPhotos/${companyName}companyId${companyId}employeeId${employeeId}.jpeg`} alt='err' />} />}
               {!edit
                 ?
@@ -62,15 +60,15 @@ const SingleClientsEmployeePage = () => {
                 :
                 <div>
                   <PhotoUploader setFileList={setFileList} fileList={fileList}/>
-                  <div style={{display: 'flex'}}>
+                  <div className='DisplayFlex'>
                     <Form.Item name='name' initialValue={employee?.name}><Input/></Form.Item>
                     <Form.Item name='lastName' initialValue={employee?.lastName} ><Input/></Form.Item>
                   </div>
                 </div>
               }
             </div>
-            <Divider type='vertical' style={{height: '150px'}} />
-            <div style={{width: '100%'}}>
+            <Divider type='vertical' className='Divider' />
+            <div className='ClientsEployeesInfoContainer'>
               <div>
                 <ClientsEmployeesDataDisplay label={'Darbuotojo įmonė: '} employeeData={companyName} formItemName={'companay'}/>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Email: '} employeeData={employee?.email} formItemName={'email'}/>
@@ -86,7 +84,7 @@ const SingleClientsEmployeePage = () => {
           </div>
           <Divider/>
           <Form.Item name='permissions' initialValue={employee?.permissions} >
-            <Checkbox.Group style={{width: '100%',display: 'flex', justifyContent: 'space-evenly'}} disabled={!edit} options={options} />
+            <Checkbox.Group className='PermissionsCheckboxes' disabled={!edit} options={options} />
           </Form.Item>
         </Form>
         }

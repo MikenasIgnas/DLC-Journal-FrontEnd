@@ -2,10 +2,10 @@
 import React                          from 'react'
 import { Button, Card, Input, List }  from 'antd'
 import { SearchProps }                from 'antd/es/input/Search'
-import { get, post }                       from '../../../Plugins/helpers'
-import { useParams, useSearchParams }            from 'react-router-dom'
+import { get, post }                  from '../../../Plugins/helpers'
+import { useParams }                  from 'react-router-dom'
 import { useCookies }                 from 'react-cookie'
-const { Search } =      Input
+const { Search } =  Input
 
 type ItemListProps = {
     cardTitle:        string;
@@ -15,29 +15,29 @@ type ItemListProps = {
     list:             string[]
     setListItems:     React.Dispatch<React.SetStateAction<string[]>>
     url?:             string;
-    removeUrl?:        string;
+    removeUrl?:       string;
 }
 
 const ItemList = ({cardTitle, inputPlaceHolder, inputValue, setInputValue, list, setListItems, url, removeUrl}: ItemListProps) => {
-  const {id}            = useParams()
-  const [cookies]       = useCookies(['access_token'])
+  const {id}      = useParams()
+  const [cookies] = useCookies(['access_token'])
 
   const removeListItem = async(index: number) => {
     const filtered = list.filter((el, i) => index !== i)
     setListItems(filtered)
-
     await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
   }
 
   const onListItemAddition: SearchProps['onSearch'] = async(value) => {
-    setListItems([...list, value])
-    setInputValue('')
-
-    if(url){
-      const updateValue = {
-        value,
+    if(value !== ''){
+      setListItems([...list, value])
+      setInputValue('')
+      if(url){
+        const updateValue = {
+          value,
+        }
+        await post(`${url}?visitId=${id}`, updateValue, cookies.access_token)
       }
-      await post(`${url}?visitId=${id}`, updateValue, cookies.access_token)
     }
   }
 
@@ -57,8 +57,9 @@ const ItemList = ({cardTitle, inputPlaceHolder, inputValue, setInputValue, list,
         dataSource={list}
         renderItem={(item, index) =>
           <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(index)}>Ištrinti</Button>]}>
-            <List.Item.Meta style={{flex: '0 0'}} title={item}/>
-          </List.Item>}
+            <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
+          </List.Item>
+        }
       />
       }
     </Card>

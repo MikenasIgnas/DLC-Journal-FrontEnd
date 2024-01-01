@@ -1,5 +1,6 @@
-import React from 'react'
-import {Text, View, StyleSheet } from '@react-pdf/renderer'
+/* eslint-disable max-len */
+import React                      from 'react'
+import {Text, View, StyleSheet }  from '@react-pdf/renderer'
 
 const borderColor = '#90e5fc'
 const styles = StyleSheet.create({
@@ -26,9 +27,9 @@ const styles = StyleSheet.create({
   },
 })
 type InvoiceItem = {
-  sno: number;
+  sno:  number;
   desc: string;
-  qty: number;
+  qty:  number;
   rate: number;
 };
 
@@ -37,8 +38,7 @@ type InvoiceTableFooterProps = {
 }
 
 const InvoiceTableFooter = ({items}:InvoiceTableFooterProps) => {
-  const total = items.map((item) => item.qty * item.rate)
-    .reduce((accumulator, currentValue) => accumulator + currentValue , 0)
+  const total = items.map((item) => item.qty * item.rate).reduce((accumulator, currentValue) => accumulator + currentValue , 0)
   return(
     <View style={styles.row}>
       <Text style={styles.description}>TOTAL</Text>

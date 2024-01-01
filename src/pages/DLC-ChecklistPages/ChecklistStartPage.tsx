@@ -1,16 +1,14 @@
 /* eslint-disable max-len */
 import React                                                            from 'react'
-import { Button, Card, ConfigProvider }                                 from 'antd'
+import { Button, Card }                                                 from 'antd'
 import { useNavigate }                                                  from 'react-router-dom'
 import { clearFilleChecklistdData, get,getCurrentDate,getCurrentTime }  from '../../Plugins/helpers'
-import { useAppSelector }                                               from '../../store/hooks'
 import { useCookies }                                                   from 'react-cookie'
 
 const ChecklistStartPage = () => {
-  const navigate =                                useNavigate()
-  const defaultPageTheme =                        useAppSelector((state) => state.theme.value)
-  const [totalAreasCount, setTotalAreasCount] =   React.useState(0)
-  const [cookies, ,removeCookie] =                useCookies(['access_token'])
+  const navigate                              = useNavigate()
+  const [totalAreasCount, setTotalAreasCount] = React.useState(0)
+  const [cookies, ,removeCookie]              = useCookies(['access_token'])
 
   React.useEffect(() => {
     (async () => {
@@ -41,16 +39,10 @@ const ChecklistStartPage = () => {
 
   return (
     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '500px'}}>
-      <Card style={{backgroundColor: defaultPageTheme ? '#191919' : 'white'}} className='StartPageCard'>
-        <div style={{color: defaultPageTheme? 'white': 'black'}} className='CardTitle'>Pradėti Pildymą</div>
+      <Card className='StartPageCard'>
+        <div className='CardTitle'>Pradėti Pildymą</div>
         <div className='CardButton'>
-          <ConfigProvider theme={{
-            token: {
-              colorPrimary: defaultPageTheme? '#2a2a2a': 'primary',
-            },
-          }}>
-            <Button onClick={startChecklist} type='primary'>Pradėti</Button>
-          </ConfigProvider>
+          <Button onClick={startChecklist} type='primary'>Pradėti</Button>
         </div>
       </Card>
     </div>

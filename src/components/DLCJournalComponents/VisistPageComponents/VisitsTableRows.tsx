@@ -1,24 +1,25 @@
 /* eslint-disable max-len */
-import React                from 'react'
-import Box                  from '@mui/joy/Box'
-import { Tag, Typography }  from 'antd'
-import { useSearchParams }  from 'react-router-dom'
-import HighlightText        from '../../UniversalComponents/HighlightText'
-import { VisitorsType } from '../../../types/globalTypes'
+import React                        from 'react'
+import Box                          from '@mui/joy/Box'
+import { Tag, Typography }          from 'antd'
+import { useSearchParams }          from 'react-router-dom'
+import HighlightText                from '../../UniversalComponents/HighlightText'
+import { VisitorsType }             from '../../../types/globalTypes'
+import { calculateTimeDifference }  from '../../../Plugins/helpers'
 
 type VisitsTableRowsProps = {
-    visitId:          string;
-    visitStatus:      string | undefined;
-    visitingClient:   string;
-    visitAddress:     string;
-    dlcEmployees:     string;
-    rowMenu?:         React.ReactNode
-    visitors:         VisitorsType[];
-    visitStartDate:   string;
-    visitStartTime:   string;
-    visitEndDate:     string;
-    visitEndTime:     string;
-    visitPurpose:     string[];
+    visitId:        number;
+    visitStatus:    string | undefined;
+    visitingClient: string;
+    visitAddress:   string;
+    dlcEmployees:   string;
+    rowMenu?:       React.ReactNode
+    visitors:       VisitorsType[];
+    visitStartDate: string;
+    visitStartTime: string;
+    visitEndDate:   string;
+    visitEndTime:   string;
+    visitPurpose:   string[];
 }
 
 const VisitsTableRows = ({
@@ -35,8 +36,9 @@ const VisitsTableRows = ({
   visitEndTime,
   visitPurpose,
 }: VisitsTableRowsProps) => {
-  const [searchParams] =  useSearchParams()
-  const filter =          searchParams.get('filter')
+  const [searchParams]  = useSearchParams()
+  const filter          = searchParams.get('filter')
+  const timeDifference  = calculateTimeDifference(visitStartDate, visitStartTime, visitEndDate,visitEndTime)
   return (
     <tr key={visitId}>
       <td style={{padding: '12px' }}>
@@ -70,6 +72,9 @@ const VisitsTableRows = ({
       </td>
       <td>
         <Typography>{HighlightText(filter, String(visitEndTime ? visitEndTime : ''))}</Typography>
+      </td>
+      <td>
+        <Typography>{HighlightText(filter, String(timeDifference ? timeDifference : ''))}</Typography>
       </td>
       <td>
         <Typography>{HighlightText(filter, dlcEmployees)}</Typography>

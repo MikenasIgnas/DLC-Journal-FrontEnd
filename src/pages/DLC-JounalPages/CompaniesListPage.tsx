@@ -1,29 +1,21 @@
 /* eslint-disable max-len */
-import { ConfigProvider, List, Tree }                       from 'antd'
-import React                                                from 'react'
-import { get }                                              from '../../Plugins/helpers'
-import { useCookies }                                       from 'react-cookie'
-import { CollocationsType, CompaniesType, ModalStateType }  from '../../types/globalTypes'
-import { Link }                                             from 'react-router-dom'
-import { PaginationAlign, PaginationPosition }              from 'antd/es/pagination/Pagination'
-import CompanyAddition                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
-import { DownOutlined }                                     from '@ant-design/icons'
-import ListItem                                             from '../../components/DLCJournalComponents/ClientCompanyListComponents/ListItem'
+import { Button, ConfigProvider, List, Tree }  from 'antd'
+import React                                   from 'react'
+import { get }                                 from '../../Plugins/helpers'
+import { useCookies }                          from 'react-cookie'
+import { CollocationsType, CompaniesType }     from '../../types/globalTypes'
+import { Link }                                from 'react-router-dom'
+import CompanyAddition                         from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
+import { DownOutlined }                        from '@ant-design/icons'
+import ListItem                                from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
+import { useAppSelector }                      from '../../store/hooks'
 
 const CompaniesListPage = () => {
-  const [loading, setLoading] =               React.useState(false)
-  const [cookies] =                           useCookies(['access_token'])
-  const [companies, setCompanies] =           React.useState<CompaniesType[]>([])
-  const position: PaginationPosition =        'bottom'
-  const align: PaginationAlign =              'center'
-  const [collocations, setCollocations] =     React.useState<CollocationsType[]>()
-  const [modalState, setModalState] =         React.useState<ModalStateType>({
-    editClientsEmployee:         false,
-    edit:                        false,
-    isEmployeeAdditionModalOpen: false,
-    isCompanyAdded:              false,
-    isModalOpen:                 false,
-  })
+  const [loading, setLoading]           = React.useState(false)
+  const [cookies]                       = useCookies(['access_token'])
+  const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
+  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
+  const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
 
   React.useEffect(() => {
     (async () => {
@@ -32,23 +24,25 @@ const CompaniesListPage = () => {
         const allComapnies = await get('getCompanies', cookies.access_token)
         const collocations = await get('getCollocations', cookies.access_token)
         setCollocations(collocations.data[0].colocations)
-        if(!allComapnies.error){
-          setCompanies(allComapnies.data)
-        }
+        setCompanies(allComapnies.data)
         setLoading(false)
       }catch(err){
         console.log(err)
       }
     })()
-  },[modalState.isModalOpen])
+  },[openCompaniesAdditionModal])
 
-  const companyRemoved = (id:string | undefined) => {
+  const companyRemoved = (id:number | undefined) => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
+    newCompaniesList = newCompaniesList.map((item) => {
+      const { parentCompanyId, wasMainClient, ...rest } = item
+      return rest
+    })
     setCompanies(newCompaniesList)
   }
 
-  const deleteCompany = async(companyId: string | undefined) => {
+  const deleteCompany = async(companyId: number | undefined) => {
     await get(`deleteCompany/${companyId}`, cookies.access_token)
     companyRemoved(companyId)
   }
@@ -67,30 +61,35 @@ const CompaniesListPage = () => {
     }
   })
 
+  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined) => {
+    const buttons = [
+      <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
+      <Button type='link' onClick={() => deleteCompany(listItemId)} key={primaryKey}>Ištrinti</Button>,
+    ]
+    return buttons
+  }
+
   return (
-    <div style={{width: '97%'}}>
+    <div className='CompaniesListPageContainer'>
       <CompanyAddition
-        modalState={modalState}
         postUrl={'addCompany'}
         collocations={collocations}
         additionModalTitle={'Pridėkite įmonę'}
-        setModalState={setModalState}
       />
       <List
         loading={loading}
-        pagination={{ position, align}}
+        pagination={{ position: 'bottom', align: 'center'}}
         dataSource={companies}
         renderItem={(item) => {
           const filter = treeCompanies.filter((el) => el.key === item.id)
           return(
             <ListItem
-              deleteListItem={deleteCompany}
               listItemId={item.id}
               photo={item.companyInfo.companyPhoto}
               description={item?.companyInfo?.companyDescription}
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
-              parentCompanyId={item.parentCompanyId}
+              primaryKey={item?.parentCompanyId}
               title={filter[0].children.length >= 1 ?
                 <ConfigProvider theme={{ token: { colorBgContainer: 'none' } }}>
                   <Tree
@@ -99,12 +98,10 @@ const CompaniesListPage = () => {
                     defaultExpandedKeys={['0-0-0']}
                     treeData={filter} />
                 </ConfigProvider>
-                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>}/>)
+                : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>} listButtons={listButtons }/>)
         }}/>
     </div>
   )
 }
 
 export default CompaniesListPage
-
-

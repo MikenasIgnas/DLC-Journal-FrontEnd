@@ -13,20 +13,20 @@ type LoginValuesType = {
 }
 
 const LoginPage = () => {
-  const [,setCookie] =                     useCookies(['access_token'])
-  const [loginError, setLoginError] =       React.useState(false)
-  const [errorMessage, setErrorMessage] =   React.useState('')
+  const [,setCookie]                    = useCookies(['access_token'])
+  const [loginError, setLoginError]     = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async(values: LoginValuesType) => {
     try{
-      const res = await validateUser('logInUser', values)
+      const res = await validateUser('login', values)
       if(!res.error){
         setCookie('access_token', res.token, { path: '/'})
         axios.defaults.headers.common['Authorization'] = res.token
       }
     }catch (err){
       setLoginError(true)
-      setErrorMessage('Invalid Username or Password')
+      setErrorMessage('Neteisingas prisijungimas arba slaptažodis')
     }
   }
 
@@ -35,17 +35,15 @@ const LoginPage = () => {
       <Card headStyle={{textAlign: 'center'}} title='Log In' bordered={true} className='LoginPage'>
         <Form
           name='normal_login'
-          initialValues={{ remember: true }}
           onFinish={onFinish}
         >
           <Form.Item
-            name='email'
+            name='login'
             rules={[
               { required: true, message: 'Please input your Email!' },
-              {type: 'email', message: 'The input is not valid E-mail!'},
             ]}
           >
-            <Input type='email' prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
+            <Input prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
             name='password'
@@ -57,11 +55,15 @@ const LoginPage = () => {
               placeholder='Password'
             />
           </Form.Item>
+
           {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           <Form.Item className='loginButtons'>
             <Button type='primary' htmlType='submit' className='login-form-button'>
               Log in
             </Button>
+            <a href=''>
+          Forgot password
+            </a>
           </Form.Item>
         </Form>
       </Card>

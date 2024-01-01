@@ -1,12 +1,14 @@
 /* eslint-disable max-len */
-import React                                                          from 'react'
-import { useParams }                                                  from 'react-router-dom'
-import { post }                                                       from '../../Plugins/helpers'
-import { Card, Form, Input, Button,Select, message, ConfigProvider }  from 'antd'
-import {  useAppSelector }                                            from '../../store/hooks'
-import { useCookies }                                                 from 'react-cookie'
-import SuccessMessage                                                 from '../../components/UniversalComponents/SuccessMessage'
-import useFetch                                                       from '../../customHooks/useFetch'
+import React                                                              from 'react'
+import { post }                                                           from '../../Plugins/helpers'
+import { Card, Form, Input, Button, message, ConfigProvider, Checkbox }   from 'antd'
+import {  useAppDispatch, useAppSelector }                                from '../../store/hooks'
+import { useCookies }                                                     from 'react-cookie'
+import SuccessMessage                                                     from '../../components/UniversalComponents/SuccessMessage'
+import { setEmployeeName, setIsAdmin }                                                from '../../auth/AuthReducer/reducer'
+import useSetSingleUser                                                   from '../../Plugins/useSetSingleUser'
+import { jwtDecode }                                                      from 'jwt-decode'
+import { TokenType }                                                      from '../../types/globalTypes'
 
 const formItemLayout = {
   labelCol: {
@@ -19,78 +21,94 @@ const formItemLayout = {
   },
 }
 
-type SingleUserType = {
+type FormValuesType = {
+  name:           string,
+  username:       string,
   email:          string,
+  userRole:       string,
   password:       string,
   repeatPassword: string,
-  secret:         string,
-  userRole:       string,
-  username:       string,
-  _id:            string
+  oldPassword:    string,
+  isAdmin:        boolean
 }
 
 const SingleUserPage = () => {
-  const [form] =                      Form.useForm()
+  const [form]                      = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
-  const [cookies] =                   useCookies(['access_token'])
-  const {id} =                    useParams()
-  const [loading, setLoading] =       React.useState(false)
-  const usersRole =                   useAppSelector((state)=> state.auth.usersRole)
-  const defaultTheme =                useAppSelector((state)=> state.theme.value)
-  const singleUser =                  useFetch<SingleUserType>(`FindSingleUser/${id}`, setLoading)
-  const onFinish = async (values: {username:string, email:string,userRole:string, passwordOne:string,passwordTwo:string}) => {
-    if(!values.passwordOne){
-      const editedValues = {
-        username: values.username,
-        email:    values.email,
-        userRole: values.userRole,
-      }
-      if(id){
-        const res = await post(`editUserProfile/${id}`, editedValues, cookies.access_token)
-        const res2 = await post(`changedUsername/${id}`, editedValues, cookies.access_token)
-        if(!res.error && !res2.error){
-          messageApi.success({
-            type:    'success',
-            content: 'Išsaugota',
-          })
+  const [cookies]                   = useCookies(['access_token'])
+  const {user, id, loading}         = useSetSingleUser()
+  const dispatch                    = useAppDispatch()
+  const token:TokenType             = jwtDecode(cookies.access_token)
+  const logedInUser                 = token.userId === id
+  const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
+
+  const onFinish = async (values: FormValuesType) => {
+    const userInfoValues = {
+      id:       id,
+      email:    values.email,
+      name:     values.name,
+      isAdmin:  values.isAdmin,
+      username: values.username,
+    }
+
+    const passwordChangeValues = {
+      password:       values.password,
+      repeatPassword: values.repeatPassword,
+      oldPassword:    values?.oldPassword,
+    }
+
+    const endpoint = values.password ? 'auth/changePassword' : 'user/edit'
+    const postData = values.password ? passwordChangeValues : userInfoValues
+
+    try {
+      const res = await post(endpoint, postData, cookies.access_token)
+
+      if (res) {
+        const successMessage = values.password ? 'Slaptažodis pakeistas' : 'Pakeitimai išsaugoti'
+        messageApi.success({
+          type:    'success',
+          content: successMessage,
+        })
+
+        if (!values.password && values.name) {
+          if(logedInUser){
+            dispatch(setEmployeeName(res.name))
+          }
         }
+      } else {
+        messageApi.error({
+          type:    'error',
+          content: 'Nepavyko išsaugoti',
+        })
       }
-    }else{
-      const editedValues = {
-        username:    values.username,
-        email:       values.email,
-        userRole:    values.userRole,
-        passwordOne: values.passwordOne,
-        passwordTwo: values.passwordTwo,
-      }
-      if(id){
-        const res = await post(`editUserProfile/${id}`, editedValues, cookies.access_token)
-        const res2 = await post(`changedUsername/${id}`, editedValues, cookies.access_token)
-        if(!res.error && !res2.error){
-          messageApi.success({
-            type:    'success',
-            content: 'Išsaugota',
-          })
-        }
-      }
+    } catch (error) {
+      messageApi.error({
+        type:    'error',
+        content: 'Error',
+      })
     }
   }
+
+  React.useEffect(() => {
+    form.setFieldsValue({
+      name:     user?.name,
+      username: user?.username,
+      email:    user?.email,
+      idAdmin:  user?.isAdmin,
+    })
+  }, [user?.email, user?.name, user?.username, user?.isAdmin, isAdmin,form])
 
   return (
     <div className='CreateUserPageContainer'>
       <ConfigProvider theme = {{
         token: {
-          colorBgContainer:     defaultTheme ? '#1e1e1e' : 'white',
-          colorText:            defaultTheme ? 'white' : 'black',
-          controlItemBgActive:  defaultTheme ? '#2a2a2a' : '#e6f4ff',
           colorTextPlaceholder: '#7d7d7d',
         },
       }}>
-
         <Card
           loading={loading}
-          headStyle={{textAlign: 'center', backgroundColor: defaultTheme ? '#191919' : 'white', color: defaultTheme ? 'white' : 'black'}}
-          title={`Tvarkyti ${singleUser?.username} Profilį`}
+          headStyle={{textAlign: 'center' }}
+          title={logedInUser ? 'Mano Profilis' : `Darbuotojas: ${user?.name}`}
           bordered={true}
           className='CreateUserCard'>
           <Form
@@ -103,66 +121,81 @@ const SingleUserPage = () => {
           >
             <Form.Item
               labelAlign='left'
-              name='username'
+              name='name'
               label='Darbuotojas'
-              initialValue={singleUser?.username}
+              initialValue={user?.name}
+              rules={[{required: true, message: 'Privaloma įvesti darbtuotojo vardą/pavardę'}]}
             >
-              <Input placeholder='Darbuotojas'/>
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Darbuotojas'/>
+            </Form.Item>
+            <Form.Item
+              labelAlign='left'
+              name='username'
+              label='Vartotojo vardas'
+              rules={[{required: true, message: 'Privaloma įvesti vartotojo vardą'}]}
+              initialValue={user?.username}
+            >
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Vartotojo vardas'/>
             </Form.Item>
             <Form.Item
               labelAlign='left'
               name='email'
               label='E-mail'
-              initialValue={singleUser?.email}
+              initialValue={user?.email}
+              rules={[{required: true, message: 'Privaloma įvesti el. paštą'}]}
+              key={user?.email}
             >
-              <Input placeholder='Darbuotojo el. paštas' />
+              <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Darbuotojo el. paštas'/>
             </Form.Item>
             <Form.Item
-              labelAlign='left'
-              name='userRole'
               label='Rolė'
-              initialValue={singleUser?.userRole}
+              labelAlign='left'
+              initialValue={user?.isAdmin}
+              name='isAdmin'
+              valuePropName='checked'
             >
-              <Select
-                disabled={usersRole !== 'user' ? false : true}
-                placeholder='Pasirinkti rolę'
-                dropdownStyle={{ backgroundColor: defaultTheme ? '#191919' : 'white' }}
-                options={[
-                  { value: 'system admin', label: 'System Admin' },
-                  { value: 'admin', label: 'Admin' },
-                  { value: 'user', label: 'User' },
+              <Checkbox disabled={isAdmin ? false : true}>Admin</Checkbox>
+            </Form.Item>
+            {logedInUser &&
+            <>
+              <Form.Item
+                labelAlign='left'
+                name='oldPassword'
+                label='Senas slaptažodis'
+                hasFeedback
+              >
+                <Input.Password placeholder='Senas slaptažodis'/>
+              </Form.Item>
+              <Form.Item
+                labelAlign='left'
+                name='password'
+                label='Keisti Slaptažodį'
+                hasFeedback
+              >
+                <Input.Password placeholder='Slaptažodis'/>
+              </Form.Item>
+              <Form.Item
+                labelAlign='left'
+                name='repeatPassword'
+                label='Patvirtinti Slaptažodį'
+                dependencies={['password']}
+                hasFeedback
+                rules={[
+
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('password') === value) {
+                        return Promise.resolve()
+                      }
+                      return Promise.reject(new Error('The two passwords that you entered do not match!'))
+                    },
+                  }),
                 ]}
-              />
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='passwordOne'
-              label='Keisti Slaptažodį'
-
-              hasFeedback
-            >
-              <Input.Password placeholder='Slaptažodis'/>
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='passwordTwo'
-              label='Patvirtinti Slaptažodį'
-              dependencies={['password']}
-              hasFeedback
-              rules={[
-
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('passwordOne') === value) {
-                      return Promise.resolve()
-                    }
-                    return Promise.reject(new Error('The two passwords that you entered do not match!'))
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder='Pakartoti slaptažodį'/>
-            </Form.Item>
+              >
+                <Input.Password placeholder='Pakartoti slaptažodį'/>
+              </Form.Item>
+            </>
+            }
             <Button htmlType='submit'>
               Išsaugoti
             </Button>

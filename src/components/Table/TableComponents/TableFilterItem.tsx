@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { FormControl, FormLabel }   from '@mui/joy'
-import { Select }                   from 'antd'
-import { DefaultOptionType }        from 'antd/es/select'
+import { FormControl, FormLabel } from '@mui/joy'
+import { Select }                 from 'antd'
+import { DefaultOptionType }      from 'antd/es/select'
 
 type TableFilterItemProps = {
     filterName: string;
@@ -17,7 +17,6 @@ const TableFilterItem = ({filterName, onChange, onClear, options}: TableFilterIt
         <FormLabel>{filterName}</FormLabel>
         <Select
           onClear={onClear}
-          style={{ width: 120 }}
           onChange={onChange}
           allowClear
           options={options}

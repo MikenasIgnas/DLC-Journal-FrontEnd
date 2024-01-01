@@ -1,27 +1,31 @@
 /* eslint-disable max-len */
 import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem }         from '../../Plugins/helpers'
+import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetVisitsData                 from '../../Plugins/useSetVisitData'
+import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
+import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 
 const TableColumns = () => {
   return(
     <>
-      <th style={{ width: 100, padding: '12px 6px' }}>Statusas</th>
-      <th style={{ width: 150, padding: '12px 6px' }}>Klientas</th>
-      <th style={{ width: 200, padding: '12px 6px' }}>Kliento Darbuotojas</th>
-      <th style={{ width: 200, padding: '12px 6px' }}>Vizito Tikslas</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Adresas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Pradžios Data</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Pradžios Laikas</th>
-      <th style={{ width: 100, padding: '12px 6px' }}>Pabaigos Data</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Pabaigos Laikas</th>
-      <th style={{ width: 150, padding: '12px 6px' }}>Lydintysis</th>
-      <th style={{ width: 70, padding: '12px 6px' }}>Veiksmai</th>
+      <th className='TableColumnWidth100px'>Statusas</th>
+      <th className='TableColumnWidth100px'>Klientas</th>
+      <th className='TableColumnWidth200px'>Kliento Darbuotojas</th>
+      <th className='TableColumnWidth130px'>Vizito Tikslas</th>
+      <th className='TableColumnWidth70px'>Adresas</th>
+      <th className='TableColumnWidth100px'>Pradžios Data</th>
+      <th className='TableColumnWidth70px'>Pradžios Laikas</th>
+      <th className='TableColumnWidth100px'>Pabaigos Data</th>
+      <th className='TableColumnWidth70px'>Pabaigos Laikas</th>
+      <th className='TableColumnWidth70px'>Užtrukta</th>
+      <th className='TableColumnWidth150px'>Lydintysis</th>
+      <th className='TableColumnWidth70px'>Veiksmai</th>
     </>
   )
 }
@@ -42,13 +46,17 @@ const tableSorter = [
 ]
 
 const VisitPage = () => {
-  const [cookies] =                           useCookies(['access_token'])
-  const [searchParams, setSearchParams] =     useSearchParams()
-  const page =                                searchParams.get('page')
-  const navigate =                            useNavigate()
-  const {data, count, setData} =     useSetVisitsData()
+  const [cookies]                         = useCookies(['access_token'])
+  const [searchParams, setSearchParams]   = useSearchParams()
+  const page                              = searchParams.get('page')
+  const navigate                          = useNavigate()
+  const {data, count, setData}            = useSetVisitsData()
+  const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
+  const rowMenuItems                      = visitsRowMenuItems(loading)
+
   return (
     <FullTable
+      pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
       tableSorter={tableSorter}
       currentPage={page}
       setSearchParams={setSearchParams}
@@ -69,11 +77,15 @@ const VisitPage = () => {
           visitEndDate={el.endDate}
           visitEndTime={el.endTime}
           rowMenu={<RowMenu
-            navigate={() => navigate(`${el.id}`)}
-            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')} />} />
-      ))} />
+            navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
+            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
+            generatePDF={() => generateSingleVisitPDF(el.id)}
+            items={rowMenuItems}
+          />}
+        />
+      ))}
+    />
   )
 }
 
 export default VisitPage
-

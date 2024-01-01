@@ -1,9 +1,7 @@
 /* eslint-disable max-len */
 import React                                from 'react'
-import { Page, Text, Document, StyleSheet, Image } from '@react-pdf/renderer'
+import { Page, Text, Document, StyleSheet } from '@react-pdf/renderer'
 import { HistoryDataType }                  from '../../../types/globalTypes'
-import { useCookies }                       from 'react-cookie'
-import { get }                              from '../../../Plugins/helpers'
 
 const styles = StyleSheet.create({
   body: {

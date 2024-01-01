@@ -5,17 +5,18 @@ import { get }              from './helpers'
 import { UserType }         from '../types/globalTypes'
 
 const useSetArchivedUserData = () => {
-  const [data, setData] =   React.useState<UserType[]>()
+  const [data, setData]   = React.useState<UserType[]>()
   const [count, setCount] = React.useState<number>()
-  const [cookies] =         useCookies(['access_token'])
-  const [searchParams] =    useSearchParams()
+  const [cookies]         = useCookies(['access_token'])
+  const [searchParams]    = useSearchParams()
+  const tableSorter       = searchParams.get('tableSorter')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page =          searchParams.get('page') || 1
-      const limit =         searchParams.get('limit') || 10
-      const selectFilter =  searchParams.get('selectFilter')
-      const searchFilter =  searchParams.get('filter')
+      const page          = searchParams.get('page') || 1
+      const limit         = searchParams.get('limit') || 10
+      const selectFilter  = searchParams.get('selectFilter')
+      const searchFilter  = searchParams.get('filter')
 
       let fetchUrl = `getArchivedUsers?page=${page}&limit=${limit}`
 
@@ -25,6 +26,10 @@ const useSetArchivedUserData = () => {
 
       if(selectFilter){
         fetchUrl += `&selectFilter=${selectFilter}`
+      }
+
+      if(tableSorter){
+        fetchUrl += `&tableSorter=${tableSorter}`
       }
       try {
         const data = await get(fetchUrl, cookies.access_token)
@@ -43,7 +48,7 @@ const useSetArchivedUserData = () => {
       setCount(documents.data)
     })()
   }, [])
-  return {data, count}
+  return {data, count, setCount}
 }
 
 export default useSetArchivedUserData

@@ -11,17 +11,24 @@ type TablePaginationProps = {
 
 const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => {
   const [searchParams, setSearchParams] =  useSearchParams()
-  const selectFilter = searchParams.get('selectFilter')
+  const selectFilter  = searchParams.get('selectFilter')
+  const searchFilter  = searchParams.get('filter')
+  const tableSorter   = searchParams.get('tableSorter')
+
   const changePage = async(page: number, limit: number) => {
-    if(selectFilter){
+    if(searchFilter){
+      setSearchParams(`page=${page}&limit=${limit}&filter=${searchFilter}`)
+    }else if(selectFilter){
       setSearchParams(`page=${page}&limit=${limit}&selectFilter=${selectFilter}`)
+    }else if(tableSorter){
+      setSearchParams(`page=${page}&limit=${limit}&tableSorter=${tableSorter}`)
     }else{
       setSearchParams(`page=${page}&limit=${limit}`)
     }
   }
 
   return (
-    <>
+    <div style={{ width: '100%', display: 'flex', justifyContent: 'center'}}>
       {documentCount &&
         <Pagination
           defaultCurrent={Number(currentPage)}
@@ -30,7 +37,7 @@ const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => 
           showSizeChanger
         />
       }
-    </>
+    </div>
   )
 }
 

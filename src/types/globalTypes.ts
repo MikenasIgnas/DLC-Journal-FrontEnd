@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export type RouteType = {
   routeNumber:        number;
   floor:              string;
@@ -67,27 +68,22 @@ export type HistoryDataType = {
 };
 
 export type UserType = {
-  id:                 number;
-  key:                string;
-  email:              string;
-  secret:             string;
-  userRole:           string;
-  username:           string;
-  dateCreated:        string;
-  dateDeleted:        string;
-  status:             string;
-  _id:                string;
+  id:             number;
+  email:          string;
+  isAdmin:        boolean;
+  name:           string;
+  username:       string;
+  created:        string;
+  disabledDate:   string;
+  isDisabled:     boolean;
+  _id:            string;
 };
 
 export type TokenType = {
-  username:           string;
-  theme:              boolean;
-  secret:             string;
-  userRole:           string;
-  userId:             string;
-  iat:                number;
-  exp:                number;
-  id:                 number;
+  email:  string;
+  exp:    number;
+  iat:    number;
+  userId: string;
 };
 
 export type ChecklistPhotosType = {
@@ -100,24 +96,24 @@ export type ColocationDataType = {
 };
 
 export type CompaniesType = {
-  _id:                    string;
-  id:                     string;
-  parentCompanyId?:       string;
-  wasMainClient?:         boolean;
-  companyInfo: {
-      J13?:               ColocationDataType[];
-      T72?:               ColocationDataType[];
-      companyName:        string;
-      companyDescription: string;
-      companyPhoto:       string;
-      subClient?: {
-      subClientId: string;
-      subClientCompanyName: string
-      }[]
-  };
+  _id:              string;
+  id:               number;
+  parentCompanyId?: number;
+  wasMainClient?:   boolean;
+  companyInfo:      CompanyInfoType;
 };
 
-
+export type CompanyInfoType = {
+  [site: string]: ColocationDataType[] | undefined;
+} & {
+  companyName: string;
+  companyDescription: string;
+  companyPhoto: string;
+  subClient?: {
+    subClientId: string;
+    subClientCompanyName: string;
+  }[];
+};
 export type CompaniesSitesType = {
   _id:                string;
   id:                 string;
@@ -148,11 +144,11 @@ export type CompaniesEmlployeesType = {
 
 export type EmployeesType = {
   _id:            string;
-  companyId:      string | undefined;
+  companyId:      number | undefined;
   name:           string;
   lastName:       string;
   occupation:     string;
-  employeeId:     string | undefined;
+  employeeId:     number | undefined;
   permissions:    string[];
   employeePhoto?: string;
   email?:         string;
@@ -161,35 +157,43 @@ export type EmployeesType = {
   notes?:         string;
 }
 
-export type VisitorsType = {
-  idType: string;
-  selectedVisitor: EmployeesType
+export type CollocationType = {
+  [key:string] : string[]
 }
 
+export type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+
+export type VisitorsType = {
+  idType?:            string | null | undefined;
+  signature?:         string | undefined;
+  selectedVisitor:    EmployeesType;
+};
+
 export type VisitsType = {
-  _id: string;
-  id: string;
-  creationDate:     string;
-  creationTime:     string;
-  startDate:        string;
-  startTime:        string;
-  endDate:          string;
-  endTime:          string;
-  visitStatus:      'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
-  visitPurpose:     string[]
-  visitors:         VisitorsType[];
-  dlcEmployees:     string;
-  visitAddress:     string;
-  visitingClient:   string;
-  signature:        string;
-  visitorsIdType:   string;
-  visitCollocation: {
-      [key: string] : string[]
-    },
+  id:                 number;
+  visitPurpose:       string[];
+  visitStatus:        VisitStatusType;
+  visitors:           VisitorsType[];
+  dlcEmployees:       string;
+  visitAddress:       string;
+  visitingClient:     string;
+  clientsGuests:      string[];
+  carPlates:          string[];
+  signature:          string;
+  visitCollocation:   CollocationType
+  visitorsIdType:     string;
+  creationDate:       string;
+  creationTime:       string;
+  startDate:          string;
+  startTime:          string;
+  endDate:            string;
+  endTime:            string;
+  companyId:          number;
+  scheduledVisitTime: string | undefined;
 }
 
 export type CollocationsType = {
-  id: string;
+  id: number;
   premises: {
     premiseName: string;
     racks: string[]
@@ -204,11 +208,11 @@ export type CollocationsSites = {
 };
 
 export type ModalStateType = {
-  editClientsEmployee:           boolean;
-  edit:                          boolean;
-  isEmployeeAdditionModalOpen:   boolean;
-  isCompanyAdded:                boolean;
-  isModalOpen:                   boolean;
+  editClientsEmployee:       boolean;
+  edit:                      boolean;
+  openEmployeeAdditionModal: boolean;
+  isCompanyAdded:            boolean;
+  isModalOpen:               boolean;
 }
 
 export type FilterOptions = {
@@ -216,5 +220,13 @@ export type FilterOptions = {
   filterOptions: {
       value: string;
       label: string;
+  }[];
+}[]
+export type SubClientsCollocationsType = {
+  site: string;
+  id: number;
+  premises: {
+      premiseName: string;
+      racks: string[];
   }[];
 }[]

@@ -1,11 +1,9 @@
 /* eslint-disable max-len */
-import { Button, Card, ConfigProvider, Form, Input, Select, message }   from 'antd'
-import React                                                            from 'react'
-import { getCurrentDate, post }                                         from '../../Plugins/helpers'
-import { useNavigate }                                                  from 'react-router-dom'
-import { useAppSelector }                                               from '../../store/hooks'
-import { useCookies }                                                   from 'react-cookie'
-import SuccessMessage                                                   from '../../components/UniversalComponents/SuccessMessage'
+import { Button, Card, Checkbox, Form, Input, message } from 'antd'
+import React                                            from 'react'
+import { getCurrentDate, post }                         from '../../Plugins/helpers'
+import { useCookies }                                   from 'react-cookie'
+import SuccessMessage                                   from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {
@@ -21,29 +19,24 @@ const formItemLayout = {
 type FormValuesType = {
     username:     string,
     email:        string,
-    userRole:     string,
+    idAdmin:      boolean,
     passwordOne:  string,
     passwordTwo:  string,
     status:       string,
     dateCreated:  string,
-    defaultTheme: boolean,
 }
 
 const CreateUserPage = () => {
-  const [form] =                            Form.useForm()
-  const [messageApi, contextHolder] =       message.useMessage()
-  const [cookies] =                         useCookies(['access_token'])
-  const navigate =                          useNavigate()
-  const [loginError, setLoginError] =       React.useState(false)
-  const [errorMessage, setErrorMessage] =   React.useState('')
-  const defaultTheme =                      useAppSelector((state) => state.theme.value)
+  const [form]                          = Form.useForm()
+  const [messageApi, contextHolder]     = message.useMessage()
+  const [cookies]                       = useCookies(['access_token'])
+  const [loginError, setLoginError]     = React.useState(false)
+  const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async (values: FormValuesType) => {
     try{
-      values.status = 'active'
       values.dateCreated = getCurrentDate()
-      values.defaultTheme = false
-      const res = await post('createUser', values, cookies.access_token)
+      const res = await post('user/create', values, cookies.access_token)
       if (!res.error) {
         messageApi.success({
           type:    'success',
@@ -52,9 +45,6 @@ const CreateUserPage = () => {
         form.resetFields()
         setLoginError(false)
         setErrorMessage('')
-        setTimeout(() => {
-          navigate('/ManageUsers')
-        },1000)
       }else{
         setLoginError(res.error)
         setErrorMessage(res.message)
@@ -66,116 +56,103 @@ const CreateUserPage = () => {
 
   return (
     <div className='CreateUserPageContainer'>
-      <ConfigProvider theme = {{
-        token: {
-          colorBgContainer:     defaultTheme ? '#1e1e1e' : 'white',
-          colorText:            defaultTheme ? 'white': 'black',
-          colorTextPlaceholder: '#7d7d7d',
-        },
-      }}>
-
-        <Card
-          title='Asmeninė informacija'
-          bordered={true}
-          className='CreateUserCard'>
-          <Form
-            {...formItemLayout}
-            form={form}
-            name='createUser'
-            onFinish={onFinish}
-            className='Form'
-            scrollToFirstError
+      <Card
+        title='Sukurti darbuotoją'
+        bordered={true}
+        className='CreateUserCard'>
+        <Form
+          {...formItemLayout}
+          form={form}
+          name='createUser'
+          onFinish={onFinish}
+          className='Form'
+          scrollToFirstError
+        >
+          <Form.Item
+            labelAlign='left'
+            name='name'
+            label='Darbuotojas'
+            rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
           >
-            <Form.Item
-              labelAlign='left'
-              name='username'
-              label='Darbuotojas'
-              rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
-            >
-              <Input placeholder='Darbuotojo vardas'/>
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='email'
-              label='E-mail'
-              rules={[
-                {
-                  type:    'email',
-                  message: 'The input is not valid E-mail!',
+            <Input placeholder='Darbuotojo vardas/pavardė'/>
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='username'
+            label='Prisijungimas'
+            rules={[{ required: true, message: 'Please input username!', whitespace: true }]}
+          >
+            <Input placeholder='Prisijungimas'/>
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='email'
+            label='E-mail'
+            rules={[
+              {
+                type:    'email',
+                message: 'The input is not valid E-mail!',
+              },
+              {
+                required: true,
+                message:  'Please input your E-mail!',
+              },
+            ]}
+          >
+            <Input placeholder='Darbuotojo el. paštas'/>
+          </Form.Item>
+          <Form.Item
+            label='Rolė'
+            labelAlign='left'
+            initialValue={false}
+            name='isAdmin'
+            valuePropName='checked'
+          >
+            <Checkbox>Admin</Checkbox>
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='password'
+            label='Slaptažodis'
+            rules={[
+              {
+                required: true,
+                message:  'Please input your password!',
+              },
+            ]}
+            hasFeedback
+          >
+            <Input.Password placeholder='Slaptažodis' />
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='repeatPassword'
+            label='Patvirtinti slaptažodį'
+            dependencies={['password']}
+            hasFeedback
+            rules={[
+              {
+                required: true,
+                message:  'Patvirtinkit slaptažodį',
+              },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject(new Error('Slaptažodžiai nesutampa'))
                 },
-                {
-                  required: true,
-                  message:  'Please input your E-mail!',
-                },
-              ]}
-            >
-              <Input placeholder='Darbuotojo el. paštas'/>
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='userRole'
-              label='Rolė'
-              rules={[
-                {
-                  required: true,
-                  message:  'Please select a role!',
-                },
-              ]}
-            >
-              <Select
-                dropdownStyle={{ backgroundColor: defaultTheme ? '#191919' : 'white' }}
-                placeholder='Pasirinkti rolę'
-                options={[
-                  { value: 'SYSADMIN', label: 'System Admin' },
-                  { value: 'admin', label: 'Admin' },
-                  { value: 'user', label: 'User' },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='passwordOne'
-              label='Slaptažodis'
-              rules={[
-                {
-                  required: true,
-                  message:  'Please input your password!',
-                },
-              ]}
-              hasFeedback
-            >
-              <Input.Password placeholder='Slaptažodis' />
-            </Form.Item>
-            <Form.Item
-              labelAlign='left'
-              name='passwordTwo'
-              label='Patvirtinti slaptažodį'
-              dependencies={['password']}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message:  'Please confirm your password!',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('passwordOne') === value) {
-                      return Promise.resolve()
-                    }
-                    return Promise.reject(new Error('The two passwords that you entered do not match!'))
-                  },
-                }),
-              ]}
-            >
-              <Input.Password placeholder='Pakartoti slaptažodį'/>
-            </Form.Item>
-            <Button htmlType='submit'>
+              }),
+            ]}
+          >
+            <Input.Password placeholder='Pakartoti slaptažodį'/>
+          </Form.Item>
+          <Button htmlType='submit'>
               Sukurti
-            </Button>
-            {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
-          </Form>
-        </Card>
-      </ConfigProvider>
+          </Button>
+          {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
+        </Form>
+      </Card>
       <SuccessMessage contextHolder={contextHolder} />
     </div>
   )

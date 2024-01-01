@@ -1,18 +1,19 @@
-import { combineReducers }      from 'redux'
-import authReducer              from '../auth/AuthReducer/reducer'
-import routeReducer             from '../auth/RouteReducer/routeReducer'
-import fetchedDataReducer       from '../auth/FetchedDataReducer/fetchedDataReducer'
-import ThemeReducer             from '../auth/ThemeReducer/ThemeReducer'
-import visitsDataReducer        from '../auth/FetchedDataReducer/VisitsDataReducer'
-import checklistDataReducer     from '../auth/FetchedDataReducer/ChecklistHistoryDataReducer'
-import usersDataReducer         from '../auth/FetchedDataReducer/UsersDataReducer'
+/* eslint-disable max-len */
+import { combineReducers }        from 'redux'
+import authReducer                from '../auth/AuthReducer/reducer'
+import routeReducer               from '../auth/RouteReducer/routeReducer'
+import fetchedDataReducer         from '../auth/FetchedDataReducer/fetchedDataReducer'
+import checklistDataReducer       from '../auth/FetchedDataReducer/ChecklistHistoryDataReducer'
+import ModalStateReducer          from '../auth/ModalStateReducer/ModalStateReducer'
+import addSubClientReducer        from '../auth/AddSubClientReducer/addSubClientReducer'
+import collocationItemReducer     from '../auth/CollocationItemReducer/collocationItemReducer'
 
 export default combineReducers({
   auth:                      authReducer,
   route:                     routeReducer,
   fetchedData:               fetchedDataReducer,
-  theme:                     ThemeReducer,
-  visitTableData:            visitsDataReducer,
   checklistHistoryTableData: checklistDataReducer,
-  usersTableData:            usersDataReducer,
+  modals:                    ModalStateReducer,
+  isSubClientAdded:          addSubClientReducer,
+  collocationItem:           collocationItemReducer,
 })

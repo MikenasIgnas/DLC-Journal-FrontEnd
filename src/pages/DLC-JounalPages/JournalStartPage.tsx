@@ -1,24 +1,19 @@
 /* eslint-disable max-len */
-import React                  from 'react'
-import JournalStartPageCard   from '../../components/DLCJournalComponents/JournalStartPageCard/JournalStartPageCard'
+import React                                                                                        from 'react'
+import JournalStartPageCard                                                                         from '../../components/DLCJournalComponents/JournalStartPageCard/JournalStartPageCard'
+import { BarChartOutlined, DatabaseOutlined, FileAddOutlined, ReadOutlined, UnorderedListOutlined } from '@ant-design/icons'
 
 const DLCJournalStartPage = () => {
   return (
-    <div style={{
-      width:          '100%',
-      display:        'flex',
-      justifyContent: 'center',
-      alignItems:     'center',
-      flexDirection:  'column',
-    }}>
-      <div style={{display: 'flex'}}>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Vizito_Registracija'} buttonText={'Registruoti naują vizitą'}/>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10'} buttonText={'Aktyvūs vizitai'}/>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Įmonių_Sąrašas'} buttonText={'Įmonių sąrašas'}/>
+    <div className='DLCJournalStartPageContainer'>
+      <div className='DisplayFlex'>
+        <JournalStartPageCard icon={<FileAddOutlined/>} navigateLink={'/DLC Žurnalas/Vizito_Registracija'} buttonText={'Registruoti naują vizitą'}/>
+        <JournalStartPageCard icon={<ReadOutlined />} navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10&tableSorter=desc'} buttonText={'Vizitai'}/>
+        <JournalStartPageCard icon={<UnorderedListOutlined/>} navigateLink={'/DLC Žurnalas/Įmonių_Sąrašas'} buttonText={'Įmonių sąrašas'}/>
       </div>
-      <div style={{display: 'flex'}}>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Vizitai?page=1&limit=10'} buttonText={'Kolokacijos'}/>
-        <JournalStartPageCard navigateLink={'/DLC Žurnalas/Statistika'} buttonText={'Statistika'}/>
+      <div className='DisplayFlex'>
+        <JournalStartPageCard icon={<DatabaseOutlined />} navigateLink={'/DLC Žurnalas/Kolokacijos?tabKey=1'} buttonText={'Kolokacijos'}/>
+        <JournalStartPageCard icon={<BarChartOutlined />} navigateLink={'/DLC Žurnalas/Statistika'} buttonText={'Statistika'}/>
       </div>
     </div>
   )

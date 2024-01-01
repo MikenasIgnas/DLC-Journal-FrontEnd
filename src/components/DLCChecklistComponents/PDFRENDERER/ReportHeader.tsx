@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                      from 'react'
-import {Text, View, StyleSheet, Image }  from '@react-pdf/renderer'
+import {Text, View, StyleSheet }  from '@react-pdf/renderer'
 import { HistoryDataType }        from '../../../types/globalTypes'
 
 const styles = StyleSheet.create({
@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
 })
 
 type tableDataProps = {
-  tableData: HistoryDataType[] | undefined
-  fileName: string | undefined
+  tableData:    HistoryDataType[] | undefined
+  fileName:     string | undefined
   specificDate: string | undefined
 }
 

@@ -1,30 +1,41 @@
 /* eslint-disable max-len */
-import React                                             from 'react'
-import { Divider, Dropdown, Menu, MenuButton, MenuItem } from '@mui/joy'
-import IconButton                                        from '@mui/joy/IconButton'
-import MoreHorizRoundedIcon                              from '@mui/icons-material/MoreHorizRounded'
+import React                                from 'react'
+import { DownOutlined}                      from '@ant-design/icons'
+import { Space, type MenuProps, Dropdown }  from 'antd'
+import { ItemType }                         from 'antd/es/menu/hooks/useItems'
 
 type RowMenuType ={
-  navigate: () => void;
-  deleteItem?: () => Promise<void>
+  navigate:     () => void;
+  deleteItem?:  () => Promise<void>
+  generatePDF?: () => Promise<void>
+  items:        ItemType[]
 }
 
-const RowMenu = ({navigate, deleteItem}: RowMenuType) => {
+const RowMenu = ({navigate, deleteItem, generatePDF, items}: RowMenuType) => {
+  const onClick: MenuProps['onClick'] = ({ key }) => {
+    if(key === '1'){
+      navigate()
+    }
+    if(key === '2'){
+      if(generatePDF){
+        generatePDF()
+      }
+    }
+    if(key === '3'){
+      if(deleteItem){
+        deleteItem()
+      }
+    }
+  }
+
   return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: 'plain', color: 'neutral', size: 'sm' } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size='sm' sx={{ minWidth: 140 }}>
-        <MenuItem onClick={navigate}>Peržiūrėti</MenuItem>
-        <Divider />
-        {
-          deleteItem ? <MenuItem onClick={deleteItem} color='danger'>Ištrinti</MenuItem> : null
-        }
-      </Menu>
+    <Dropdown menu={{ items, onClick }}>
+      <a onClick={(e) => e.preventDefault()}>
+        <Space>
+          Veiksmai
+          <DownOutlined />
+        </Space>
+      </a>
     </Dropdown>
   )
 }

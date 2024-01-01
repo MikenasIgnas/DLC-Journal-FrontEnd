@@ -9,7 +9,7 @@ import { resetReducer, setArea, setPossibleProblems, setRoute, setTodo, setLates
 import CheckilistHeader                                                                                         from '../../components/DLCChecklistComponents/ChecklistHeader/ChecklistHeader'
 import { onIncrementProgressTracker }                                                                           from '../../store/incremetnThunks/thunksIncrement'
 import { onDecrementProgressTracker }                                                                           from '../../store/decrementThunks/thunksDecrement'
-import FinishModal                                                                                              from '../../components/UniversalComponents/FinishModal/FinishModal'
+import FinishModal                                                                                              from '../../components/DLCChecklistComponents/FinishModal/FinishModal'
 import { useCookies }                                                                                           from 'react-cookie'
 import {jwtDecode}                                                                                              from 'jwt-decode'
 import { TokenType }                                                                                            from '../../types/globalTypes'
@@ -29,23 +29,22 @@ type FilledDataType = {
 }
 
 const ChecklistRoutesPage = () => {
-  const [form] =                          Form.useForm()
-  const dispatch =                        useAppDispatch()
-  const navigate =                        useNavigate()
-  const [cookies] =                       useCookies(['access_token'])
-  const decodedToken:TokenType =          jwtDecode(cookies.access_token)
+  const [form]                          = Form.useForm()
+  const dispatch                        = useAppDispatch()
+  const navigate                        = useNavigate()
+  const [cookies]                       = useCookies(['access_token'])
+  const decodedToken:TokenType          = jwtDecode(cookies.access_token)
   const [searchParams, setSearchParams] = useSearchParams()
-  const [messageApi, contextHolder] =     message.useMessage()
-  const [isModalOpen, setIsModalOpen] =   React.useState(false)
-  const [loading, setLoading] =           React.useState(false)
-  const [isDesktop, setDesktop] =         React.useState(window.innerWidth > 650)
-  const currentPageUrlParam =             searchParams.get('page')
-  const currentRouteUrlParam =            searchParams.get('route')
-  const currentProgressUrlParam =         searchParams.get('progress')
-  const areas =                           useAppSelector((state) => state.fetchedData.Areas)
-  const userName =                        useAppSelector((state) => state.auth.username)
-  const defaultTheme =                    useAppSelector((state)=> state.theme.value)
-  const latestPhotos =                    useAppSelector((state)=> state.fetchedData.latestPhotos)
+  const [messageApi, contextHolder]     = message.useMessage()
+  const [isModalOpen, setIsModalOpen]   = React.useState(false)
+  const [loading, setLoading]           = React.useState(false)
+  const [isDesktop, setDesktop]         = React.useState(window.innerWidth > 650)
+  const currentPageUrlParam             = searchParams.get('page')
+  const currentRouteUrlParam            = searchParams.get('route')
+  const currentProgressUrlParam         = searchParams.get('progress')
+  const areas                           = useAppSelector((state) => state.fetchedData.areas)
+  const employee                        = useAppSelector((state) => state.auth.name)
+  const latestPhotos                    = useAppSelector((state)=> state.fetchedData.latestPhotos)
 
   const updateMedia = () => {
     setDesktop(window.innerWidth > 650)
@@ -56,12 +55,12 @@ const ChecklistRoutesPage = () => {
       (async () => {
         try{
           setLoading(true)
-          const resRoutes =               await get('routeData', cookies.access_token)
-          const resAreas =                await get('areasData',cookies.access_token)
-          const resTodo =                 await get('todoData',cookies.access_token)
-          const resProblems =             await get('problemsData',cookies.access_token)
-          const reslatestHistoryItem =    await get('latestHistoryItem',cookies.access_token)
-          const resLatestPhotos =         await get('latestPhotos',cookies.access_token)
+          const resRoutes             = await get('routeData', cookies.access_token)
+          const resAreas              = await get('areasData',cookies.access_token)
+          const resTodo               = await get('todoData',cookies.access_token)
+          const resProblems           = await get('problemsData',cookies.access_token)
+          const reslatestHistoryItem  = await get('latestHistoryItem',cookies.access_token)
+          const resLatestPhotos       = await get('latestPhotos',cookies.access_token)
           if(!resRoutes.error && !resAreas.error && !resTodo.error && !resProblems.error ){
             dispatch(setRoute(resRoutes.data))
             dispatch(setArea(resAreas.data))
@@ -144,15 +143,14 @@ const ChecklistRoutesPage = () => {
       const endTime = getCurrentTime()
 
       const checklistData = {
-        userName,
+        employee,
         filledData,
         startDate,
         startTime,
         endDate,
         endTime,
         problemCount,
-        secret:   decodedToken.id,
-        userRole: decodedToken.userRole,
+        secret: decodedToken.userId,
       }
       try{
 
@@ -177,11 +175,10 @@ const ChecklistRoutesPage = () => {
     }
   }
 
-
   return (
     <>
       {isDesktop ?
-        <Card loading={loading} style={{backgroundColor: defaultTheme ? '#191919' : ''}} className='ChecklistCard' >
+        <Card loading={loading} className='ChecklistCard' >
           <Form form={form} onFinish={nextPage}>
             <CheckilistHeader/>
             <ChecklistBody/>

@@ -5,23 +5,23 @@ import { useForm }                                from 'antd/es/form/Form'
 import { post, uploadPhoto }                      from '../../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import ColocationSelectors                        from '../CollocationSelectors'
-import { CollocationsType, ModalStateType }       from '../../../../types/globalTypes'
+import ColocationSelectors                        from '../ClientsCollocationsTab/CollocationSelectors'
+import { CollocationsType }                       from '../../../../types/globalTypes'
+import { useAppDispatch }                         from '../../../../store/hooks'
+import { setOpenCompaniesAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
     collocations:       CollocationsType[] | undefined
-    setModalState:  React.Dispatch<React.SetStateAction<ModalStateType>>
-    modalState: ModalStateType
 }
 
 type CompanyFormType = {
-  companyName?:         string,
-  companyDescription?:  string,
-  companyPhoto?:        string,
+  companyName?:           string,
+  companyDescription?:    string,
+  companyPhoto?:          string,
   subClient?: {
-    subClientId: string;
+    subClientId:          string;
     subClientCompanyName: string
     }[]
   J13?: {
@@ -32,13 +32,14 @@ type CompanyFormType = {
   }[];
 };
 
-const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setModalState, modalState}: AdditionModalProps) => {
-  const [cookies] =                       useCookies(['access_token'])
-  const [form] =                          useForm()
-  const [uploading, setUploading] =       React.useState(false)
-  const [fileList, setFileList] =         React.useState<UploadFile[]>([])
+const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
+  const [cookies]                 = useCookies(['access_token'])
+  const [form]                    = useForm()
+  const [uploading, setUploading] = React.useState(false)
+  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
+  const dispatch                  = useAppDispatch()
 
-  function filterObject(obj: CompanyFormType): CompanyFormType {
+  const filterObject = (obj: CompanyFormType): CompanyFormType => {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {
       filteredObj.J13 = []
@@ -66,6 +67,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
     }
     return filteredObj
   }
+
   const addCompany = async(values: CompanyFormType) => {
     const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName
@@ -75,16 +77,16 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
-    setModalState({...modalState, isModalOpen: false})
+    dispatch(setOpenCompaniesAdditionModal(false))
   }
   return (
     <Modal
       title={additionModalTitle}
-      centered
       open
-      onOk={() => setModalState({...modalState, isModalOpen: false})}
-      onCancel={() => setModalState({...modalState, isModalOpen: false})}
+      onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
+      onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
       footer={false}
+      width={'55%'}
     >
       <Form form={form} onFinish={addCompany}>
         <div>
@@ -97,7 +99,14 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations, setMod
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             {collocations?.map((colocation, i) =>
-              colocation.premises ? <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/> : null)}
+              colocation.premises ?
+                <ColocationSelectors
+                  key={i}
+                  collocationSite={colocation.site}
+                  colocationPremises={colocation.premises}
+                  colocationId={colocation.id}/>
+                : null
+            )}
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>

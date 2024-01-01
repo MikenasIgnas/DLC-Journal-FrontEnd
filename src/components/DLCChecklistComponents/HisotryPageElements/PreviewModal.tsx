@@ -6,22 +6,22 @@ import { useCookies }       from 'react-cookie'
 import Resizer              from 'react-image-file-resizer'
 
 type PreviewModalProps = {
-open:       boolean
-onOk:       ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
-onCancel:   ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
-dutiesId:   number | undefined
+open:     boolean
+onOk:     ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
+onCancel: ((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void) | undefined
+dutiesId: number | undefined
 }
 
 type PhotoType = {
-  checklistId:  number,
-  photo:        string,
-  photoId:      string,
+  checklistId: number,
+  photo:       string,
+  photoId:     string,
 }
 
 const PreviewModal = ({open, onOk, onCancel, dutiesId}:PreviewModalProps) => {
   const [photo, setPhoto] = React.useState('')
-  const { id } =            useParams()
-  const [cookies] =         useCookies(['access_token'])
+  const { id }            = useParams()
+  const [cookies]         = useCookies(['access_token'])
 
   React.useEffect(() => {
     (async () => {

@@ -1,74 +1,68 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
-import React                                    from 'react'
-import { useParams }                            from 'react-router-dom'
-import { Avatar, Button, Card, Form, List }     from 'antd'
-import { Badge, ConfigProvider, Descriptions }  from 'antd'
-import type { DescriptionsProps }               from 'antd'
-import { useCookies }                           from 'react-cookie'
-import { get, post }                            from '../../Plugins/helpers'
-import { EmployeesType }                        from '../../types/globalTypes'
-import VisitorAdditionModal                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionModal'
-import ItemList                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
-
-type CollocationType = {
-  [key:string] :        string[]
-}
-
-type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
-
-type VisitorsType = {
- idType: string;
- selectedVisitor:EmployeesType
-}
-
-type VisitsType = {
-    id:               string;
-    visitPurpose:     string[];
-    visitStatus:      VisitStatusType;
-    visitors:         VisitorsType[];
-    dlcEmployees:     string;
-    visitAddress:     string;
-    visitingClient:   string;
-    clientsGuests:    string[];
-    carPlates:        string[];
-    signature:        string;
-    visitCollocation: CollocationType
-    visitorsIdType:   string;
-    creationDate:     string;
-    creationTime:     string;
-    startDate:        string;
-    startTime:        string;
-    endDate:          string;
-    endTime:          string;
-    companyId:        number;
-}
+import React                                                    from 'react'
+import { useParams, useSearchParams }                           from 'react-router-dom'
+import { Button, Card, Form, List }                             from 'antd'
+import { Descriptions }                                         from 'antd'
+import { useCookies }                                           from 'react-cookie'
+import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
+import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
+import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
+import SelectedCollocationList                                  from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
+import RegisteredVisitorsListItem                               from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
+import VisitorAdditionList                                      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
+import filterPermisions                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
+import VisitInformationItems                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
+import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
+import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
+import useVisitValidation                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
+import CollocationsList                                         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
+import useSetUsersData from '../../Plugins/useSetUsersData'
 
 const SingleVisitPage = () => {
-  const [cookies]                                     = useCookies(['access_token'])
-  const [visitData, setVisitData]                     = React.useState<VisitsType[]>()
-  const [open, setOpen]                               = React.useState(false)
-  const [clientsEmployees, setClientsEmployees]       = React.useState<EmployeesType[]>()
-  const { id }                                        = useParams()
-  const [selectedVisitors, setSelectedVisitors]       = React.useState<EmployeesType[]>()
-  const [guestsImput, setGuestsInput]                 = React.useState<string>('')
-  const [carPlatesInput, setCarPlatesInput]           = React.useState<string>('')
-  const [form]                                        = Form.useForm()
-  const [searchEmployeeValue, setSearchEmployeeValue] = React.useState<string | undefined>()
-  const [clientsGuests, setClientsGuests]             = React.useState<string[]>([])
-  const [carPlates, setCarPlates]                     = React.useState<string[]>([])
-
+  const [cookies]                                             = useCookies(['access_token'])
+  const [visitData, setVisitData]                             = React.useState<VisitsType[]>()
+  const [openVisitorAddition, setOpenVisitorAddition]         = React.useState(false)
+  const [clientsEmployees, setClientsEmployees]               = React.useState<EmployeesType[]>()
+  const { id }                                                = useParams()
+  const [selectedVisitors, setSelectedVisitors]               = React.useState<number[]>([])
+  const [guestsImput, setGuestsInput]                         = React.useState<string>('')
+  const [carPlatesInput, setCarPlatesInput]                   = React.useState<string>('')
+  const [form]                                                = Form.useForm()
+  const [searchEmployeeValue, setSearchEmployeeValue]         = React.useState<string | undefined>()
+  const [clientsGuests, setClientsGuests]                     = React.useState<string[]>([])
+  const [carPlates, setCarPlates]                             = React.useState<string[]>([])
+  const [edit, setEdit]                                       = React.useState(false)
+  const [companiesColocations, setCompaniesCollocations]      = React.useState<CollocationType[]>()
+  const [updatedTransformedArray, setUpdatedTransformedArray] = React.useState<CollocationType[]>()
+  const [searchParams]                                        = useSearchParams()
+  const visitAddress                                          = searchParams.get('visitAddress')
+  const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
+  const {validate, contextHolder}                             = useVisitValidation()
+  const {users}                                               = useSetUsersData(false)
+  const items                                                 = VisitInformationItems(visitData, edit, users)
   const fetchData = async () => {
     try {
-      const response = await get(`getSingleVisit/${id}`, cookies.access_token)
-      setVisitData(response.data)
-      setClientsGuests(response.data[0]?.clientsGuests)
-      setCarPlates(response.data[0]?.carPlates)
-      const companyId = response.data[0].companyId
+      const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
+      setVisitData(singleVisit.data)
+      setCarPlates(singleVisit.data[0]?.carPlates)
+      setClientsGuests(singleVisit.data[0]?.clientsGuests)
+      const companyId = singleVisit.data[0]?.companyId
+      const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
+      const updatedArray: CollocationType[] = (Object.entries(singleVisit.data?.[0]?.visitCollocation || {}) as [string, string[]][])
+        .map(([key, value]) => ({
+          [key]: value,
+        }))
+      setUpdatedTransformedArray(updatedArray)
+      if(visitAddress === 'J13'){
+        setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
+      }else{
+        setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
+      }
       const companiesEmployees =  await get(`getAllClientsEmployees?companyId=${companyId}`, cookies.access_token)
       const filteredArray = companiesEmployees.data.filter((visitor: any) =>
-        !response.data[0].visitors.some(
+        !singleVisit.data[0].visitors.some(
           (filterItem: any) =>
             filterItem.selectedVisitor.employeeId === visitor.employeeId
         )
@@ -79,160 +73,169 @@ const SingleVisitPage = () => {
     }
   }
 
-  const changeVisitsState = async (url: string) => {
-    try {
-      const res = await get(`${url}?visitId=${id}`, cookies.access_token)
-      setVisitData(res.data)
-
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-
   React.useEffect(() => {
     fetchData()
-  }, [id, open])
+  }, [open, selectedVisitors, edit, visitAddress])
 
-  const idTypes = [
-    {value: 'Darbuotojos pažymėjimas', label: 'Darbuotojos pažymėjimas'},
-    {value: 'Tapatybės kortelė', label: 'Tapatybės kortelė'},
-    {value: 'Pasas', label: 'Pasas'},
-  ]
+  const removeVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.filter((el) => el !== id))
+  }
 
-  const deleteVisitor = async(employeeId: string | undefined) => {
-    if (visitData && visitData.length > 0) {
+  const deleteVisitor = async(employeeId: number | undefined) => {
+    if (visitData) {
       const updatedVisitData = [...visitData]
       if (updatedVisitData[0]?.visitors) {
         updatedVisitData[0].visitors = updatedVisitData[0].visitors.filter(
           (el) => el.selectedVisitor.employeeId !== employeeId
         )
         setVisitData(updatedVisitData)
+        removeVisitor(Number(employeeId))
         await get(`deleteVisitor?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
       }
     }
   }
 
-  const items: DescriptionsProps['items'] = [
-    {
-      key:      '1',
-      label:    'Įmonė',
-      children: visitData?.[0].visitingClient,
-    },
-    {
-      key:      '2',
-      label:    'Vizito tikslas',
-      children: visitData?.[0].visitPurpose.map((el, i) => <div key={i}>{el}</div>),
-    },
-    {
-      key:      '3',
-      label:    'Adresas',
-      children: visitData?.[0].visitAddress,
-    },
-    {
-      key:      '4',
-      label:    'Statusas',
-      children: <ConfigProvider theme ={{
-        components: {
-          Badge: {
-            statusSize: 12,
-          },
-        },
-      }}>
-        <Badge
-          status={visitData?.[0]?.visitStatus}
-          text={
-            visitData?.[0]?.visitStatus === 'success' && 'Pradėtas' ||
-            visitData?.[0]?.visitStatus === 'processing' && 'Paruoštas' ||
-            visitData?.[0]?.visitStatus === 'error' && 'Baigtas'
-          }/>
-      </ConfigProvider>,
-    },
-    {
-      key:      '5',
-      label:    'Adresas',
-      children: visitData?.[0].visitAddress,
-    },
-    {
-      key:      '6',
-      label:    'Sukūrimo data',
-      children: `${visitData?.[0].creationDate} ${visitData?.[0].creationTime}`,
-    },
-    {
-      key:      '7',
-      label:    'Pradžios laikas',
-      children: `${visitData?.[0].startDate} ${visitData?.[0].startTime}`,
-    },
-    {
-      key:      '8',
-      label:    'Pabaigos laikas',
-      children: `${visitData?.[0].endDate} ${visitData?.[0].endTime}`,
-    },
-  ]
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
 
+  const saveChanges = async (values: any) => {
+    setEdit(!edit)
+    if(edit){
+      const updateIdTypes = visitData?.[0].visitors.map((el, i) => ({
+        idType:          values.visitors[i].idType,
+        selectedVisitor: el.selectedVisitor,
+      }))
+      values.visitors = updateIdTypes
+      values.startDate = values?.startDate?.format('YYYY-MM-DD')
+      values.endDate = values?.endDate?.format('YYYY-MM-DD')
+      const localStartTime = convertUTCtoLocalTime(values?.startTime)
+      const localEndTime = convertUTCtoLocalTime(values?.endTime)
+      values.startTime = localStartTime
+      values.endTime = localEndTime
+      await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)
+      await fetchData()
+    }
+  }
+
+  const filteredArray = updatedTransformedArray?.filter(obj => {
+    return Object.values(obj).some(value => Array.isArray(value) && value.length > 0)
+  })
+
+  const addVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.includes(id) ? prev : [...prev, id])
+  }
+
+  const startVisit = async() => {
+    validate(visitData, edit, fetchData, 'startVisit', 'Vizitas Pradėtas!')
+  }
+  const endVisit = async() => {
+    validate(visitData, edit, fetchData, 'endVisit', 'Vizitas Baigtas!')
+  }
+
+  const prepareVisit = async() => {
+    try {
+      const res = await get(`prepareVisit?visitId=${id}`, cookies.access_token)
+      setVisitData(res.data)
+      await fetchData()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault()
+    }
+  }
+
   return (
-    <Form form={form} >
-      <Descriptions style={{backgroundColor: '#ffffff'}} title='Vizito informacija' items={items} />
-      <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}} extra={<Button onClick={() => setOpen(true)} type='link' >Pridėti Lankytoją</Button>}>
+    <Form form={form} onFinish={saveChanges} onKeyDown={onkeydown}>
+      <Descriptions
+        style={{backgroundColor: '#f9f9f9', margin: '10px', padding: '10px'}}
+        title={<VisitDescriptionTitle edit={edit}/>}
+        items={items}
+      />
+      {openVisitorAddition && clientsEmployees && clientsEmployees?.length > 0 &&
+      <VisitorAdditionList
+        setOpenVisitorAddition={setOpenVisitorAddition}
+        clientsEmployees={clientsEmployees}
+        searchEmployee={searchEmployee}
+        searchEmployeeValue={searchEmployeeValue}
+        addVisitor={addVisitor}
+        removeVisitor={removeVisitor}
+      />
+      }
+      <Card
+        title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}
+        extra={<Button onClick={() => setOpenVisitorAddition(true)} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitData?.[0].visitors}
-          renderItem={(item) =>
-            <List.Item
-              actions={[<Button type='link' onClick={() => deleteVisitor(item.selectedVisitor.employeeId)}>Ištrinti</Button>]}
-            >
-              <List.Item.Meta
-                avatar={<Avatar src={''} />}
-                title={<p>{item.selectedVisitor.name} {item.selectedVisitor.lastName}</p>}
-                description={item.selectedVisitor.occupation}
-              />
-              <div>content</div>
-            </List.Item>
-
+          renderItem={(item, i) =>
+            <RegisteredVisitorsListItem
+              signature={item.signature}
+              edit={edit}
+              idType={item.idType}
+              employeeId={item.selectedVisitor.employeeId}
+              name={item.selectedVisitor.name}
+              lastName={item.selectedVisitor.lastName}
+              occupation={item.selectedVisitor.occupation}
+              permissions={item.selectedVisitor.permissions}
+              deleteVisitor={deleteVisitor}
+              employeePhoto={item.selectedVisitor.employeePhoto}
+              index={i}
+            />
           }
         />
       </Card>
-      <ItemList
-        cardTitle={'Pridėti palydą'}
-        inputValue={guestsImput}
-        inputPlaceHolder={'Pridėti palydą'}
-        setInputValue={setGuestsInput}
-        list={clientsGuests}
-        setListItems={setClientsGuests}
-        url={'updateClientsGests'}
-        removeUrl={'removeClientsGuest'}
-      />
-      <ItemList
-        cardTitle={'Pridėti automobilį'}
-        inputValue={carPlatesInput}
-        inputPlaceHolder={'Pridėti automobilį'}
-        setInputValue={setCarPlatesInput}
-        list={carPlates}
-        setListItems={setCarPlates}
-        url={'updateCarPlates'}
-        removeUrl={'removeCarPlates'}
-      />
-      <VisitorAdditionModal
-        open={open}
-        clientsEmployees={clientsEmployees}
-        form={form} setOpen={setOpen }
-        searchEmployee={searchEmployee}
-        setSelectedVisitors={setSelectedVisitors}
-        searchEmployeeValue={searchEmployeeValue}
-      />
-      <div>
-        {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
-          <Button onClick={async () => { await changeVisitsState('startVisit'); fetchData() }}>Pradėti vizitą</Button>
-        )}
-        {visitData?.[0]?.startDate && visitData?.[0]?.startTime && (
-          <Button onClick={async () => { await changeVisitsState('prepareVisit'); fetchData() }}>Paruošti vizitą</Button>
-        )}
-        {visitData?.[0]?.startDate && visitData?.[0]?.startTime && !visitData?.[0]?.endDate && !visitData?.[0]?.endTime && (
-          <Button onClick={async () => { await changeVisitsState('endVisit'); fetchData() }}>Baigti vizitą</Button>
-        )}
+      {!edit ?
+        <SelectedCollocationList
+          selectedCollocations={filteredArray}
+          edit={edit}
+        /> :
+        <CollocationsList companiesColocations={companiesColocations}
+        />
+      }
+      {canBringCompany ?
+        <ItemList
+          cardTitle={'Pridėti palydą'}
+          inputValue={guestsImput}
+          inputPlaceHolder={'Pridėti palydą'}
+          setInputValue={setGuestsInput}
+          list={clientsGuests}
+          setListItems={setClientsGuests}
+          url={'updateClientsGests'}
+          removeUrl={'removeClientsGuest'}
+        />
+        : <div className='ErrorText'>Negali būti palydos</div>
+      }
+      {
+        visitData?.[0].visitAddress === 'T72' &&
+        <ItemList
+          cardTitle={'Pridėti automobilį'}
+          inputValue={carPlatesInput}
+          inputPlaceHolder={'Pridėti automobilį'}
+          setInputValue={setCarPlatesInput}
+          list={carPlates}
+          setListItems={setCarPlates}
+          url={'updateCarPlates'}
+          removeUrl={'removeCarPlates'}
+        />
+      }
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <div style={{ width: '30%', display: 'flex', justifyContent: 'space-around'}}>
+          {!visitData?.[0]?.startDate && !visitData?.[0]?.startTime && (
+            <Button onClick={startVisit}>Pradėti Vizitą</Button>
+          )}
+          {visitData?.[0]?.startDate && visitData?.[0]?.startTime && (
+            <Button onClick={prepareVisit}>Paruošti Vizitą</Button>
+          )}
+          {visitData?.[0]?.startDate && visitData?.[0]?.startTime && !visitData?.[0]?.endDate && !visitData?.[0]?.endTime && (
+            <Button onClick={endVisit}>Baigti Vizitą</Button>
+          )}
+        </div>
       </div>
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

@@ -1,110 +1,112 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                                      from 'react'
-import { get }                                    from '../../../Plugins/helpers'
-import { useCookies }                             from 'react-cookie'
-import { Button, Form, FormInstance, Select }     from 'antd'
-import { useSearchParams }                        from 'react-router-dom'
-import { CompaniesType, EmployeesType, UserType } from '../../../types/globalTypes'
-import VisitRegistrationFormItem                  from './VisitRegistrationSelect'
-import { PlusCircleOutlined }                     from '@ant-design/icons'
-import VisitorsList                               from './VisitorsList'
-import CollocationsList                           from './CollocationsList'
-import ItemList                                   from './ItemList'
-import VisitorAdditionModal                       from './VisitorAdditionModal'
-import VisitPurposeList                           from './VisitPurposeList'
+import React                                                         from 'react'
+import { get }                                                       from '../../../Plugins/helpers'
+import { useCookies }                                                from 'react-cookie'
+import { Button, Empty, Form, FormInstance, Select }                 from 'antd'
+import { useSearchParams }                                           from 'react-router-dom'
+import { CollocationType, CompaniesType, EmployeesType, VisitsType } from '../../../types/globalTypes'
+import VisitRegistrationFormItem                                     from './VisitRegistrationSelect'
+import VisitorsList                                                  from './VisitorsList'
+import ItemList                                                      from './ItemList'
+import VisitPurposeList                                              from './VisitPurposeList'
+import VisitorAdditionList                                           from './VisitorAdditionList'
+import filterPermisions                                              from './filterPermisions'
+import {addresses}                                                   from './StaticSelectOptions'
+import { DatePicker }                                                from 'antd'
+import VisitRegistrationCollocationList                              from './VisitRegistrationCollocationList'
+import useSetUsersData                                               from '../../../Plugins/useSetUsersData'
 
 type VisitRegistrationFormProps = {
-  form: FormInstance<any>
+  form:             FormInstance<VisitsType>
   setClientsGuests: React.Dispatch<React.SetStateAction<string[]>>
-  clientsGuests: string[];
-  setCarPlates: React.Dispatch<React.SetStateAction<string[]>>
-  carPlates: string[]
+  clientsGuests:    string[];
+  setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
+  carPlates:        string[]
+  setCheckedList:   React.Dispatch<React.SetStateAction<CollocationType>>
+  checkedList:      CollocationType
 }
 
-type CollocationsType = {
-  [key: string]: string[];
-}
-
-const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPlates, carPlates}:VisitRegistrationFormProps) => {
+const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, carPlates, checkedList, setCheckedList }:VisitRegistrationFormProps) => {
   const [cookies]                                         = useCookies(['access_token'])
-  const [dlcEmployees, setDlcEmployees]                   = React.useState<UserType[]>()
   const [allCompanies, setAllCompanies]                   = React.useState<CompaniesType[]>()
   const [searchParams, setSearchParams]                   = useSearchParams()
   const companyId                                         = searchParams.get('companyId')
   const addressId                                         = searchParams.get('addressId')
-  const employeeId                                        = searchParams.get('employeeId')
-  const [open, setOpen]                                   = React.useState(false)
-  const [selectedVisitors, setSelectedVisitors]           = React.useState<EmployeesType[]>()
+  const [selectedVisitors, setSelectedVisitors]           = React.useState<number[]>([])
   const [searchEmployeeValue, setSearchEmployeeValue]     = React.useState<string | undefined>()
   const [clientsEmployees, setClientsEmployees]           = React.useState<EmployeesType[]>()
   const [isCompanySelected, setIsCompanySelected]         = React.useState(false)
-  const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationsType[]>()
+  const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationType[]>()
   const [guestsImput, setGuestsInput]                     = React.useState<string>('')
   const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
+  const form                                              = Form.useFormInstance<VisitsType>()
+  const values                                            = Form.useWatch('visitors', form)
+  const filteredPermisions                                = filterPermisions(values)
+  const canBringCompany                                   = filteredPermisions.includes('Įleisti Trečius asmenis')
+  const {users}                                           = useSetUsersData(false)
 
   React.useEffect(() => {
     (async () => {
-      const companies =     await get('getCompanies', cookies.access_token)
-      const dlcEmployees =  await get('getAllUsers', cookies.access_token)
-      const singleCompany = await get(`SingleCompanyPage/${companyId}`, cookies.access_token)
+      const companies     = await get('getCompanies', cookies.access_token)
+      const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
+      localStorage.removeItem('visitPurpose')
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
       }else{
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
       }
-      setDlcEmployees(dlcEmployees.data)
       setAllCompanies(companies.data)
     })()
-  }, [companyId, employeeId, selectedVisitors])
+  }, [companyId, addressId, selectedVisitors])
 
   const companyNames = allCompanies?.map((el)=> {
     return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
   })
-
-  const DLCEmployees = dlcEmployees?.map((el) => {
-    return {...el, value: el.username, label: el.username}
+  const DLCEmployees = users?.map((el) => {
+    return {...el, value: el.name, label: el.name}
   })
 
-  const addresses = [
-    {
-      value: 'J13',
-      label: 'J13',
-    },
-    {
-      value: 'T72',
-      label: 'T72',
-    },
-  ]
-
-  const selectCompany = async(_: string, option: any) => {
-    setSearchParams(`companyId=${option.id}`, { replace: true })
+  const selectCompany = async(_: string, option: CompaniesType) => {
+    setSearchParams(`companyId=${option.id}`)
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${option.id}`, cookies.access_token)
     setClientsEmployees(companiesEmployees.data)
     setIsCompanySelected(true)
   }
 
   const selectAddress = (addressId: string) => {
-    const companyId =   searchParams.get('companyId')
-    const employeeId =  searchParams.get('employeeId')
-    setSearchParams(`companyId=${companyId}&employeeId=${employeeId}&addressId=${addressId}`)
+    const companyId = searchParams.get('companyId')
+    setSearchParams(`companyId=${companyId}&addressId=${addressId}`)
+    setCheckedList({})
   }
+
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
 
-  const permissions = selectedVisitors?.flatMap((el) => el.permissions) || []
-  const uniquePermissions = permissions.filter((permission, index, arr) => {
-    return arr.indexOf(permission) === index
-  })
+  const addVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.includes(id) ? prev : [...prev, id])
+  }
 
-  const canBiringCompany = uniquePermissions.includes('Įleisti Trečius asmenis')
+  const removeVisitor = (id: number) => {
+    setSelectedVisitors((prev) => prev.filter((el) => el !== id))
+  }
+
+  const resetForm = () => {
+    form.resetFields()
+    setSelectedVisitors([])
+    setClientsEmployees([])
+    setClientsGuests([])
+    setCarPlates([])
+    setIsCompanySelected(false)
+    localStorage.removeItem('visitPurpose')
+  }
 
   return (
     <div>
-      <div style={{display: 'flex', width: '100%', justifyContent: 'center', alignItems: 'center'}}>
-        <Form.Item style={{width: '100%'}} name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
+      <div className='VisitRegistrationFormContainer'>
+        <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
           <Select
             showSearch
             placeholder='Pasirinkite įmonę'
@@ -135,13 +137,35 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
           />
         </>
         }
+        {isCompanySelected && addressId === 'T72' &&
+        <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
+          <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
+        </Form.Item>
+        }
       </div>
-      <Button icon={<PlusCircleOutlined />} onClick={() => setOpen(true)}>Pridėti Lankytoją</Button>
-      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList form={form}/>}
-      {uniquePermissions.length > 0 && <VisitPurposeList uniquePermissions={uniquePermissions}/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && <CollocationsList companiesColocations={companiesColocations && companiesColocations}/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && !canBiringCompany && <div style={{color: 'red'}}>Negali būti palydos</div>}
-      {selectedVisitors && selectedVisitors?.length > 0 && canBiringCompany &&
+      {clientsEmployees && clientsEmployees?.length > 0 &&
+        <VisitorAdditionList
+          clientsEmployees={clientsEmployees}
+          setClientsEmployees={setClientsEmployees}
+          searchEmployee={searchEmployee}
+          searchEmployeeValue={searchEmployeeValue}
+          addVisitor={addVisitor}
+          removeVisitor={removeVisitor}
+        />
+      }
+      {clientsEmployees && clientsEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+      {selectedVisitors && selectedVisitors?.length > 0 && <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId && <VisitPurposeList/>}
+      {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
+      <VisitRegistrationCollocationList
+        companiesColocations={companiesColocations}
+        setCheckedList={setCheckedList}
+        checkedList={checkedList}
+      />
+      }
+
+      {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany && <div className='ErrorText'>Negali būti palydos</div>}
+      {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
         <ItemList
           cardTitle={'Pridėti palydą'}
           inputValue={guestsImput}
@@ -161,15 +185,10 @@ const VisitRegistrationForm = ({form, setClientsGuests, clientsGuests, setCarPla
           setListItems={setCarPlates}
         />
       }
-      <VisitorAdditionModal
-        open={open}
-        clientsEmployees={clientsEmployees}
-        form={form}
-        setOpen={setOpen}
-        searchEmployee={searchEmployee}
-        setSelectedVisitors={setSelectedVisitors}
-        searchEmployeeValue={searchEmployeeValue}
-      />
+      <div className='VisitRegistrationButtonContainer'>
+        <Button htmlType='submit'>Registruoti</Button>
+        <Button style={{marginLeft: '20px'}} onClick={resetForm}> Išvalyti</Button>
+      </div>
     </div>
   )
 }

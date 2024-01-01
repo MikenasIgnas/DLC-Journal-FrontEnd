@@ -11,10 +11,10 @@ import {
 
 interface PossibleProblemsReducerState {
   possibleProblems:       PossibleProblemsType[] | null;
-  FilledData:             HistoryDataType[] | null;
-  Routes:                 RouteType[] | null;
-  Areas:                  AreaType[] | null;
-  ToDo:                   TodoType[] | null;
+  filledData:             HistoryDataType[] | null;
+  routes:                 RouteType[] | null;
+  areas:                  AreaType[] | null;
+  toDo:                   TodoType[] | null;
   latestHistoryItemData:  HistoryDataType[] | null;
   problemCount:           number | null;
   checklistPhotos:        ChecklistPhotosType[] | null;
@@ -23,10 +23,10 @@ interface PossibleProblemsReducerState {
 
 const initialState: PossibleProblemsReducerState = {
   possibleProblems:      null,
-  Routes:                null,
-  Areas:                 null,
-  ToDo:                  null,
-  FilledData:            null,
+  routes:                null,
+  areas:                 null,
+  toDo:                  null,
+  filledData:            null,
   latestHistoryItemData: null,
   problemCount:          0,
   checklistPhotos:       null,
@@ -41,16 +41,16 @@ const fetchedDataReducer = createSlice({
       state.possibleProblems = payload
     },
     setRoute(state, { payload }: PayloadAction<RouteType[]>) {
-      state.Routes = payload
+      state.routes = payload
     },
     setTodo(state, { payload }: PayloadAction<TodoType[]>) {
-      state.ToDo = payload
+      state.toDo = payload
     },
     setArea(state, { payload }: PayloadAction<AreaType[]>) {
-      state.Areas = payload
+      state.areas = payload
     },
     setFilledData(state, { payload }: PayloadAction<HistoryDataType[]>) {
-      state.FilledData = payload
+      state.filledData = payload
     },
     setLatestHistoryItem(state, { payload }: PayloadAction<HistoryDataType[]>) {
       state.latestHistoryItemData = payload

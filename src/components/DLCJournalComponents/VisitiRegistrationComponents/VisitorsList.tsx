@@ -1,20 +1,22 @@
-import { Card, Form, FormInstance, List } from 'antd'
-import React from 'react'
-import VisitorsListItem from './VisitorsListItem'
-
+/* eslint-disable max-len */
+import React                    from 'react'
+import { Card, Form, List }     from 'antd'
+import VisitorsListItem         from './VisitorsListItem'
+import { EmployeesType }        from '../../../types/globalTypes'
 
 type VisitorsListProps = {
-    form: FormInstance<any>
+  setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+  clientsEmployees?: EmployeesType[] | undefined
 }
 
-const VisitorsList = ({form}: VisitorsListProps) => {
+const VisitorsList = ({setClientsEmployees, clientsEmployees}: VisitorsListProps) => {
   return (
-    <Card title={'Lankytojai'}style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
+    <Card title='Lankytojai' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
       <Form.List name='visitors'>
-        {(fields, {remove}) => (
+        {(fields) => (
           <List
             dataSource={fields}
-            renderItem={(item) => <VisitorsListItem form={form} item={item} remove={remove}/>}
+            renderItem={(item) => <VisitorsListItem clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees} key={item.key} item={item}/>}
           />
         )}
       </Form.List>
