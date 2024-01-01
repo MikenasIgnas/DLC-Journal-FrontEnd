@@ -50,7 +50,7 @@ const SingleCompanyPage = () => {
   const openEmployeeAdditionModal                     = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
   const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
-
+  const [uploading, setUploading]                     = React.useState(false)
   React.useEffect(() => {
     (async () => {
       try{
@@ -66,7 +66,7 @@ const SingleCompanyPage = () => {
         console.log(err)
       }
     })()
-  },[edit, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, cookies.access_token])
+  },[edit, uploading, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, cookies.access_token])
 
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
@@ -114,7 +114,7 @@ const SingleCompanyPage = () => {
       filteredCompanyData.companyName = values.companyName
       await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
       if(fileList[0]){
-        await uploadPhoto(fileList[0], false, setFileList, `uploadCompanysPhoto?companyName=${filteredCompanyData.companyName}&companyId=${id}`)
+        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
       }
     }
   }
@@ -164,6 +164,8 @@ const SingleCompanyPage = () => {
         bordered={false}
         title={
           <SingleCompanyTitle
+            setFileList={setFileList}
+            fileList={fileList}
             companyLogo ={company?.companyInfo?.companyPhoto}
             companyTitle={company?.companyInfo?.companyName}
             companyDescription={company?.companyInfo.companyDescription}

@@ -1,8 +1,14 @@
 /* eslint-disable max-len */
 import React, { useState }      from 'react'
-import { Card, Checkbox, Form } from 'antd'
+import {
+  Card,
+  Checkbox,
+  Empty,
+  Form,
+}                               from 'antd'
 import { CollocationType }      from '../../../types/globalTypes'
 import { CheckboxChangeEvent }  from 'antd/es/checkbox'
+import CollocationCardTitle     from './CollocationCardTitle'
 
 type CollocationsListProps = {
   companiesColocations: CollocationType[] | undefined;
@@ -40,21 +46,28 @@ const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList
       title='Kolokacijos'
       className='CollocationsListCard'
     >
-      <div className='CollocationsListCardBody'>
-        {companiesColocations?.map((el, i) => {
-          const [category, values] = Object.entries(el)[0]
-          return (
-            <Card className='CollocationItemCard' key={i} title={category}>
-              <Form.Item name={['visitCollocation', category]}>
-                <Checkbox onChange={(e) => onCheckAllChange(e, values, category)} checked={checkAllStates[category]}>
-                  {checkAllStates[category] ? 'Atžymėti visus' : 'Pažymėti visus'}
-                </Checkbox>
-                <Checkbox.Group options={values} value={checkedList[category]} onChange={(list: any) => onCheckboxChange(list, category)} />
-              </Form.Item>
-            </Card>
-          )
-        })}
-      </div>
+      {
+        companiesColocations && companiesColocations?.length > 0 ?
+          <div className='CollocationsListCardBody'>
+            {companiesColocations?.map((el, i) => {
+              const [category, values] = Object.entries(el)[0]
+              return (
+                <Card className='CollocationItemCard' key={i} title={<CollocationCardTitle category={category} values={values} index={i}/>}>
+                  <Form.Item name={['visitCollocation', category]}>
+                    <div>
+                      <Checkbox onChange={(e) => onCheckAllChange(e, values, category)} checked={checkAllStates[category]}>
+                        {checkAllStates[category] ? 'Atžymėti visus' : 'Pažymėti visus'}
+                      </Checkbox>
+                      <Checkbox.Group options={values} value={checkedList[category]} onChange={(list: any) => onCheckboxChange(list, category)} />
+                    </div>
+                  </Form.Item>
+                </Card>
+              )
+            })}
+          </div>
+          :
+          <Empty description='Įmonei nėra priskirta kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      }
     </Card>
   )
 }

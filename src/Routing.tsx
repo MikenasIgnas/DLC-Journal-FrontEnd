@@ -17,7 +17,6 @@ import { useCookies }                   from 'react-cookie'
 import { TokenType }                    from './types/globalTypes'
 import DLCJournalStartPage              from './pages/DLC-JounalPages/JournalStartPage'
 import VisitRegistrationPage            from './pages/DLC-JounalPages/VisitRegistrationPage'
-import HomePage                         from './pages/HomePage'
 import CompaniesListPage                from './pages/DLC-JounalPages/CompaniesListPage'
 import SingleCompanyPage                from './pages/DLC-JounalPages/SingleCompanyPage'
 import VisitsPage                       from './pages/DLC-JounalPages/VisitsPage'
@@ -27,6 +26,7 @@ import axios                            from 'axios'
 import { jwtDecode }                    from 'jwt-decode'
 import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
 import CollocationsPage                 from './pages/DLC-JounalPages/CollocationsPage'
+import ResetPasswordPage                from './pages/ResetPasswordPage'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])
@@ -63,7 +63,6 @@ const Routing = () => {
         ? (
           <PageLayout>
             <Routes>
-              <Route path='/' element={<HomePage />} />
               <Route path='DLC Žurnalas' element={<DLCJournalStartPage />}/>
               <Route path='DLC Žurnalas/Vizito_Registracija' element={<VisitRegistrationPage/>}/>
               <Route path='DLC Žurnalas/Įmonių_Sąrašas' element={<CompaniesListPage/>}/>
@@ -91,6 +90,7 @@ const Routing = () => {
         : (
           <Routes>
             <Route path='/' element={<LoginPage />} />
+            <Route path='/ResetPassword' element={<ResetPasswordPage/>} />
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
         )}

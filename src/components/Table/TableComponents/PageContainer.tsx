@@ -3,7 +3,7 @@ import { CssVarsProvider } from '@mui/joy/styles'
 import CssBaseline         from '@mui/joy/CssBaseline'
 import Box                 from '@mui/joy/Box'
 import Typography          from '@mui/joy/Typography'
-import BreadcrumbsLinks         from '../../UniversalComponents/BreadcrumbsLinks'
+import BreadcrumbsLinks    from '../../UniversalComponents/BreadcrumbsLinks'
 
 type PageContainerProps = {
   children:   React.ReactNode

@@ -86,9 +86,9 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
       onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
       onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
       footer={false}
-      width={'55%'}
+      width={'1000px'}
     >
-      <Form form={form} onFinish={addCompany}>
+      <Form form={form} onFinish={addCompany} style={{textAlign: 'center', width: '100%'}}>
         <div>
           <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
             <Input placeholder='Įmonės pavadinimas'/>
@@ -97,7 +97,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
-          <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+          <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%'}}>
             {collocations?.map((colocation, i) =>
               colocation.premises ?
                 <ColocationSelectors

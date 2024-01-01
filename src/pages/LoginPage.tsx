@@ -6,6 +6,7 @@ import { LockOutlined, UserOutlined }   from '@ant-design/icons'
 import { Button, Form, Input, Card }    from 'antd'
 import { useCookies }                   from 'react-cookie'
 import axios                            from 'axios'
+import { useNavigate } from 'react-router'
 
 type LoginValuesType = {
   email:    string,
@@ -16,6 +17,7 @@ const LoginPage = () => {
   const [,setCookie]                    = useCookies(['access_token'])
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
+  const navigate                        = useNavigate()
 
   const onFinish = async(values: LoginValuesType) => {
     try{
@@ -23,6 +25,7 @@ const LoginPage = () => {
       if(!res.error){
         setCookie('access_token', res.token, { path: '/'})
         axios.defaults.headers.common['Authorization'] = res.token
+        navigate('/DLC Žurnalas?menuKey=1')
       }
     }catch (err){
       setLoginError(true)
@@ -58,12 +61,14 @@ const LoginPage = () => {
 
           {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           <Form.Item className='loginButtons'>
-            <Button type='primary' htmlType='submit' className='login-form-button'>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <Button type='primary' htmlType='submit' className='login-form-button'>
               Log in
-            </Button>
-            <a href=''>
-          Forgot password
-            </a>
+              </Button>
+              <Button onClick={() => navigate('/ResetPassword')} type='link' style={{textAlign: 'center'}} className='login-form-forgot' href=''>
+               Pamiršau slaptažodį
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </Card>

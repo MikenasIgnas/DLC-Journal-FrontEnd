@@ -92,10 +92,12 @@ const PageLayout = ({children}:PageLayoutProps) => {
       getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'),
       getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'),
     ]),
+
     getItem('DLC Checklistas', 'sub2', <ScheduleOutlined />, [
       getItem(<Link to={'DLC Checklistas?menuKey=7'} >Pradėti</Link>, '7'),
       getItem(<Link to={'DLC Checklistas/Istorija?menuKey=8&page=1&limit=10&tableSorter=desc'} >Istorija</Link>, '8'),
     ]),
+
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
       getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
       getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10'),
@@ -141,7 +143,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
             <div className='PageLayoutSliderBody'>
               <div>
                 <SideBar collapsed={collapsed}/>
-                <Menu defaultSelectedKeys={['1']} selectedKeys={[`${menuKey}`]} mode='inline' items={siderItems} />
+                <Menu defaultOpenKeys={['sub1']} defaultSelectedKeys={['1']} selectedKeys={[`${menuKey}`]} mode='inline' items={siderItems} />
               </div>
             </div>
           </Sider>

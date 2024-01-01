@@ -1,10 +1,12 @@
 /* eslint-disable max-len */
-import React                             from 'react'
-import { Button, DatePicker, Tooltip }   from 'antd'
-import dayjs                             from 'dayjs'
-import type { Dayjs }                    from 'dayjs'
-import type { TimeRangePickerProps }     from 'antd'
-import useGenerateMultiplePDF            from '../../../Plugins/useGenerateMultiplePDF'
+import React                                            from 'react'
+import { Button, ConfigProvider, DatePicker, Tooltip }  from 'antd'
+import dayjs                                            from 'dayjs'
+import type { Dayjs }                                   from 'dayjs'
+import type { TimeRangePickerProps }                    from 'antd'
+import useGenerateMultiplePDF                           from '../../../Plugins/useGenerateMultiplePDF'
+import locale                                           from 'antd/es/locale/lt_LT'
+import 'dayjs/locale/lt'
 
 const { RangePicker } = DatePicker
 
@@ -27,16 +29,20 @@ const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
       setPDFDateTo(undefined)
     }
   }
+
   const rangePresets: TimeRangePickerProps['presets'] = [
-    { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
-    { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
-    { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
-    { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] },
+    { label: 'Paskutinės 7 Dienos', value: [dayjs().add(-7, 'd'), dayjs()] },
+    { label: 'Paskutinės 14 Dienų', value: [dayjs().add(-14, 'd'), dayjs()] },
+    { label: 'Paskutinės 30 Dienų', value: [dayjs().add(-30, 'd'), dayjs()] },
+    { label: 'Paskutinės 90 Dienų', value: [dayjs().add(-90, 'd'), dayjs()] },
   ]
+
   return (
     <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
       <div style={{display: 'flex'}}>
-        <RangePicker presets={rangePresets} onChange={onRangeChange}/>
+        <ConfigProvider locale={locale}>
+          <RangePicker presets={rangePresets} onChange={onRangeChange}/>
+        </ConfigProvider>
         {pdfDateFrom && pdfDateTo &&
       <Tooltip title={tooltipText} color='blue'>
         <Button loading={loading} onClick={() => generateMultiplePdf(url, pdfDateFrom, pdfDateTo)}>PDF</Button>

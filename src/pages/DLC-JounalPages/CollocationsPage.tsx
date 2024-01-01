@@ -67,7 +67,6 @@ const CollocationsPage = () => {
   }
 
   const companyCollocation = allCompanies?.map((el) => getMatchingCompanies(allCollocations, el.companyInfo)).flat()
-
   const onChange = (key: string) => {
     setSearchParams(`?tabKey=${key}`)
   }

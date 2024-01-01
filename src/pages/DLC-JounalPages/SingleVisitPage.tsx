@@ -3,7 +3,7 @@
 // /* eslint-disable max-len */
 import React                                                    from 'react'
 import { useParams, useSearchParams }                           from 'react-router-dom'
-import { Button, Card, Form, List }                             from 'antd'
+import { Button, Card, Form, List, Tag }                        from 'antd'
 import { Descriptions }                                         from 'antd'
 import { useCookies }                                           from 'react-cookie'
 import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
@@ -207,7 +207,10 @@ const SingleVisitPage = () => {
           url={'updateClientsGests'}
           removeUrl={'removeClientsGuest'}
         />
-        : <div className='ErrorText'>Negali būti palydos</div>
+        :
+        <div style={{ textAlign: 'center', margin: '30px'}}>
+          <Tag color='error'>Klientas negali turėti palydos</Tag>
+        </div>
       }
       {
         visitData?.[0].visitAddress === 'T72' &&

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                                        from 'react'
-import { Checkbox, Collapse, ConfigProvider, Form } from 'antd'
+import { Checkbox, Collapse, CollapseProps, Form }  from 'antd'
 
 type ColocationSelectorsProps = {
     collocationSite:    string;
@@ -12,38 +12,49 @@ type ColocationSelectorsProps = {
 }
 
 const ColocationSelectors = ({collocationSite, colocationPremises, colocationId }: ColocationSelectorsProps) => {
-  const { Panel } = Collapse
+
+  const nestedItems = (premiseName: string, racks:string[], name: number) => {
+    const item: CollapseProps['items'] = [
+      {
+        key:   '1',
+        label: collocationSite,
+        children:
+        <Form.Item name={[name, premiseName]}>
+          <Checkbox.Group options={racks} className='CollocationSelectorCheckboxes'/>
+        </Form.Item>,
+      },
+    ]
+    return item
+  }
+
+
+  const FormList = () => {
+    return(
+      <Form.List
+        name={collocationSite}
+        initialValue={colocationPremises?.map((ele) => ({[ele.premiseName]: []}))}
+      >
+        {(fields) => {
+          return fields?.map(({ name }, index) => {
+            const premise = colocationPremises[index]
+            return <Collapse key={index} items={nestedItems(premise.premiseName, premise.racks, name)}/>
+          })}
+        }
+      </Form.List>
+    )
+  }
+
+  const items: CollapseProps['items'] = [
+    {
+      key:      '1',
+      label:    collocationSite,
+      children: <FormList/>,
+    },
+  ]
+
   return(
-    <div key={colocationId}>
-      <Collapse className='CollocationSelectorCollapse'>
-        <Panel className='CollocationSelectorPannel' header={collocationSite} key={colocationId}>
-          <Form.List
-            name={collocationSite}
-            initialValue={colocationPremises?.map((ele) => ({[ele.premiseName]: []}))}
-          >
-            {(fields) => {
-              return fields?.map(({ name }, index) => {
-                const premise = colocationPremises[index]
-                return(
-                  <Collapse className='ColocationPremisesCollapse' key={index}>
-                    <Panel key={colocationId} header={premise.premiseName}>
-                      <ConfigProvider theme={{
-                        token: {
-                          marginXS: 0,
-                        },
-                      }}>
-                        <Form.Item name={[name, premise.premiseName]}>
-                          <Checkbox.Group options={premise.racks} className='CollocationSelectorCheckboxes'/>
-                        </Form.Item>
-                      </ConfigProvider>
-                    </Panel>
-                  </Collapse>
-                )
-              })}
-            }
-          </Form.List>
-        </Panel>
-      </Collapse>
+    <div style={{width: '100%'}} key={colocationId}>
+      <Collapse items={items}/>
     </div>
   )
 }

@@ -14,7 +14,7 @@ const SideBar = ({collapsed}:SideBarHeadProps) => {
   return (
     <>
       <div style={{ display: 'flex', gap: 1, alignItems: 'center', margin: '10px', justifyContent: 'center' }}>
-        <IconButton onClick={() => navigate('/')} variant='soft' color='primary' size='sm'>
+        <IconButton onClick={() => navigate('/DLC Žurnalas?menuKey=1')} variant='soft' color='primary' size='sm'>
           <img className='HomePageCover' src='../Images/Logo.png'/>
         </IconButton>
         {!collapsed && <Typography >Data Logistics Center</Typography> }

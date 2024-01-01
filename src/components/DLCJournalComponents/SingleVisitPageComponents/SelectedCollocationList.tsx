@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React                    from 'react'
 import { Card, Checkbox, Form } from 'antd'
+import CollocationCardTitle from '../VisitiRegistrationComponents/CollocationCardTitle'
 
 type CollocationsType = {
     [key: string]: string[];
@@ -12,26 +13,14 @@ type SelectedCollocationListProps = {
 }
 
 const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocationListProps) => {
-  const mixedRacks = [
-    {premise: 'C1', racks: ['S2.6']},
-    {premise: 'RA2', racks: ['S7.4']},
-    {premise: 'RA2', racks: ['S8.1']},
-    {premise: 'DC5', racks: ['S1.1']},
-    {premise: 'DC5', racks: ['S2.3']},
-  ]
-
   return (
     <Card title={'Kolokacijos'} className='SelectedCollocationListContainer' >
       <div className='SelectedCollocationListBody'>
         {selectedCollocations?.map((el, i) => {
           const objEntries = Object.entries(el)
-          const mix = mixedRacks.some((rack) => rack.premise === objEntries[0][0] && rack.racks.some((value) => objEntries[0][1].includes(value)))
+          const [category, values] = objEntries[0]
           return(
-            <Card className='SelectedCollocationListItem' key={i} title={
-              <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                <div>{objEntries[0][0]}</div>
-                {mix ? <div className='ErrorText'>Reikalinga DLC inžinieriaus palyda</div> : null}
-              </div>}
+            <Card className='SelectedCollocationListItem' key={i} title={<CollocationCardTitle category={category} values={values} index={i}/>}
             >
               <Form.Item rules={[{ required: true, message: 'pasirinkite kolokacijas' }]} initialValue={objEntries[0][1]} name={['visitCollocation', objEntries[0][0]]}>
                 <Checkbox.Group>

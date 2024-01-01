@@ -13,16 +13,18 @@ const PhotoUploader = ({ fileList, setFileList }: CompanyPhotoUploaderProps) => 
     maxCount: 1,
     multiple: false,
     onRemove: (file) => {
-      const index = fileList?.indexOf(file)
-      const newFileList = fileList?.slice()
-      newFileList?.splice(index, 1)
-      setFileList(newFileList)
+      const index = fileList ? fileList.indexOf(file) : -1
+      if (index !== -1) {
+        const newFileList = fileList.slice()
+        newFileList.splice(index, 1)
+        setFileList(newFileList)
+      }
     },
     beforeUpload: (file) => {
       setFileList([file])
       return false
     },
-    fileList ,
+    fileList: Array.isArray(fileList) ? fileList : [],
   }
 
   return (
