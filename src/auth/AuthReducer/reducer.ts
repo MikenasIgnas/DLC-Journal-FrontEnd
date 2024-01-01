@@ -2,30 +2,32 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AuthReducer {
-    id?:                    string,
-    secret?:                string,
-    username?:              string | null,
-    userEmail?:             string,
-    usersRole?:             string,
-    routeNumber:            number,
-    edit:                   boolean,
+    id?:          string,
+    secret?:      string,
+    name?:        string | null,
+    userEmail?:   string,
+    usersRole?:   string,
+    routeNumber:  number,
+    edit:         boolean,
+    isAdmin:      boolean | null
   }
 
 const initialState: AuthReducer = {
   routeNumber: 1,
   edit:        true,
+  isAdmin:     null,
 }
 const authSlice = createSlice({
   name:     'auth',
   initialState,
   reducers: {
-    setUserData(state, { payload }: PayloadAction<{ id: string, username: string, secret: string}>) {
+    setUserData(state, { payload }: PayloadAction<{ id: string, name: string, secret: string}>) {
       state.id = payload.id
-      state.username = payload.username
+      state.name = payload.name
       state.secret = payload.secret
     },
-    setUsername(state, { payload }: PayloadAction<string>) {
-      state.username = payload
+    setEmployeeName(state, { payload }: PayloadAction<string>) {
+      state.name = payload
     },
     clearUserData() {
       return initialState
@@ -42,16 +44,20 @@ const authSlice = createSlice({
     setPostEdit (state, { payload }: PayloadAction<boolean>){
       state.edit = payload
     },
+    setIsAdmin (state, { payload }: PayloadAction<boolean>){
+      state.isAdmin = payload
+    },
   },
 })
 
 export const {
   setUserData,
-  setUsername,
+  setEmployeeName,
   clearUserData,
   setUserEmail,
   setUsersRole,
   setPostEdit,
+  setIsAdmin,
 } = authSlice.actions
 
 export default authSlice.reducer

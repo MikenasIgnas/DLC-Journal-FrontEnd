@@ -12,7 +12,7 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
   const [, setSearchParams] = useSearchParams()
 
   const DLCEmployees = dlcEmployees?.map((el) => {
-    return {...el, value: el.username, label: el.username}
+    return {...el, value: el.name, label: el.name}
   })
 
   const changeAddress = async(value:string) => {

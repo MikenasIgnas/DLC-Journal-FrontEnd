@@ -21,7 +21,7 @@ const LoginPage = () => {
 
   const onFinish = async(values: LoginValuesType) => {
     try{
-      const res = await validateUser('logInUser', values)
+      const res = await validateUser('login', values)
       if(!res.error){
         setCookie('access_token', res.token, { path: '/'})
         axios.defaults.headers.common['Authorization'] = res.token
@@ -29,7 +29,7 @@ const LoginPage = () => {
       }
     }catch (err){
       setLoginError(true)
-      setErrorMessage('Invalid Username or Password')
+      setErrorMessage('Neteisingas prisijungimas arba slaptažodis')
     }
   }
 
@@ -41,16 +41,15 @@ const LoginPage = () => {
           onFinish={onFinish}
         >
           <Form.Item
-            name='loginEmail'
+            name='login'
             rules={[
               { required: true, message: 'Please input your Email!' },
-              {type: 'email', message: 'The input is not valid E-mail!'},
             ]}
           >
-            <Input type='email' prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
+            <Input prefix={<UserOutlined rev='' className='site-form-item-icon' />} placeholder='Email' />
           </Form.Item>
           <Form.Item
-            name='loginPassword'
+            name='password'
             rules={[{ required: true, message: 'Please input your Password!' }]}
           >
             <Input.Password
@@ -59,6 +58,7 @@ const LoginPage = () => {
               placeholder='Password'
             />
           </Form.Item>
+
           {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
           <Form.Item className='loginButtons'>
             <div style={{display: 'flex', flexDirection: 'column'}}>

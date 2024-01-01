@@ -16,7 +16,7 @@ type MobileHeaderProps = {
 const MobileHeader = ({menuItems2, Logout}: MobileHeaderProps) => {
   const width           = window.innerWidth
   const [open, setOpen] = React.useState(false)
-  const userName        = useAppSelector((state)=> state.auth.username)
+  const userName        = useAppSelector((state)=> state.auth.name)
 
   return (
     <div style={{

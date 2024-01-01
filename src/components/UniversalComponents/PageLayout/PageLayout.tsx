@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import {ConfigProvider, Menu, MenuProps, Space }                          from 'antd'
+import {ConfigProvider, Menu, MenuProps, Space, message }                          from 'antd'
 import { Layout }                                                         from 'antd'
 import { Link, useLocation, useNavigate, useSearchParams }                from 'react-router-dom'
 import { clearFilleChecklistdData, get }                                  from '../../../Plugins/helpers'
@@ -9,7 +9,7 @@ import { useCookies }                                                     from '
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setUsername, setUsersRole }                        from '../../../auth/AuthReducer/reducer'
+import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }                        from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
@@ -26,9 +26,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const PageLayout = ({children}:PageLayoutProps) => {
   const navigate                  = useNavigate()
-  const dispatch                  = useAppDispatch()
   const [cookies, , removeCookie] = useCookies(['access_token'])
-  const userName                  = useAppSelector((state)=> state.auth.username)
   const token                     = cookies.access_token
   const decodedToken:TokenType    = jwtDecode(token)
   const location                  = useLocation()
@@ -40,20 +38,29 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const [collapsed, setCollapsed] = React.useState(false)
   const [searchParams]            = useSearchParams()
   const menuKey                   = searchParams.get('menuKey')
+  const employee                  = useAppSelector((state)=> state.auth.name)
+  const dispatch                  = useAppDispatch()
+
   React.useEffect(() => {
     (async () => {
       try{
-        const user = await get(`FindUser/${decodedToken.id}`, cookies.access_token)
-        if(!user.error){
-          dispatch(setUsername(user.data.username))
-          dispatch(setUserEmail(user.data.email))
-          dispatch(setUsersRole(user.data.userRole))
+        const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
+        if(user){
+          dispatch(setEmployeeName(user.name))
+          dispatch(setIsAdmin(user.isAdmin))
+          dispatch(setUserEmail(user.email))
+          dispatch(setUsersRole(user.userRole))
+        }else{
+          message.error({
+            content: 'Nepavyko rasti vartotojo',
+            type:    'error',
+          })
         }
       }catch(err){
         console.log(err)
       }
     })()
-  }, [userName])
+  }, [])
 
   const userLogOut = async() => {
     const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
@@ -92,7 +99,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
     ]),
 
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
-      getItem(<Link to={'/Mano_Profilis?menuKey=9'} >Mano Profilis</Link>, '9'),
+      getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
       getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10'),
       getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10&tableSorter=desc'} >Visi darbuotojai</Link>, '11'),
       getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10&tableSorter=desc'} >Darbuotojų archyvas</Link>, '12'),
@@ -101,7 +108,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
   const headerItems: MenuItem[] = [
     getItem(
-      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {userName}</Link>
+      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {employee}</Link>
       , '13'),
   ]
 

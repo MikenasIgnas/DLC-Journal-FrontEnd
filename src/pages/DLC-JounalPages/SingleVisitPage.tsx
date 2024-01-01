@@ -18,6 +18,7 @@ import VisitDescriptionTitle                                    from '../../comp
 import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
 import useVisitValidation                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
 import CollocationsList                                         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
+import useSetUsersData from '../../Plugins/useSetUsersData'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -35,21 +36,18 @@ const SingleVisitPage = () => {
   const [edit, setEdit]                                       = React.useState(false)
   const [companiesColocations, setCompaniesCollocations]      = React.useState<CollocationType[]>()
   const [updatedTransformedArray, setUpdatedTransformedArray] = React.useState<CollocationType[]>()
-  const [dlcEmployees, setDlcEmployees]                       = React.useState<UserType[]>()
   const [searchParams]                                        = useSearchParams()
   const visitAddress                                          = searchParams.get('visitAddress')
   const canBringCompany                                       = filterPermisions(visitData?.[0].visitors).includes('Įleisti Trečius asmenis')
-  const items                                                 = VisitInformationItems(visitData, edit, dlcEmployees)
   const {validate, contextHolder}                             = useVisitValidation()
-
+  const {users}                                               = useSetUsersData(false)
+  const items                                                 = VisitInformationItems(visitData, edit, users)
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
-      const dlcEmployees  = await get('getAllUsers', cookies.access_token)
       setVisitData(singleVisit.data)
       setCarPlates(singleVisit.data[0]?.carPlates)
       setClientsGuests(singleVisit.data[0]?.clientsGuests)
-      setDlcEmployees(dlcEmployees.data)
       const companyId = singleVisit.data[0]?.companyId
       const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
       const updatedArray: CollocationType[] = (Object.entries(singleVisit.data?.[0]?.visitCollocation || {}) as [string, string[]][])

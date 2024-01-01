@@ -2,9 +2,11 @@
 import React                            from 'react'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import UserArchiveTableRows             from '../../components/DLCJournalComponents/UserArchiveComponents/UserArchiveTableRow'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetArchivedUserData           from '../../Plugins/useSetArchivedUserData'
+import useSetUsersData                  from '../../Plugins/useSetUsersData'
+import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import archivedUsersRowMenuItems        from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
+import { useAppSelector } from '../../store/hooks'
 
 const TableColumns = () => {
   return(
@@ -25,7 +27,9 @@ const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, count}                   = useSetArchivedUserData()
+  const {users, count}                  = useSetUsersData()
+  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
 
   const tableSorter = [
     {
@@ -36,21 +40,25 @@ const UsersArchivePage = () => {
 
   return (
     <FullTable
-      tableColumns={<TableColumns />}
+      tableColumns={<TableColumns/>}
       currentPage={page}
       setSearchParams={setSearchParams}
-      tableRows={data?.map((el) => (
-        <UserArchiveTableRows
-          key={el.id}
-          id={String(el.id)}
-          dateCreated={el.dateCreated}
-          dateDeleted={el.dateDeleted}
+      tableRows={users?.map((el, index) => (
+        <UersTableRows
+          key={el._id}
+          id={index}
+          dateCreated={el.created}
+          disabledDate={el.disabledDate}
           email={el.email}
-          userRole={el.userRole}
           username={el.username}
+          isAdmin={el.isAdmin}
+          name={el.name}
+          status={el.isDisabled}
           rowMenu={<RowMenu
-            navigate={() => navigate(`${el.id}`)} />}
-          status={el.status} />
+            navigate={() => navigate(`${el._id}`)}
+            items={rowMenuItems}
+          />}
+        />
       ))}
       documentCount={count}
       tableSorter={tableSorter}

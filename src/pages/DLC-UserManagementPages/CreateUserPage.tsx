@@ -1,10 +1,9 @@
 /* eslint-disable max-len */
-import { Button, Card, Form, Input, Select, message } from 'antd'
-import React                                          from 'react'
-import { getCurrentDate, post }                       from '../../Plugins/helpers'
-import { useNavigate }                                from 'react-router-dom'
-import { useCookies }                                 from 'react-cookie'
-import SuccessMessage                                 from '../../components/UniversalComponents/SuccessMessage'
+import { Button, Card, Checkbox, Form, Input, message } from 'antd'
+import React                                            from 'react'
+import { getCurrentDate, post }                         from '../../Plugins/helpers'
+import { useCookies }                                   from 'react-cookie'
+import SuccessMessage                                   from '../../components/UniversalComponents/SuccessMessage'
 
 const formItemLayout = {
   labelCol: {
@@ -20,28 +19,24 @@ const formItemLayout = {
 type FormValuesType = {
     username:     string,
     email:        string,
-    userRole:     string,
+    idAdmin:      boolean,
     passwordOne:  string,
     passwordTwo:  string,
     status:       string,
     dateCreated:  string,
-    defaultTheme: boolean,
 }
 
 const CreateUserPage = () => {
   const [form]                          = Form.useForm()
   const [messageApi, contextHolder]     = message.useMessage()
   const [cookies]                       = useCookies(['access_token'])
-  const navigate                        = useNavigate()
   const [loginError, setLoginError]     = React.useState(false)
   const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async (values: FormValuesType) => {
     try{
-      values.status = 'active'
       values.dateCreated = getCurrentDate()
-      values.defaultTheme = false
-      const res = await post('createUser', values, cookies.access_token)
+      const res = await post('user/create', values, cookies.access_token)
       if (!res.error) {
         messageApi.success({
           type:    'success',
@@ -50,9 +45,6 @@ const CreateUserPage = () => {
         form.resetFields()
         setLoginError(false)
         setErrorMessage('')
-        setTimeout(() => {
-          navigate('/ManageUsers')
-        },1000)
       }else{
         setLoginError(res.error)
         setErrorMessage(res.message)
@@ -64,8 +56,6 @@ const CreateUserPage = () => {
 
   return (
     <div className='CreateUserPageContainer'>
-
-
       <Card
         title='Sukurti darbuotoją'
         bordered={true}
@@ -80,11 +70,19 @@ const CreateUserPage = () => {
         >
           <Form.Item
             labelAlign='left'
-            name='username'
+            name='name'
             label='Darbuotojas'
             rules={[{ required: true, message: 'Please input users name!', whitespace: true }]}
           >
-            <Input placeholder='Darbuotojo vardas'/>
+            <Input placeholder='Darbuotojo vardas/pavardė'/>
+          </Form.Item>
+          <Form.Item
+            labelAlign='left'
+            name='username'
+            label='Prisijungimas'
+            rules={[{ required: true, message: 'Please input username!', whitespace: true }]}
+          >
+            <Input placeholder='Prisijungimas'/>
           </Form.Item>
           <Form.Item
             labelAlign='left'
@@ -104,28 +102,17 @@ const CreateUserPage = () => {
             <Input placeholder='Darbuotojo el. paštas'/>
           </Form.Item>
           <Form.Item
-            labelAlign='left'
-            name='userRole'
             label='Rolė'
-            rules={[
-              {
-                required: true,
-                message:  'Please select a role!',
-              },
-            ]}
+            labelAlign='left'
+            initialValue={false}
+            name='isAdmin'
+            valuePropName='checked'
           >
-            <Select
-              placeholder='Pasirinkti rolę'
-              options={[
-                { value: 'SYSADMIN', label: 'System Admin' },
-                { value: 'admin', label: 'Admin' },
-                { value: 'user', label: 'User' },
-              ]}
-            />
+            <Checkbox>Admin</Checkbox>
           </Form.Item>
           <Form.Item
             labelAlign='left'
-            name='passwordOne'
+            name='password'
             label='Slaptažodis'
             rules={[
               {
@@ -139,21 +126,21 @@ const CreateUserPage = () => {
           </Form.Item>
           <Form.Item
             labelAlign='left'
-            name='passwordTwo'
+            name='repeatPassword'
             label='Patvirtinti slaptažodį'
             dependencies={['password']}
             hasFeedback
             rules={[
               {
                 required: true,
-                message:  'Please confirm your password!',
+                message:  'Patvirtinkit slaptažodį',
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('passwordOne') === value) {
+                  if (!value || getFieldValue('password') === value) {
                     return Promise.resolve()
                   }
-                  return Promise.reject(new Error('The two passwords that you entered do not match!'))
+                  return Promise.reject(new Error('Slaptažodžiai nesutampa'))
                 },
               }),
             ]}

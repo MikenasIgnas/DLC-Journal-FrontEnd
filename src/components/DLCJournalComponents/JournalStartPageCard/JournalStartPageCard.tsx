@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import React                 from 'react'
-import { Button, Card }              from 'antd'
-import { Link, useNavigate } from 'react-router-dom'
+import React            from 'react'
+import { Button, Card } from 'antd'
+import { useNavigate }  from 'react-router-dom'
 
 type JournalStartPageCardProps = {
     navigateLink: string;

@@ -1,22 +1,26 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
-import React                            from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import FullTable                        from '../../components/Table/TableComponents/FullTable'
-import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetUsersData                  from '../../Plugins/useSetUsersData'
-import { deleteTableItem }              from '../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
+import React                                from 'react'
+import { useNavigate, useSearchParams }     from 'react-router-dom'
+import FullTable                            from '../../components/Table/TableComponents/FullTable'
+import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import RowMenu                              from '../../components/Table/TableComponents/RowMenu'
+import useSetUsersData                      from '../../Plugins/useSetUsersData'
+import { getCurrentDate, post }             from '../../Plugins/helpers'
+import { useCookies }                       from 'react-cookie'
+import usersRowMenuItems                    from '../../components/DLCJournalComponents/UserManagementComponents/usersRowMenuItems'
+import { useAppSelector } from '../../store/hooks'
 
 const tableColumnNames = [
-  {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'email'},
+  {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'username'},
   {itemName: 'El. Paštas', itemWidth: 270, itemValue: 'email'},
   {itemName: 'Darbuotojas', itemWidth: 150, itemValue: 'username'},
   {itemName: 'Rolė', itemWidth: 120, itemValue: 'userRole'},
   {itemName: 'Statusas', itemWidth: 100, itemValue: 'status'},
   {itemName: 'Sukurta', itemWidth: 100, itemValue: 'dateCreated'},
+  {itemName: '', itemWidth: 100, itemValue: ''},
 ]
+
 const TableColumns = () => {
   return(
     <>
@@ -40,32 +44,56 @@ const ManageUsersPage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, setData, count}          = useSetUsersData()
+  const { users, setUsers, count }      = useSetUsersData(false)
+  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const rowMenuItems                    = usersRowMenuItems(isAdmin)
+
+  const disableUser = async(id:string) => {
+    const tableItemRemoved = (id:string) => {
+      if(users){
+        let newTableItems = [...users]
+        newTableItems = newTableItems.filter(x => x._id !== id)
+        setUsers(newTableItems)
+      }
+    }
+
+    const statusItems = {
+      id:           id,
+      isDisabled:   true,
+      disabledDate: getCurrentDate(),
+    }
+
+    if(tableItemRemoved){
+      await post('user/changeStatus', statusItems, cookies.access_token)
+      tableItemRemoved(id)
+    }
+
+  }
 
   return (
-    <>
-      <FullTable
-        tableRows={data?.map((el) => (
-          <UersTableRows
-            key={el?.key}
-            id={el?.key}
-            dateCreated={el?.dateCreated}
-            email={el?.email}
-            status={el?.status}
-            userRole={el?.userRole}
-            username={el?.username}
-            rowMenu={<RowMenu
-              deleteItem={() => deleteTableItem(el?.id, setData, data, cookies.access_token, 'deleteUser', 'changeUsersStatus', 'addDeletionDate')}
-              navigate={() => navigate(`${el.id}`)} />} />
-        ))}
-
-        currentPage={page}
-        setSearchParams={setSearchParams}
-        tableColumns={<TableColumns />}
-        documentCount={count}
-        tableSorter={tableSorter}
-      />
-    </>
+    <FullTable
+      tableRows={users?.map((el, index) => (
+        <UersTableRows
+          key={el?._id}
+          id={index}
+          dateCreated={el?.created}
+          username={el.username}
+          email={el?.email}
+          isAdmin={el?.isAdmin}
+          name={el?.name}
+          status={el.isDisabled}
+          rowMenu={<RowMenu
+            items={rowMenuItems}
+            deleteItem={() => disableUser(el._id)}
+            navigate={() => navigate(`${el._id}`)} />}
+        />
+      ))}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      tableColumns={<TableColumns />}
+      documentCount={count}
+      tableSorter={tableSorter}
+    />
   )
 }
 

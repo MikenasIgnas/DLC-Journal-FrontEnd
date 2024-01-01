@@ -5,13 +5,18 @@ import FullTable                        from '../../components/Table/TableCompon
 import ChecklistHistoryTableRows        from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
 import useSetChecklistHistoryData       from '../../Plugins/useSetChecklistHistoryData'
-import PdfGenerator from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import { deleteTableItem }              from '../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
+import checklistHistoryRowMenuItems     from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/checklistHistoryRowMenuItems'
 
 const ChecklistHistoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [cookies]                       = useCookies(['access_token'])
   const page                            = searchParams.get('page')
   const navigate                        = useNavigate()
-  const {data, count}                   = useSetChecklistHistoryData()
+  const {data, setData, count}          = useSetChecklistHistoryData()
+  const rowMenuItems                    = checklistHistoryRowMenuItems()
 
   const TableColumns = () => {
     return(
@@ -53,8 +58,9 @@ const ChecklistHistoryPage = () => {
           endDate={el?.endDate}
           rowMenu={<RowMenu
             navigate={() => navigate(`${el?.id}`)}
-            // deleteItem={() => deleteTableItem(el?.id, setFechedData, filledData, cookies.access_token, 'deleteHistoryItem')}
-          />
+            deleteItem={() => deleteTableItem(el?.id, setData, data, cookies.access_token, 'deleteHistoryItem')}
+            items={rowMenuItems} />
+
           }
         />
       ))}

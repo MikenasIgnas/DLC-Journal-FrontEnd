@@ -9,6 +9,7 @@ import RowMenu                          from '../../components/Table/TableCompon
 import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
 import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 
 const TableColumns = () => {
   return(
@@ -51,6 +52,8 @@ const VisitPage = () => {
   const navigate                          = useNavigate()
   const {data, count, setData}            = useSetVisitsData()
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
+  const rowMenuItems                      = visitsRowMenuItems(loading)
+
   return (
     <FullTable
       pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
@@ -74,10 +77,10 @@ const VisitPage = () => {
           visitEndDate={el.endDate}
           visitEndTime={el.endTime}
           rowMenu={<RowMenu
-            loading= {loading}
             navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
             deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
             generatePDF={() => generateSingleVisitPDF(el.id)}
+            items={rowMenuItems}
           />}
         />
       ))}

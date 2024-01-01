@@ -10,9 +10,11 @@ type SubClientTagProps = {
 }
 
 const SubClientTag = ({parentCompanyId}:SubClientTagProps ) => {
-  const parentCompany = useFetch<CompaniesType>(`getSingleCompany?companyId=${parentCompanyId}`)
+  // const parentCompany = useFetch<CompaniesType>(`getSingleCompany?companyId=${parentCompanyId}`)
   return(
-    <Tag color='green'><Link to={`/getSingleCompany?companyId=${parentCompanyId}`}>Pagrindinis Klientas: {parentCompany?.companyInfo.companyName}</Link></Tag>
+    <>
+    </>
+    // <Tag color='green'><Link to={`/getSingleCompany?companyId=${parentCompanyId}`}>Pagrindinis Klientas: {parentCompany?.companyInfo.companyName}</Link></Tag>
   )
 }
 

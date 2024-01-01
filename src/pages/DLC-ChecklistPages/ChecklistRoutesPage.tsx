@@ -43,7 +43,7 @@ const ChecklistRoutesPage = () => {
   const currentRouteUrlParam            = searchParams.get('route')
   const currentProgressUrlParam         = searchParams.get('progress')
   const areas                           = useAppSelector((state) => state.fetchedData.areas)
-  const userName                        = useAppSelector((state) => state.auth.username)
+  const employee                        = useAppSelector((state) => state.auth.name)
   const latestPhotos                    = useAppSelector((state)=> state.fetchedData.latestPhotos)
 
   const updateMedia = () => {
@@ -143,15 +143,14 @@ const ChecklistRoutesPage = () => {
       const endTime = getCurrentTime()
 
       const checklistData = {
-        userName,
+        employee,
         filledData,
         startDate,
         startTime,
         endDate,
         endTime,
         problemCount,
-        secret:   decodedToken.id,
-        userRole: decodedToken.userRole,
+        secret: decodedToken.userId,
       }
       try{
 

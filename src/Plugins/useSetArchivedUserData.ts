@@ -10,6 +10,7 @@ const useSetArchivedUserData = () => {
   const [cookies]         = useCookies(['access_token'])
   const [searchParams]    = useSearchParams()
   const tableSorter       = searchParams.get('tableSorter')
+
   React.useEffect(() => {
     const setFetchedData = async () => {
       const page          = searchParams.get('page') || 1
