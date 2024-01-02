@@ -66,7 +66,7 @@ const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList
             })}
           </div>
           :
-          <Empty description='Įmonei nėra priskirta kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          <Empty description='Klientui nėra priskirtų kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
     </Card>
   )

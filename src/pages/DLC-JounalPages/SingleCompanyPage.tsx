@@ -114,7 +114,7 @@ const SingleCompanyPage = () => {
       filteredCompanyData.companyName = values.companyName
       await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
       if(fileList[0]){
-        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
+        uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}&companyId=${id}`)
       }
     }
   }

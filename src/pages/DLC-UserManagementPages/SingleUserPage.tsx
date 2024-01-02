@@ -41,7 +41,7 @@ const SingleUserPage = () => {
   const token:TokenType             = jwtDecode(cookies.access_token)
   const logedInUser                 = token.userId === id
   const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
-  console.log(logedInUser)
+
   const onFinish = async (values: FormValuesType) => {
     const userInfoValues = {
       id:       id,

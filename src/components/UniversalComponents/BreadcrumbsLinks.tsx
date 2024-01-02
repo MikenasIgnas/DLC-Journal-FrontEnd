@@ -14,9 +14,8 @@ const BreadcrumbsLinks = () => {
       title: <Link to={'/DLC Žurnalas?menyKey=1'}><HomeOutlined/></Link>,
     },
   ]
-
   const pathItems = pathParts.map((el, index) => ({
-    title: lastPath !== el ?
+    title: lastPath !== el && el !== 'Mano_Profilis' ?
       <Link to={`/${pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')}?page=1&limit=10&tableSorter=desc`}>{decodeURIComponent(el)}</Link> :
       <span style={{textDecoration: 'underline'}}>{el}</span>,
   }))

@@ -21,7 +21,6 @@ const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, 
   const [searchParams] = useSearchParams()
   const filter =         searchParams.get('filter')
 
-  console.log(status)
   return (
     <tr key={id}>
       <td style={{padding: '12px'}}>

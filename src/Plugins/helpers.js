@@ -183,26 +183,21 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
     })
 }
 
-
-const deleteTableItem = async(id, setTableItems, tableItems, cookie, url, url2, url3) => {
+const deleteTableItem = async(url, data, setData, id, cookie) => {
   const tableItemRemoved = (id) => {
-    if(tableItems){
-      let newTableItems = [...tableItems]
-      newTableItems = newTableItems.filter(x => x._id !== id)
-      setTableItems(newTableItems)
+    if(data){
+      let newTableItems = [...data]
+      newTableItems = newTableItems.filter(x => x.id !== id)
+      setData(newTableItems)
     }
   }
-  const deletionDate = getCurrentDate()
+
   if(tableItemRemoved){
     await get(`${url}?id=${id}`, cookie)
-    // if(url2 && url3){
-    //   await post(`${url2}/${id}`, {status: 'inactive'}, cookie)
-    //   await post(`${url3}/${id}`, {dateDeleted: deletionDate}, cookie)
-    //   tableItemRemoved(id)
-    // }
     tableItemRemoved(id)
   }
 }
+
 const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
   if(startDate && startTime && endDate && endTime){
     const startDateTime   = new Date(`${startDate} ${startTime}`)

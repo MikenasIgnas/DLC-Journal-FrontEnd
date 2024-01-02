@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams }     from 'react-router-dom'
 import FullTable                            from '../../components/Table/TableComponents/FullTable'
 import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                              from '../../components/Table/TableComponents/RowMenu'
-import { getCurrentDate, post }             from '../../Plugins/helpers'
+import { deleteTableItem, getCurrentDate, post }             from '../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import usersRowMenuItems                    from '../../components/DLCJournalComponents/UserManagementComponents/usersRowMenuItems'
 import { useAppSelector }                   from '../../store/hooks'
@@ -35,7 +35,7 @@ const TableColumns = () => {
 const tableSorter = [
   {
     filterName:    'Rolė',
-    filterOptions: [{ value: 1, label: 'user' }, { value: 2, label: 'admin' }],
+    filterOptions: [{ value: 'user', label: 'user' }, { value: 'admin', label: 'admin' }],
   },
 ]
 
@@ -67,7 +67,6 @@ const ManageUsersPage = () => {
       await post('user/changeStatus', statusItems, cookies.access_token)
       tableItemRemoved(id)
     }
-
   }
 
   return (

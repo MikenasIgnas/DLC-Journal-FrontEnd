@@ -79,7 +79,7 @@ const RegisteredVisitorsListItem = ({
       <List.Item
         className='RegisteredVisitorsListItemContainer'
         actions={[
-          <div style={{display: 'flex', width: '470px', alignItems: 'center', justifyContent: 'flex-end'}}>
+          <div style={{display: 'flex', width: '550px', alignItems: 'center', justifyContent: 'space-evenly'}}>
             <div>
               {savedSignature && <Image width={150} src={savedSignature}/>}
               {!savedSignature ?
@@ -87,10 +87,12 @@ const RegisteredVisitorsListItem = ({
                 <Button style={{marginLeft: '15px'}} disabled={!edit} onClick={deleteSignature}>Ištrinti</Button>
               }
             </div>
-            <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
-              <Select disabled={!edit} options={identificationOptions}/>
-            </Form.Item>
-            <Button type='link' onClick={() => deleteVisitor(employeeId)}>Ištrinti</Button>,
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+              <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
+                <Select disabled={!edit} options={identificationOptions}/>
+              </Form.Item>
+              <Button type='link' onClick={() => deleteVisitor(employeeId)}>Ištrinti</Button>,
+            </div>
           </div>,
         ]}
       >
@@ -99,7 +101,7 @@ const RegisteredVisitorsListItem = ({
           title={<p>{name} {lastName}</p>}
           description={occupation}
         />
-        <div >{permissions?.map((el, i) => <Tag key={i}>{el}</Tag>)}</div>
+        <div style={{width: '100px'}}>{permissions?.map((el, i) => <Tag key={i}>{el}</Tag>)}</div>
       </List.Item>
       <Modal
         onOk={onOk}

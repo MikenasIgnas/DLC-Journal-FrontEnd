@@ -45,7 +45,6 @@ const PageLayout = ({children}:PageLayoutProps) => {
     (async () => {
       try{
         const user = await get(`user?id=${decodedToken.userId}`, cookies.access_token)
-        console.log(user)
         if(user){
           dispatch(setEmployeeName(user.name))
           dispatch(setIsAdmin(user.isAdmin))
@@ -109,7 +108,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
   const headerItems: MenuItem[] = [
     getItem(
-      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {employee}</Link>
+      <Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=13`} className='UserDisplay'>Darbuotojas: {employee}</Link>
       , '13'),
   ]
 

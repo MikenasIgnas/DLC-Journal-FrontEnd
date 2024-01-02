@@ -4,7 +4,7 @@ import {  Button, Divider, Input, List }  from 'antd'
 import { get }                            from '../../../../Plugins/helpers'
 import { useCookies }                     from 'react-cookie'
 import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
-import { useParams, useSearchParams }                from 'react-router-dom'
+import { useParams, useSearchParams }     from 'react-router-dom'
 import ListItem                           from '../SubClientsTab/ListItem'
 import { useAppDispatch }                 from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }  from '../../../../auth/ModalStateReducer/ModalStateReducer'
@@ -35,7 +35,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch                        = useAppDispatch()
   const employeeFilter                  = searchParams.get('employeeFilter')
-  const companyId                       = searchParams.get('companyId')
+  const {id}                            = useParams()
 
   const showDrawer = ( employeeId: number | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
@@ -48,6 +48,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       employeeRemoved(employeeId)
     }
   }
+
   const listButtons = (listItemId: number | undefined, companyId: number | undefined) => {
     const buttons = [
       <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} key={listItemId}>Peržiūrėti</Button>,
@@ -61,8 +62,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
     setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
     setEmployeesList(filtered)
     if(e.target.value === ''){
-      setSearchParams('')
-      const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${companyId}`, cookies.access_token)
+      const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
       setEmployeesList(companyEmployees.data)
     }
   }

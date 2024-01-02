@@ -20,7 +20,10 @@
     justify-content: center;
   }
 }
-
+:where(.css-dev-only-do-not-override-4vyvm8).ant-form-horizontal .ant-form-item-control {
+  flex: 1 1 0;
+  min-width: 220px;
+}
 
 .TableColumnWidth100px{
   width: 100px;
@@ -166,9 +169,7 @@
     }
   }
 }
-.RegisteredVisitorsSelect{
-  width: 150px;
-}
+
 .RegisteredVisitorsPermissions{
   width: 150px;
 }
@@ -188,11 +189,7 @@
 }
 
 .VisitDateItemContainer{
-  display: flex;
-  align-items: center;
-  justify-content: center;
   .DatePickerContainer{
-    display: flex;
     justify-content: center;
     align-items: center;
   }

@@ -78,7 +78,7 @@ const VisitPage = () => {
           visitEndTime={el.endTime}
           rowMenu={<RowMenu
             navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
-            deleteItem={() => deleteTableItem(el.id, setData, data, cookies.access_token, 'deleteVisit')}
+            deleteItem={() => deleteTableItem('deleteVisit', data, setData, el.id, cookies.access_token)}
             generatePDF={() => generateSingleVisitPDF(el.id)}
             items={rowMenuItems}
           />}

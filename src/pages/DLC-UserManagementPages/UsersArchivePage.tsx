@@ -36,7 +36,7 @@ const UsersArchivePage = () => {
   const tableSorter = [
     {
       filterName:    'Statusas',
-      filterOptions: [{ value: 'active', label: 'active' }, { value: 'inactive', label: 'inactive' }],
+      filterOptions: [{ value: 'active', label: 'Aktyvus' }, { value: 'inactive', label: 'Neaktyvus' }],
     },
   ]
   const deleteUser = async(id:string) => {
