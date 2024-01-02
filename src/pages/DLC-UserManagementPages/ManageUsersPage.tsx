@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams }     from 'react-router-dom'
 import FullTable                            from '../../components/Table/TableComponents/FullTable'
 import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
 import RowMenu                              from '../../components/Table/TableComponents/RowMenu'
-import { deleteTableItem, getCurrentDate, post }             from '../../Plugins/helpers'
+import { getCurrentDate, post }             from '../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import usersRowMenuItems                    from '../../components/DLCJournalComponents/UserManagementComponents/usersRowMenuItems'
 import { useAppSelector }                   from '../../store/hooks'
@@ -35,7 +35,7 @@ const TableColumns = () => {
 const tableSorter = [
   {
     filterName:    'Rolė',
-    filterOptions: [{ value: 'user', label: 'user' }, { value: 'admin', label: 'admin' }],
+    filterOptions: [{ value: 'false', label: 'user' }, { value: 'true', label: 'admin' }],
   },
 ]
 
@@ -71,6 +71,7 @@ const ManageUsersPage = () => {
 
   return (
     <FullTable
+      filterParam={'isAdmin'}
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el?._id}

@@ -36,7 +36,7 @@ const UsersArchivePage = () => {
   const tableSorter = [
     {
       filterName:    'Statusas',
-      filterOptions: [{ value: 'active', label: 'Aktyvus' }, { value: 'inactive', label: 'Neaktyvus' }],
+      filterOptions: [{ value: 'false', label: 'Aktyvus' }, { value: 'true', label: 'Neaktyvus' }],
     },
   ]
   const deleteUser = async(id:string) => {
@@ -57,6 +57,7 @@ const UsersArchivePage = () => {
 
   return (
     <FullTable
+      filterParam={'isDisabled'}
       tableColumns={<TableColumns/>}
       currentPage={page}
       setSearchParams={setSearchParams}

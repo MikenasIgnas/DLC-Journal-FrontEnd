@@ -40,6 +40,7 @@ const ChecklistHistoryPage = () => {
 
   return (
     <FullTable
+      filterParam={'selectFilter'}
       pdfGenerator={<PdfGenerator tooltipText ={'Generuo tik problemas turinčias formas'} url={'generateMultipleChecklistHistoryPdf'}/>}
       tableColumns={<TableColumns />}
       currentPage={page}

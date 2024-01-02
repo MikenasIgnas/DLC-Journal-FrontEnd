@@ -19,7 +19,7 @@ type UersTableProps = {
 
 const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, disabledDate, username}: UersTableProps) => {
   const [searchParams] = useSearchParams()
-  const filter =         searchParams.get('filter')
+  const filter =         searchParams.get('search')
 
   return (
     <tr key={id}>

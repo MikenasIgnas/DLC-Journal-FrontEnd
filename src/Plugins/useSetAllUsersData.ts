@@ -14,23 +14,28 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page          = searchParams.get('page') || 1
-      const limit         = searchParams.get('limit') || 10
-      const searchFilter  = searchParams.get('filter')
-      const selectFilter  = searchParams.get('selectFilter')
-      let fetchUrl        = `allUsers?page=${page}&limit=${limit}`
+      const page              = searchParams.get('page') || 1
+      const limit             = searchParams.get('limit') || 10
+      const searchFilter      = searchParams.get('search')
+      const isAdminFilter     = searchParams.get('isAdmin')
+      const isDisabledFilter  = searchParams.get('isDisabled')
 
+      let fetchUrl        = `user?page=${page}&limit=${limit}`
 
       if(isDisabled !== undefined){
-        fetchUrl += `&isDisabled${isDisabled}`
+        fetchUrl += `&isDisabled=${isDisabled}`
       }
 
       if (searchFilter) {
-        fetchUrl += `&filter=${searchFilter}`
+        fetchUrl += `&search=${searchFilter}`
       }
 
-      if(selectFilter){
-        fetchUrl += `&selectFilter=${selectFilter}`
+      if(isAdminFilter){
+        fetchUrl += `&isAdmin=${isAdminFilter}`
+      }
+
+      if(isDisabledFilter){
+        fetchUrl += `&isDisabled=${isDisabledFilter}`
       }
 
       if(tableSorter){

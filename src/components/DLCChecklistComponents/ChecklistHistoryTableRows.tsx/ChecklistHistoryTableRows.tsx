@@ -28,7 +28,7 @@ const ChecklistHistoryTableRows = ({
   rowMenu,
 }: UersTableProps) => {
   const [searchParams]  = useSearchParams()
-  const filter          = searchParams.get('filter')
+  const filter          = searchParams.get('search')
   const fullStartTime   = `${startDate} ${startTime}`
   const fullEndTime     = `${endDate} ${endTime}`
   const timeDifferencer = calculateTimeDifference(startDate, startTime, endDate, endTime)

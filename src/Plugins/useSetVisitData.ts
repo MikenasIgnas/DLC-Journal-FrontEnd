@@ -13,7 +13,7 @@ const useSetVisitsData = () => {
   const page                  = searchParams.get('page') || 1
   const limit                 = searchParams.get('limit') || 10
   const selectFilter          = searchParams.get('selectFilter')
-  const searchFilter          = searchParams.get('filter')
+  const searchFilter          = searchParams.get('search')
   const tableSorter            = searchParams.get('tableSorter')
 
   React.useEffect(() => {
@@ -21,7 +21,7 @@ const useSetVisitsData = () => {
       let fetchUrl        = `visitsData?page=${page}&limit=${limit}`
 
       if (searchFilter) {
-        fetchUrl += `&filter=${searchFilter}`
+        fetchUrl += `&search=${searchFilter}`
       }
 
       if(selectFilter){
