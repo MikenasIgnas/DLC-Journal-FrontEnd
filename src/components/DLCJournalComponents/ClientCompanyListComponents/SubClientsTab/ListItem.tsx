@@ -2,6 +2,7 @@
 import React            from 'react'
 import { Avatar, List } from 'antd'
 import SubClientTag     from './SubClientTag'
+import HighlightText from '../../../UniversalComponents/HighlightText'
 
 type ListItemProps = {
   listItemId:               number | undefined;
@@ -13,7 +14,7 @@ type ListItemProps = {
   photosFolder:             string;
   altImage:                 string;
   primaryKey?:              number | undefined
-  listButtons: (listItemId: number | undefined, primaryKey : number | undefined, wasMainClient?: boolean) => React.JSX.Element[]
+  listButtons:              (listItemId: number | undefined, primaryKey : number | undefined, wasMainClient?: boolean) => React.JSX.Element[]
 };
 
 const ListItem = ({

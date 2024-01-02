@@ -10,10 +10,11 @@ import useDelay                        from '../../../Plugins/useDelay'
 type TableControlsProps = {
   tableSorter:    FilterOptions;
   pdfGenerator?:  React.ReactNode
+  filterParam?:   string;
 }
 
 
-const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
+const TableControls = ({tableSorter, pdfGenerator, filterParam}: TableControlsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
@@ -21,7 +22,7 @@ const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     delay( async() => {
-      setSearchParams(`page=${page}&limit=${limit}&filter=${e.target.value.toLocaleLowerCase()}`)
+      setSearchParams(`page=${page}&limit=${limit}&search=${e.target.value.toLocaleLowerCase()}`)
       if(e.target.value === ''){
         setSearchParams(`page=${page}&limit=${limit}`)
       }
@@ -51,7 +52,7 @@ const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
           <FormLabel>Ieškoti</FormLabel>
           <Input allowClear onChange={onChange} />
         </FormControl>
-        {<TableFilters tableSorter={tableSorter}/>}
+        {<TableFilters tableSorter={tableSorter} filterParam={filterParam}/>}
       </Box>
       {pdfGenerator}
     </React.Fragment>

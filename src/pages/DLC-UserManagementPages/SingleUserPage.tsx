@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import { post }                                                           from '../../Plugins/helpers'
+import { post, put }                                                           from '../../Plugins/helpers'
 import { Card, Form, Input, Button, message, ConfigProvider, Checkbox }   from 'antd'
 import {  useAppDispatch, useAppSelector }                                from '../../store/hooks'
 import { useCookies }                                                     from 'react-cookie'
 import SuccessMessage                                                     from '../../components/UniversalComponents/SuccessMessage'
-import { setEmployeeName }                                                from '../../auth/AuthReducer/reducer'
+import { setEmployeeName, setIsAdmin }                                                from '../../auth/AuthReducer/reducer'
 import useSetSingleUser                                                   from '../../Plugins/useSetSingleUser'
 import { jwtDecode }                                                      from 'jwt-decode'
 import { TokenType }                                                      from '../../types/globalTypes'
@@ -57,34 +57,44 @@ const SingleUserPage = () => {
       oldPassword:    values?.oldPassword,
     }
 
-    const endpoint = values.password ? 'auth/changePassword' : 'user/edit'
+    const endpoint = values.password ? 'auth/changePassword' : 'user'
     const postData = values.password ? passwordChangeValues : userInfoValues
 
     try {
-      const res = await post(endpoint, postData, cookies.access_token)
-
-      if (res) {
-        const successMessage = values.password ? 'Slaptažodis pakeistas' : 'Pakeitimai išsaugoti'
+      const res = await (endpoint === 'user' ? put : post)(endpoint, postData, cookies.access_token)
+      if (!values.password && !values.oldPassword && !values.repeatPassword) {
         messageApi.success({
           type:    'success',
-          content: successMessage,
+          content: 'Pakeitimai išsaugoti',
         })
-
         if (!values.password && values.name) {
           if(logedInUser){
             dispatch(setEmployeeName(res.name))
+            dispatch(setIsAdmin(res.isAdmin))
           }
         }
+        if(values.password && values.oldPassword && values.repeatPassword){
+          form.setFieldsValue({
+            oldPassword:    null,
+            password:       null,
+            repeatPassword: null,
+          })
+        }
       } else {
-        messageApi.error({
-          type:    'error',
-          content: 'Nepavyko išsaugoti',
+        messageApi.info({
+          type:    'info',
+          content: `${res.message}`,
+        })
+        form.setFieldsValue({
+          oldPassword:    null,
+          password:       null,
+          repeatPassword: null,
         })
       }
     } catch (error) {
       messageApi.error({
         type:    'error',
-        content: 'Error',
+        content: 'Errror',
       })
     }
   }
@@ -96,7 +106,7 @@ const SingleUserPage = () => {
       email:    user?.email,
       idAdmin:  user?.isAdmin,
     })
-  }, [user?.email, user?.name, user?.username, user?.isAdmin, isAdmin,form])
+  }, [user?.email, user?.name, user?.username, user?.isAdmin, isAdmin, form])
 
   return (
     <div className='CreateUserPageContainer'>
@@ -196,7 +206,7 @@ const SingleUserPage = () => {
               </Form.Item>
             </>
             }
-            <Button htmlType='submit'>
+            <Button disabled={logedInUser || isAdmin ? false : true} htmlType='submit'>
               Išsaugoti
             </Button>
           </Form>

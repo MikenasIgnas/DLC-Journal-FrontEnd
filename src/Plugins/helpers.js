@@ -33,15 +33,46 @@ const post = async (url, data, token) => {
   const response = await fetch(`http://localhost:4000/${url}`, options)
   return response.json()
 }
+const put = async (url, data, token) => {
+  const options = {
+    method:  'PUT',
+    headers: {
+      'content-type': 'application/json',
+      'token':        `${token}`,
+    },
+    body: JSON.stringify(data),
+  }
 
+  const response = await fetch(`http://localhost:4000/${url}`, options)
+  return response.json()
+}
+const deleteItem = async (url, token) => {
+  try {
+    const response = await fetch(`http://localhost:4000/${url}`, {
+      method:  'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'token':        `${token}`,
+      },
+    })
+    if (response.status === 401) {
+      console.error('Unauthorized request')
+      return
+    }
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 const getPdfFile = async (url, token) => {
   try {
     const response = await fetch(`http://localhost:4000/${url}`, {
       method:  'GET',
       headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'token':        token,
       },
     })
 
@@ -61,8 +92,8 @@ const getCsvFile = async (url, data, token) => {
   const options = {
     method:  'POST',
     headers: {
-      'content-type':  'application/json',
-      'Authorization': `Bearer ${token}`,
+      'content-type': 'application/json',
+      'token':        token,
     },
     body: JSON.stringify(data),
   }
@@ -103,8 +134,8 @@ const postImage = async (url, data, token) => {
   const options = {
     method:  'POST',
     headers: {
-      'content-type':  'application/x-www-form-urlencoded',
-      'Authorization': `Bearer ${token}`,
+      'content-type': 'application/x-www-form-urlencoded',
+      'token':        token,
     },
     body: data,
   }
@@ -115,12 +146,13 @@ const postImage = async (url, data, token) => {
 
 const getCurrentDate = () => {
   const currentdate = new Date()
-  const datetime = currentdate.getFullYear() + '-'
-                  + (currentdate.getMonth()+1) + '-'
-                  + currentdate.getDate()
-  return datetime
-}
+  const year = currentdate.getFullYear()
+  const month = (currentdate.getMonth() + 1).toString().padStart(2, '0')
+  const day = currentdate.getDate().toString().padStart(2, '0')
 
+  const formattedDate = `${year}-${month}-${day}`
+  return formattedDate
+}
 const getCurrentTime = () => {
   const currentdate = new Date()
   const currentTime = currentdate.getHours() + ':'
@@ -151,26 +183,21 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
     })
 }
 
-
-const deleteTableItem = async(id, setTableItems, tableItems, cookie, url, url2, url3) => {
+const deleteTableItem = async(url, data, setData, id, cookie) => {
   const tableItemRemoved = (id) => {
-    if(tableItems){
-      let newTableItems = [...tableItems]
-      newTableItems = newTableItems.filter(x => x._id !== id)
-      setTableItems(newTableItems)
+    if(data){
+      let newTableItems = [...data]
+      newTableItems = newTableItems.filter(x => x.id !== id)
+      setData(newTableItems)
     }
   }
-  const deletionDate = getCurrentDate()
+
   if(tableItemRemoved){
     await get(`${url}?id=${id}`, cookie)
-    // if(url2 && url3){
-    //   await post(`${url2}/${id}`, {status: 'inactive'}, cookie)
-    //   await post(`${url3}/${id}`, {dateDeleted: deletionDate}, cookie)
-    //   tableItemRemoved(id)
-    // }
     tableItemRemoved(id)
   }
 }
+
 const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
   if(startDate && startTime && endDate && endTime){
     const startDateTime   = new Date(`${startDate} ${startTime}`)
@@ -277,5 +304,7 @@ export {
   generateCustomPDF,
   getCsvFile,
   generateCsv,
+  put,
+  deleteItem,
 }
 

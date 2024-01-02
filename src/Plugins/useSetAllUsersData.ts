@@ -5,7 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import { get }             from './helpers'
 import { UserType }        from '../types/globalTypes'
 
-const useSetUsersData = (isDisabled?: boolean) => {
+const useSetAllUsersData = (isDisabled?: boolean) => {
   const [users, setUsers]   = React.useState<UserType[]>()
   const [count, setCount]   = React.useState<number>()
   const [cookies]           = useCookies(['access_token'])
@@ -14,23 +14,28 @@ const useSetUsersData = (isDisabled?: boolean) => {
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const page          = searchParams.get('page') || 1
-      const limit         = searchParams.get('limit') || 10
-      const searchFilter  = searchParams.get('filter')
-      const selectFilter  = searchParams.get('selectFilter')
+      const page              = searchParams.get('page') || 1
+      const limit             = searchParams.get('limit') || 10
+      const searchFilter      = searchParams.get('search')
+      const isAdminFilter     = searchParams.get('isAdmin')
+      const isDisabledFilter  = searchParams.get('isDisabled')
+
       let fetchUrl        = `user?page=${page}&limit=${limit}`
 
-
       if(isDisabled !== undefined){
-        fetchUrl += `&isDisabled${isDisabled}`
+        fetchUrl += `&isDisabled=${isDisabled}`
       }
 
       if (searchFilter) {
-        fetchUrl += `&filter=${searchFilter}`
+        fetchUrl += `&search=${searchFilter}`
       }
 
-      if(selectFilter){
-        fetchUrl += `&selectFilter=${selectFilter}`
+      if(isAdminFilter){
+        fetchUrl += `&isAdmin=${isAdminFilter}`
+      }
+
+      if(isDisabledFilter){
+        fetchUrl += `&isDisabled=${isDisabledFilter}`
       }
 
       if(tableSorter){
@@ -52,7 +57,6 @@ const useSetUsersData = (isDisabled?: boolean) => {
 
     setFetchedData()
   }, [cookies.access_token, searchParams])
-
   React.useEffect(() => {
     (async () => {
       let fetchUrl = 'user/count'
@@ -67,4 +71,4 @@ const useSetUsersData = (isDisabled?: boolean) => {
   return {users, setUsers, count, setCount}
 }
 
-export default useSetUsersData
+export default useSetAllUsersData

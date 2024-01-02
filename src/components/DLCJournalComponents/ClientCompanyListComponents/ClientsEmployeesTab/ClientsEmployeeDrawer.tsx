@@ -83,10 +83,10 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
           </div>
           <p className='site-description-item-profile-p'>Asmeninė informacija</p>
           <div style={{display: 'flex', justifyContent: 'space-between', padding: '15px'}}>
-            <div>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <Col span={12}>
                 <img
-                  style={{width: '100px'}}
+                  style={{width: '100%'}}
                   src={`../../ClientsEmployeesPhotos/${employee?.employeePhoto ? employee?.employeePhoto : 'noUserImage.jpeg'}`}
                   alt='err' />
               </Col>

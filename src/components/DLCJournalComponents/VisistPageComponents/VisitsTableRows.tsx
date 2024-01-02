@@ -37,7 +37,7 @@ const VisitsTableRows = ({
   visitPurpose,
 }: VisitsTableRowsProps) => {
   const [searchParams]  = useSearchParams()
-  const filter          = searchParams.get('filter')
+  const filter          = searchParams.get('search')
   const timeDifference  = calculateTimeDifference(visitStartDate, visitStartTime, visitEndDate,visitEndTime)
   return (
     <tr key={visitId}>

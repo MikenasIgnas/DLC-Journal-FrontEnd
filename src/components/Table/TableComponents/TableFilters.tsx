@@ -6,16 +6,17 @@ import TableFilterItem      from './TableFilterItem'
 
 type TableFiltersProps = {
   tableSorter:  FilterOptions
+  filterParam?: string;
 }
 
-const TableFilters = ({tableSorter}: TableFiltersProps) => {
+const TableFilters = ({tableSorter, filterParam}: TableFiltersProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
 
   const filterByStatus = async(selectFilter: string) => {
     if (selectFilter) {
-      setSearchParams(`page=${page}&limit=${limit}&selectFilter=${selectFilter}`)
+      setSearchParams(`page=${page}&limit=${limit}&${filterParam}=${selectFilter}`)
     } else {
       clearSelect()
     }

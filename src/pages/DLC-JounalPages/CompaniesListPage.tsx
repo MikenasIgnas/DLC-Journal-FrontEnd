@@ -25,7 +25,6 @@ const CompaniesListPage = () => {
         setLoading(true)
         const allComapnies = await get('getCompanies', cookies.access_token)
         const collocations = await get('getCollocations', cookies.access_token)
-
         const mainCompanies = allComapnies.data.filter((el: CompaniesType) => el.parentCompanyId !== null || el.parentCompanyId !== undefined )
         setCollocations(collocations.data[0].colocations)
         setCompanies(mainCompanies)
@@ -40,7 +39,7 @@ const CompaniesListPage = () => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
     newCompaniesList = newCompaniesList.map((item) => {
-      const { parentCompanyId, wasMainClient, ...rest } = item
+      const { wasMainClient, ...rest } = item
       return rest
     })
     setCompanies(newCompaniesList)
@@ -59,8 +58,11 @@ const CompaniesListPage = () => {
     return buttons
   }
 
+  const [searchValue, setSearchValues] = React.useState<string | null>(null)
+
   const searchForCompany = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase()
+    setSearchValues(searchTerm)
     delay( async() => {
       if (searchTerm === '') {
         const allCompanies = await get('getCompanies', cookies.access_token)
@@ -101,7 +103,7 @@ const CompaniesListPage = () => {
               altImage={'noImage.jpg'}
               primaryKey={item?.parentCompanyId}
               listButtons={listButtons}
-              title={<ChildCompaniesTree companies={companies} item={item}/>}
+              title={<ChildCompaniesTree searchValue={searchValue} companies={companies} item={item}/>}
             />
           )
         }}/>

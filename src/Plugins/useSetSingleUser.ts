@@ -23,7 +23,7 @@ const useSetSingleUser = () => {
     const setFetchedData = async () => {
       try {
         setLoading(true)
-        const data = await get(`user/getbyid?id=${id}`, cookies.access_token)
+        const data = await get(`user?id=${id}`, cookies.access_token)
         setUser(data)
         setLoading(false)
       } catch (error) {

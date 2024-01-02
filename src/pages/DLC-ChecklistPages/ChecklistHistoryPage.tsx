@@ -40,6 +40,7 @@ const ChecklistHistoryPage = () => {
 
   return (
     <FullTable
+      filterParam={'selectFilter'}
       pdfGenerator={<PdfGenerator tooltipText ={'Generuo tik problemas turinčias formas'} url={'generateMultipleChecklistHistoryPdf'}/>}
       tableColumns={<TableColumns />}
       currentPage={page}
@@ -58,7 +59,7 @@ const ChecklistHistoryPage = () => {
           endDate={el?.endDate}
           rowMenu={<RowMenu
             navigate={() => navigate(`${el?.id}`)}
-            deleteItem={() => deleteTableItem(el?.id, setData, data, cookies.access_token, 'deleteHistoryItem')}
+            deleteItem={() => deleteTableItem('deleteHistoryItem', data, setData, String(el.id), cookies.access_token)}
             items={rowMenuItems} />
 
           }

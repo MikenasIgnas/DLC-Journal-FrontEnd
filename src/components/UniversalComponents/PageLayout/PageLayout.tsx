@@ -44,7 +44,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
   React.useEffect(() => {
     (async () => {
       try{
-        const user = await get(`user/getbyid?id=${decodedToken.userId}`, cookies.access_token)
+        const user = await get(`user?id=${decodedToken.userId}`, cookies.access_token)
         if(user){
           dispatch(setEmployeeName(user.name))
           dispatch(setIsAdmin(user.isAdmin))
@@ -108,7 +108,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
   const headerItems: MenuItem[] = [
     getItem(
-      <Link to={'/Mano_Profilis?menuKey=13'} className='UserDisplay'>Darbuotojas: {employee}</Link>
+      <Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=13`} className='UserDisplay'>Darbuotojas: {employee}</Link>
       , '13'),
   ]
 

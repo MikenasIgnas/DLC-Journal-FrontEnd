@@ -5,7 +5,7 @@ import { Badge, ConfigProvider, Form, Select, Tag } from 'antd'
 import type { DescriptionsProps }                   from 'antd'
 import VisitDateItem                                from '../SingleVisitPageComponents/VisitDateItem'
 import { UserType, VisitsType }                     from '../../../types/globalTypes'
-import { Link, useSearchParams }                          from 'react-router-dom'
+import { Link, useSearchParams }                    from 'react-router-dom'
 import { addresses }                                from './StaticSelectOptions'
 
 const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolean, dlcEmployees: UserType[] | undefined ) => {

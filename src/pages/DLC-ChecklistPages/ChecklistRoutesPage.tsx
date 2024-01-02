@@ -141,7 +141,6 @@ const ChecklistRoutesPage = () => {
       const startTime = String(localStorage.getItem('startTime'))
       const endDate = getCurrentDate()
       const endTime = getCurrentTime()
-
       const checklistData = {
         employee,
         filledData,
@@ -166,7 +165,7 @@ const ChecklistRoutesPage = () => {
           await post('postChecklistData', checklistData, cookies.access_token)
           localStorage.clear()
           setTimeout(() => {
-            navigate('/ChecklistPage')
+            navigate('/DLC Checklistas/Istorija?menuKey=8&page=1&limit=10&tableSorter=desc')
           }, 1000)
         }
       }catch(err){

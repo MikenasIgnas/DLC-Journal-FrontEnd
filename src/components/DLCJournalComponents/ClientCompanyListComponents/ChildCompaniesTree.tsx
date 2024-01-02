@@ -4,14 +4,15 @@ import { ConfigProvider, Tree } from 'antd'
 import React                    from 'react'
 import { Link }                 from 'react-router-dom'
 import { CompaniesType }        from '../../../types/globalTypes'
+import HighlightText            from '../../UniversalComponents/HighlightText'
 
 type ChildCompaniesTreeProps = {
-    item: CompaniesType
-    companies: CompaniesType[]
+    item:         CompaniesType
+    companies:    CompaniesType[]
+    searchValue:  string | null
 }
 
-const ChildCompaniesTree = ({companies, item}: ChildCompaniesTreeProps) => {
-
+const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreeProps) => {
   const treeCompanies = companies?.map((el, i) => {
     const childCompanies = companies.filter((ele) => ele.parentCompanyId === el.id)
     return{
@@ -19,7 +20,7 @@ const ChildCompaniesTree = ({companies, item}: ChildCompaniesTreeProps) => {
       key:      el.id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{el.companyInfo.companyName}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),
@@ -38,7 +39,7 @@ const ChildCompaniesTree = ({companies, item}: ChildCompaniesTreeProps) => {
             defaultExpandedKeys={['0-0-0']}
             treeData={filter} />
         </ConfigProvider>
-        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{item.companyInfo.companyName}</Link>}
+        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{HighlightText(searchValue, item.companyInfo.companyName)}</Link>}
     </>
   )
 }

@@ -1,24 +1,24 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
-import React                                                    from 'react'
-import { useParams, useSearchParams }                           from 'react-router-dom'
-import { Button, Card, Form, List, Tag }                        from 'antd'
-import { Descriptions }                                         from 'antd'
-import { useCookies }                                           from 'react-cookie'
-import { convertUTCtoLocalTime, get, post }                     from '../../Plugins/helpers'
-import { CollocationType, EmployeesType, UserType, VisitsType } from '../../types/globalTypes'
-import ItemList                                                 from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
-import SelectedCollocationList                                  from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
-import RegisteredVisitorsListItem                               from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
-import VisitorAdditionList                                      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
-import filterPermisions                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
-import VisitInformationItems                                    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
-import VisitDescriptionTitle                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
-import SuccessMessage                                           from '../../components/UniversalComponents/SuccessMessage'
-import useVisitValidation                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
-import CollocationsList                                         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
-import useSetUsersData from '../../Plugins/useSetUsersData'
+import React                                                        from 'react'
+import { useParams, useSearchParams }                               from 'react-router-dom'
+import { Button, Card, Form, List, Tag }                            from 'antd'
+import { Descriptions }                                             from 'antd'
+import { useCookies }                                               from 'react-cookie'
+import { convertUTCtoLocalDate, convertUTCtoLocalTime, get, post }  from '../../Plugins/helpers'
+import { CollocationType, EmployeesType, VisitsType }               from '../../types/globalTypes'
+import ItemList                                                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
+import SelectedCollocationList                                      from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
+import RegisteredVisitorsListItem                                   from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
+import VisitorAdditionList                                          from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
+import filterPermisions                                             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
+import VisitInformationItems                                        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
+import VisitDescriptionTitle                                        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
+import SuccessMessage                                               from '../../components/UniversalComponents/SuccessMessage'
+import useVisitValidation                                           from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
+import CollocationsList                                             from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
+import useSetUsersData                                              from '../../Plugins/useSetUsersData'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -42,6 +42,7 @@ const SingleVisitPage = () => {
   const {validate, contextHolder}                             = useVisitValidation()
   const {users}                                               = useSetUsersData(false)
   const items                                                 = VisitInformationItems(visitData, edit, users)
+
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -107,10 +108,12 @@ const SingleVisitPage = () => {
         selectedVisitor: el.selectedVisitor,
       }))
       values.visitors = updateIdTypes
-      values.startDate = values?.startDate?.format('YYYY-MM-DD')
-      values.endDate = values?.endDate?.format('YYYY-MM-DD')
+      const localtStartDate = convertUTCtoLocalDate(values.startDate)
+      const localEndDate = convertUTCtoLocalDate(values.endDate)
       const localStartTime = convertUTCtoLocalTime(values?.startTime)
       const localEndTime = convertUTCtoLocalTime(values?.endTime)
+      values.startDate = localtStartDate
+      values.endDate = localEndDate
       values.startTime = localStartTime
       values.endTime = localEndTime
       await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)

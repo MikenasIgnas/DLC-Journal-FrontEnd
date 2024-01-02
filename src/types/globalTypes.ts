@@ -218,7 +218,7 @@ export type ModalStateType = {
 export type FilterOptions = {
   filterName: string;
   filterOptions: {
-      value: string;
+      value: string | number;
       label: string;
   }[];
 }[]
