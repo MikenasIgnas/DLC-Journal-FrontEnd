@@ -25,7 +25,7 @@ const VisitPurposeButtons = ({ buttonText, buttonWidth }: VisitPurposeButtonsPro
   }
 
   return (
-    <Button style={{ width: `${buttonWidth}%`, height: '110px' }} type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
+    <Button className='VisitPurposeButton' type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
       {buttonText}
     </Button>
   )

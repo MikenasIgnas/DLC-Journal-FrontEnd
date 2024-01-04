@@ -11,7 +11,7 @@ import ClientsCollocationsTab                                  from '../../compo
 import ClientsEmployeesTab                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
 import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }                                      from '../../store/hooks'
 
 type EmployeesType = {
   _id:            string;
@@ -51,6 +51,7 @@ const SingleCompanyPage = () => {
   const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const [uploading, setUploading]                     = React.useState(false)
+
   React.useEffect(() => {
     (async () => {
       try{

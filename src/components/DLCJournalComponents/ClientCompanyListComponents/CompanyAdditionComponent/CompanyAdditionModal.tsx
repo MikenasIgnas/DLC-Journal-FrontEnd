@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import React                                      from 'react'
-import { Modal, Form, Button, Input, UploadFile } from 'antd'
-import { useForm }                                from 'antd/es/form/Form'
-import { post, uploadPhoto }                      from '../../../../Plugins/helpers'
-import { useCookies }                             from 'react-cookie'
-import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import ColocationSelectors                        from '../ClientsCollocationsTab/CollocationSelectors'
-import { CollocationsType }                       from '../../../../types/globalTypes'
-import { useAppDispatch }                         from '../../../../store/hooks'
-import { setOpenCompaniesAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import React                                                from 'react'
+import { Modal, Form, Button, Input, UploadFile, message }  from 'antd'
+import { useForm }                                          from 'antd/es/form/Form'
+import { post, uploadPhoto }                                from '../../../../Plugins/helpers'
+import { useCookies }                                       from 'react-cookie'
+import PhotoUploader                                        from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import ColocationSelectors                                  from '../ClientsCollocationsTab/CollocationSelectors'
+import { CollocationsType }                                 from '../../../../types/globalTypes'
+import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
+import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -33,11 +34,13 @@ type CompanyFormType = {
 };
 
 const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
-  const [cookies]                 = useCookies(['access_token'])
-  const [form]                    = useForm()
-  const [uploading, setUploading] = React.useState(false)
-  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
-  const dispatch                  = useAppDispatch()
+  const [cookies]                   = useCookies(['access_token'])
+  const [form]                      = useForm()
+  const [uploading, setUploading]   = React.useState(false)
+  const [fileList, setFileList]     = React.useState<UploadFile[]>([])
+  const dispatch                    = useAppDispatch()
+  const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [messageApi, contextHolder] = message.useMessage()
 
   const filterObject = (obj: CompanyFormType): CompanyFormType => {
     const filteredObj: CompanyFormType = {}
@@ -73,16 +76,31 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
-    await post(postUrl, filteredResult, cookies.access_token)
+    const res = await post(postUrl, filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
-    dispatch(setOpenCompaniesAdditionModal(false))
+    if(!res.error){
+      form.resetFields()
+      dispatch(setOpenCompaniesAdditionModal(false))
+      messageApi.success({
+        type:    'success',
+        content: 'Įmonė pridėta',
+      })
+    }else{
+      form.resetFields()
+      dispatch(setOpenCompaniesAdditionModal(false))
+      messageApi.error({
+        type:    'error',
+        content: 'Pridėti nepavyko',
+      })
+    }
   }
+
   return (
     <Modal
       title={additionModalTitle}
-      open
+      open={openCompaniesAdditionModal}
       onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
       onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
       footer={false}
@@ -109,7 +127,8 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             )}
           </div>
         </div>
-        <Button loading={uploading} htmlType='submit'>Pridėti</Button>
+        <Button style={{margin: '10px'}} loading={uploading} htmlType='submit'>Pridėti</Button>
+        <SuccessMessage contextHolder={contextHolder}/>
       </Form>
     </Modal>
   )

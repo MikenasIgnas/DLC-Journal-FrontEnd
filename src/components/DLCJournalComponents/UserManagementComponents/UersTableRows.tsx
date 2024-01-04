@@ -39,7 +39,7 @@ const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, 
         <Tag>{HighlightText(filter, isAdmin ? 'admin': 'user')}</Tag>
       </td>
       <td>
-        <Tag color={!status ? 'success' : 'error'}>{HighlightText(filter, !status ? 'aktyvus' : 'ištrintas')}</Tag>
+        <Tag color={!status ? 'success' : 'error'}>{HighlightText(filter, !status ? 'aktyvus' : 'neaktyvus')}</Tag>
       </td>
       <td>
         <Typography >{HighlightText(filter, convertUTCtoLocalDate(dateCreated))}</Typography>

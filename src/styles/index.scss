@@ -878,8 +878,9 @@ thead[class*="ant-table-thead"] th{
   width: 100%;
 
   .VisitPurposeButton{
-    width: 45%;
+    width: 19%;
     height: 110px;
+    font-size: 14px;
   }
 }
 @media screen and (max-width: 600px) {
@@ -898,13 +899,14 @@ thead[class*="ant-table-thead"] th{
     }
   }
   .VisitPurposeButtonContainer{
-    display: block;
-    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
     width: 100%;
 
     .VisitPurposeButton{
       width: 100%;
       height: 70px;
+      font-size: 10px;
     }
   }
 }

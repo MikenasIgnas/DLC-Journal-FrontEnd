@@ -73,6 +73,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       <Divider>Darbuotojai</Divider>
       <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
+        locale={{emptyText: 'Nėra pridėtų darbuotojų'}}
         dataSource={list}
         bordered
         pagination={{

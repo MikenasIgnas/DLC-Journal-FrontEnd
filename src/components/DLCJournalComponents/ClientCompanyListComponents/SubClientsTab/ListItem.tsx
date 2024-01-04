@@ -2,7 +2,8 @@
 import React            from 'react'
 import { Avatar, List } from 'antd'
 import SubClientTag     from './SubClientTag'
-import HighlightText from '../../../UniversalComponents/HighlightText'
+import useFetch from '../../../../customHooks/useFetch'
+import { CompanyInfoType } from '../../../../types/globalTypes'
 
 type ListItemProps = {
   listItemId:               number | undefined;
@@ -17,6 +18,16 @@ type ListItemProps = {
   listButtons:              (listItemId: number | undefined, primaryKey : number | undefined, wasMainClient?: boolean) => React.JSX.Element[]
 };
 
+type CompaniesType = {
+  data:{
+    _id: string;
+    id: number;
+    parentCompanyId?: number | undefined;
+    wasMainClient?: boolean | undefined;
+    companyInfo: CompanyInfoType;
+  }
+}
+
 const ListItem = ({
   listItemId,
   photo,
@@ -28,7 +39,10 @@ const ListItem = ({
   listButtons,
   wasMainClient,
 }: ListItemProps) => {
-  const buttons = listButtons(listItemId, primaryKey, wasMainClient)
+  const buttons       = listButtons(listItemId, primaryKey, wasMainClient)
+  const parentCompany = useFetch<CompaniesType>(`getSingleCompany?companyId=${primaryKey}`)
+  const companyName   = parentCompany?.data?.companyInfo.companyName
+
   return (
     <List.Item
       style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
@@ -36,13 +50,13 @@ const ListItem = ({
       <List.Item.Meta
         avatar={
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <Avatar src={<img src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
+            <Avatar src={<img style={{objectFit: 'contain'}} src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
           </div>
         }
         title={title}
         description={description}
       />
-      {primaryKey ? <SubClientTag parentCompanyId={primaryKey}/> : ''}
+      {primaryKey && parentCompany?.data && <SubClientTag parentCompanyId={primaryKey} companyName={companyName}/>}
     </List.Item>
   )
 }

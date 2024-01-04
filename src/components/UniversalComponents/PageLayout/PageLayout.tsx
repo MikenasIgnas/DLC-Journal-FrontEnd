@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import {ConfigProvider, Menu, MenuProps, Space, message }                          from 'antd'
+import {ConfigProvider, Menu, MenuProps, Space, message }                 from 'antd'
 import { Layout }                                                         from 'antd'
 import { Link, useLocation, useNavigate, useSearchParams }                from 'react-router-dom'
 import { clearFilleChecklistdData, get }                                  from '../../../Plugins/helpers'
@@ -9,7 +9,7 @@ import { useCookies }                                                     from '
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }                        from '../../../auth/AuthReducer/reducer'
+import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }        from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
@@ -40,6 +40,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const menuKey                   = searchParams.get('menuKey')
   const employee                  = useAppSelector((state)=> state.auth.name)
   const dispatch                  = useAppDispatch()
+  const isAdmin                   = useAppSelector((state) => state.auth.isAdmin)
 
   React.useEffect(() => {
     (async () => {
@@ -100,7 +101,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
     getItem('Vartotojai', 'sub3', <UserOutlined />, [
       getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
-      getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10'),
+      isAdmin ? getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10') : null,
       getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10&tableSorter=desc'} >Visi darbuotojai</Link>, '11'),
       getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10&tableSorter=desc'} >Darbuotojų archyvas</Link>, '12'),
     ]),

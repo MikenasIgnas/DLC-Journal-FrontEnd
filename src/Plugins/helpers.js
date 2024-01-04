@@ -72,7 +72,7 @@ const getPdfFile = async (url, token) => {
       method:  'GET',
       headers: {
         'Content-Type': 'application/json',
-        'token':        token,
+        'token':        `${token}`,
       },
     })
 
@@ -93,7 +93,7 @@ const getCsvFile = async (url, data, token) => {
     method:  'POST',
     headers: {
       'content-type': 'application/json',
-      'token':        token,
+      'token':        `${token}`,
     },
     body: JSON.stringify(data),
   }
@@ -135,7 +135,7 @@ const postImage = async (url, data, token) => {
     method:  'POST',
     headers: {
       'content-type': 'application/x-www-form-urlencoded',
-      'token':        token,
+      'token':        `${token}`,
     },
     body: data,
   }

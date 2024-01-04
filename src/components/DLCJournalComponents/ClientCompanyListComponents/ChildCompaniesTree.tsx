@@ -20,7 +20,7 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
       key:      el.id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{el.companyInfo.companyName}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),

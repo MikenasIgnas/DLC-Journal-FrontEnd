@@ -39,7 +39,7 @@ const CompaniesListPage = () => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
     newCompaniesList = newCompaniesList.map((item) => {
-      const { wasMainClient, ...rest } = item
+      const {parentCompanyId, wasMainClient, ...rest } = item
       return rest
     })
     setCompanies(newCompaniesList)

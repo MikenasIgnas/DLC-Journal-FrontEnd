@@ -17,7 +17,7 @@ const ColocationSelectors = ({collocationSite, colocationPremises, colocationId 
     const item: CollapseProps['items'] = [
       {
         key:   '1',
-        label: collocationSite,
+        label: premiseName,
         children:
         <Form.Item name={[name, premiseName]}>
           <Checkbox.Group options={racks} className='CollocationSelectorCheckboxes'/>

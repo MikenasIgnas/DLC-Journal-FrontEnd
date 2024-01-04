@@ -95,6 +95,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>
       <List
+        locale={{emptyText: 'Nėra pridėtų sub klientų'}}
         dataSource={subClients}
         bordered
         renderItem={(item) => {
