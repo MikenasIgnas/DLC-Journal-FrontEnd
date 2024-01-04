@@ -3,12 +3,12 @@ import React                                                                    
 import { Button, Checkbox, Col, Divider, Drawer, Form, Input, Row, UploadFile } from 'antd'
 import { useForm }                                                              from 'antd/es/form/Form'
 import { EmployeesType }                                                        from '../../../../types/globalTypes'
-import { convertUTCtoLocalDate, get, post, uploadPhoto }                                               from '../../../../Plugins/helpers'
+import { convertUTCtoLocalDate, get, post, uploadPhoto }                        from '../../../../Plugins/helpers'
 import { useCookies }                                                           from 'react-cookie'
-import { useParams, useSearchParams }                                                      from 'react-router-dom'
+import { useParams, useSearchParams }                                           from 'react-router-dom'
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch, useAppSelector }                                                       from '../../../../store/hooks'
-import { setOpenClientsEmployeesDrawer } from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
+import { setOpenClientsEmployeesDrawer }                                        from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;

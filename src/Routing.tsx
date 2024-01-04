@@ -26,7 +26,9 @@ import axios                            from 'axios'
 import { jwtDecode }                    from 'jwt-decode'
 import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
 import CollocationsPage                 from './pages/DLC-JounalPages/CollocationsPage'
-import ResetPasswordPage                from './pages/ResetPasswordPage'
+import SendRecoveryCodePage             from './pages/SendRecoveryCodePage'
+import RecoveryCodeConfirmationPage    from './pages/RecoveryCodeConfirmationPage'
+import PasswordResetPage from './pages/PasswordResetPage'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])
@@ -90,7 +92,9 @@ const Routing = () => {
         : (
           <Routes>
             <Route path='/' element={<LoginPage />} />
-            <Route path='/ResetPassword' element={<ResetPasswordPage/>} />
+            <Route path='/SendRecoveryCodePage' element={<SendRecoveryCodePage/>} />
+            <Route path='/RecoveryCodeConfirmationPage' element={<RecoveryCodeConfirmationPage/>} />
+            <Route path='/PasswordResetPage' element={<PasswordResetPage/>} />
             <Route path='*' element={<NotFoundPage />} />
           </Routes>
         )}

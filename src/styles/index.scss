@@ -399,13 +399,12 @@ display: flex;
         align-items: center;
       }
     }
-  }
+}
 
-  .CollapsePannelHeader{
-    display:flex;
-    justify-content: space-between;
-  }
-
+.CollapsePannelHeader{
+  display:flex;
+  justify-content: space-between;
+}
 
 .InputContainer {
   width: 20%;
@@ -423,6 +422,7 @@ display: flex;
   background-color: white;
   padding: 10px;
 }
+
 .PremiseNameContainer{
   display: flex;
   align-items: center;
@@ -432,6 +432,7 @@ display: flex;
   font-size: 15px;
   margin-top: 10px;
 }
+
 .RouteMapContainer{
   display: flex;
   justify-content: center;
@@ -448,12 +449,9 @@ display: flex;
   margin-bottom: 50px;
 }
 
-
-
 .ant-layout-header {
   background-color: white;
 }
-
 
 .LoginPage{
   display:flex;
@@ -466,6 +464,21 @@ display: flex;
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+}
+@media screen and (max-width: 600px) {
+  .LoginPage{
+    display:flex;
+    width: 300px;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+  
+    .loginButtons{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 }
 
@@ -599,8 +612,6 @@ thead[class*="ant-table-thead"] th{
   font-size: 14px;
 }
 
-
-
 .PageLayoutSpace{
   width: 100%;
   .PageLayoutSlider{
@@ -623,7 +634,17 @@ thead[class*="ant-table-thead"] th{
   .HomePageContainer{
     max-height: calc(100vh - 145px)
   }
+  .Header{
+    position:       sticky;
+    top:              0;
+    z-Index:          1;
+    width:            100%;
+    display:          flex;
+    justify-content:  flex-end;
+    align-items:      center;
+  }
   .Layout{
+    margin-left: 250px;
     .PageLayoutHeaedrMenu{
       position: sticky; 
       top: 0;
@@ -883,8 +904,50 @@ thead[class*="ant-table-thead"] th{
     font-size: 14px;
   }
 }
-@media screen and (max-width: 600px) {
+.JournalStartPageCard{
+  width:        350px;
+  height:       150px;
+  font-size:    25px;
+  text-align:   center;
+  display:      flex;
+  align-items:  center;
+  margin:       20px;
+  .JournalStartPageCardButton{
+    font-size: 25px;
+  }
+}
 
+@media screen and (max-width: 600px) {
+  .DisplayFlex {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .LoginPage{
+    display:flex;
+    width: 300px;
+    flex-direction: column;
+    justify-content:center;
+    align-items: center;
+  
+    .loginButtons{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  .JournalStartPageCard{
+    width:        300px;
+    height:       70px;
+    font-size:    25px;
+    text-align:   center;
+    display:      flex;
+    align-items:  center;
+    .JournalStartPageCardButton{
+      font-size: 15px;
+    }
+  }
   .VisitRegistrationFormContainer{
     display: block;
     width: 100%;
@@ -911,6 +974,9 @@ thead[class*="ant-table-thead"] th{
   }
 }
 @media only screen and (max-width: 600px) {
+  .Layout{
+    margin-left: 0px;
+  }
   .PageLayoutSpace .Layout .PageLayoutContentDark {
     width: 100%;
     height: 100%;
@@ -1009,19 +1075,7 @@ thead[class*="ant-table-thead"] th{
       justify-content: space-between;
       padding: 0px;
     }
-    .LoginPage{
-      display:flex;
-      width: 80%;
-      flex-direction: column;
-      justify-content:center;
-      align-items: center;
-    
-      .loginButtons{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-    }
+
     .SingleHistoryPageContainer{
       display: block;
       width: 100%;

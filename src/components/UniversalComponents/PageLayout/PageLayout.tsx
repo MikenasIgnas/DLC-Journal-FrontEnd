@@ -14,7 +14,8 @@ import PageContainer                                                      from '
 import Sider                                                              from 'antd/es/layout/Sider'
 import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
 import SideBar                                                            from './SideBar'
-import { Header } from 'antd/es/layout/layout'
+import { Header }                                                         from 'antd/es/layout/layout'
+import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
 
 const { Content, Footer } = Layout
 
@@ -25,22 +26,23 @@ type PageLayoutProps = {
 type MenuItem = Required<MenuProps>['items'][number];
 
 const PageLayout = ({children}:PageLayoutProps) => {
-  const navigate                  = useNavigate()
-  const [cookies, , removeCookie] = useCookies(['access_token'])
-  const token                     = cookies.access_token
-  const decodedToken:TokenType    = jwtDecode(token)
-  const location                  = useLocation()
-  const decodedPath               = decodeURIComponent(location.pathname)
-  const pathParts                 = decodedPath.split('/')
-  const selectedPart              = pathParts.filter(Boolean).pop()
-  const pageTitle                 = selectedPart?.replace('_', ' ')
-  const pageTitles                = ['Įmonių Sąrašas','Vizitai', 'Istorija','Darbuotojai','Darbuotojų Archyvas']
-  const [collapsed, setCollapsed] = React.useState(false)
-  const [searchParams]            = useSearchParams()
-  const menuKey                   = searchParams.get('menuKey')
-  const employee                  = useAppSelector((state)=> state.auth.name)
-  const dispatch                  = useAppDispatch()
-  const isAdmin                   = useAppSelector((state) => state.auth.isAdmin)
+  const navigate                    = useNavigate()
+  const [cookies, , removeCookie]   = useCookies(['access_token'])
+  const token                       = cookies.access_token
+  const decodedToken:TokenType      = jwtDecode(token)
+  const location                    = useLocation()
+  const decodedPath                 = decodeURIComponent(location.pathname)
+  const pathParts                   = decodedPath.split('/')
+  const selectedPart                = pathParts.filter(Boolean).pop()
+  const pageTitle                   = selectedPart?.replace('_', ' ')
+  const pageTitles                  = ['Įmonių Sąrašas','Vizitai', 'Istorija','Darbuotojai','Darbuotojų Archyvas']
+  const [collapsed, setCollapsed]   = React.useState(false)
+  const [searchParams]              = useSearchParams()
+  const menuKey                     = searchParams.get('menuKey')
+  const employee                    = useAppSelector((state)=> state.auth.name)
+  const dispatch                    = useAppDispatch()
+  const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
+  const windowSize                  = useSetWindowsSize()
 
   React.useEffect(() => {
     (async () => {
@@ -61,7 +63,9 @@ const PageLayout = ({children}:PageLayoutProps) => {
         console.log(err)
       }
     })()
+
   }, [])
+
 
   const userLogOut = async() => {
     const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
@@ -71,10 +75,10 @@ const PageLayout = ({children}:PageLayoutProps) => {
   }
 
   const getItem = (
-    label: React.ReactNode,
-    key: React.Key,
-    icon?: React.ReactNode,
-    children?: MenuItem[],
+    label:      React.ReactNode,
+    key:        React.Key,
+    icon?:      React.ReactNode,
+    children?:  MenuItem[],
   ): MenuItem => {
     return {
       key,
@@ -118,7 +122,6 @@ const PageLayout = ({children}:PageLayoutProps) => {
       <LogoutOutlined style={{fontSize: '20px'}} className='LogOutIcon' onClick={userLogOut}/>,
       '14'),
   ]
-
   return (
     <Space direction='vertical' className='PageLayoutSpace' >
       <ConfigProvider
@@ -134,25 +137,36 @@ const PageLayout = ({children}:PageLayoutProps) => {
         }}
       >
         <Layout hasSider>
-          <Sider
-            style={{marginBottom: '50px'}}
-            width={250}
-            collapsible
-            collapsed={collapsed}
-            onCollapse={(value) => setCollapsed(value)}
-          >
-            <div className='PageLayoutSliderBody'>
-              <div>
-                <SideBar collapsed={collapsed}/>
-                <Menu defaultOpenKeys={['sub1']} defaultSelectedKeys={['1']} selectedKeys={[`${menuKey}`]} mode='inline' items={siderItems} />
-              </div>
-            </div>
-          </Sider>
+          {
+            windowSize > 600 &&
+              <Sider
+                width={250}
+                style={{ marginBottom: '50px', overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
+              >
+                <div className='PageLayoutSliderBody'>
+                  <div>
+                    <SideBar collapsed={collapsed}/>
+                    <Menu defaultOpenKeys={['sub1']} defaultSelectedKeys={['1']} selectedKeys={[`${menuKey}`]} mode='inline' items={siderItems} />
+                  </div>
+                </div>
+              </Sider>
+          }
           <Layout className='Layout'>
-            <Header style={{display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <Menu selectedKeys={[`${menuKey}`]} items={headerItems} />
-              <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
-            </Header>
+            {
+              windowSize > 600 ?
+                <Header className='Header'>
+                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
+                </Header>
+                :
+                <Header className='Header'>
+                  <Menu selectedKeys={[`${menuKey}`]} items={[...siderItems, ...headerItems]} mode={ 'horizontal'}/>
+                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
+                </Header>
+            }
             <Content className='PageLayoutContentLight'>
               {location.pathname === '/' ?
                 <>{children}</> :

@@ -65,7 +65,7 @@ const LoginPage = () => {
               <Button type='primary' htmlType='submit' className='login-form-button'>
               Log in
               </Button>
-              <Button onClick={() => navigate('/ResetPassword')} type='link' style={{textAlign: 'center'}} className='login-form-forgot' href=''>
+              <Button onClick={() => navigate('/SendRecoveryCodePage')} type='link' style={{textAlign: 'center'}} className='login-form-forgot' href=''>
                Pamiršau slaptažodį
               </Button>
             </div>

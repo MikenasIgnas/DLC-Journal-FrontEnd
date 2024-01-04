@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
-import React            from 'react'
-import { Avatar, List } from 'antd'
-import SubClientTag     from './SubClientTag'
-import useFetch from '../../../../customHooks/useFetch'
-import { CompanyInfoType } from '../../../../types/globalTypes'
+import React                from 'react'
+import { Avatar, List }     from 'antd'
+import SubClientTag         from './SubClientTag'
+import useFetch             from '../../../../customHooks/useFetch'
+import { CompanyInfoType }  from '../../../../types/globalTypes'
 
 type ListItemProps = {
   listItemId:               number | undefined;

@@ -2,7 +2,7 @@
 
 const get = async (url, token) => {
   try {
-    const response = await fetch(`http://localhost:4000/${url}`, {
+    const response = await fetch(`http://localhost:4001/${url}`, {
       method:  'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ const post = async (url, data, token) => {
     body: JSON.stringify(data),
   }
 
-  const response = await fetch(`http://localhost:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4001/${url}`, options)
   return response.json()
 }
 const put = async (url, data, token) => {
@@ -43,12 +43,12 @@ const put = async (url, data, token) => {
     body: JSON.stringify(data),
   }
 
-  const response = await fetch(`http://localhost:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4001/${url}`, options)
   return response.json()
 }
 const deleteItem = async (url, token) => {
   try {
-    const response = await fetch(`http://localhost:4000/${url}`, {
+    const response = await fetch(`http://localhost:4001/${url}`, {
       method:  'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const deleteItem = async (url, token) => {
 
 const getPdfFile = async (url, token) => {
   try {
-    const response = await fetch(`http://localhost:4000/${url}`, {
+    const response = await fetch(`http://localhost:4001/${url}`, {
       method:  'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ const getCsvFile = async (url, data, token) => {
     body: JSON.stringify(data),
   }
 
-  const response = await fetch(`http://localhost:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4001/${url}`, options)
   const doc = await response.blob()
   return doc
 }
@@ -126,7 +126,7 @@ const validateUser = async (url, data) => {
     },
     body: JSON.stringify(data),
   }
-  const response = await fetch(`http://localhost:4000/auth/${url}`, options)
+  const response = await fetch(`http://localhost:4001/auth/${url}`, options)
   return response.json()
 }
 
@@ -140,7 +140,7 @@ const postImage = async (url, data, token) => {
     body: data,
   }
 
-  const response = await fetch(`http://localhost:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4001/${url}`, options)
   return response.json()
 }
 
@@ -170,7 +170,7 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
   const formData = new FormData()
   formData.append('file', fileList )
   setUploading(true)
-  fetch(`http://localhost:4000/${url}`, {
+  fetch(`http://localhost:4001/${url}`, {
     method: 'POST',
     body:   formData,
   })

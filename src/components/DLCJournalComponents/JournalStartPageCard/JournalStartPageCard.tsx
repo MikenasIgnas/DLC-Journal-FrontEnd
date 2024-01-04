@@ -15,16 +15,9 @@ const JournalStartPageCard = ({navigateLink, buttonText, icon}:JournalStartPageC
     <Card
       hoverable={true}
       onClick={()=> navigate(navigateLink)}
-      style={{
-        width:      '350px',
-        height:     '150px',
-        fontSize:   '25px',
-        textAlign:  'center',
-        display:    'flex',
-        alignItems: 'center',
-        margin:     '20px',
-      }}>
-      <Button type='link' style={{fontSize: '25px'}} onClick={() => navigate(navigateLink)} icon={icon}>{buttonText}</Button>
+      className='JournalStartPageCard'
+    >
+      <Button type='link' className='JournalStartPageCardButton' onClick={() => navigate(navigateLink)} icon={icon}>{buttonText}</Button>
     </Card>
   )
 }
