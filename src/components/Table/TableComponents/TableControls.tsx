@@ -36,7 +36,6 @@ const TableControls = ({tableSorter, pdfGenerator, filterParam}: TableControlsPr
           borderRadius: 'sm',
           py:           2,
           display:      {
-            xs: 'none',
             sm: 'flex',
           },
           gap:     1.5,

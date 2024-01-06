@@ -87,9 +87,9 @@ const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: Add
       onOk={() => dispatch(setOpenSubClientAdditionModal(false))}
       onCancel={() => dispatch(setOpenSubClientAdditionModal(false))}
       footer={false}
-      width={'55%'}
+      width={'70%'}
     >
-      <Form form={form} onFinish={addCompany}>
+      <Form style={{textAlign: 'center'}} form={form} onFinish={addCompany}>
         <div>
           <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
             <Input placeholder='Įmonės pavadinimas'/>

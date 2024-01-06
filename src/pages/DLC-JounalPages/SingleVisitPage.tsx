@@ -104,7 +104,7 @@ const SingleVisitPage = () => {
     setEdit(!edit)
     if(edit){
       const updateIdTypes = visitData?.[0].visitors.map((el, i) => ({
-        idType:          values.visitors[i].idType,
+        idType:          values?.visitors[i]?.idType,
         selectedVisitor: el.selectedVisitor,
       }))
       values.visitors = updateIdTypes

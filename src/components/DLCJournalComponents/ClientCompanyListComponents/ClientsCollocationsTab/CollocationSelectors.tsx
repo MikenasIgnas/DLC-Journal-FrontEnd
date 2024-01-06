@@ -37,7 +37,7 @@ const ColocationSelectors = ({collocationSite, colocationPremises, colocationId 
         {(fields) => {
           return fields?.map(({ name }, index) => {
             const premise = colocationPremises[index]
-            return <Collapse key={index} items={nestedItems(premise.premiseName, premise.racks, name)}/>
+            return <Collapse style={{overflow: 'auto', maxHeight: '350px'}} key={index} items={nestedItems(premise.premiseName, premise.racks, name)}/>
           })}
         }
       </Form.List>

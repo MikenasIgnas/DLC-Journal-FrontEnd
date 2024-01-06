@@ -12,10 +12,10 @@ import { useAppDispatch, useAppSelector }                                 from '
 import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }        from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
-import {  LogoutOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
+import { LogoutOutlined, MenuOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
 import SideBar                                                            from './SideBar'
 import { Header }                                                         from 'antd/es/layout/layout'
-import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
+import useSetWindowsSize                                                  from '../../../Plugins/useSetWindowsSize'
 
 const { Content, Footer } = Layout
 
@@ -111,27 +111,68 @@ const PageLayout = ({children}:PageLayoutProps) => {
     ]),
   ]
 
-  const headerItems: MenuItem[] = [
+  const logedInUserHeaderItem: MenuItem[] = [
     getItem(
       <Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=13`} className='UserDisplay'>Darbuotojas: {employee}</Link>
       , '13'),
   ]
 
-  const headerItems2: MenuItem[] = [
+  const logOutHeaderItem: MenuItem[] = [
     getItem(
       <LogoutOutlined style={{fontSize: '20px'}} className='LogOutIcon' onClick={userLogOut}/>,
       '14'),
   ]
+
+  const MobileHeaderItems: MenuProps['items'] = [
+    {
+      label:    'Menu',
+      key:      'SubMenu',
+      icon:     <MenuOutlined />,
+      children: [
+        {
+          type:     'group',
+          label:    'Žurnalas',
+          children: [
+            getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
+            getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'),
+            getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&tableSorter=desc'} >Vizitai</Link>, '3'),
+            getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4'} >Įmonių sąrašas</Link>, '4'),
+            getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'),
+            getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'),
+          ],
+        },
+        {
+          type:     'group',
+          label:    'Checklistas',
+          children: [
+            getItem(<Link to={'DLC Checklistas?menuKey=7'} >Pradėti</Link>, '7'),
+            getItem(<Link to={'DLC Checklistas/Istorija?menuKey=8&page=1&limit=10&tableSorter=desc'} >Istorija</Link>, '8'),
+          ],
+        },
+        {
+          type:     'group',
+          label:    'Vartotojai',
+          children: [
+            getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
+            isAdmin ? getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10') : null,
+            getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10&tableSorter=desc'} >Visi darbuotojai</Link>, '11'),
+            getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10&tableSorter=desc'} >Darbuotojų archyvas</Link>, '12'),
+          ],
+        },
+      ],
+    },
+  ]
+
   return (
     <Space direction='vertical' className='PageLayoutSpace' >
       <ConfigProvider
         theme={{
           components: {
             Layout: {
-              siderBg:      'white',
-              triggerBg:    'white',
-              triggerColor: 'black',
-              lightSiderBg: 'red',
+              siderBg:       'white',
+              triggerBg:     'white',
+              triggerColor:  'black',
+              headerPadding: 0,
             },
           },
         }}
@@ -158,13 +199,14 @@ const PageLayout = ({children}:PageLayoutProps) => {
             {
               windowSize > 600 ?
                 <Header className='Header'>
-                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems} />
-                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={logedInUserHeaderItem} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={logOutHeaderItem} />
                 </Header>
                 :
                 <Header className='Header'>
-                  <Menu selectedKeys={[`${menuKey}`]} items={[...siderItems, ...headerItems]} mode={ 'horizontal'}/>
-                  <Menu selectedKeys={[`${menuKey}`]} items={headerItems2} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={MobileHeaderItems} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={logedInUserHeaderItem} />
+                  <Menu selectedKeys={[`${menuKey}`]} items={logOutHeaderItem} />
                 </Header>
             }
             <Content className='PageLayoutContentLight'>

@@ -7,6 +7,8 @@ import { useCookies }                                             from 'react-co
 import { get, post }                                              from '../../../Plugins/helpers'
 import { useParams }                                              from 'react-router'
 import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
+import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
+import { DeleteOutlined } from '@ant-design/icons'
 
 type RegisteredVisitorsListItemProps = {
   signature:     string | null | undefined
@@ -40,7 +42,7 @@ const RegisteredVisitorsListItem = ({
   const signatureCanvasRef                  = React.useRef<any>(null)
   const [open, setOpen]                     = React.useState(false)
   const [savedSignature, setSavedSignature] = React.useState<string| undefined | null>(signature)
-
+  const windowSize                          = useSetWindowsSize()
   const onOk = async() => {
     if(signatureCanvasRef.current){
       const signature = {
@@ -75,43 +77,48 @@ const RegisteredVisitorsListItem = ({
   }
 
   return (
-    <>
-      <List.Item
-        className='RegisteredVisitorsListItemContainer'
-        actions={[
-          <div style={{display: 'flex', width: '550px', alignItems: 'center', justifyContent: 'space-evenly'}}>
-            <div>
-              {savedSignature && <Image width={150} src={savedSignature}/>}
-              {!savedSignature ?
-                <Button disabled={!edit} onClick={onModalOpen}>Pasirašyti</Button> :
-                <Button style={{marginLeft: '15px'}} disabled={!edit} onClick={deleteSignature}>Ištrinti</Button>
-              }
-            </div>
-            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
-                <Select disabled={!edit} options={identificationOptions}/>
-              </Form.Item>
-              <Button type='link' onClick={() => deleteVisitor(employeeId)}>Ištrinti</Button>,
-            </div>
-          </div>,
-        ]}
-      >
-        <List.Item.Meta
-          avatar={<Avatar shape='square' size={50} src={employeePhoto ? `../../ClientsEmployeesPhotos/${employeePhoto}` : '../../ClientsEmployeesPhotos/noUserImage.jpeg'} />}
-          title={<p>{name} {lastName}</p>}
-          description={occupation}
-        />
-        <div style={{width: '100px'}}>{permissions?.map((el, i) => <Tag key={i}>{el}</Tag>)}</div>
-      </List.Item>
+    <List.Item
+      className='VisitorsListItemContainer'
+      actions={[
+        <div className='SelectedVisitorsButtonContainer'>
+          <div>
+            {savedSignature && <Image width={150} src={savedSignature}/>}
+            {!savedSignature ?
+              <Button style={{ width: '140px'}} disabled={!edit} onClick={onModalOpen}>Pasirašyti</Button> :
+              <DeleteOutlined style={{color: 'red'}} disabled={!edit} onClick={deleteSignature}/>
+            }
+          </div>
+          <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
+            <Select style={{width: '100%'}} disabled={!edit} options={identificationOptions}/>
+          </Form.Item>
+          <Button onClick={() => deleteVisitor(employeeId)}>Pašalinti lankytoją</Button>,
+        </div>,
+      ]}
+    >
+      <List.Item.Meta
+        className='VisitorsListItem'
+        avatar={
+          <Avatar
+            shape='square' size={windowSize > 600 ? 90 : 40}
+            src={employeePhoto ? `../../ClientsEmployeesPhotos/${employeePhoto}` : '../../ClientsEmployeesPhotos/noUserImage.jpeg'}
+          />}
+        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{name} {lastName}</p>}
+        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{occupation}</p>}
+      />
+      <div className='PermissionTags'>{permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
       <Modal
-        onOk={onOk}
         open={open}
         onCancel={onCancel}
+        onOk={onOk}
       >
-        <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
+        <Form.Item name={[name, 'signature']}>
+          <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
+        </Form.Item>
       </Modal>
-    </>
+    </List.Item>
   )
 }
 
 export default RegisteredVisitorsListItem
+
+

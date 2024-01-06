@@ -130,6 +130,7 @@
     }
   }
 }
+
 .SubClientAdditionContainer{
   display: flex;
   justify-content: space-evenly;
@@ -143,6 +144,7 @@
     }
   }
 }
+
 :where(.css-dev-only-do-not-override-qf76go).ant-descriptions .ant-descriptions-item-container {
   display: inline; 
 }
@@ -466,7 +468,148 @@ display: flex;
     justify-content: center;
   }
 }
+.RegisteredVisitorsSelect{
+  width: 160px;
+}
+.SelectedVisitorsButtons{
+  display: flex;
+  justify-content: space-evenly; 
+  align-items: center;
+  width: 300px
+}
+
+.SingatureButtons{
+  display: flex; 
+  justify-content: center; 
+  width: 100%; 
+  align-items: center;
+}
+
+.SelectedVisitorsButtonContainer{
+  display: flex; 
+  align-items: center; 
+  width: 500px; 
+  justify-content: space-around
+}
+.SignatureButtons{
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+.PermissionTags{
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.EditableCollocationContainer{
+  width: 100%; 
+  display: flex; 
+  justify-content: space-between;
+}
+
 @media screen and (max-width: 600px) {
+  .SelectedCollocationListBody{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .CollocationsListCardBody{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .ListItemButtons{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .SubClientAdditionContainer{
+    .SubClientAdditionBody{
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      .SubClientAdditionSelect{
+        width: 185px;
+      }
+    }
+  }
+  .PermissionTags{
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+  .RegisteredVisitorsListItemContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .SelectedCollocationListItem{
+    overflow: auto;
+    max-height: 200px;
+  }
+  .CollocationItemCard{
+    overflow: auto;
+    max-height: 200px;
+  }
+  :where(.css-dev-only-do-not-override-1s5hf0o).ant-list .ant-list-item .ant-list-item-action {
+    flex: 0 0 auto;
+    margin-inline-start: 0px;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+  }
+  .VisitorsListItem{
+    width: 100%;
+  }
+  .SignatureButtons{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .VisitorsListItemContainer{
+    display: flex;
+    flex-direction: column ;
+    align-items: center;
+    justify-content: center;
+  }
+  .VisitorsListItemSelect{
+    width: 100px;
+  }
+  .SignatureContainer{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .SelectedVisitorsButtons{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center; 
+    flex-direction: column;
+  }
+  .SingatureButtons{
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+  }
+  .SelectedVisitorsButtonContainer{
+    display: flex; 
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 10px;
+  }
   .LoginPage{
     display:flex;
     width: 300px;
@@ -634,6 +777,7 @@ thead[class*="ant-table-thead"] th{
   .HomePageContainer{
     max-height: calc(100vh - 145px)
   }
+  
   .Header{
     position:       sticky;
     top:              0;
@@ -643,6 +787,7 @@ thead[class*="ant-table-thead"] th{
     justify-content:  flex-end;
     align-items:      center;
   }
+
   .Layout{
     margin-left: 250px;
     .PageLayoutHeaedrMenu{
@@ -796,7 +941,6 @@ thead[class*="ant-table-thead"] th{
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 70vh;
     .CreateUserCard{
       display: flex;
       flex-direction: column;
@@ -918,6 +1062,14 @@ thead[class*="ant-table-thead"] th{
 }
 
 @media screen and (max-width: 600px) {
+   .Header{
+    position:       sticky;
+    top:              0;
+    z-Index:          1;
+    width:            100%;
+    display:          flex;
+    align-items:      center;
+  }
   .DisplayFlex {
     display: flex;
     flex-direction: column;

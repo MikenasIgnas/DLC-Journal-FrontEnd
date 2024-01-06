@@ -45,7 +45,7 @@ const ListItem = ({
 
   return (
     <List.Item
-      style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+      style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}
       actions={buttons}>
       <List.Item.Meta
         avatar={

@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie'
 export const useFetch = <T>(url: string, setLoading?: React.Dispatch<React.SetStateAction<boolean>>) => {
   const [cookies]       = useCookies(['access_token'])
   const [data, setData] = useState<T | undefined>()
+
   React.useEffect(() => {
     (async () => {
       try{
