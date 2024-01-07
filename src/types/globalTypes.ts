@@ -71,6 +71,7 @@ export type UserType = {
   id:             number;
   email:          string;
   isAdmin:        boolean;
+  isSecurity:     boolean;
   name:           string;
   username:       string;
   created:        string;

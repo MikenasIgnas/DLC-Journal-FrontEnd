@@ -57,6 +57,7 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
 
     setFetchedData()
   }, [cookies.access_token, searchParams])
+
   React.useEffect(() => {
     (async () => {
       let fetchUrl = 'user/count'

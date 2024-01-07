@@ -8,6 +8,7 @@ type SingleUserType = {
     email:          string,
     username:       string,
     isAdmin:        boolean,
+    isSecurity:     boolean,
     password:       string,
     repeatPassword: string,
     _id:            string

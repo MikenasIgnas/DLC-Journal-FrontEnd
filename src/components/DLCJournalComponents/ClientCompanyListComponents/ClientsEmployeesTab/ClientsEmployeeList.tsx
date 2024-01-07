@@ -52,8 +52,8 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   const listButtons = (listItemId: number | undefined, companyId: number | undefined) => {
     const buttons = [
       <div key={listItemId} className='ListItemButtons'>
-        <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} key={listItemId}>Peržiūrėti</Button>
-        <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} key={listItemId}>Ištrinti</Button>
+        <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} >Peržiūrėti</Button>
+        <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} >Ištrinti</Button>
       </div>,
     ]
     return buttons

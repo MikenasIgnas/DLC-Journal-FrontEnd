@@ -9,6 +9,7 @@ import { useParams, useSearchParams }                                           
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }                                        from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import useSetWindowsSize from '../../../../Plugins/useSetWindowsSize'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
@@ -41,7 +42,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const {id}                        = useParams()
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                     = useAppDispatch()
-
+  const windowSize                  = useSetWindowsSize()
   React.useEffect(() => {
     (async () => {
       try{
@@ -72,7 +73,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   }
 
   return (
-    <Drawer width={640} placement='right' closable={false} onClose={onClose} open={openClientsEmployeesDrawer}>
+    <Drawer width={windowSize > 600 ? 640 : 300} placement='right' closable={false} onClose={onClose} open={openClientsEmployeesDrawer}>
       { employee &&
         <Form form={form} onFinish={editUser}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>

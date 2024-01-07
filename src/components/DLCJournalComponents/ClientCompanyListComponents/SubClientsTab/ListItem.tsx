@@ -45,6 +45,7 @@ const ListItem = ({
 
   return (
     <List.Item
+      key={listItemId}
       style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}
       actions={buttons}>
       <List.Item.Meta

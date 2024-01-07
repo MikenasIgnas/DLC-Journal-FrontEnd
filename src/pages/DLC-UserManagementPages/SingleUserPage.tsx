@@ -30,6 +30,7 @@ type FormValuesType = {
   repeatPassword: string,
   oldPassword:    string,
   isAdmin:        boolean
+  isSecurity:     boolean
 }
 
 const SingleUserPage = () => {
@@ -44,11 +45,12 @@ const SingleUserPage = () => {
 
   const onFinish = async (values: FormValuesType) => {
     const userInfoValues = {
-      id:       id,
-      email:    values.email,
-      name:     values.name,
-      isAdmin:  values.isAdmin,
-      username: values.username,
+      id:         id,
+      email:      values.email,
+      name:       values.name,
+      isAdmin:    values.isAdmin,
+      isSecurity: values.isSecurity,
+      username:   values.username,
     }
 
     const passwordChangeValues = {
@@ -62,11 +64,19 @@ const SingleUserPage = () => {
 
     try {
       const res = await (endpoint === 'user' ? put : post)(endpoint, postData, cookies.access_token)
+      console.log(res)
       if (!values.password && !values.oldPassword && !values.repeatPassword) {
-        messageApi.success({
-          type:    'success',
-          content: 'Pakeitimai išsaugoti',
-        })
+        if(res.messsage){
+          messageApi.info({
+            type:    'info',
+            content: res.messsage,
+          })
+        }else{
+          messageApi.success({
+            type:    'success',
+            content: 'Pakeitimai išsaugoti',
+          })
+        }
         if (!values.password && values.name) {
           if(logedInUser){
             dispatch(setEmployeeName(res.name))
@@ -165,6 +175,15 @@ const SingleUserPage = () => {
               valuePropName='checked'
             >
               <Checkbox disabled={isAdmin ? false : true}>Admin</Checkbox>
+            </Form.Item>
+            <Form.Item
+              label=' '
+              labelAlign='left'
+              initialValue={user?.isSecurity}
+              name='isSecurity'
+              valuePropName='checked'
+            >
+              <Checkbox disabled={isAdmin ? false : true}>Apasauga</Checkbox>
             </Form.Item>
             {logedInUser &&
             <>

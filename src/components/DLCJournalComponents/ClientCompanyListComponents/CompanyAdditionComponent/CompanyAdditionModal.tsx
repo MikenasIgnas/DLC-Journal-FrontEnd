@@ -10,6 +10,7 @@ import { CollocationsType }                                 from '../../../../ty
 import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
 import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
+import useSetCheckedCollocationList                         from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -34,14 +35,13 @@ type CompanyFormType = {
 };
 
 const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
-  const [cookies]                   = useCookies(['access_token'])
-  const [form]                      = useForm()
-  const [uploading, setUploading]   = React.useState(false)
-  const [fileList, setFileList]     = React.useState<UploadFile[]>([])
-  const dispatch                    = useAppDispatch()
-  const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
-  const [messageApi, contextHolder] = message.useMessage()
-
+  const [cookies]                     = useCookies(['access_token'])
+  const [form]                        = useForm()
+  const [uploading, setUploading]     = React.useState(false)
+  const [fileList, setFileList]       = React.useState<UploadFile[]>([])
+  const dispatch                      = useAppDispatch()
+  const openCompaniesAdditionModal    = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [messageApi, contextHolder]   = message.useMessage()
   const filterObject = (obj: CompanyFormType): CompanyFormType => {
     const filteredObj: CompanyFormType = {}
     if (obj.J13) {
@@ -76,6 +76,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
+    console.log(filteredResult)
     const res = await post(postUrl, filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
@@ -119,10 +120,12 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             {collocations?.map((colocation, i) =>
               colocation.premises ?
                 <ColocationSelectors
+
                   key={i}
                   collocationSite={colocation.site}
                   colocationPremises={colocation.premises}
-                  colocationId={colocation.id}/>
+                  colocationId={colocation.id}
+                />
                 : null
             )}
           </div>

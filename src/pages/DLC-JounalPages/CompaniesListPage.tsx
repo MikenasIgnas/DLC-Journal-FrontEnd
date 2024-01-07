@@ -17,6 +17,7 @@ const CompaniesListPage = () => {
   const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
   const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [searchValue, setSearchValues]  = React.useState<string | null>(null)
   const delay                           = useDelay()
 
   React.useEffect(() => {
@@ -57,8 +58,6 @@ const CompaniesListPage = () => {
     ]
     return buttons
   }
-
-  const [searchValue, setSearchValues] = React.useState<string | null>(null)
 
   const searchForCompany = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase()

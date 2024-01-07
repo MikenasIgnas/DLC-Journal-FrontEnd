@@ -70,6 +70,7 @@ const UsersArchivePage = () => {
           email={el.email}
           username={el.username}
           isAdmin={el.isAdmin}
+          isSecurity={el.isSecurity}
           name={el.name}
           status={el.isDisabled}
           rowMenu={<RowMenu

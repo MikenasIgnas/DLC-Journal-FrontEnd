@@ -34,6 +34,7 @@ const CreateUserPage = () => {
   const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async (values: FormValuesType) => {
+    console.log(values)
     try{
       values.dateCreated = getCurrentDate()
       const res = await post('user', values, cookies.access_token)
@@ -109,6 +110,15 @@ const CreateUserPage = () => {
             valuePropName='checked'
           >
             <Checkbox>Admin</Checkbox>
+          </Form.Item>
+          <Form.Item
+            label='Rolė'
+            labelAlign='left'
+            initialValue={false}
+            name='isSecurity'
+            valuePropName='checked'
+          >
+            <Checkbox>Apsauga</Checkbox>
           </Form.Item>
           <Form.Item
             labelAlign='left'

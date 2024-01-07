@@ -10,6 +10,7 @@ import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
 import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
+import { useAppSelector } from '../../store/hooks'
 
 const TableColumns = () => {
   return(
@@ -52,7 +53,8 @@ const VisitPage = () => {
   const navigate                          = useNavigate()
   const {data, count, setData}            = useSetVisitsData()
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
-  const rowMenuItems                      = visitsRowMenuItems(loading)
+  const isSecurity                        = useAppSelector((state) => state.auth.isSecurity)
+  const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
 
   return (
     <FullTable

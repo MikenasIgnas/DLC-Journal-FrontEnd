@@ -71,7 +71,7 @@ const ManageUsersPage = () => {
 
   return (
     <FullTable
-      filterParam={'isAdmin'}
+      filterParam='isAdmin'
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el?._id}
@@ -80,6 +80,7 @@ const ManageUsersPage = () => {
           username={el.username}
           email={el?.email}
           isAdmin={el?.isAdmin}
+          isSecurity = {el.isSecurity}
           name={el?.name}
           status={el.isDisabled}
           rowMenu={<RowMenu

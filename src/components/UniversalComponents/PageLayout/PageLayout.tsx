@@ -9,7 +9,7 @@ import { useCookies }                                                     from '
 import {jwtDecode}                                                        from 'jwt-decode'
 import { TokenType }                                                      from '../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin }        from '../../../auth/AuthReducer/reducer'
+import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin, setIsSecurity } from '../../../auth/AuthReducer/reducer'
 import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
 import Sider                                                              from 'antd/es/layout/Sider'
 import { LogoutOutlined, MenuOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
@@ -42,6 +42,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const employee                    = useAppSelector((state)=> state.auth.name)
   const dispatch                    = useAppDispatch()
   const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
+  const isSecurity                  = useAppSelector((state) => state.auth.isSecurity)
   const windowSize                  = useSetWindowsSize()
 
   React.useEffect(() => {
@@ -51,6 +52,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
         if(user){
           dispatch(setEmployeeName(user.name))
           dispatch(setIsAdmin(user.isAdmin))
+          dispatch(setIsSecurity(user.isSecurity))
           dispatch(setUserEmail(user.email))
           dispatch(setUsersRole(user.userRole))
         }else{
@@ -91,24 +93,24 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const siderItems: MenuItem[] = [
     getItem('DLC Žurnalas', 'sub1', <ReadOutlined />, [
       getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
-      getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'),
-      getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&tableSorter=desc'} >Vizitai</Link>, '3'),
-      getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4'} >Įmonių sąrašas</Link>, '4'),
-      getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'),
-      getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'),
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&tableSorter=desc'} >Vizitai</Link>, '3'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4'} >Įmonių sąrašas</Link>, '4'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'): null,
     ]),
 
-    getItem('DLC Checklistas', 'sub2', <ScheduleOutlined />, [
+    !isSecurity ? getItem('DLC Checklistas', 'sub2', <ScheduleOutlined />, [
       getItem(<Link to={'DLC Checklistas?menuKey=7'} >Pradėti</Link>, '7'),
       getItem(<Link to={'DLC Checklistas/Istorija?menuKey=8&page=1&limit=10&tableSorter=desc'} >Istorija</Link>, '8'),
-    ]),
+    ]): null,
 
-    getItem('Vartotojai', 'sub3', <UserOutlined />, [
+    !isSecurity ? getItem('Vartotojai', 'sub3', <UserOutlined />, [
       getItem(<Link to={`/Mano_Profilis/${decodedToken.userId}?menuKey=9`} >Mano Profilis</Link>, '9'),
       isAdmin ? getItem(<Link to={'/Sukurti_Darbuotoją?menuKey=10'} >Sukurti darbuotoją</Link>, '10') : null,
       getItem(<Link to={'/Visi_Darbuotojai?menuKey=11&page=1&limit=10&tableSorter=desc'} >Visi darbuotojai</Link>, '11'),
       getItem(<Link to={'/Darbuotojų_Archyvas?menuKey=12&page=1&limit=10&tableSorter=desc'} >Darbuotojų archyvas</Link>, '12'),
-    ]),
+    ]): null,
   ]
 
   const logedInUserHeaderItem: MenuItem[] = [
