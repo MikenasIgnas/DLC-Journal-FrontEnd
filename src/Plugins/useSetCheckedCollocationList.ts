@@ -64,7 +64,6 @@ const useSetCheckedCollocationList = () => {
     }))
   }
 
-  console.log(checkedList)
   return { checkedList, checkAllStates, onCheckAllChange, onCheckboxChange }
 }
 

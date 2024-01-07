@@ -7,7 +7,6 @@ const PasswordResetPage = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
   const onFinish = (values:any) => {
-    console.log(values)
     navigate('/')
   }
 

@@ -34,7 +34,6 @@ const CreateUserPage = () => {
   const [errorMessage, setErrorMessage] = React.useState('')
 
   const onFinish = async (values: FormValuesType) => {
-    console.log(values)
     try{
       values.dateCreated = getCurrentDate()
       const res = await post('user', values, cookies.access_token)

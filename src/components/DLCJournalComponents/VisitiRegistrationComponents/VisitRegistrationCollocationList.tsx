@@ -51,7 +51,6 @@ const VisitRegistrationCollocationList = ({ companiesColocations, setCheckedList
           <div className='CollocationsListCardBody'>
             {companiesColocations?.map((el, i) => {
               const [category, values] = Object.entries(el)[0]
-              console.log(companiesColocations)
               return (
                 <Card className='CollocationItemCard' key={i} title={<CollocationCardTitle category={category} values={values} index={i}/>}>
                   <Form.Item name={['visitCollocation', category]}>
