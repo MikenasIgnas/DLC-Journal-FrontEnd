@@ -10,7 +10,7 @@ import { CollocationsType }                                 from '../../../../ty
 import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
 import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
-import useSetCheckedCollocationList                         from '../../../../Plugins/useSetCheckedCollocationList'
+import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -35,44 +35,22 @@ type CompanyFormType = {
 };
 
 const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
-  const [cookies]                     = useCookies(['access_token'])
-  const [form]                        = useForm()
-  const [uploading, setUploading]     = React.useState(false)
-  const [fileList, setFileList]       = React.useState<UploadFile[]>([])
-  const dispatch                      = useAppDispatch()
-  const openCompaniesAdditionModal    = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
-  const [messageApi, contextHolder]   = message.useMessage()
-  const filterObject = (obj: CompanyFormType): CompanyFormType => {
-    const filteredObj: CompanyFormType = {}
-    if (obj.J13) {
-      filteredObj.J13 = []
-      for (const key in obj.J13) {
-        const entries = Object.entries(obj.J13[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    if (obj.T72) {
-      filteredObj.T72 = []
-      for (const key in obj.T72) {
-        const entries = Object.entries(obj.T72[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    return filteredObj
-  }
+  const [cookies]                                                           = useCookies(['access_token'])
+  const [form]                                                              = useForm()
+  const [uploading, setUploading]                                           = React.useState(false)
+  const [fileList, setFileList]                                             = React.useState<UploadFile[]>([])
+  const dispatch                                                            = useAppDispatch()
+  const openCompaniesAdditionModal                                          = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [messageApi, contextHolder]                                         = message.useMessage()
+  const {
+    filteredResult,
+    checkedList,
+    checkAllStates,
+    onCheckAllChange,
+    onCheckboxChange,
+  } = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
@@ -119,12 +97,14 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             {collocations?.map((colocation, i) =>
               colocation.premises ?
                 <ColocationSelectors
-
+                  checkedList={checkedList}
+                  checkAllStates={checkAllStates}
+                  onCheckAllChange={onCheckAllChange}
+                  onCheckboxChange={onCheckboxChange}
                   key={i}
                   collocationSite={colocation.site}
                   colocationPremises={colocation.premises}
-                  colocationId={colocation.id}
-                />
+                  colocationId={colocation.id}/>
                 : null
             )}
           </div>

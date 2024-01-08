@@ -35,14 +35,17 @@ const tableSorter = [
   {
     filterName:    'statusas',
     filterOptions: [
-      { value: 'success', label: 'Pradėtas' },
-      { value: 'processing', label: 'Paruoštas'},
-      { value: 'error', label: 'Baigtas'},
+      { value: '1', label: 'Pradėtas', filterParam: 'selectFilter', filterValue: 'success' },
+      { value: '2', label: 'Paruoštas', filterParam: 'selectFilter', filterValue: 'processing'},
+      { value: '3', label: 'Baigtas', filterParam: 'selectFilter', filterValue: 'error'},
     ],
   },
   {
     filterName:    'adresas',
-    filterOptions: [{ value: 'J13', label: 'J13' },{ value: 'T72', label: 'T72' }],
+    filterOptions: [
+      { value: '1', label: 'J13', filterParam: 'selectFilter', filterValue: 'J13' },
+      { value: '2', label: 'T72', filterParam: 'selectFilter', filterValue: 'T72' },
+    ],
   },
 ]
 
@@ -59,7 +62,6 @@ const VisitPage = () => {
   return (
     <FullTable
       pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
-      filterParam={'selectFilter'}
       tableSorter={tableSorter}
       currentPage={page}
       setSearchParams={setSearchParams}

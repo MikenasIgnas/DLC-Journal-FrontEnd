@@ -2,63 +2,57 @@
 import React                                                        from 'react'
 import { Card, Checkbox, Col, ConfigProvider, Divider, Form, Row }  from 'antd'
 import { CollocationsType, CollocationsSites }                      from '../../../../types/globalTypes'
-
+import { CheckboxChangeEvent }                                      from 'antd/es/checkbox'
 
 type CollocationFormListProps = {
     collocations:      CollocationsType[] | undefined;
     collocationsSites: CollocationsSites
+    checkedList: {
+      [site: string]: {
+          [premiseName: string]: string[];
+      }[];
+    };
+    checkAllStates: {
+      [key: string]: boolean;
+    };
+    onCheckAllChange: (e: CheckboxChangeEvent, racks: string[], premiseName: string, site: string) => void;
+    onCheckboxChange: (selectedRacks: string[], premiseName: string, site: string, racks: string[]) => void;
 }
 
-const EditableCollocationFormList = ({collocations, collocationsSites}: CollocationFormListProps) => {
-  return (
-    <div className='EditableCollocationContainer' >
-      { collocations?.map((colocation, i) =>
-        <div style={{width: '45%'}} key={i} >
-          <div>
-            <Divider >
-              {colocation.site}
-            </Divider>
-            <div>
-              <Form.List
-                name={colocation.site}
-                initialValue={colocation.premises.map((premise) => {
-                  const selectedRackData = collocationsSites[colocation.site as keyof typeof collocationsSites]?.find((data)=> data[premise.premiseName])
-                  return {
-                    [premise.premiseName]: selectedRackData ? selectedRackData[premise.premiseName] : [],
-                  }
-                })}
-              >
-                {(fields) => (
-                  <Row gutter={[16, 16]}>
-                    {fields.map(({ name, ...rest }, index) => {
-                      const premise = colocation.premises[index]
-                      return (
-                        <Col key={index}>
-                          <Card style={{overflow: 'auto', maxHeight: '250px'}}>
-                            <Divider>
-                              {premise.premiseName}
-                            </Divider>
-                            <ConfigProvider theme={{
-                              token: {
-                                marginXS: 0,
-                              },
-                            }}>
-                              <Form.Item name={[name, premise.premiseName]}>
-                                <Checkbox.Group options={premise.racks} style={{display: 'block'}}/>
-                              </Form.Item>
-                            </ConfigProvider>
-                          </Card>
-                        </Col>
-                      )})}
-                  </Row>
-                )}
-              </Form.List>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+const EditableCollocationFormList = ({collocations, collocationsSites, checkAllStates, checkedList, onCheckAllChange, onCheckboxChange}: CollocationFormListProps) => {
 
+  return (
+    <div className='EditableCollocationContainer'>
+      {collocations?.map((colocation, colocationIndex) => (
+        <div style={{width: '45%'}} key={colocationIndex}>
+          <Divider>{colocation.site}</Divider>
+          {colocation.premises.map((premise, premiseIndex) => {
+            const premiseKey = `${colocation.site}_${premise.premiseName}`
+            const selectedRackData = collocationsSites[colocation.site]?.find(data => data[premise.premiseName])
+            const initialValue = selectedRackData ? selectedRackData[premise.premiseName] : []
+            const checkedRacks = checkedList[colocation.site]?.find(p => p[premise.premiseName])?.[premise.premiseName] || initialValue
+            return (
+              <Col key={premiseIndex}>
+                <Card style={{overflow: 'auto', maxHeight: '250px'}}>
+                  <Divider>{premise.premiseName}</Divider>
+                  <Checkbox
+                    onChange={(e) => onCheckAllChange(e, premise.racks, premise.premiseName, colocation.site)}
+                    checked={checkAllStates[premiseKey]}
+                  >
+                    {checkAllStates[premiseKey] ? 'Uncheck All' : 'Check All'}
+                  </Checkbox>
+                  <Checkbox.Group
+                    options={premise.racks.map(rack => ({ label: rack, value: rack }))}
+                    value={checkedRacks}
+                    onChange={(selectedRacks) => onCheckboxChange(selectedRacks as string[], premise.premiseName, colocation.site, premise.racks)}
+                  />
+                </Card>
+              </Col>
+            )
+          })}
+        </div>
+      ))}
+    </div>
   )
 }
 

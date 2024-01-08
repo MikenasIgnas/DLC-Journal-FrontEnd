@@ -1,70 +1,134 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React                    from 'react'
-import { CheckboxChangeEvent }  from 'antd/es/checkbox'
-import { CollocationType }      from '../types/globalTypes'
-import { useCookies }           from 'react-cookie'
-import { get }  from './helpers'
-
-interface CheckedListState {
-  [key: string]: { [premiseName: string]: string[] }[];
+import React from 'react'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+interface CheckedPremises {
+  [premiseName: string]: string[];
 }
 
+interface CheckedList {
+  [site: string]: CheckedPremises[];
+}
+
+interface CheckAllStates {
+  [key: string]: boolean;
+}
+
+interface State {
+  checkedList: CheckedList;
+  checkAllStates: CheckAllStates;
+}
+
+type CompanyFormType = {
+companyName?:           string,
+companyDescription?:    string,
+companyPhoto?:          string,
+subClient?: {
+  subClientId:          string;
+  subClientCompanyName: string
+  }[]
+J13?: {
+  [key: string]: string[];
+}[];
+T72?: {
+  [key: string]: string[];
+}[];
+};
+
 const useSetCheckedCollocationList = () => {
-  const [collocations, setCollocations]     = React.useState<CollocationType[]>()
-  const [checkedList, setCheckedList]       = React.useState<CheckedListState>({})
-  const [checkAllStates, setCheckAllStates] = React.useState<{ [key: string]: boolean }>({})
+  const [checkboxList, setCheckboxList] = React.useState<State>({
+    checkedList:    {},
+    checkAllStates: {},
+  })
 
-  const [cookies] = useCookies(['access_token'])
+  const onCheckAllChange = React.useCallback((e: CheckboxChangeEvent, racks: string[], premiseName: string, site: string) => {
+    setCheckboxList(prevState => {
+      const updatedPremises = prevState.checkedList[site] ? [...prevState.checkedList[site]] : []
+      const premiseIndex = updatedPremises.findIndex(premise => premise[premiseName] !== undefined)
+      const newPremises = {
+        [premiseName]: e.target.checked ? racks : [],
+      }
 
-  React.useEffect(() => {
-    (async () => {
-      const allCollocations = await get('getCollocations', cookies.access_token)
-      localStorage.removeItem('visitPurpose')
-      setCollocations(allCollocations.data)
-    })()
+      if (premiseIndex !== -1) {
+        updatedPremises[premiseIndex] = newPremises
+      } else {
+        updatedPremises.push(newPremises)
+      }
+
+      return {
+        ...prevState,
+        checkedList: {
+          ...prevState.checkedList,
+          [site]: updatedPremises,
+        },
+        checkAllStates: {
+          ...prevState.checkAllStates,
+          [`${site}_${premiseName}`]: e.target.checked,
+        },
+      }
+    })
   }, [])
 
-  const onCheckAllChange = (e: CheckboxChangeEvent, values: string[], category: string, site: string) => {
-    setCheckedList((prev) => {
-      const existingList = prev[site] || []
-      const updatedList = [
-        ...existingList,
-        {
-          [category]: e.target.checked ? values : [],
-        },
-      ]
+  const onCheckboxChange = React.useCallback((selectedRacks: string[], premiseName: string, site: string, racks: string[]) => {
+    setCheckboxList(prevState => {
+      const updatedPremises = prevState.checkedList[site] ? [...prevState.checkedList[site]] : []
+      const premiseIndex = updatedPremises.findIndex(premise => premise[premiseName] !== undefined)
+      const newPremises = {
+        [premiseName]: selectedRacks,
+      }
+
+      if (premiseIndex !== -1) {
+        updatedPremises[premiseIndex] = newPremises
+      } else {
+        updatedPremises.push(newPremises)
+      }
+
+      const isAllChecked = selectedRacks.length === racks.length
       return {
-        ...prev,
-        [site]: updatedList,
+        ...prevState,
+        checkedList: {
+          ...prevState.checkedList,
+          [site]: updatedPremises,
+        },
+        checkAllStates: {
+          ...prevState.checkAllStates,
+          [`${site}_${premiseName}`]: isAllChecked,
+        },
       }
     })
-    setCheckAllStates((prev) => ({
-      ...prev,
-      [site]: e.target.checked,
-    }))
-  }
+  }, [])
 
-  const onCheckboxChange = (list: string[], category: string, site: string) => {
-    setCheckedList((prev) => {
-      const existingList = prev[site] || []
-      const updatedList = [
-        ...existingList,
-        {
-          [category]: list,
-        },
-      ]
-      return {
-        ...prev,
-        [site]: updatedList,
+  const filterObject = (obj: CompanyFormType): CompanyFormType => {
+    const filteredObj: CompanyFormType = {}
+    if (obj.J13) {
+      filteredObj.J13 = []
+      for (const key in obj.J13) {
+        const entries = Object.entries(obj.J13[key])
+        if (entries.length > 0) {
+          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
+          if (nonEmptyEntry) {
+            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
+          }
+        }
       }
-    })
-    setCheckAllStates((prev) => ({
-      ...prev,
-      [site]: list.length === (collocations?.find((collocation) => Object.keys(collocation)[0] === category)?.[category]?.length || 0),
-    }))
+    }
+    if (obj.T72) {
+      filteredObj.T72 = []
+      for (const key in obj.T72) {
+        const entries = Object.entries(obj.T72[key])
+        if (entries.length > 0) {
+          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
+          if (nonEmptyEntry) {
+            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
+          }
+        }
+      }
+    }
+    return filteredObj
   }
-
-  return { checkedList, checkAllStates, onCheckAllChange, onCheckboxChange }
+  const { checkedList, checkAllStates } = checkboxList
+  const filteredResult = filterObject(checkedList)
+  return { filteredResult, checkedList, checkAllStates, onCheckAllChange, onCheckboxChange }
 }
 
 export default useSetCheckedCollocationList

@@ -9,6 +9,8 @@ import ColocationSelectors                        from '../ClientsCollocationsTa
 import { CollocationsType }                       from '../../../../types/globalTypes'
 import { useAppDispatch }                         from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -38,37 +40,15 @@ const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: Add
   const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
-  const filterObject = (obj: CompanyFormType): CompanyFormType => {
-    const filteredObj: CompanyFormType = {}
-    if (obj.J13) {
-      filteredObj.J13 = []
-      for (const key in obj.J13) {
-        const entries = Object.entries(obj.J13[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    if (obj.T72) {
-      filteredObj.T72 = []
-      for (const key in obj.T72) {
-        const entries = Object.entries(obj.T72[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    return filteredObj
-  }
+  const {
+    filteredResult,
+    checkedList,
+    checkAllStates,
+    onCheckAllChange,
+    onCheckboxChange,
+  }                               = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
@@ -100,7 +80,19 @@ const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: Add
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             {collocations?.map((colocation, i) =>
-              colocation.premises ? <ColocationSelectors key={i} collocationSite={colocation.site} colocationPremises={colocation.premises} colocationId={colocation.id}/> : null)}
+              colocation.premises ?
+                <ColocationSelectors
+                  key={i}
+                  collocationSite={colocation.site}
+                  colocationPremises={colocation.premises}
+                  colocationId={colocation.id}
+                  checkedList={checkedList}
+                  checkAllStates={checkAllStates}
+                  onCheckAllChange={onCheckAllChange}
+                  onCheckboxChange={onCheckboxChange}
+                />
+                : null
+            )}
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>

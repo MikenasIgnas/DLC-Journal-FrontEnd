@@ -18,6 +18,7 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
       const limit             = searchParams.get('limit') || 10
       const searchFilter      = searchParams.get('search')
       const isAdminFilter     = searchParams.get('isAdmin')
+      const isSecurityFilter  = searchParams.get('isSecurity')
       const isDisabledFilter  = searchParams.get('isDisabled')
 
       let fetchUrl        = `user?page=${page}&limit=${limit}`
@@ -40,6 +41,10 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
 
       if(tableSorter){
         fetchUrl += `&tableSorter=${tableSorter}`
+      }
+
+      if(isSecurityFilter){
+        fetchUrl += `&isSecurity=${isSecurityFilter}`
       }
 
       try {

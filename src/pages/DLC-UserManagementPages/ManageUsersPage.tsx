@@ -35,7 +35,11 @@ const TableColumns = () => {
 const tableSorter = [
   {
     filterName:    'Rolė',
-    filterOptions: [{ value: 'false', label: 'user' }, { value: 'true', label: 'admin' }],
+    filterOptions: [
+      { value: '1', label: 'user', filterParam: 'isAdmin', filterValue: false},
+      { value: '2', label: 'admin', filterParam: 'isAdmin', filterValue: true },
+      { value: '3', label: 'apsauga', filterParam: 'isSecurity', filterValue: true },
+    ],
   },
 ]
 
@@ -71,7 +75,11 @@ const ManageUsersPage = () => {
 
   return (
     <FullTable
-      filterParam='isAdmin'
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      tableColumns={<TableColumns />}
+      documentCount={count}
+      tableSorter={tableSorter}
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el?._id}
@@ -89,11 +97,6 @@ const ManageUsersPage = () => {
             navigate={() => navigate(`${el._id}`)} />}
         />
       ))}
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      tableColumns={<TableColumns />}
-      documentCount={count}
-      tableSorter={tableSorter}
     />
   )
 }

@@ -14,7 +14,6 @@ type FullTableProps = {
   tableRows :       React.ReactNode
   documentCount:    number | undefined;
   pdfGenerator?:    React.ReactNode
-  filterParam?:     string;
 }
 
 const FullTable = ({
@@ -25,11 +24,10 @@ const FullTable = ({
   tableRows,
   documentCount,
   pdfGenerator,
-  filterParam,
 }: FullTableProps) => {
   return (
     <>
-      <TableControls filterParam={filterParam} pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>
+      <TableControls pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>
       <Table tableRows={tableRows} tableColumns={tableColumns}/>
       <TablePagination documentCount={documentCount} currentPage={currentPage} setSearchParams={setSearchParams}
       />
