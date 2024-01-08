@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
-import React                                                        from 'react'
 import ClientsCollocations                                          from './ClientsCollocations'
 import { CollocationsSites, CollocationsType, ColocationDataType }  from '../../../../types/globalTypes'
 import EditableCollocationFormList                                  from './CollocationFormList'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
+
+
 
 type ClientsCollocationsProps = {
     J13locationName:   string | undefined

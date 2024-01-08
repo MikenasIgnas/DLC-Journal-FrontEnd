@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 
-const get = async (url, token) => {
+import { TokenType } from '../types/globalTypes'
+
+const get = async (url: string, token: TokenType) => {
   try {
     const response = await fetch(`http://localhost:4002/${url}`, {
       method:  'GET',
@@ -20,7 +22,7 @@ const get = async (url, token) => {
   }
 }
 
-const post = async (url, data, token) => {
+const post = async (url: string, data: any, token: string) => {
   const options = {
     method:  'POST',
     headers: {
@@ -33,7 +35,7 @@ const post = async (url, data, token) => {
   const response = await fetch(`http://localhost:4002/${url}`, options)
   return response.json()
 }
-const put = async (url, data, token) => {
+const put = async (url: string, data: any, token: string) => {
   const options = {
     method:  'PUT',
     headers: {
@@ -46,7 +48,7 @@ const put = async (url, data, token) => {
   const response = await fetch(`http://localhost:4002/${url}`, options)
   return response.json()
 }
-const deleteItem = async (url, token) => {
+const deleteItem = async (url: string, token: TokenType) => {
   try {
     const response = await fetch(`http://localhost:4002/${url}`, {
       method:  'DELETE',
@@ -66,7 +68,7 @@ const deleteItem = async (url, token) => {
   }
 }
 
-const getPdfFile = async (url, token) => {
+const getPdfFile = async (url: string, token: TokenType) => {
   try {
     const response = await fetch(`http://localhost:4002/${url}`, {
       method:  'GET',
@@ -88,7 +90,7 @@ const getPdfFile = async (url, token) => {
     return null
   }
 }
-const getCsvFile = async (url, data, token) => {
+const getCsvFile = async (url: string, data: any, token: TokenType) => {
   const options = {
     method:  'POST',
     headers: {
@@ -102,7 +104,7 @@ const getCsvFile = async (url, data, token) => {
   const doc = await response.blob()
   return doc
 }
-const generateCsv = async (url, data, cookie) => {
+const generateCsv = async (url: string, data: any, cookie: TokenType) => {
   try {
     const response = await getCsvFile(url, data, cookie)
     if(response){
@@ -118,7 +120,7 @@ const generateCsv = async (url, data, cookie) => {
     console.error('Error downloading file:', error)
   }
 }
-const validateUser = async (url, data) => {
+const validateUser = async (url: string, data: any) => {
   const options = {
     method:  'POST',
     headers: {
@@ -130,7 +132,7 @@ const validateUser = async (url, data) => {
   return response.json()
 }
 
-const postImage = async (url, data, token) => {
+const postImage = async (url: string, data: any, token: TokenType) => {
   const options = {
     method:  'POST',
     headers: {
@@ -160,13 +162,13 @@ const getCurrentTime = () => {
   return currentTime.padStart(2, '0')
 }
 
-const clearFilleChecklistdData = (totalAreasCount) => {
+const clearFilleChecklistdData = (totalAreasCount: number) => {
   for (let i = 1; i < totalAreasCount +1; i++) {
     localStorage.removeItem(`data${i}`)
   }
 }
 
-const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
+const uploadPhoto = async(fileList: any, setUploading: any, setFileList: any, url: string) => {
   const formData = new FormData()
   formData.append('file', fileList )
   setUploading(true)
@@ -183,8 +185,8 @@ const uploadPhoto = async(fileList, setUploading, setFileList, url) => {
     })
 }
 
-const deleteTableItem = async(url, data, setData, id, cookie) => {
-  const tableItemRemoved = (id) => {
+const deleteTableItem = async(url: string, data: any, setData: any, id: string | number, cookie: TokenType) => {
+  const tableItemRemoved = (id: string | number) => {
     if(data){
       let newTableItems = [...data]
       newTableItems = newTableItems.filter(x => x.id !== id)
@@ -198,7 +200,7 @@ const deleteTableItem = async(url, data, setData, id, cookie) => {
   }
 }
 
-const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
+const calculateTimeDifference = (startDate: string, startTime: string, endDate: string, endTime: string) => {
   if(startDate && startTime && endDate && endTime){
     const startDateTime   = new Date(`${startDate} ${startTime}`)
     const endDateTime     = new Date(`${endDate} ${endTime}`)
@@ -212,7 +214,7 @@ const calculateTimeDifference = (startDate, startTime, endDate, endTime) => {
   }
 }
 
-const convertUTCtoLocalTime = (utcTimestamp) => {
+const convertUTCtoLocalTime = (utcTimestamp: Date) => {
   if(utcTimestamp){
     const dateObject = new Date(utcTimestamp)
     const localTimeString = dateObject.toLocaleString('en-US', {
@@ -225,7 +227,7 @@ const convertUTCtoLocalTime = (utcTimestamp) => {
   }
 }
 
-const convertUTCtoLocalDate = (utcTimestamp) => {
+const convertUTCtoLocalDate = (utcTimestamp: Date) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })
@@ -236,7 +238,7 @@ const convertUTCtoLocalDate = (utcTimestamp) => {
   }
 }
 
-const convertUTCtoLocalDateTime = (utcTimestamp) => {
+const convertUTCtoLocalDateTime = (utcTimestamp: Date) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })
@@ -250,7 +252,7 @@ const convertUTCtoLocalDateTime = (utcTimestamp) => {
 }
 
 
-const generatePDF = async (visitId, token) => {
+const generatePDF = async (visitId: number, token: TokenType) => {
   try {
     const response = await getPdfFile(`generatePDF?visitId=${visitId}`, token)
     if(response){
@@ -267,7 +269,7 @@ const generatePDF = async (visitId, token) => {
   }
 }
 
-const generateCustomPDF = async (dateFrom, dateTo, token) => {
+const generateCustomPDF = async (dateFrom: string, dateTo: string, token: TokenType) => {
   try {
     const response = await getPdfFile(`generateMultipleVisitPdf?dateFrom=${dateFrom}&dateTo=${dateTo}`, token)
     if(response){
