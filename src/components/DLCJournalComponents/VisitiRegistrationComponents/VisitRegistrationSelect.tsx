@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React            from 'react'
 import { Form, Select } from 'antd'
 
 type VisitRegistrationFormItemProps = {

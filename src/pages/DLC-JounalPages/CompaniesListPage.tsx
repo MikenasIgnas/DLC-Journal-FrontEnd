@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import { Button, Input, List }             from 'antd'
 import React                               from 'react'
@@ -17,6 +18,7 @@ const CompaniesListPage = () => {
   const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
   const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [searchValue, setSearchValues]  = React.useState<string | null>(null)
   const delay                           = useDelay()
 
   React.useEffect(() => {
@@ -39,7 +41,7 @@ const CompaniesListPage = () => {
     let newCompaniesList = [...companies]
     newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
     newCompaniesList = newCompaniesList.map((item) => {
-      const { wasMainClient, ...rest } = item
+      const {parentCompanyId, wasMainClient, ...rest } = item
       return rest
     })
     setCompanies(newCompaniesList)
@@ -57,8 +59,6 @@ const CompaniesListPage = () => {
     ]
     return buttons
   }
-
-  const [searchValue, setSearchValues] = React.useState<string | null>(null)
 
   const searchForCompany = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value.toLowerCase()

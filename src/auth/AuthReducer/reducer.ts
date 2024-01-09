@@ -10,13 +10,16 @@ interface AuthReducer {
     routeNumber:  number,
     edit:         boolean,
     isAdmin:      boolean | null
+    isSecurity:   boolean | null
   }
 
 const initialState: AuthReducer = {
   routeNumber: 1,
   edit:        true,
   isAdmin:     null,
+  isSecurity:  null,
 }
+
 const authSlice = createSlice({
   name:     'auth',
   initialState,
@@ -47,9 +50,11 @@ const authSlice = createSlice({
     setIsAdmin (state, { payload }: PayloadAction<boolean>){
       state.isAdmin = payload
     },
+    setIsSecurity (state, { payload }: PayloadAction<boolean>){
+      state.isSecurity = payload
+    },
   },
 })
-
 export const {
   setUserData,
   setEmployeeName,
@@ -58,6 +63,7 @@ export const {
   setUsersRole,
   setPostEdit,
   setIsAdmin,
+  setIsSecurity,
 } = authSlice.actions
 
 export default authSlice.reducer

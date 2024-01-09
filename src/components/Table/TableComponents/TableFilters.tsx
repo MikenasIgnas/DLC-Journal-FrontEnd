@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                from 'react'
 import { FilterOptions }    from '../../../types/globalTypes'
@@ -6,17 +7,16 @@ import TableFilterItem      from './TableFilterItem'
 
 type TableFiltersProps = {
   tableSorter:  FilterOptions
-  filterParam?: string;
 }
 
-const TableFilters = ({tableSorter, filterParam}: TableFiltersProps) => {
+const TableFilters = ({tableSorter}: TableFiltersProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
 
-  const filterByStatus = async(selectFilter: string) => {
+  const filterByStatus = async (selectFilter: string, options: any) => {
     if (selectFilter) {
-      setSearchParams(`page=${page}&limit=${limit}&${filterParam}=${selectFilter}`)
+      setSearchParams(`page=${page}&limit=${limit}&${options.filterParam}=${options.filterValue}`)
     } else {
       clearSelect()
     }

@@ -3,7 +3,6 @@ import React                              from 'react'
 import { Form, Radio, Tooltip }           from 'antd'
 import AreaProblemsInputs                 from './AreaProblemsInputs'
 import { InfoCircleOutlined }             from '@ant-design/icons'
-import { useAppSelector }                 from '../../../../store/hooks'
 
 type InputProps = {
   reaction:             string | undefined,

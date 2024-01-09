@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import { Drawer, Row, Col, Divider, Form, List }            from 'antd'
@@ -57,22 +58,6 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
       }
     })()
   },[subClientId, open])
-
-  const subClientEmployeeRemoved = (id:number) => {
-    if(subClientEmployees){
-      let newSubClientEmployees = [...subClientEmployees]
-      newSubClientEmployees = newSubClientEmployees.filter(x => x?.employeeId !== id)
-      setSubClientEmployees(newSubClientEmployees)
-    }
-  }
-
-  const deleteSubClientEmployee = async(companyId: number | undefined, employeeId: number | undefined) => {
-    if(companyId && employeeId){
-      await get(`deleteSubClientsEmployee?companyId=${companyId}&employeeId=${employeeId}`, cookies.access_token)
-      subClientEmployeeRemoved(employeeId)
-    }
-  }
-
 
   const listButtons = () => {
     const buttons = [

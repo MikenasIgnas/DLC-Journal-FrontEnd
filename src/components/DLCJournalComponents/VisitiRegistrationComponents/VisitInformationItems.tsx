@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                                        from 'react'
 import { calculateTimeDifference }                  from '../../../Plugins/helpers'
 import { Badge, ConfigProvider, Form, Select, Tag } from 'antd'
 import type { DescriptionsProps }                   from 'antd'

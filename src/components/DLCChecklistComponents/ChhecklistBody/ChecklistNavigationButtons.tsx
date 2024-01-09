@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { Button }                       from 'antd'
 import { useAppSelector }               from '../../../store/hooks'
 import { useSearchParams }              from 'react-router-dom'

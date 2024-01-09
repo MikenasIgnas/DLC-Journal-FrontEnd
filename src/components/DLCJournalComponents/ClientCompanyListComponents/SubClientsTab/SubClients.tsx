@@ -75,7 +75,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     setOpen(false)
   }
 
-  const listButtons = (listItemId: number | undefined, primaryKey: number | undefined, wasMainClient?: boolean) => {
+  const listButtons = (listItemId: number | undefined, _primaryKey: number | undefined, wasMainClient?: boolean) => {
     if(wasMainClient){
       const buttons = [
         <Button type='link' onClick={() => showDrawer(listItemId)} key={listItemId}> Peržiūrėti </Button>,
@@ -95,6 +95,7 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>
       <List
+        locale={{emptyText: 'Nėra pridėtų sub klientų'}}
         dataSource={subClients}
         bordered
         renderItem={(item) => {

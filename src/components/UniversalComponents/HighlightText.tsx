@@ -1,6 +1,4 @@
-import React from 'react'
-
-const HighlightText = (filter: string | null, text: string | undefined) => {
+const HighlightText = (filter: string | null | undefined, text: string | undefined) => {
   if (!filter) {
     return <div>{text}</div>
   }

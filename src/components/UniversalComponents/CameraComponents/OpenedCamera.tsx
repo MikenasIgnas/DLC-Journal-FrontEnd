@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { Modal }              from 'antd'
 import React                  from 'react'
@@ -94,7 +95,7 @@ const OpenedCamera = ({
           'JPEG',
           60,
           0,
-          (resizedPhoto) => {
+          (resizedPhoto: any) => {
             const img = new Image()
             img.src = resizedPhoto as string
             img.onload = () => {

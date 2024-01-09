@@ -1,14 +1,16 @@
 /* eslint-disable max-len */
-import React                                      from 'react'
-import { Modal, Form, Button, Input, UploadFile } from 'antd'
-import { useForm }                                from 'antd/es/form/Form'
-import { post, uploadPhoto }                      from '../../../../Plugins/helpers'
-import { useCookies }                             from 'react-cookie'
-import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import ColocationSelectors                        from '../ClientsCollocationsTab/CollocationSelectors'
-import { CollocationsType }                       from '../../../../types/globalTypes'
-import { useAppDispatch }                         from '../../../../store/hooks'
-import { setOpenCompaniesAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import React                                                from 'react'
+import { Modal, Form, Button, Input, UploadFile, message }  from 'antd'
+import { useForm }                                          from 'antd/es/form/Form'
+import { post, uploadPhoto }                                from '../../../../Plugins/helpers'
+import { useCookies }                                       from 'react-cookie'
+import PhotoUploader                                        from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import ColocationSelectors                                  from '../ClientsCollocationsTab/CollocationSelectors'
+import { CollocationsType }                                 from '../../../../types/globalTypes'
+import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
+import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
+import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -33,56 +35,50 @@ type CompanyFormType = {
 };
 
 const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
-  const [cookies]                 = useCookies(['access_token'])
-  const [form]                    = useForm()
-  const [uploading, setUploading] = React.useState(false)
-  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
-  const dispatch                  = useAppDispatch()
-
-  const filterObject = (obj: CompanyFormType): CompanyFormType => {
-    const filteredObj: CompanyFormType = {}
-    if (obj.J13) {
-      filteredObj.J13 = []
-      for (const key in obj.J13) {
-        const entries = Object.entries(obj.J13[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    if (obj.T72) {
-      filteredObj.T72 = []
-      for (const key in obj.T72) {
-        const entries = Object.entries(obj.T72[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    return filteredObj
-  }
+  const [cookies]                                                           = useCookies(['access_token'])
+  const [form]                                                              = useForm()
+  const [uploading, setUploading]                                           = React.useState(false)
+  const [fileList, setFileList]                                             = React.useState<UploadFile[]>([])
+  const dispatch                                                            = useAppDispatch()
+  const openCompaniesAdditionModal                                          = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [messageApi, contextHolder]                                         = message.useMessage()
+  const {
+    filteredResult,
+    checkedList,
+    checkAllStates,
+    onCheckAllChange,
+    onCheckboxChange,
+  } = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    const filteredResult = filterObject(values)
     filteredResult.companyName = values.companyName
     filteredResult.companyDescription = values.companyDescription
     filteredResult.companyPhoto = ''
-    await post(postUrl, filteredResult, cookies.access_token)
+    const res = await post(postUrl, filteredResult, cookies.access_token)
     if(fileList[0]){
       uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
     }
-    dispatch(setOpenCompaniesAdditionModal(false))
+    if(!res.error){
+      form.resetFields()
+      dispatch(setOpenCompaniesAdditionModal(false))
+      messageApi.success({
+        type:    'success',
+        content: 'Įmonė pridėta',
+      })
+    }else{
+      form.resetFields()
+      dispatch(setOpenCompaniesAdditionModal(false))
+      messageApi.error({
+        type:    'error',
+        content: 'Pridėti nepavyko',
+      })
+    }
   }
+
   return (
     <Modal
       title={additionModalTitle}
-      open
+      open={openCompaniesAdditionModal}
       onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
       onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
       footer={false}
@@ -101,6 +97,10 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             {collocations?.map((colocation, i) =>
               colocation.premises ?
                 <ColocationSelectors
+                  checkedList={checkedList}
+                  checkAllStates={checkAllStates}
+                  onCheckAllChange={onCheckAllChange}
+                  onCheckboxChange={onCheckboxChange}
                   key={i}
                   collocationSite={colocation.site}
                   colocationPremises={colocation.premises}
@@ -109,7 +109,8 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
             )}
           </div>
         </div>
-        <Button loading={uploading} htmlType='submit'>Pridėti</Button>
+        <Button style={{margin: '10px'}} loading={uploading} htmlType='submit'>Pridėti</Button>
+        <SuccessMessage contextHolder={contextHolder}/>
       </Form>
     </Modal>
   )

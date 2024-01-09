@@ -12,7 +12,7 @@ const DataTable = ({ tableColumns, tableRows }: DataTableProps) => {
       className='OrderTableContainer'
       variant='outlined'
       sx={{
-        display:      { xs: 'none', sm: 'initial' },
+        display:      { sm: 'initial' },
         width:        '100%',
         borderRadius: 'sm',
         flexShrink:   1,

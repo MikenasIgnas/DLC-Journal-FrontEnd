@@ -1,8 +1,7 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import { ConfigProvider, Form, Radio }  from 'antd'
-import HistoryProblemInputs             from './HistoryProblemInputs'
-import { useAppSelector }               from '../../../store/hooks'
+import React                from 'react'
+import { Form, Radio }      from 'antd'
+import HistoryProblemInputs from './HistoryProblemInputs'
 
 type InputProps = {
   reaction:         string | undefined,

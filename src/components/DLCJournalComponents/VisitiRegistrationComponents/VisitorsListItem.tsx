@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-no-undef */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
-import React                                              from 'react'
-import { Avatar, Button, Form, List, Modal, Select, Tag, Image } from 'antd'
-import { FormListFieldData }                              from 'antd/es/form'
-import SignatureCanvas                                    from 'react-signature-canvas'
-import { EmployeesType, VisitorsType }                    from '../../../types/globalTypes'
-import { CheckOutlined, DeleteOutlined, EyeOutlined }     from '@ant-design/icons'
-import {identificationOptions}                            from './StaticSelectOptions'
+import React                                                      from 'react'
+import { Avatar, Button, Form, List, Modal, Select, Tag, Image }  from 'antd'
+import { FormListFieldData }                                      from 'antd/es/form'
+import SignatureCanvas                                            from 'react-signature-canvas'
+import { EmployeesType, VisitorsType }                            from '../../../types/globalTypes'
+import { DeleteOutlined }                                         from '@ant-design/icons'
+import {identificationOptions}                                    from './StaticSelectOptions'
+import useSetWindowsSize                                          from '../../../Plugins/useSetWindowsSize'
 
 type VisitorsListItemProps = {
   item:                 FormListFieldData
@@ -21,6 +21,7 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees }: Visit
   const form                          = Form.useFormInstance()
   const visitors: VisitorsType[]      = form.getFieldValue('visitors')
   const visitorsItem: VisitorsType    = form.getFieldValue('visitors')[item.name]
+  const windowSize                    = useSetWindowsSize()
 
   const oncancel = () => {
     if (visible && signatureCanvasRef.current) {
@@ -79,22 +80,22 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees }: Visit
       key={item.key}
       className='VisitorsListItemContainer'
       actions={[
-        <div style={{display: 'flex', alignItems: 'center', width: '500px', justifyContent: 'space-around'}}>
+        <div className='SelectedVisitorsButtonContainer'>
           <Form.Item noStyle name={[item.name, 'idType']}>
-            <Select placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={identificationOptions} />
+            <Select style={{width: '100%'}} placeholder='Dokumento tipas' className='VisitorsListItemSelect' options={identificationOptions} />
           </Form.Item>
-          <div style={{width: '500px'}}>
+          <div>
             {visitorsItem.signature ? (
               <div className='SignatureContainer'>
-                <div style={{display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
+                <div className='SignatureButtons'>
                   <Image key={item.key} width={150} src={signatureCanvasRef.current.toDataURL()}/>
                   <DeleteOutlined className='DeleteIcon' onClick={deleteSignature}/>
                 </div>
-                <Button onClick={deleteVisitor}>Pašalinti darbuotoją</Button>
+                <Button onClick={deleteVisitor}>Pašalinti Lankytoją</Button>
               </div>
             ) : (
-              <div style={{display: 'flex', justifyContent: 'space-evenly',width: '300px' }}>
-                <Button onClick={() => setVisible(true)}>Pasirašyti</Button>
+              <div className='SelectedVisitorsButtons'>
+                <Button style={{ width: '155px'}} onClick={() => setVisible(true)}>Pasirašyti</Button>
                 <Button onClick={deleteVisitor}>Pašalinti darbuotoją</Button>
               </div>
             )}
@@ -106,15 +107,16 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees }: Visit
         className='VisitorsListItem'
         avatar={
           <Avatar
-            shape='square' size={50}
+            shape='square' size={windowSize > 600 ? 90 : 40}
             src={visitorsItem.selectedVisitor.employeePhoto ?
               `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` :
-              '../ClientsEmployeesPhotos/noUserImage.jpeg'}
+              '../ClientsEmployeesPhotos/noUserImage.jpeg'
+            }
           />}
-        title={<div>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</div>}
-        description={<div>{visitorsItem.selectedVisitor.occupation}</div>}
+        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</p>}
+        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{visitorsItem.selectedVisitor.occupation}</p>}
       />
-      <div className='DisplayFlex'>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
+      <div className='PermissionTags'>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
       <Modal
         open={visible}
         onCancel={oncancel}

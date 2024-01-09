@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { DownOutlined }         from '@ant-design/icons'
 import { ConfigProvider, Tree } from 'antd'
-import React                    from 'react'
 import { Link }                 from 'react-router-dom'
 import { CompaniesType }        from '../../../types/globalTypes'
 import HighlightText            from '../../UniversalComponents/HighlightText'
@@ -20,7 +19,7 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
       key:      el.id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{el.companyInfo.companyName}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),

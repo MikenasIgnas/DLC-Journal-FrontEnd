@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
@@ -33,12 +32,17 @@ const UsersArchivePage = () => {
   const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
   const [cookies]                       = useCookies(['access_token'])
   const { users, setUsers, count }      = useSetAllUsersData()
+
   const tableSorter = [
     {
       filterName:    'Statusas',
-      filterOptions: [{ value: 'false', label: 'Aktyvus' }, { value: 'true', label: 'Neaktyvus' }],
+      filterOptions: [
+        { value: '1', label: 'Aktyvus', filterParam: 'isDisabled', filterValue: false },
+        { value: '2', label: 'Neaktyvus', filterParam: 'isDisabled', filterValue: true },
+      ],
     },
   ]
+
   const deleteUser = async(id:string) => {
     const tableItemRemoved = (id:string) => {
       if(users){
@@ -57,7 +61,6 @@ const UsersArchivePage = () => {
 
   return (
     <FullTable
-      filterParam={'isDisabled'}
       tableColumns={<TableColumns/>}
       currentPage={page}
       setSearchParams={setSearchParams}
@@ -70,6 +73,7 @@ const UsersArchivePage = () => {
           email={el.email}
           username={el.username}
           isAdmin={el.isAdmin}
+          isSecurity={el.isSecurity}
           name={el.name}
           status={el.isDisabled}
           rowMenu={<RowMenu

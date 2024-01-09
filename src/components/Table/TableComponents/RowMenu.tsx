@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                                from 'react'
 import { DownOutlined}                      from '@ant-design/icons'
 import { Space, type MenuProps, Dropdown }  from 'antd'
 import { ItemType }                         from 'antd/es/menu/hooks/useItems'

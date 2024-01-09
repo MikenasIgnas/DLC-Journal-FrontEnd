@@ -6,10 +6,12 @@ import { VisitsType }           from '../../types/globalTypes'
 import VisitsBarChart           from '../../components/DLCJournalComponents/StatisticsPageComponents/VisitsBarChart'
 import CompaniesVIsitsBarChart  from '../../components/DLCJournalComponents/StatisticsPageComponents/CompaniesVisitsBarChart'
 import { Tabs }                 from 'antd'
+import useSetWindowsSize        from '../../Plugins/useSetWindowsSize'
 
 const StatisticsPage = () => {
   const [cookies]               = useCookies()
   const [visits, setVisits]     = React.useState<VisitsType[] | undefined>()
+  const windowSize              = useSetWindowsSize()
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +40,7 @@ const StatisticsPage = () => {
 
   return (
     <Tabs
-      tabPosition='left'
+      tabPosition={windowSize > 600 ? 'left' : 'top'}
       items={tabItems}
     />
   )

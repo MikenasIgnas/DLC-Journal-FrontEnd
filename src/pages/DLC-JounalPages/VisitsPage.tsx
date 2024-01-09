@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
@@ -10,6 +9,7 @@ import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
 import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
+import { useAppSelector }               from '../../store/hooks'
 
 const TableColumns = () => {
   return(
@@ -34,14 +34,17 @@ const tableSorter = [
   {
     filterName:    'statusas',
     filterOptions: [
-      { value: 'success', label: 'Pradėtas' },
-      { value: 'processing', label: 'Paruoštas'},
-      { value: 'error', label: 'Baigtas'},
+      { value: '1', label: 'Pradėtas', filterParam: 'selectFilter', filterValue: 'success' },
+      { value: '2', label: 'Paruoštas', filterParam: 'selectFilter', filterValue: 'processing'},
+      { value: '3', label: 'Baigtas', filterParam: 'selectFilter', filterValue: 'error'},
     ],
   },
   {
     filterName:    'adresas',
-    filterOptions: [{ value: 'J13', label: 'J13' },{ value: 'T72', label: 'T72' }],
+    filterOptions: [
+      { value: '1', label: 'J13', filterParam: 'selectFilter', filterValue: 'J13' },
+      { value: '2', label: 'T72', filterParam: 'selectFilter', filterValue: 'T72' },
+    ],
   },
 ]
 
@@ -52,12 +55,12 @@ const VisitPage = () => {
   const navigate                          = useNavigate()
   const {data, count, setData}            = useSetVisitsData()
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
-  const rowMenuItems                      = visitsRowMenuItems(loading)
+  const isSecurity                        = useAppSelector((state) => state.auth.isSecurity)
+  const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
 
   return (
     <FullTable
       pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
-      filterParam={'selectFilter'}
       tableSorter={tableSorter}
       currentPage={page}
       setSearchParams={setSearchParams}

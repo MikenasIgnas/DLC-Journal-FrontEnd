@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                      from 'react'
 import {Input, Form, Typography}  from 'antd'
 import CameraTool                 from '../../../../CameraTool'
 

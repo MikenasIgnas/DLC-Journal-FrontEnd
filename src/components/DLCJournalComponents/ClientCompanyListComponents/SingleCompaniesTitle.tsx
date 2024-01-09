@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                    from 'react'
+import React                                from 'react'
 import { Avatar, Form, Input, UploadFile }  from 'antd'
-import PhotoUploader            from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import PhotoUploader                        from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
 
 type SingleCompaniesTitleProps = {
     companyTitle:       string | undefined;
@@ -13,22 +15,22 @@ type SingleCompaniesTitleProps = {
 }
 
 const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo, setFileList, fileList}: SingleCompaniesTitleProps) => {
-
+  const windowSize = useSetWindowsSize()
 
   return (
     <div>
       {!edit ?
         <div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <Avatar shape='square' size={70} style={{margin: '10px'}} src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`}></Avatar>
-            <div style={{fontSize: '20px', marginLeft: '20px'}}>{companyTitle?.toUpperCase()}</div>
+            <Avatar shape='square' size={70} style={{margin: '10px'}} src={<img style={{objectFit: 'contain'}} src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`}alt='err' />}/>
+            <div style={{fontSize: windowSize > 600 ? '20px' : '12px', marginLeft: '20px'}}>{companyTitle?.toUpperCase()}</div>
           </div>
-          <div>{companyDescription}</div>
+          <div style={{fontSize: windowSize > 600 ? '15px' : '8px'}}>{companyDescription}</div>
         </div>
         :
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
           <Form.Item name='companyName' initialValue={companyTitle}><Input/></Form.Item>
-          <Avatar shape='square' size={70} style={{margin: '10px'}} src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`}></Avatar>
+          <Avatar shape='square' size={70} style={{margin: '10px'}} src={<img style={{objectFit: 'contain'}} src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`} alt='err' />}/>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
         </div>
       }

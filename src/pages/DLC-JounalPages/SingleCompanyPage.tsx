@@ -11,7 +11,8 @@ import ClientsCollocationsTab                                  from '../../compo
 import ClientsEmployeesTab                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
 import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }                                      from '../../store/hooks'
+import useSetCheckedCollocationList                            from '../../Plugins/useSetCheckedCollocationList'
 
 type EmployeesType = {
   _id:            string;
@@ -51,6 +52,15 @@ const SingleCompanyPage = () => {
   const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const [uploading, setUploading]                     = React.useState(false)
+  const {
+    filteredResult,
+    setCheckboxList,
+    checkedList,
+    checkAllStates,
+    onCheckAllChange,
+    onCheckboxChange,
+  }                                                   = useSetCheckedCollocationList()
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -77,42 +87,11 @@ const SingleCompanyPage = () => {
     setEmployeesList(newEmployeesList)
   }
 
-  const filterCompanyData = (obj: CompanyFormType) => {
-    const filteredObj: CompanyFormType = {}
-    if (obj.J13) {
-      filteredObj.J13 = []
-      for (const key in obj.J13) {
-        const entries = Object.entries(obj.J13[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.J13.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-
-    if (obj.T72) {
-      filteredObj.T72 = []
-      for (const key in obj.T72) {
-        const entries = Object.entries(obj.T72[key])
-        if (entries.length > 0) {
-          const nonEmptyEntry = entries.find(([_, values]) => values.length > 0)
-          if (nonEmptyEntry) {
-            filteredObj.T72.push({ [nonEmptyEntry[0]]: nonEmptyEntry[1] })
-          }
-        }
-      }
-    }
-    return filteredObj
-  }
-
   const saveChanges = async(values:CompanyFormType) => {
     setEdit(!edit)
     if(edit){
-      const filteredCompanyData = filterCompanyData(values)
-      filteredCompanyData.companyName = values.companyName
-      await post(`updateCompaniesData?companyId=${id}`, filteredCompanyData, cookies.access_token)
+      filteredResult.companyName = values.companyName
+      await post(`updateCompaniesData?companyId=${id}`, filteredResult, cookies.access_token)
       if(fileList[0]){
         uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}&companyId=${id}`)
       }
@@ -146,6 +125,10 @@ const SingleCompanyPage = () => {
       key:      '3',
       label:    'Kliento Kolokacijos',
       children: <ClientsCollocationsTab
+        checkedList={checkedList}
+        checkAllStates={checkAllStates}
+        onCheckAllChange={onCheckAllChange}
+        onCheckboxChange={onCheckboxChange}
         edit={edit}
         J13locationName={'J13'}
         T72locationName={'T72'}
@@ -153,6 +136,7 @@ const SingleCompanyPage = () => {
         T72locationData={T72}
         collocations={collocations}
         collocationsSites={collocationsSites}
+        setCheckedList={setCheckboxList}
       />,
     },
   ]

@@ -8,7 +8,6 @@ import SuccessMessage                         from '../../UniversalComponents/Su
 import { setCollocationItem }                 from '../../../auth/CollocationItemReducer/collocationItemReducer'
 import { generateCsv }                        from '../../../Plugins/helpers'
 import { useCookies }                         from 'react-cookie'
-import { get } from 'http'
 
 type MatchingCompaniesType = {
   companyName:  string;

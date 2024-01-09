@@ -3,12 +3,13 @@ import React                                                                    
 import { Button, Checkbox, Col, Divider, Drawer, Form, Input, Row, UploadFile } from 'antd'
 import { useForm }                                                              from 'antd/es/form/Form'
 import { EmployeesType }                                                        from '../../../../types/globalTypes'
-import { convertUTCtoLocalDate, get, post, uploadPhoto }                                               from '../../../../Plugins/helpers'
+import { convertUTCtoLocalDate, get, post, uploadPhoto }                        from '../../../../Plugins/helpers'
 import { useCookies }                                                           from 'react-cookie'
-import { useParams, useSearchParams }                                                      from 'react-router-dom'
+import { useParams, useSearchParams }                                           from 'react-router-dom'
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch, useAppSelector }                                                       from '../../../../store/hooks'
-import { setOpenClientsEmployeesDrawer } from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
+import { setOpenClientsEmployeesDrawer }                                        from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import useSetWindowsSize                                                        from '../../../../Plugins/useSetWindowsSize'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
@@ -41,19 +42,27 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const {id}                        = useParams()
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                     = useAppDispatch()
+  const windowSize                  = useSetWindowsSize()
 
   React.useEffect(() => {
+    let isMounted = true;
     (async () => {
-      try{
-        if(employeeId && companyId){
-          const res  = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
-          setEmployee(res.data)
+      try {
+        if (employeeId && companyId) {
+          const res = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
+          if (isMounted) {
+            setEmployee(res.data)
+            form.setFieldsValue(res.data)
+          }
         }
-      }catch(err){
+      } catch (err) {
         console.log(err)
       }
     })()
-  },[editClientsEmployee, openClientsEmployeesDrawer, uploading])
+    return () => {
+      isMounted = false
+    }
+  }, [employeeId, companyId, id, cookies.access_token, form])
 
   const editUser = async(values: EmployeesType) => {
     setEditClientsEmployee(!editClientsEmployee)
@@ -72,7 +81,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   }
 
   return (
-    <Drawer width={640} placement='right' closable={false} onClose={onClose} open={openClientsEmployeesDrawer}>
+    <Drawer width={windowSize > 600 ? 640 : 300} placement='right' closable={false} onClose={onClose} open={openClientsEmployeesDrawer}>
       { employee &&
         <Form form={form} onFinish={editUser}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>

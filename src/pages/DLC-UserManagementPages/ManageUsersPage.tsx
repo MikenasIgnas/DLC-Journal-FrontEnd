@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
-import React                                from 'react'
 import { useNavigate, useSearchParams }     from 'react-router-dom'
 import FullTable                            from '../../components/Table/TableComponents/FullTable'
 import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
@@ -35,7 +32,11 @@ const TableColumns = () => {
 const tableSorter = [
   {
     filterName:    'Rolė',
-    filterOptions: [{ value: 'false', label: 'user' }, { value: 'true', label: 'admin' }],
+    filterOptions: [
+      { value: '1', label: 'user', filterParam: 'isAdmin', filterValue: false},
+      { value: '2', label: 'admin', filterParam: 'isAdmin', filterValue: true },
+      { value: '3', label: 'apsauga', filterParam: 'isSecurity', filterValue: true },
+    ],
   },
 ]
 
@@ -71,7 +72,11 @@ const ManageUsersPage = () => {
 
   return (
     <FullTable
-      filterParam={'isAdmin'}
+      currentPage={page}
+      setSearchParams={setSearchParams}
+      tableColumns={<TableColumns />}
+      documentCount={count}
+      tableSorter={tableSorter}
       tableRows={users?.map((el, index) => (
         <UersTableRows
           key={el?._id}
@@ -80,6 +85,7 @@ const ManageUsersPage = () => {
           username={el.username}
           email={el?.email}
           isAdmin={el?.isAdmin}
+          isSecurity = {el.isSecurity}
           name={el?.name}
           status={el.isDisabled}
           rowMenu={<RowMenu
@@ -88,11 +94,6 @@ const ManageUsersPage = () => {
             navigate={() => navigate(`${el._id}`)} />}
         />
       ))}
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      tableColumns={<TableColumns />}
-      documentCount={count}
-      tableSorter={tableSorter}
     />
   )
 }

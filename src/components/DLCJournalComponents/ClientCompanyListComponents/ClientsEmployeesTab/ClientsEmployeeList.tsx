@@ -51,14 +51,16 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
 
   const listButtons = (listItemId: number | undefined, companyId: number | undefined) => {
     const buttons = [
-      <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} key={listItemId}>Peržiūrėti</Button>,
-      <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} key={listItemId}>Ištrinti</Button>,
+      <div key={listItemId} className='ListItemButtons'>
+        <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} >Peržiūrėti</Button>
+        <Button type='link' onClick={() => deleteEmployee(listItemId, Number(companyId))} >Ištrinti</Button>
+      </div>,
     ]
     return buttons
   }
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const filtered = list?.filter((el) => el.name.toLowerCase().includes(e.target.value.toLocaleLowerCase()) )
+    const filtered = list?.filter((el) => `${el.name} ${el.lastName}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
     setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
     setEmployeesList(filtered)
     if(e.target.value === ''){
@@ -73,6 +75,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       <Divider>Darbuotojai</Divider>
       <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
+        locale={{emptyText: 'Nėra pridėtų darbuotojų'}}
         dataSource={list}
         bordered
         pagination={{

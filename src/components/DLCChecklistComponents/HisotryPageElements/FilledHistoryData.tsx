@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import React                      from 'react'
 import {Card, Collapse, Form}     from 'antd'

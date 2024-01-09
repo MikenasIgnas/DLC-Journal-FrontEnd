@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                from 'react'
 import { Card, Form }       from 'antd'
 import VisitPurposeButtons  from './VisitPurposeButtons'
 import { VisitsType }       from '../../../types/globalTypes'

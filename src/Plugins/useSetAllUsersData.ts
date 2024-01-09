@@ -18,6 +18,7 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
       const limit             = searchParams.get('limit') || 10
       const searchFilter      = searchParams.get('search')
       const isAdminFilter     = searchParams.get('isAdmin')
+      const isSecurityFilter  = searchParams.get('isSecurity')
       const isDisabledFilter  = searchParams.get('isDisabled')
 
       let fetchUrl        = `user?page=${page}&limit=${limit}`
@@ -42,6 +43,10 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
         fetchUrl += `&tableSorter=${tableSorter}`
       }
 
+      if(isSecurityFilter){
+        fetchUrl += `&isSecurity=${isSecurityFilter}`
+      }
+
       try {
         const data = await get(fetchUrl, cookies.access_token)
         setUsers(data)
@@ -57,6 +62,7 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
 
     setFetchedData()
   }, [cookies.access_token, searchParams])
+
   React.useEffect(() => {
     (async () => {
       let fetchUrl = 'user/count'

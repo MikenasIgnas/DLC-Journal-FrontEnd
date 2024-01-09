@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import React                                      from 'react'
-import {Input, Form, Typography, ConfigProvider}  from 'antd'
-import { useAppDispatch, useAppSelector }         from '../../../store/hooks'
-import { DeleteOutlined, EyeOutlined }            from '@ant-design/icons'
-import { get }                                    from '../../../Plugins/helpers'
-import { useCookies }                             from 'react-cookie'
-import { setChecklistPhotos }                     from '../../../auth/FetchedDataReducer/fetchedDataReducer'
-import PreviewModal                               from './PreviewModal'
+import React                              from 'react'
+import {Input, Form, Typography}          from 'antd'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { DeleteOutlined, EyeOutlined }    from '@ant-design/icons'
+import { get }                            from '../../../Plugins/helpers'
+import { useCookies }                     from 'react-cookie'
+import { setChecklistPhotos }             from '../../../auth/FetchedDataReducer/fetchedDataReducer'
+import PreviewModal                       from './PreviewModal'
 
 const { TextArea } = Input
 

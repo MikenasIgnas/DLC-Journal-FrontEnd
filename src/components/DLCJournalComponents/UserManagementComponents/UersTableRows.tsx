@@ -15,9 +15,10 @@ type UersTableProps = {
     disabledDate?: string;
     status:       boolean
     username:     string;
+    isSecurity:   boolean;
 }
 
-const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, disabledDate, username}: UersTableProps) => {
+const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, disabledDate, username, isSecurity}: UersTableProps) => {
   const [searchParams] = useSearchParams()
   const filter =         searchParams.get('search')
 
@@ -36,10 +37,10 @@ const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, 
         <Typography>{HighlightText(filter, name)}</Typography>
       </td>
       <td>
-        <Tag>{HighlightText(filter, isAdmin ? 'admin': 'user')}</Tag>
+        <Tag>{HighlightText(filter, isSecurity ? 'apsauga' : isAdmin ? 'admin': 'user' )}</Tag>
       </td>
       <td>
-        <Tag color={!status ? 'success' : 'error'}>{HighlightText(filter, !status ? 'aktyvus' : 'ištrintas')}</Tag>
+        <Tag color={!status ? 'success' : 'error'}>{HighlightText(filter, !status ? 'aktyvus' : 'neaktyvus')}</Tag>
       </td>
       <td>
         <Typography >{HighlightText(filter, convertUTCtoLocalDate(dateCreated))}</Typography>

@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                    from 'react'
 import { Card, Checkbox, Form}  from 'antd'
 
 type CollocationsType = {

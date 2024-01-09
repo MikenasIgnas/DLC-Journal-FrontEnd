@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
-import React                from 'react'
-import { Button }           from 'antd'
-import { FilePdfOutlined }  from '@ant-design/icons'
-import { useParams }        from 'react-router'
-import useGenerateSingleVisitPDF from '../../../Plugins/useGenerateSingleVIsitPDF'
+import { Button }                 from 'antd'
+import { FilePdfOutlined }        from '@ant-design/icons'
+import { useParams }              from 'react-router'
+import useGenerateSingleVisitPDF  from '../../../Plugins/useGenerateSingleVIsitPDF'
 
 type VisitDescriptionTitleProps = {
     edit: boolean;
