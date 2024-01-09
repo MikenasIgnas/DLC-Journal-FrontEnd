@@ -35,8 +35,9 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
           xxl:    3,
         }}
         dataSource={clientsEmployees}
-        renderItem={(item) => ( !searchEmployeeValue || item.name.toLowerCase().includes(searchEmployeeValue)) &&
+        renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
           <VisitorAdditionListItem
+            searchEmployeeValue={searchEmployeeValue}
             item={item}
             addVisitor={addVisitor}
             removeVisitor={removeVisitor}

@@ -8,6 +8,7 @@ import Meta                           from 'antd/es/card/Meta'
 import { UserAddOutlined }            from '@ant-design/icons'
 import { post }                       from '../../../Plugins/helpers'
 import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
+import HighlightText from '../../UniversalComponents/HighlightText'
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
@@ -16,9 +17,10 @@ type VisitorAdditionListItemProps = {
     photoFolder:          string;
     clientsEmployees?:    EmployeesType[] | undefined
     setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    searchEmployeeValue:  string | undefined
 }
 
-const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setClientsEmployees}: VisitorAdditionListItemProps) => {
+const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setClientsEmployees, searchEmployeeValue}: VisitorAdditionListItemProps) => {
   const [cookies]   = useCookies(['access_token'])
   const {id}        = useParams()
   const form        = Form.useFormInstance<VisitsType>()
@@ -54,7 +56,7 @@ const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployee
       >
         <Meta
           avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
-          title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{item.name} {item.lastName}</p>}
+          title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item.lastName)}</p>}
           description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item.occupation}</p>}
         />
       </Card>

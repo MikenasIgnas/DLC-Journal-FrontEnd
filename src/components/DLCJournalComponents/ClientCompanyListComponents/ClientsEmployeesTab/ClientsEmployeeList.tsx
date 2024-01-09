@@ -60,7 +60,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   }
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const filtered = list?.filter((el) => el.name.toLowerCase().includes(e.target.value.toLocaleLowerCase()) )
+    const filtered = list?.filter((el) => `${el.name} ${el.lastName}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
     setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
     setEmployeesList(filtered)
     if(e.target.value === ''){

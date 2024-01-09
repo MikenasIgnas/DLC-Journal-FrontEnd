@@ -9,7 +9,7 @@ import { useParams, useSearchParams }                                           
 import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }                                        from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import useSetWindowsSize from '../../../../Plugins/useSetWindowsSize'
+import useSetWindowsSize                                                        from '../../../../Plugins/useSetWindowsSize'
 
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
@@ -43,18 +43,26 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                     = useAppDispatch()
   const windowSize                  = useSetWindowsSize()
+
   React.useEffect(() => {
+    let isMounted = true;
     (async () => {
-      try{
-        if(employeeId && companyId){
-          const res  = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
-          setEmployee(res.data)
+      try {
+        if (employeeId && companyId) {
+          const res = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
+          if (isMounted) {
+            setEmployee(res.data)
+            form.setFieldsValue(res.data)
+          }
         }
-      }catch(err){
+      } catch (err) {
         console.log(err)
       }
     })()
-  },[editClientsEmployee, openClientsEmployeesDrawer, uploading])
+    return () => {
+      isMounted = false
+    }
+  }, [employeeId, companyId, id, cookies.access_token, form])
 
   const editUser = async(values: EmployeesType) => {
     setEditClientsEmployee(!editClientsEmployee)
