@@ -64,7 +64,6 @@ const SingleUserPage = () => {
 
     try {
       const res = await (endpoint === 'user' ? put : post)(endpoint, postData, cookies.access_token)
-      console.log(res)
       if (!values.password && !values.oldPassword && !values.repeatPassword) {
         if(res.messsage){
           messageApi.info({
