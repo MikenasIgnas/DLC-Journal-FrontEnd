@@ -231,3 +231,20 @@ export type SubClientsCollocationsType = {
       racks: string[];
   }[];
 }[]
+
+export interface CheckedPremises {
+  [premiseName: string]: string[];
+}
+
+export interface CheckedList {
+  [site: string]: CheckedPremises[];
+}
+
+export interface CheckAllStates {
+  [key: string]: boolean;
+}
+
+export interface State {
+  checkedList: CheckedList;
+  checkAllStates: CheckAllStates;
+}

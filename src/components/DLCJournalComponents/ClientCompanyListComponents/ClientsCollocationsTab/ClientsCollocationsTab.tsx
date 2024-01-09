@@ -1,10 +1,15 @@
 /* eslint-disable max-len */
 import ClientsCollocations                                          from './ClientsCollocations'
-import { CollocationsSites, CollocationsType, ColocationDataType }  from '../../../../types/globalTypes'
+import { CollocationsSites, CollocationsType, ColocationDataType, State }  from '../../../../types/globalTypes'
 import EditableCollocationFormList                                  from './CollocationFormList'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 
+type CheckedList = {
+  [site: string]: {
+    [premiseName: string]: string[];
+}[];
+}
 
 type ClientsCollocationsProps = {
     J13locationName:   string | undefined
@@ -24,6 +29,7 @@ type ClientsCollocationsProps = {
     };
     onCheckAllChange: (e: CheckboxChangeEvent, racks: string[], premiseName: string, site: string) => void;
     onCheckboxChange: (selectedRacks: string[], premiseName: string, site: string, racks: string[]) => void;
+    setCheckedList: React.Dispatch<React.SetStateAction<State>>
 }
 
 
@@ -39,6 +45,7 @@ const ClientsCollocationsTab = ({
   checkedList,
   onCheckAllChange,
   onCheckboxChange,
+  setCheckedList,
 }: ClientsCollocationsProps) => {
   return (
     <>
@@ -51,6 +58,7 @@ const ClientsCollocationsTab = ({
         />
         :
         <EditableCollocationFormList
+          setCheckedList={setCheckedList}
           checkAllStates={checkAllStates}
           checkedList={checkedList}
           onCheckAllChange={onCheckAllChange}

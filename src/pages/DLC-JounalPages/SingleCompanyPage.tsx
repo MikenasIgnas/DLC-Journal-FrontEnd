@@ -12,7 +12,7 @@ import ClientsEmployeesTab                                     from '../../compo
 import SubClientsTab                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
 import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import { useAppSelector }                                      from '../../store/hooks'
-import useSetCheckedCollocationList from '../../Plugins/useSetCheckedCollocationList'
+import useSetCheckedCollocationList                            from '../../Plugins/useSetCheckedCollocationList'
 
 type EmployeesType = {
   _id:            string;
@@ -54,6 +54,7 @@ const SingleCompanyPage = () => {
   const [uploading, setUploading]                     = React.useState(false)
   const {
     filteredResult,
+    setCheckboxList,
     checkedList,
     checkAllStates,
     onCheckAllChange,
@@ -125,8 +126,8 @@ const SingleCompanyPage = () => {
       label:    'Kliento Kolokacijos',
       children: <ClientsCollocationsTab
         checkedList={checkedList}
-        checkAllStates = {checkAllStates}
-        onCheckAllChange = {onCheckAllChange}
+        checkAllStates={checkAllStates}
+        onCheckAllChange={onCheckAllChange}
         onCheckboxChange={onCheckboxChange}
         edit={edit}
         J13locationName={'J13'}
@@ -135,6 +136,7 @@ const SingleCompanyPage = () => {
         T72locationData={T72}
         collocations={collocations}
         collocationsSites={collocationsSites}
+        setCheckedList={setCheckboxList}
       />,
     },
   ]

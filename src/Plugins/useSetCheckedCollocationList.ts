@@ -1,23 +1,8 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React from 'react'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-interface CheckedPremises {
-  [premiseName: string]: string[];
-}
-
-interface CheckedList {
-  [site: string]: CheckedPremises[];
-}
-
-interface CheckAllStates {
-  [key: string]: boolean;
-}
-
-interface State {
-  checkedList: CheckedList;
-  checkAllStates: CheckAllStates;
-}
+import React                    from 'react'
+import { CheckboxChangeEvent }  from 'antd/es/checkbox'
+import { State }                from '../types/globalTypes'
 
 type CompanyFormType = {
 companyName?:           string,
@@ -128,7 +113,8 @@ const useSetCheckedCollocationList = () => {
   }
   const { checkedList, checkAllStates } = checkboxList
   const filteredResult = filterObject(checkedList)
-  return { filteredResult, checkedList, checkAllStates, onCheckAllChange, onCheckboxChange }
+
+  return { filteredResult, setCheckboxList, checkedList, checkAllStates, onCheckAllChange, onCheckboxChange }
 }
 
 export default useSetCheckedCollocationList
