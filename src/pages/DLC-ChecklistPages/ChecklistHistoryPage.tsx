@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import FullTable                        from '../../components/Table/TableComponents/FullTable'
 import ChecklistHistoryTableRows        from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'

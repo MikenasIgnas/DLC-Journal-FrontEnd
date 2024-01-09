@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React from 'react'
 import { ConfigProvider, DatePicker } from 'antd'
 import {
   Bar,

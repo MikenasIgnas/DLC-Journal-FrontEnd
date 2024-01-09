@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React    from 'react'
 import { Tag }  from 'antd'
 import { Link } from 'react-router-dom'
 

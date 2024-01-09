@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import React                                                      from 'react'
 import { Button, Form, List, Select, Image, Avatar, Modal, Tag }  from 'antd'
 import SignatureCanvas                                            from 'react-signature-canvas'
@@ -7,8 +7,8 @@ import { useCookies }                                             from 'react-co
 import { get, post }                                              from '../../../Plugins/helpers'
 import { useParams }                                              from 'react-router'
 import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
-import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
-import { DeleteOutlined } from '@ant-design/icons'
+import useSetWindowsSize                                          from '../../../Plugins/useSetWindowsSize'
+import { DeleteOutlined }                                         from '@ant-design/icons'
 
 type RegisteredVisitorsListItemProps = {
   signature:     string | null | undefined

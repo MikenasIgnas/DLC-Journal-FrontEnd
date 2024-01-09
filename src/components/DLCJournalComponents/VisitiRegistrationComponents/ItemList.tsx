@@ -23,7 +23,7 @@ const ItemList = ({cardTitle, inputPlaceHolder, inputValue, setInputValue, list,
   const [cookies] = useCookies(['access_token'])
 
   const removeListItem = async(index: number) => {
-    const filtered = list.filter((el, i) => index !== i)
+    const filtered = list.filter((_el, i) => index !== i)
     setListItems(filtered)
     await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
   }

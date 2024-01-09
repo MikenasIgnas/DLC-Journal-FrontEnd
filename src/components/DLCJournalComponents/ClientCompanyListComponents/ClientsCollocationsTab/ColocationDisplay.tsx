@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                    from 'react'
 import { Card, Divider, List }  from 'antd'
 import { ColocationDataType }   from '../../../../types/globalTypes'
 

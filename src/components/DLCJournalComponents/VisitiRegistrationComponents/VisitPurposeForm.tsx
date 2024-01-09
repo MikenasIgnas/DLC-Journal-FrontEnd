@@ -1,7 +1,5 @@
 /* eslint-disable max-len */
-import * as React           from 'react'
 import VisitPurposeButtons  from './VisitPurposeButtons'
-
 
 const VisitPurposeForm = () => {
   const aa= ['Komutacija', 'Irangos inesimas', 'irangos isnesimas', 'profilaktika']

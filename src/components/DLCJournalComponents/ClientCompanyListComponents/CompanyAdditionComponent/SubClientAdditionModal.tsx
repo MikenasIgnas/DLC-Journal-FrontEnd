@@ -9,8 +9,7 @@ import ColocationSelectors                        from '../ClientsCollocationsTa
 import { CollocationsType }                       from '../../../../types/globalTypes'
 import { useAppDispatch }                         from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
+import useSetCheckedCollocationList               from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;

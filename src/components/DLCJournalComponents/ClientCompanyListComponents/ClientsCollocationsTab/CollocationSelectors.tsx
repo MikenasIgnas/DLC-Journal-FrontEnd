@@ -1,6 +1,5 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React                                        from 'react'
 import { Checkbox, Collapse, CollapseProps, Form }  from 'antd'
 import { CheckboxChangeEvent }                      from 'antd/es/checkbox'
 

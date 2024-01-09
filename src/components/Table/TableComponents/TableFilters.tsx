@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                from 'react'
 import { FilterOptions }    from '../../../types/globalTypes'

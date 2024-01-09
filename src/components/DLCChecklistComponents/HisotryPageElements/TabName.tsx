@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React              from 'react'
 import { Badge }          from 'antd'
 import { useAppSelector } from '../../../store/hooks'
 

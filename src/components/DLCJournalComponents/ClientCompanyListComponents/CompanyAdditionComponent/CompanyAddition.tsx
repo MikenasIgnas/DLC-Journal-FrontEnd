@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                                from 'react'
 import { AppstoreAddOutlined }              from '@ant-design/icons'
 import { Button}                            from 'antd'
 import CompanyAdditionModal                 from './CompanyAdditionModal'

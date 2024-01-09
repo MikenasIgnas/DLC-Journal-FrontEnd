@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
 import React                                                        from 'react'

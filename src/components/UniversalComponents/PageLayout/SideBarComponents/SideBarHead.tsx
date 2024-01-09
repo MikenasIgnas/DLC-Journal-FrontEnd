@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React            from 'react'
 import IconButton       from '@mui/joy/IconButton'
 import { useNavigate }  from 'react-router'
 import { Typography }   from 'antd'

@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { DatePicker, Form, TimePicker } from 'antd'
 import dayjs                            from 'dayjs'
 

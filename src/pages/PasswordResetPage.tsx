@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { Button, Card, Form, Input } from 'antd'
-import React from 'react'
 import { useNavigate } from 'react-router'
 
 const PasswordResetPage = () => {
   const [form] = Form.useForm()
   const navigate = useNavigate()
-  const onFinish = (values:any) => {
+  const onFinish = () => {
     navigate('/')
   }
 

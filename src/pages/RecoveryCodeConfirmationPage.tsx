@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { Button, Card, Form, Input }  from 'antd'
-import React                            from 'react'
 import { useNavigate }                  from 'react-router'
 
 const RecoveryCodeConfirmationPage = () => {
@@ -8,7 +8,7 @@ const RecoveryCodeConfirmationPage = () => {
   const [form]      = Form.useForm()
 
   const onFinish = (values: any) => {
-    const result = Object.values(values).sort().join('')
+     Object.values(values).sort().join('')
     form.resetFields()
     navigate('/PasswordResetPage')
   }

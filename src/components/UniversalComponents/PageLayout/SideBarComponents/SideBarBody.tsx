@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                        from 'react'
 import { listItemButtonClasses }    from '@mui/joy/ListItemButton'
 import HomeRoundedIcon              from '@mui/icons-material/HomeRounded'
 import List                         from '@mui/joy/List'

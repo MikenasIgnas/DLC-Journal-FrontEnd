@@ -4,13 +4,6 @@ import { CollocationsSites, CollocationsType, ColocationDataType, State }  from 
 import EditableCollocationFormList                                  from './CollocationFormList'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
-
-type CheckedList = {
-  [site: string]: {
-    [premiseName: string]: string[];
-}[];
-}
-
 type ClientsCollocationsProps = {
     J13locationName:   string | undefined
     T72locationName:   string | undefined

@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { deleteTableItem }              from '../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
@@ -10,7 +9,7 @@ import useSetVisitsData                 from '../../Plugins/useSetVisitData'
 import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
 import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }               from '../../store/hooks'
 
 const TableColumns = () => {
   return(

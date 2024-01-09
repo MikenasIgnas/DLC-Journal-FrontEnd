@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { Avatar, Box, IconButton, Typography }  from '@mui/joy'
-import React                                    from 'react'
 import LogoutRoundedIcon                        from '@mui/icons-material/LogoutRounded'
 import { useAppSelector }                       from '../../../../store/hooks'
 

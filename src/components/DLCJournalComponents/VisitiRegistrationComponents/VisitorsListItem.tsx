@@ -1,6 +1,5 @@
-/* eslint-disable react/jsx-no-undef */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-/* eslint-disable react/jsx-key */
 import React                                                      from 'react'
 import { Avatar, Button, Form, List, Modal, Select, Tag, Image }  from 'antd'
 import { FormListFieldData }                                      from 'antd/es/form'

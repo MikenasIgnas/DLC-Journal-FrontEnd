@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                    from 'react'
+import React                                from 'react'
 import { Avatar, Form, Input, UploadFile }  from 'antd'
-import PhotoUploader            from '../../UniversalComponents/PhotoUploader/PhotoUploader'
-import useSetWindowsSize from '../../../Plugins/useSetWindowsSize'
+import PhotoUploader                        from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
 
 type SingleCompaniesTitleProps = {
     companyTitle:       string | undefined;

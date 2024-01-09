@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                from 'react'
 import CollocationListItem  from './CollocationListItem'
 import { Card, List }       from 'antd'
 

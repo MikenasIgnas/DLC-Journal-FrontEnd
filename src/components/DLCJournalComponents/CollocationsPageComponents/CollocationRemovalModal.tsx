@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                                from 'react'
 import { Modal }                            from 'antd'
 import { post }                             from '../../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'

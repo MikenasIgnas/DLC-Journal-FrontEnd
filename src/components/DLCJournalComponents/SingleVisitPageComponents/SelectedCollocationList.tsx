@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                            from 'react'
 import { Card, Checkbox, Empty, Form }  from 'antd'
 import CollocationCardTitle             from '../VisitiRegistrationComponents/CollocationCardTitle'
 

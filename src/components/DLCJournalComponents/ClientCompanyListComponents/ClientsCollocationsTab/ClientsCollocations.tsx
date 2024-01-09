@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                  from 'react'
 import ColocationDisplay      from './ColocationDisplay'
 import { ColocationDataType } from '../../../../types/globalTypes'
 import { Empty, Tabs, TabsProps } from 'antd'

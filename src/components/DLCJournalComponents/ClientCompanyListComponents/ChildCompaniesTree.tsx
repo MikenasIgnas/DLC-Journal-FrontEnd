@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { DownOutlined }         from '@ant-design/icons'
 import { ConfigProvider, Tree } from 'antd'
-import React                    from 'react'
 import { Link }                 from 'react-router-dom'
 import { CompaniesType }        from '../../../types/globalTypes'
 import HighlightText            from '../../UniversalComponents/HighlightText'

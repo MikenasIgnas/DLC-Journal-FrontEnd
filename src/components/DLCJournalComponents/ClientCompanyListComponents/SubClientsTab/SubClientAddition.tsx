@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                              from 'react'
 import { Button, Select }                 from 'antd'
 import { useAppDispatch }                 from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }  from '../../../../auth/ModalStateReducer/ModalStateReducer'

@@ -7,7 +7,7 @@ type VisitPurposeButtonsProps = {
   buttonWidth:  number;
 };
 
-const VisitPurposeButtons = ({ buttonText, buttonWidth }: VisitPurposeButtonsProps) => {
+const VisitPurposeButtons = ({ buttonText }: VisitPurposeButtonsProps) => {
   const [isToggled, setToggled] = React.useState(false)
 
   React.useEffect(() => {

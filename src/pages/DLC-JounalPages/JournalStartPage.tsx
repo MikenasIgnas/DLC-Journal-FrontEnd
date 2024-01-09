@@ -1,5 +1,4 @@
 /* eslint-disable max-len */
-import React                from 'react'
 import JournalStartPageCard from '../../components/DLCJournalComponents/JournalStartPageCard/JournalStartPageCard'
 import { useAppSelector }   from '../../store/hooks'
 import {

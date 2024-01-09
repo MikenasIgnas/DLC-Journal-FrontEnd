@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 
 import { TokenType } from '../types/globalTypes'
@@ -200,7 +201,7 @@ const deleteTableItem = async(url: string, data: any, setData: any, id: string |
   }
 }
 
-const calculateTimeDifference = (startDate: string, startTime: string, endDate: string, endTime: string) => {
+const calculateTimeDifference = (startDate: string | undefined, startTime: string | undefined, endDate: string | undefined, endTime: string | undefined) => {
   if(startDate && startTime && endDate && endTime){
     const startDateTime   = new Date(`${startDate} ${startTime}`)
     const endDateTime     = new Date(`${endDate} ${endTime}`)
@@ -227,7 +228,7 @@ const convertUTCtoLocalTime = (utcTimestamp: Date) => {
   }
 }
 
-const convertUTCtoLocalDate = (utcTimestamp: Date) => {
+const convertUTCtoLocalDate = (utcTimestamp: string | undefined) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })
@@ -238,7 +239,7 @@ const convertUTCtoLocalDate = (utcTimestamp: Date) => {
   }
 }
 
-const convertUTCtoLocalDateTime = (utcTimestamp: Date) => {
+const convertUTCtoLocalDateTime = (utcTimestamp: string | undefined) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })

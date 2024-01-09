@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable max-len */
-import React                                from 'react'
 import { useNavigate, useSearchParams }     from 'react-router-dom'
 import FullTable                            from '../../components/Table/TableComponents/FullTable'
 import UersTableRows                        from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'

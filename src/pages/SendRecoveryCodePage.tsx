@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import {  UserOutlined }                        from '@ant-design/icons'
 import { Button, Card, Form, Input , message }  from 'antd'
-import React                                    from 'react'
 import { useNavigate }                          from 'react-router'
 
 const SendRecoveryCodePage = () => {
