@@ -32,7 +32,7 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
           md:     2,
           lg:     2,
           xl:     2,
-          xxl:    3,
+          xxl:    4,
         }}
         dataSource={clientsEmployees}
         renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&

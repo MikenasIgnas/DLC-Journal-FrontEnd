@@ -43,6 +43,7 @@ const ColocationSelectors = ({
         <>
           <Checkbox
             onChange={(e) => onCheckAllChange(e, premise.racks, premise.premiseName, collocationSite)}
+
             checked={checkAllStates[premiseKey]}
           >
             {checkAllStates[premiseKey] ? 'Atžymėti visas' : 'Pažymėti visas'}

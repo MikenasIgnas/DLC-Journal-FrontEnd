@@ -108,14 +108,13 @@ const CollocationListItem = ({item, index, companyCollocation}: CollocationListI
                       {rackItem}
                     </div>
                     <div>
-                      {companyCollocation?.map(
-                        (match) =>
-                          match.racks.includes(rackItem) &&
-                              match.premiseName === item.premiseName && (
-                            <Tag key={match.companyName} color='blue'>
-                              {match.companyName}
-                            </Tag>
-                          )
+                      {companyCollocation?.map((match, collocationIndex) =>
+                        match.racks.includes(rackItem) &&
+                          match.premiseName === item.premiseName && (
+                          <Tag key={collocationIndex} color='blue'>
+                            {match.companyName}
+                          </Tag>
+                        )
                       )}
                     </div>
                   </List.Item>

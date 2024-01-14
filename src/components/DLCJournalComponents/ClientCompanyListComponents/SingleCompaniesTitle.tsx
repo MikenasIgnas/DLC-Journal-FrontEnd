@@ -12,9 +12,10 @@ type SingleCompaniesTitleProps = {
     companyLogo:        string | undefined;
     setFileList:        React.Dispatch<React.SetStateAction<UploadFile<any>[]>>
     fileList:           UploadFile<any>[]
+    companyCode:        string | undefined
 }
 
-const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo, setFileList, fileList}: SingleCompaniesTitleProps) => {
+const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo, setFileList, fileList, companyCode}: SingleCompaniesTitleProps) => {
   const windowSize = useSetWindowsSize()
 
   return (
@@ -22,6 +23,7 @@ const SingleCompanyTitle = ({companyTitle, companyDescription, edit, companyLogo
       {!edit ?
         <div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <div>{companyCode}</div>
             <Avatar shape='square' size={70} style={{margin: '10px'}} src={<img style={{objectFit: 'contain'}} src={`../../CompanyLogos/${companyLogo ? companyLogo : 'noImage.jpg'}`}alt='err' />}/>
             <div style={{fontSize: windowSize > 600 ? '20px' : '12px', marginLeft: '20px'}}>{companyTitle?.toUpperCase()}</div>
           </div>

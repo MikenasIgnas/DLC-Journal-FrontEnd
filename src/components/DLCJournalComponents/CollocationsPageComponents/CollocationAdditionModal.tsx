@@ -3,7 +3,7 @@ import { Button, Form, Input, Modal, Select } from 'antd'
 import React                                  from 'react'
 import { useAppDispatch, useAppSelector }     from '../../../store/hooks'
 import { setOpenCollocationAdditionModal }    from '../../../auth/ModalStateReducer/ModalStateReducer'
-import ItemList                               from '../VisitiRegistrationComponents/ItemList'
+import ItemList                               from '../VisitiRegistrationComponents/ClientsGuestsItemList'
 import { useCookies }                         from 'react-cookie'
 import { post }                               from '../../../Plugins/helpers'
 

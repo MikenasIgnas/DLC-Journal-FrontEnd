@@ -88,7 +88,12 @@ const CompaniesListPage = () => {
         collocations={collocations}
         additionModalTitle={'Pridėkite įmonę'}
       />
-      <Input onChange={searchForCompany} style={{marginTop: '10px', marginBottom: '10px'}} placeholder='Ieškoti įmonės' allowClear/>
+      <Input
+        onChange={searchForCompany}
+        style={{marginTop: '10px', marginBottom: '10px'}}
+        placeholder='Ieškoti įmonės'
+        allowClear
+      />
       <List
         loading={loading}
         pagination={{ position: 'bottom', align: 'center'}}

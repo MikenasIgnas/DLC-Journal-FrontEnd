@@ -1,12 +1,13 @@
 /* eslint-disable max-len */
-import React                      from 'react'
-import { Tag, Typography }        from 'antd'
-import HighlightText              from '../../UniversalComponents/HighlightText'
-import { useSearchParams }        from 'react-router-dom'
-import { convertUTCtoLocalDate }  from '../../../Plugins/helpers'
+import React                            from 'react'
+import { Button, Tag, Typography }      from 'antd'
+import HighlightText                    from '../../UniversalComponents/HighlightText'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { convertUTCtoLocalDate }        from '../../../Plugins/helpers'
 
 type UersTableProps = {
     id:           number;
+    userId:       string;
     dateCreated:  string;
     email:        string;
     isAdmin:      boolean;
@@ -18,9 +19,10 @@ type UersTableProps = {
     isSecurity:   boolean;
 }
 
-const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, disabledDate, username, isSecurity}: UersTableProps) => {
-  const [searchParams] = useSearchParams()
-  const filter =         searchParams.get('search')
+const UersTableRows = ({dateCreated, email, id, userId, isAdmin, name, rowMenu, status, disabledDate, username, isSecurity}: UersTableProps) => {
+  const [searchParams]  = useSearchParams()
+  const filter          = searchParams.get('search')
+  const navigate        = useNavigate()
 
   return (
     <tr key={id}>
@@ -49,6 +51,9 @@ const UersTableRows = ({dateCreated, email, id, isAdmin, name, rowMenu, status, 
         {disabledDate && (
           <Typography>{HighlightText(filter, convertUTCtoLocalDate(disabledDate))}</Typography>
         )}
+      </td>
+      <td>
+        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${userId}`)}>Peržiūrėti</Button>
       </td>
       <td>
         {rowMenu}

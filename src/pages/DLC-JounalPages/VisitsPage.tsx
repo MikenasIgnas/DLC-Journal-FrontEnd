@@ -1,15 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import { deleteTableItem }              from '../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
-import FullTable                        from '../../components/Table/TableComponents/FullTable'
-import VisitsTableRows                  from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
-import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import useSetVisitsData                 from '../../Plugins/useSetVisitData'
-import useGenerateSingleVisitPDF        from '../../Plugins/useGenerateSingleVIsitPDF'
-import PdfGenerator                     from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
-import visitsRowMenuItems               from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
-import { useAppSelector }               from '../../store/hooks'
+import { useSearchParams }       from 'react-router-dom'
+
+import {
+  deleteTableItem,
+  get,
+  getCurrentDate,
+  getCurrentTime }  from '../../Plugins/helpers'
+
+import { useCookies }            from 'react-cookie'
+import FullTable                 from '../../components/Table/TableComponents/FullTable'
+import VisitsTableRows           from '../../components/DLCJournalComponents/VisistPageComponents/VisitsTableRows'
+import RowMenu                   from '../../components/Table/TableComponents/RowMenu'
+import useSetVisitsData          from '../../Plugins/useSetVisitData'
+import useGenerateSingleVisitPDF from '../../Plugins/useGenerateSingleVIsitPDF'
+import PdfGenerator              from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import visitsRowMenuItems        from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
+import { useAppSelector }        from '../../store/hooks'
+import { message }               from 'antd'
+import SuccessMessage            from '../../components/UniversalComponents/SuccessMessage'
+import { VisitStatusType }       from '../../types/globalTypes'
 
 const TableColumns = () => {
   return(
@@ -25,6 +35,7 @@ const TableColumns = () => {
       <th className='TableColumnWidth70px'>Pabaigos Laikas</th>
       <th className='TableColumnWidth70px'>Užtrukta</th>
       <th className='TableColumnWidth150px'>Lydintysis</th>
+      <th className='TableColumnWidth150px'>Peržiūrėti</th>
       <th className='TableColumnWidth70px'>Veiksmai</th>
     </>
   )
@@ -52,43 +63,67 @@ const VisitPage = () => {
   const [cookies]                         = useCookies(['access_token'])
   const [searchParams, setSearchParams]   = useSearchParams()
   const page                              = searchParams.get('page')
-  const navigate                          = useNavigate()
   const {data, count, setData}            = useSetVisitsData()
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
   const isSecurity                        = useAppSelector((state) => state.auth.isSecurity)
   const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
+  const [messageApi, contextHolder]       = message.useMessage()
 
+  const endVisit = async (id: number, visitStatus: string | undefined) => {
+    if (visitStatus === 'success') {
+      const response = await get(`endVisit?visitId=${id}`, cookies.access_token)
+      if (response) {
+        if (data) {
+          const newData = data.map(visit =>
+            visit.id === id ? { ...visit, visitStatus: 'error' as VisitStatusType, endDate: getCurrentDate(), endTime: getCurrentTime() } : visit
+          )
+          setData(newData)
+          messageApi.success('Visit ended successfully')
+        }
+      } else {
+        messageApi.error('Error ending visit')
+      }
+    } else {
+      messageApi.error({
+        content: 'Vizitas turi būti pradėtas',
+        type:    'error',
+      })
+    }
+  }
   return (
-    <FullTable
-      pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
-      tableSorter={tableSorter}
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      documentCount={count}
-      tableColumns={<TableColumns />}
-      tableRows={data?.map((el) => (
-        <VisitsTableRows
-          key={el.id}
-          visitId={el.id}
-          visitStatus={el.visitStatus}
-          visitingClient={el.visitingClient}
-          visitAddress={el.visitAddress}
-          dlcEmployees={el.dlcEmployees}
-          visitors={el.visitors}
-          visitPurpose={el.visitPurpose}
-          visitStartDate={el.startDate}
-          visitStartTime={el.startTime}
-          visitEndDate={el.endDate}
-          visitEndTime={el.endTime}
-          rowMenu={<RowMenu
-            navigate={() => navigate(`${el.id}?visitAddress=${el.visitAddress}`)}
-            deleteItem={() => deleteTableItem('deleteVisit', data, setData, el.id, cookies.access_token)}
-            generatePDF={() => generateSingleVisitPDF(el.id)}
-            items={rowMenuItems}
-          />}
-        />
-      ))}
-    />
+    <>
+      <FullTable
+        pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
+        tableSorter={tableSorter}
+        currentPage={page}
+        setSearchParams={setSearchParams}
+        documentCount={count}
+        tableColumns={<TableColumns />}
+        tableRows={data?.map((el) => (
+          <VisitsTableRows
+            key={el.id}
+            visitId={el.id}
+            visitStatus={el.visitStatus}
+            visitingClient={el.visitingClient}
+            visitAddress={el.visitAddress}
+            dlcEmployees={el.dlcEmployees}
+            visitors={el.visitors}
+            visitPurpose={el.visitPurpose}
+            visitStartDate={el.startDate}
+            visitStartTime={el.startTime}
+            visitEndDate={el.endDate}
+            visitEndTime={el.endTime}
+            rowMenu={<RowMenu
+              deleteItem={() => deleteTableItem('deleteVisit', data, setData, el.id, cookies.access_token)}
+              generatePDF={() => generateSingleVisitPDF(el.id)}
+              endVisit={() => endVisit(el.id, el.visitStatus)}
+              items={rowMenuItems}
+            />}
+          />
+        ))}
+      />
+      <SuccessMessage contextHolder={contextHolder}/>
+    </>
   )
 }
 

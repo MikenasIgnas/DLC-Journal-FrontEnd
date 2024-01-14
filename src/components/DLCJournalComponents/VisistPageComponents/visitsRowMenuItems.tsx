@@ -4,7 +4,7 @@ import { MenuProps }                        from 'antd'
 const visitsRowMenuItems = (loading: boolean | undefined, isSecurity: boolean | null) => {
   const items: MenuProps['items'] = [
     {
-      label: 'Peržiūrėti',
+      label: 'Baigti',
       key:   '1',
     },
     {

@@ -6,10 +6,11 @@ import VisitDateItem                                from '../SingleVisitPageComp
 import { UserType, VisitsType }                     from '../../../types/globalTypes'
 import { Link, useSearchParams }                    from 'react-router-dom'
 import { addresses }                                from './StaticSelectOptions'
+import { useAppSelector } from '../../../store/hooks'
 
 const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolean, dlcEmployees: UserType[] | undefined ) => {
   const [, setSearchParams] = useSearchParams()
-
+  const logedInUser         = useAppSelector((state) => state.auth.name)
   const DLCEmployees = dlcEmployees?.map((el) => {
     return {...el, value: el.name, label: el.name}
   })
@@ -91,9 +92,9 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
           <div style={{display: 'flex', justifyContent: 'center'}}>
             {!edit ?
               <div>{visitData?.[0].dlcEmployees}</div> :
-              <Form.Item name='dlcEmployees' initialValue={visitData?.[0].dlcEmployees}>
+              <Form.Item name='dlcEmployees' initialValue={visitData?.[0].dlcEmployees ? visitData?.[0].dlcEmployees : logedInUser}>
                 <Select
-                  value={visitData?.[0].dlcEmployees}
+                  value={visitData?.[0].dlcEmployees ? visitData?.[0].dlcEmployees : logedInUser}
                   style={{width: '200px'}}
                   options={DLCEmployees}/>
               </Form.Item>

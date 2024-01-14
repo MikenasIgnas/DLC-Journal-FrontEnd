@@ -10,7 +10,7 @@ import { CollocationsType }                                 from '../../../../ty
 import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
 import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
-import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
+import useSetCheckedCollocationList                         from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
@@ -44,6 +44,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
   const [messageApi, contextHolder]                                         = message.useMessage()
   const {
     filteredResult,
+    setCheckboxList,
     checkedList,
     checkAllStates,
     onCheckAllChange,
@@ -51,27 +52,36 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
   } = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    filteredResult.companyName = values.companyName
-    filteredResult.companyDescription = values.companyDescription
-    filteredResult.companyPhoto = ''
-    const res = await post(postUrl, filteredResult, cookies.access_token)
-    if(fileList[0]){
-      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
-    }
-    if(!res.error){
-      form.resetFields()
-      dispatch(setOpenCompaniesAdditionModal(false))
-      messageApi.success({
-        type:    'success',
-        content: 'Įmonė pridėta',
-      })
-    }else{
-      form.resetFields()
-      dispatch(setOpenCompaniesAdditionModal(false))
+    if(filteredResult?.J13?.length && filteredResult?.J13?.length <= 0 || filteredResult?.T72?.length && filteredResult?.T72?.length <= 0 ){
       messageApi.error({
         type:    'error',
-        content: 'Pridėti nepavyko',
+        content: 'Privaloma pasirinkti kolokaciją',
       })
+    }else{
+      filteredResult.companyName = values.companyName
+      filteredResult.companyDescription = values.companyDescription
+      filteredResult.companyPhoto = ''
+      const res = await post(postUrl, filteredResult, cookies.access_token)
+      if(fileList[0]){
+        uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
+      }
+      if(!res.error){
+        form.resetFields()
+        dispatch(setOpenCompaniesAdditionModal(false))
+        setCheckboxList({checkedList: {}, checkAllStates: {}})
+        messageApi.success({
+          type:    'success',
+          content: 'Įmonė pridėta',
+        })
+      }else{
+        form.resetFields()
+        dispatch(setOpenCompaniesAdditionModal(false))
+        setCheckboxList({checkedList: {}, checkAllStates: {}})
+        messageApi.error({
+          type:    'error',
+          content: 'Pridėti nepavyko',
+        })
+      }
     }
   }
 
@@ -88,6 +98,9 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
         <div>
           <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
             <Input placeholder='Įmonės pavadinimas'/>
+          </Form.Item>
+          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės kodą'}]} name='companyCode'>
+            <Input placeholder='Įmonės kodas'/>
           </Form.Item>
           <Form.Item name='companyDescription'>
             <Input placeholder='Įmonės apibūdinimas'/>

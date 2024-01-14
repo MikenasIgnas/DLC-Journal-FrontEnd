@@ -4,13 +4,9 @@ const usersRowMenuItems = (isAdmin: boolean | null) => {
 
   const items: MenuProps['items'] = [
     {
-      label: 'Peržiūrėti',
-      key:   '1',
-    },
-    {
       label:    'Archyvuoti',
       danger:   true,
-      key:      '3',
+      key:      '1',
       disabled: isAdmin ? false : true,
     },
 

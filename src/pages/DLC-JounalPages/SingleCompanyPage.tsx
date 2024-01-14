@@ -148,6 +148,7 @@ const SingleCompanyPage = () => {
         bordered={false}
         title={
           <SingleCompanyTitle
+            companyCode={company?.companyInfo.companyCode}
             setFileList={setFileList}
             fileList={fileList}
             companyLogo ={company?.companyInfo?.companyPhoto}

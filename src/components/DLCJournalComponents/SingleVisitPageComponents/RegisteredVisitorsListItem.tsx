@@ -80,7 +80,7 @@ const RegisteredVisitorsListItem = ({
     <List.Item
       className='VisitorsListItemContainer'
       actions={[
-        <div className='SelectedVisitorsButtonContainer'>
+        <div key={employeeId} className='SelectedVisitorsButtonContainer'>
           <div>
             {savedSignature && <Image width={150} src={savedSignature}/>}
             {!savedSignature ?

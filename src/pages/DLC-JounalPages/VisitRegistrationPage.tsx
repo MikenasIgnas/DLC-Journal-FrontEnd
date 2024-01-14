@@ -9,12 +9,16 @@ import SuccessMessage                                                       from
 import { useSearchParams }                                                  from 'react-router-dom'
 import { VisitsType }                                                       from '../../types/globalTypes'
 
+type Values = {
+  guestName: string;
+  companyName?: string;
+}
 const VisitRegistrationPage= () => {
   const [form]                            = Form.useForm()
   const { token }                         = theme.useToken()
   const [cookies]                         = useCookies(['access_token'])
   const navigate                          = useNavigate()
-  const [clientsGuests, setClientsGuests] = React.useState<string[]>([])
+  const [clientsGuests, setClientsGuests] = React.useState<Values[]>([])
   const [carPlates, setCarPlates]         = React.useState<string[]>([])
   const [messageApi, contextHolder]       = message.useMessage()
   const [searchParams]                    = useSearchParams()

@@ -1,61 +1,69 @@
 /* eslint-disable max-len */
-import { get }        from '../../../Plugins/helpers'
-import { useParams }  from 'react-router'
-import { useCookies } from 'react-cookie'
-import { VisitsType } from '../../../types/globalTypes'
-import { message }    from 'antd'
+import { useParams }                from 'react-router'
+import { useCookies }               from 'react-cookie'
+import { message }                  from 'antd'
+import { get }                      from '../../../Plugins/helpers'
+import { VisitorsType, VisitsType } from '../../../types/globalTypes'
 
-const useVisitValidation =  () => {
-  const {id}                        = useParams()
+const useVisitValidation = () => {
+  const { id }                      = useParams()
   const [cookies]                   = useCookies(['access_token'])
   const [messageApi, contextHolder] = message.useMessage()
 
-  const validate = async(
-    visitData: VisitsType[] | undefined,
-    edit: boolean, fetchData: () => Promise<void>,
-    url: string,
-    validationSuccessMessage :string
-  ) => {
-    const hasId         = visitData?.[0]?.visitors?.every(obj => obj.idType !== null && obj.idType !== '')
-    const hasSignatures = visitData?.[0]?.visitors?.every(obj => obj.signature && obj.signature !== null && obj.signature !== undefined)
-    if(visitData && visitData?.[0]?.visitPurpose.length > 0 && visitData && visitData?.[0]?.visitors.length > 0 && hasId && hasSignatures && !edit ) {
+  const hasValidId    = (visitors: VisitorsType[]) => visitors?.every(obj => obj.idType)
+  const hasSignatures = (visitors: VisitorsType[]) => visitors?.every(obj => obj.signature)
+
+  const validate = async (visitData: VisitsType[] | undefined, isEdit: boolean, fetchData: () => Promise<void>, url: string, successMessage: string) => {
+    const visitors              = visitData?.[0]?.visitors
+    const visitPurpose          = visitData?.[0]?.visitPurpose
+
+    if (isEdit) {
+      messageApi.error({ type: 'error', content: 'Neišsaugoti duomenys' })
+      return
+    }
+
+    if (!visitors?.length) {
+      messageApi.error({ type: 'error', content: 'Nepasirinkti įmonės darbuotojai' })
+      return
+    }
+
+    if (!visitPurpose?.length) {
+      messageApi.error({ type: 'error', content: 'Nepasirinktas vizito tikslas' })
+      return
+    }
+
+    if (!hasValidId(visitors)) {
+      messageApi.error({ type: 'error', content: 'Nepasirinktas dokumento tipas' })
+      return
+    }
+
+    if (!hasSignatures(visitors)) {
+      messageApi.error({ type: 'error', content: 'Trūksta parašo' })
+      return
+    }
+
+    try {
       const res = await get(`${url}?visitId=${id}`, cookies.access_token)
-      if(!res.error){
+      if (!res.error) {
         messageApi.success({
           type:    'success',
-          content: validationSuccessMessage,
+          content: successMessage,
         })
         await fetchData()
+      } else {
+        messageApi.error({
+          type:    'error',
+          content: 'Klaida vykdant užklausą',
+        })
       }
-    }else if(edit){
+    } catch (error) {
       messageApi.error({
         type:    'error',
-        content: 'Neišsaugoti duomenys',
-      })
-    }else if(visitData && visitData?.[0]?.visitors.length <= 0 ){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinkti įmonės darbuotojai',
-      })
-    }else if (visitData && visitData?.[0]?.visitPurpose.length <= 0 ){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinktas vizito tikslas',
-      })
-    }else if(!hasId){
-      messageApi.error({
-        type:    'error',
-        content: 'Nepasirinktas dokumento tipas',
-      })
-    }else if(!hasSignatures){
-      messageApi.error({
-        type:    'error',
-        content: 'Trūksta parašo',
+        content: 'Serverio klaida',
       })
     }
   }
-
-  return {validate, contextHolder}
+  return { validate, contextHolder }
 }
 
 export default useVisitValidation

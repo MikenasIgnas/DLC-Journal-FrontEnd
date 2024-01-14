@@ -4,24 +4,24 @@
 import React                                                         from 'react'
 import { get }                                                       from '../../../Plugins/helpers'
 import { useCookies }                                                from 'react-cookie'
-import { Button, Empty, Form, FormInstance, Select, Tag }            from 'antd'
+import { Button, Empty, Form, FormInstance, Input, Select, Tag }     from 'antd'
 import { useSearchParams }                                           from 'react-router-dom'
-import { CollocationType, CompaniesType, EmployeesType, VisitsType } from '../../../types/globalTypes'
+import { CollocationType, CompaniesType, EmployeesType, Values, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                     from './VisitRegistrationSelect'
 import VisitorsList                                                  from './VisitorsList'
-import ItemList                                                      from './ItemList'
+import ClientsGuestsItemList                                         from './ClientsGuestsItemList'
 import VisitPurposeList                                              from './VisitPurposeList'
 import VisitorAdditionList                                           from './VisitorAdditionList'
 import filterPermisions                                              from './filterPermisions'
 import {addresses}                                                   from './StaticSelectOptions'
 import { DatePicker }                                                from 'antd'
 import VisitRegistrationCollocationList                              from './VisitRegistrationCollocationList'
-import useSetUsersData                                               from '../../../Plugins/useSetUsersData'
+import CarPlatesItemList from './CarPlatesItemList'
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
-  setClientsGuests: React.Dispatch<React.SetStateAction<string[]>>
-  clientsGuests:    string[];
+  setClientsGuests: React.Dispatch<React.SetStateAction<Values[]>>
+  clientsGuests:    Values[];
   setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
   carPlates:        string[]
   setCheckedList:   React.Dispatch<React.SetStateAction<CollocationType>>
@@ -39,13 +39,11 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
   const [clientsEmployees, setClientsEmployees]           = React.useState<EmployeesType[]>()
   const [isCompanySelected, setIsCompanySelected]         = React.useState(false)
   const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationType[]>()
-  const [guestsImput, setGuestsInput]                     = React.useState<string>('')
-  const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
   const form                                              = Form.useFormInstance<VisitsType>()
   const values                                            = Form.useWatch('visitors', form)
+  const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
   const filteredPermisions                                = filterPermisions(values)
   const canBringCompany                                   = filteredPermisions.includes('Įleisti Trečius asmenis')
-  const {users}                                           = useSetUsersData(false)
 
   React.useEffect(() => {
     (async () => {
@@ -59,13 +57,10 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
       }
       setAllCompanies(companies.data)
     })()
-  }, [companyId, addressId, selectedVisitors])
+  }, [companyId, addressId, selectedVisitors, selectedVisitors?.length])
 
   const companyNames = allCompanies?.map((el)=> {
     return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
-  })
-  const DLCEmployees = users?.map((el) => {
-    return {...el, value: el.name, label: el.name}
   })
 
   const selectCompany = async(_: string, option: CompaniesType) => {
@@ -120,7 +115,6 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
           </Select>
         </Form.Item>
         {isCompanySelected &&
-        <>
           <VisitRegistrationFormItem
             formItemName={'visitAddress'}
             placeholder={'Pasirinkite Adresą'}
@@ -130,15 +124,6 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
             updateValue={(prevValues, currentValues) => prevValues.visitingClient !== currentValues.visitingClient}
             validationMessage={'Butina pasirinkti adresą'}
           />
-          <VisitRegistrationFormItem
-            formItemName={'dlcEmployees'}
-            placeholder={'Pasirinkite Lydintį'}
-            slectOptions={DLCEmployees}
-            fieldValue={'visitAddress'}
-            updateValue={(prevValues, currentValues) => prevValues.visitAddress !== currentValues.visitAddress}
-            validationMessage={'Būtina pasirinkti lydintyjį'}
-          />
-        </>
         }
         {isCompanySelected && addressId === 'T72' &&
         <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
@@ -160,7 +145,7 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
       <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
       {selectedVisitors && selectedVisitors?.length > 0 &&
-      <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>
+        <VisitorsList clientsEmployees={clientsEmployees} removeVisitor={removeVisitor} setClientsEmployees={setClientsEmployees}/>
       }
       {selectedVisitors && selectedVisitors?.length > 0 && <VisitPurposeList/>}
       {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
@@ -177,17 +162,16 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
       </div>
       }
       {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
-        <ItemList
-          cardTitle={'Pridėti palydą'}
-          inputValue={guestsImput}
-          inputPlaceHolder={'Pridėti palydą'}
-          setInputValue={setGuestsInput}
+        <ClientsGuestsItemList
+          cardTitle={'Atvykstanty tretieji asmenys'}
+          inputPlaceHolder={'Pridėti'}
           list={clientsGuests}
           setListItems={setClientsGuests}
+          companyNameInput={<Input placeholder='Imonė'/>}
         />
       }
       {selectedVisitors && selectedVisitors?.length > 0 && addressId === 'T72' &&
-        <ItemList
+        <CarPlatesItemList
           cardTitle={'Pridėti automobilį'}
           inputValue={carPlatesInput}
           inputPlaceHolder={'Pridėti automobilį'}

@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import React                        from 'react'
-import Box                          from '@mui/joy/Box'
-import { Tag, Typography }          from 'antd'
-import { useSearchParams }          from 'react-router-dom'
-import HighlightText                from '../../UniversalComponents/HighlightText'
-import { VisitorsType }             from '../../../types/globalTypes'
-import { calculateTimeDifference }  from '../../../Plugins/helpers'
+import React                            from 'react'
+import Box                              from '@mui/joy/Box'
+import { Button, Tag, Typography }      from 'antd'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import HighlightText                    from '../../UniversalComponents/HighlightText'
+import { VisitorsType }                 from '../../../types/globalTypes'
+import { calculateTimeDifference }      from '../../../Plugins/helpers'
 
 type VisitsTableRowsProps = {
     visitId:        number;
@@ -39,6 +39,7 @@ const VisitsTableRows = ({
   const [searchParams]  = useSearchParams()
   const filter          = searchParams.get('search')
   const timeDifference  = calculateTimeDifference(visitStartDate, visitStartTime, visitEndDate,visitEndTime)
+  const navigate = useNavigate()
   return (
     <tr key={visitId}>
       <td style={{padding: '12px' }}>
@@ -78,6 +79,9 @@ const VisitsTableRows = ({
       </td>
       <td>
         <Typography>{HighlightText(filter, dlcEmployees)}</Typography>
+      </td>
+      <td>
+        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visitId}?visitAddress=${visitAddress}`)}>Peržiūrėti</Button>
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

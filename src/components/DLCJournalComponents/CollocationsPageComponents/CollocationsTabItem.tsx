@@ -24,7 +24,7 @@ const CollocationsTabItem = ({site, tabItemId, premises, companyCollocation}: Co
     key:   String(tabItemId),
     children:
       <Card
-        key={tabItemId}
+        key={site}
         title={
           <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <div>{site}</div>

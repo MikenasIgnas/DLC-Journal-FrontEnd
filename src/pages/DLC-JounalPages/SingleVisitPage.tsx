@@ -1,24 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 // /* eslint-disable max-len */
-import React                                                        from 'react'
-import { useParams, useSearchParams }                               from 'react-router-dom'
-import { Button, Card, Form, List, Tag }                            from 'antd'
-import { Descriptions }                                             from 'antd'
-import { useCookies }                                               from 'react-cookie'
-import { convertUTCtoLocalDate, convertUTCtoLocalTime, get, post }  from '../../Plugins/helpers'
-import { CollocationType, EmployeesType, VisitsType }               from '../../types/globalTypes'
-import ItemList                                                     from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ItemList'
-import SelectedCollocationList                                      from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
-import RegisteredVisitorsListItem                                   from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
-import VisitorAdditionList                                          from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
-import filterPermisions                                             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
-import VisitInformationItems                                        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
-import VisitDescriptionTitle                                        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
-import SuccessMessage                                               from '../../components/UniversalComponents/SuccessMessage'
-import useVisitValidation                                           from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
-import CollocationsList                                             from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
-import useSetUsersData                                              from '../../Plugins/useSetUsersData'
+import React                                                         from 'react'
+import { useParams, useSearchParams }                                from 'react-router-dom'
+import { Button, Card, Form, List, Tag }                             from 'antd'
+import { Descriptions }                                              from 'antd'
+import { useCookies }                                                from 'react-cookie'
+import { convertUTCtoLocalDate, convertUTCtoLocalTime, get, post }   from '../../Plugins/helpers'
+import { CollocationType, EmployeesType, ClientsGuests, VisitsType } from '../../types/globalTypes'
+import ClientsGuestsItemList                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ClientsGuestsItemList'
+import SelectedCollocationList                                       from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedCollocationList'
+import RegisteredVisitorsListItem                                    from '../../components/DLCJournalComponents/SingleVisitPageComponents/RegisteredVisitorsListItem'
+import VisitorAdditionList                                           from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitorAdditionList'
+import filterPermisions                                              from '../../components/DLCJournalComponents/VisitiRegistrationComponents/filterPermisions'
+import VisitInformationItems                                         from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitInformationItems'
+import VisitDescriptionTitle                                         from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitDescriptionTitle'
+import SuccessMessage                                                from '../../components/UniversalComponents/SuccessMessage'
+import useVisitValidation                                            from '../../components/DLCJournalComponents/SingleVisitPageComponents/useVisitValidation'
+import CollocationsList                                              from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsList'
+import useSetUsersData                                               from '../../Plugins/useSetUsersData'
+import CarPlatesItemList                                             from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
 
 const SingleVisitPage = () => {
   const [cookies]                                             = useCookies(['access_token'])
@@ -27,11 +29,10 @@ const SingleVisitPage = () => {
   const [clientsEmployees, setClientsEmployees]               = React.useState<EmployeesType[]>()
   const { id }                                                = useParams()
   const [selectedVisitors, setSelectedVisitors]               = React.useState<number[]>([])
-  const [guestsImput, setGuestsInput]                         = React.useState<string>('')
   const [carPlatesInput, setCarPlatesInput]                   = React.useState<string>('')
   const [form]                                                = Form.useForm()
   const [searchEmployeeValue, setSearchEmployeeValue]         = React.useState<string | undefined>()
-  const [clientsGuests, setClientsGuests]                     = React.useState<string[]>([])
+  const [clientsGuests, setClientsGuests]                     = React.useState<ClientsGuests[]>([])
   const [carPlates, setCarPlates]                             = React.useState<string[]>([])
   const [edit, setEdit]                                       = React.useState(false)
   const [companiesColocations, setCompaniesCollocations]      = React.useState<CollocationType[]>()
@@ -200,11 +201,9 @@ const SingleVisitPage = () => {
         />
       }
       {canBringCompany ?
-        <ItemList
+        <ClientsGuestsItemList
           cardTitle={'Pridėti palydą'}
-          inputValue={guestsImput}
           inputPlaceHolder={'Pridėti palydą'}
-          setInputValue={setGuestsInput}
           list={clientsGuests}
           setListItems={setClientsGuests}
           url={'updateClientsGests'}
@@ -217,7 +216,7 @@ const SingleVisitPage = () => {
       }
       {
         visitData?.[0].visitAddress === 'T72' &&
-        <ItemList
+        <CarPlatesItemList
           cardTitle={'Pridėti automobilį'}
           inputValue={carPlatesInput}
           inputPlaceHolder={'Pridėti automobilį'}

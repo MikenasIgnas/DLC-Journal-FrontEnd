@@ -108,6 +108,7 @@ export type CompanyInfoType = {
   [site: string]: ColocationDataType[] | undefined;
 } & {
   companyName: string;
+  companyCode: string;
   companyDescription: string;
   companyPhoto: string;
   subClient?: {
@@ -170,6 +171,11 @@ export type VisitorsType = {
   selectedVisitor:    EmployeesType;
 };
 
+export type ClientsGuests = {
+  guestName: string;
+  companyName?: string;
+}
+
 export type VisitsType = {
   id:                 number;
   visitPurpose:       string[];
@@ -178,7 +184,7 @@ export type VisitsType = {
   dlcEmployees:       string;
   visitAddress:       string;
   visitingClient:     string;
-  clientsGuests:      string[];
+  clientsGuests:      ClientsGuests[];
   carPlates:          string[];
   signature:          string;
   visitCollocation:   CollocationType

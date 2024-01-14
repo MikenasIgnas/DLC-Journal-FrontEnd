@@ -1,13 +1,13 @@
 /* eslint-disable max-len */
-import FullTable                        from '../../components/Table/TableComponents/FullTable'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import RowMenu                          from '../../components/Table/TableComponents/RowMenu'
-import UersTableRows                    from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import archivedUsersRowMenuItems        from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
-import { useAppSelector }               from '../../store/hooks'
-import { deleteItem }                   from '../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
-import useSetAllUsersData               from '../../Plugins/useSetAllUsersData'
+import FullTable                 from '../../components/Table/TableComponents/FullTable'
+import { useSearchParams }       from 'react-router-dom'
+import RowMenu                   from '../../components/Table/TableComponents/RowMenu'
+import UersTableRows             from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import archivedUsersRowMenuItems from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
+import { useAppSelector }        from '../../store/hooks'
+import { deleteItem }            from '../../Plugins/helpers'
+import { useCookies }            from 'react-cookie'
+import useSetAllUsersData        from '../../Plugins/useSetAllUsersData'
 
 const TableColumns = () => {
   return(
@@ -19,6 +19,7 @@ const TableColumns = () => {
       <th className='TableColumnWidth100px'>Statusas</th>
       <th className='TableColumnWidth100px'>Sukurta</th>
       <th className='TableColumnWidth100px'>Ištrinta</th>
+      <th className='TableColumnWidth100px'>Peržiūrėti</th>
       <th className='TableColumnWidth100px'>Veiksmai</th>
     </>
   )
@@ -27,7 +28,6 @@ const TableColumns = () => {
 const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
-  const navigate                        = useNavigate()
   const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
   const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
   const [cookies]                       = useCookies(['access_token'])
@@ -66,6 +66,7 @@ const UsersArchivePage = () => {
       setSearchParams={setSearchParams}
       tableRows={users?.map((el, index) => (
         <UersTableRows
+          userId={el._id}
           key={el._id}
           id={index + 1}
           dateCreated={el.created}
@@ -77,7 +78,6 @@ const UsersArchivePage = () => {
           name={el.name}
           status={el.isDisabled}
           rowMenu={<RowMenu
-            navigate={() => navigate(`${el._id}`)}
             items={rowMenuItems}
             deleteItem={() => deleteUser(el._id)}
           />}
