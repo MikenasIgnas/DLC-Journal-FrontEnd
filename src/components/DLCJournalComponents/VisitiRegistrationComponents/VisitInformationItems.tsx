@@ -6,7 +6,7 @@ import VisitDateItem                                from '../SingleVisitPageComp
 import { UserType, VisitsType }                     from '../../../types/globalTypes'
 import { Link, useSearchParams }                    from 'react-router-dom'
 import { addresses }                                from './StaticSelectOptions'
-import { useAppSelector } from '../../../store/hooks'
+import { useAppSelector }                           from '../../../store/hooks'
 
 const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolean, dlcEmployees: UserType[] | undefined ) => {
   const [, setSearchParams] = useSearchParams()

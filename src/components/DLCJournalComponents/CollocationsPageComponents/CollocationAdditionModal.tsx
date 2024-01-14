@@ -3,7 +3,7 @@ import { Button, Form, Input, Modal, Select } from 'antd'
 import React                                  from 'react'
 import { useAppDispatch, useAppSelector }     from '../../../store/hooks'
 import { setOpenCollocationAdditionModal }    from '../../../auth/ModalStateReducer/ModalStateReducer'
-import ItemList                               from '../VisitiRegistrationComponents/ClientsGuestsItemList'
+// import ItemList                               from '../VisitiRegistrationComponents/ClientsGuestsItemList'
 import { useCookies }                         from 'react-cookie'
 import { post }                               from '../../../Plugins/helpers'
 
@@ -21,7 +21,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
   const dispatch = useAppDispatch()
   const [racks, setRacks]            = React.useState<string[]>([])
   const [cookies]                    = useCookies(['access_token'])
-  const [inputValue, setInputValue]  = React.useState('')
+  // const [inputValue, setInputValue]  = React.useState('')
   const [form]                       = Form.useForm()
   const openCollocationAdditionModal = useAppSelector((state) => state.modals.openCollocationAdditionModal)
 
@@ -31,7 +31,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
     if(!res.error){
       form.resetFields()
       setRacks([])
-      setInputValue('')
+      // setInputValue('')
       dispatch(setOpenCollocationAdditionModal(false))
     }
   }
@@ -39,7 +39,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
   const onCancel = () => {
     form.resetFields()
     setRacks([])
-    setInputValue('')
+    // setInputValue('')
     dispatch(setOpenCollocationAdditionModal(false))
   }
 
@@ -65,7 +65,7 @@ const CollocationAdditionModal = ({tabKey}: CollocationAdditionModalProps) => {
         <Form.Item name='premise' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
           <Input placeholder='Patalpa'/>
         </Form.Item>
-        <ItemList cardTitle={'Pridėti Racksus'} inputValue={inputValue} inputPlaceHolder={'prideti'} setInputValue={setInputValue } list={racks} setListItems={setRacks}/>
+        {/* <ItemList cardTitle={'Pridėti Racksus'} inputValue={inputValue} inputPlaceHolder={'prideti'} setInputValue={setInputValue } list={racks} setListItems={setRacks}/> */}
         <Button htmlType='submit'>Pridėti</Button>
       </Form>
     </Modal>

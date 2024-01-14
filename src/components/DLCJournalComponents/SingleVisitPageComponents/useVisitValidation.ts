@@ -1,23 +1,26 @@
 /* eslint-disable max-len */
-import { useParams }                from 'react-router'
-import { useCookies }               from 'react-cookie'
 import { message }                  from 'antd'
 import { get }                      from '../../../Plugins/helpers'
 import { VisitorsType, VisitsType } from '../../../types/globalTypes'
+import { useAppSelector }           from '../../../store/hooks'
+import { useParams }                from 'react-router'
+import { useCookies }               from 'react-cookie'
 
 const useVisitValidation = () => {
-  const { id }                      = useParams()
   const [cookies]                   = useCookies(['access_token'])
   const [messageApi, contextHolder] = message.useMessage()
-
+  const editVisitInformation        = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
+  const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const editCollocations            = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const { id }                      = useParams()
   const hasValidId    = (visitors: VisitorsType[]) => visitors?.every(obj => obj.idType)
   const hasSignatures = (visitors: VisitorsType[]) => visitors?.every(obj => obj.signature)
 
-  const validate = async (visitData: VisitsType[] | undefined, isEdit: boolean, fetchData: () => Promise<void>, url: string, successMessage: string) => {
-    const visitors              = visitData?.[0]?.visitors
-    const visitPurpose          = visitData?.[0]?.visitPurpose
+  const validate = async (visitData: VisitsType[] | undefined, fetchData: () => Promise<void>, url: string, successMessage: string ) => {
+    const visitors     = visitData?.[0]?.visitors
+    const visitPurpose = visitData?.[0]?.visitPurpose
 
-    if (isEdit) {
+    if (editVisitInformation || editVisitors || editCollocations) {
       messageApi.error({ type: 'error', content: 'Neišsaugoti duomenys' })
       return
     }

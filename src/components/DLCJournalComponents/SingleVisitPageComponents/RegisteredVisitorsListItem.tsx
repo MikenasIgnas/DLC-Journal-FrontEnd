@@ -9,10 +9,10 @@ import { useParams }                                              from 'react-ro
 import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
 import useSetWindowsSize                                          from '../../../Plugins/useSetWindowsSize'
 import { DeleteOutlined }                                         from '@ant-design/icons'
+import { useAppSelector } from '../../../store/hooks'
 
 type RegisteredVisitorsListItemProps = {
   signature:     string | null | undefined
-  edit:          boolean;
   idType:        string | null | undefined;
   employeeId:    number | undefined;
   name:          string;
@@ -26,7 +26,6 @@ type RegisteredVisitorsListItemProps = {
 
 const RegisteredVisitorsListItem = ({
   signature,
-  edit,
   idType,
   employeeId,
   name,
@@ -43,6 +42,8 @@ const RegisteredVisitorsListItem = ({
   const [open, setOpen]                     = React.useState(false)
   const [savedSignature, setSavedSignature] = React.useState<string| undefined | null>(signature)
   const windowSize                          = useSetWindowsSize()
+  const editVisitors                        = useAppSelector((state) => state.visitPageEdits.editVisitors)
+
   const onOk = async() => {
     if(signatureCanvasRef.current){
       const signature = {
@@ -84,12 +85,12 @@ const RegisteredVisitorsListItem = ({
           <div>
             {savedSignature && <Image width={150} src={savedSignature}/>}
             {!savedSignature ?
-              <Button style={{ width: '140px'}} disabled={!edit} onClick={onModalOpen}>Pasirašyti</Button> :
-              <DeleteOutlined style={{color: 'red'}} disabled={!edit} onClick={deleteSignature}/>
+              <Button style={{ width: '140px'}} disabled={!editVisitors} onClick={onModalOpen}>Pasirašyti</Button> :
+              <DeleteOutlined style={{color: 'red'}} disabled={!editVisitors} onClick={deleteSignature}/>
             }
           </div>
           <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
-            <Select style={{width: '100%'}} disabled={!edit} options={identificationOptions}/>
+            <Select style={{width: '100%'}} disabled={!editVisitors} options={identificationOptions}/>
           </Form.Item>
           <Button onClick={() => deleteVisitor(employeeId)}>Pašalinti lankytoją</Button>,
         </div>,

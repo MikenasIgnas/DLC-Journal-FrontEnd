@@ -9,7 +9,7 @@ type CollocationsListProps = {
 
 const CollocationsList = ({companiesColocations}: CollocationsListProps) => {
   return (
-    <Card title={'Kolokacijos'} className='CollocationsListCard'>
+    <>
       {
         companiesColocations && companiesColocations?.length > 0 ?
           <div className='CollocationsListCardBody'>
@@ -28,7 +28,7 @@ const CollocationsList = ({companiesColocations}: CollocationsListProps) => {
           :
           <Empty description='Klientui nėra priskirtų kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
-    </Card>
+    </>
   )
 }
 

@@ -3,21 +3,19 @@ import { Button }                 from 'antd'
 import { FilePdfOutlined }        from '@ant-design/icons'
 import { useParams }              from 'react-router'
 import useGenerateSingleVisitPDF  from '../../../Plugins/useGenerateSingleVIsitPDF'
+import { useAppSelector } from '../../../store/hooks'
 
-type VisitDescriptionTitleProps = {
-    edit: boolean;
-}
 
-const VisitDescriptionTitle = ({edit}: VisitDescriptionTitleProps) => {
+const VisitDescriptionTitle = () => {
   const {id}                              = useParams()
   const {generateSingleVisitPDF, loading} =  useGenerateSingleVisitPDF()
-
+  const editVisitInformation = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
   return (
     <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
       <div>Vizito informacija</div>
       <div>
         <Button loading={loading} icon={<FilePdfOutlined />} onClick={() => generateSingleVisitPDF(Number(id))}></Button>
-        <Button htmlType='submit'>{!edit ? 'Edit' : 'Save'}</Button>
+        <Button htmlType='submit'>{!editVisitInformation ? 'Edit' : 'Save'}</Button>
       </div>
     </div>
   )
