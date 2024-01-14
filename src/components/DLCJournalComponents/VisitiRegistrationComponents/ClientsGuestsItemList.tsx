@@ -27,12 +27,20 @@ const ClientsGuestsItemList = ({ cardTitle, setListItems, url, list, removeUrl }
     await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
   }
 
-  const onCreate = async(value: ClientsGuests) => {
-    if(value.guestName){
-      setListItems([...list, value])
+  const onCreate = async() => {
+    const guestName   = form.getFieldValue('guestName')
+    const companyName = form.getFieldValue('companyName')
+
+    const values = {
+      guestName,
+      companyName,
+    }
+
+    if(values.guestName){
+      setListItems([...list, values])
       if(url){
         const updateValue = {
-          value,
+          values,
         }
         await post(`${url}?visitId=${id}`, updateValue, cookies.access_token)
       }
@@ -41,11 +49,9 @@ const ClientsGuestsItemList = ({ cardTitle, setListItems, url, list, removeUrl }
 
   return (
     <Card title={cardTitle} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-
       <Form.Item
         name='guestName'
         label={<div style={{ width: '100px', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start'}}>Vardas Pavardė</div>}
-        rules={[{ required: true, message: 'Pravoma įvesti vardą ir pavardę' }]}
       >
         <Input />
       </Form.Item>
@@ -55,17 +61,7 @@ const ClientsGuestsItemList = ({ cardTitle, setListItems, url, list, removeUrl }
         <Input />
       </Form.Item>
       <div style={{width: '100%', textAlign: 'center'}}>
-        <Button onClick={() => {
-          form
-            .validateFields()
-            .then((values) => {
-              form.resetFields()
-              onCreate(values)
-            })
-            .catch((info) => {
-              console.log('Validate Failed:', info)
-            })
-        }}>Pridėti</Button>
+        <Button onClick={() => onCreate()}>Pridėti</Button>
       </div>
       <List
         locale={{emptyText: ' '}}

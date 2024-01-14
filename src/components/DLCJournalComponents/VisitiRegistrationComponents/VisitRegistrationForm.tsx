@@ -6,7 +6,7 @@ import { get }                                                       from '../..
 import { useCookies }                                                from 'react-cookie'
 import { Button, Empty, Form, FormInstance, Input, Select, Tag }     from 'antd'
 import { useSearchParams }                                           from 'react-router-dom'
-import { CollocationType, CompaniesType, EmployeesType, Values, VisitsType } from '../../../types/globalTypes'
+import { CollocationType, CompaniesType, EmployeesType, ClientsGuests, VisitsType } from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                     from './VisitRegistrationSelect'
 import VisitorsList                                                  from './VisitorsList'
 import ClientsGuestsItemList                                         from './ClientsGuestsItemList'
@@ -20,8 +20,8 @@ import CarPlatesItemList from './CarPlatesItemList'
 
 type VisitRegistrationFormProps = {
   form:             FormInstance<VisitsType>
-  setClientsGuests: React.Dispatch<React.SetStateAction<Values[]>>
-  clientsGuests:    Values[];
+  setClientsGuests: React.Dispatch<React.SetStateAction<ClientsGuests[]>>
+  clientsGuests:    ClientsGuests[];
   setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
   carPlates:        string[]
   setCheckedList:   React.Dispatch<React.SetStateAction<CollocationType>>
