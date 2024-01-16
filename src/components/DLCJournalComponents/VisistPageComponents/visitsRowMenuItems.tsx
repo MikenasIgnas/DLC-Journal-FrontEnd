@@ -4,10 +4,6 @@ import { MenuProps }                        from 'antd'
 const visitsRowMenuItems = (loading: boolean | undefined, isSecurity: boolean | null) => {
   const items: MenuProps['items'] = [
     {
-      label: 'Baigti',
-      key:   '1',
-    },
-    {
       label: 'PDF',
       icon:  loading ? <LoadingOutlined/> : <FilePdfOutlined/>,
       key:   '2',

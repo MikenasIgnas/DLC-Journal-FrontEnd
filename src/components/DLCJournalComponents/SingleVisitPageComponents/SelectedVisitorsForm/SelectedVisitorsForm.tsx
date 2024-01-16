@@ -29,7 +29,6 @@ const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fe
   const dispatch                                        = useAppDispatch()
   const [searchEmployeeValue, setSearchEmployeeValue]   = React.useState<string | undefined>()
 
-
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
@@ -75,16 +74,19 @@ const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fe
     }
   }
 
+  const openVisitorAddition = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
   return (
     <Form form={form} onFinish={saveChanges} onKeyDown={onkeydown}>
-      <VisitorAdditionList
-        setOpenVisitorAddition={setOpenVisitorAddition}
-        clientsEmployees={clientsEmployees}
-        searchEmployee={searchEmployee}
-        searchEmployeeValue={searchEmployeeValue}
-        addVisitor={addVisitor}
-        removeVisitor={removeVisitor}
-      />
+      { openVisitorAddition &&
+        <VisitorAdditionList
+          setOpenVisitorAddition={setOpenVisitorAddition}
+          clientsEmployees={clientsEmployees}
+          searchEmployee={searchEmployee}
+          searchEmployeeValue={searchEmployeeValue}
+          addVisitor={addVisitor}
+          removeVisitor={removeVisitor}
+        />
+      }
       <Card
         title={<RegisteredVisitorsListItemCardTitle/>} style={{margin: '10px', backgroundColor: '#f9f9f9'}}
         extra={<Button onClick={() => dispatch(setOpenVisitorAddition(true))} type='link' >Pridėti Lankytoją</Button>}>

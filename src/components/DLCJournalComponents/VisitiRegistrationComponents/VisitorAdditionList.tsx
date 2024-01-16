@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import React                         from 'react'
-import { Button, Card, Input, List } from 'antd'
-import { EmployeesType }             from '../../../types/globalTypes'
-import VisitorAdditionListItem       from './VisitorAdditionListItem'
-import { ActionCreatorWithPayload } from '@reduxjs/toolkit'
-import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import React                          from 'react'
+import { Button, Card, Input, List }  from 'antd'
+import { EmployeesType }              from '../../../types/globalTypes'
+import VisitorAdditionListItem        from './VisitorAdditionListItem'
+import { ActionCreatorWithPayload }   from '@reduxjs/toolkit'
+import { useAppDispatch }             from '../../../store/hooks'
 
 type VisitorAdditionListProps = {
     clientsEmployees:         EmployeesType[] | undefined
@@ -17,11 +17,11 @@ type VisitorAdditionListProps = {
 }
 
 const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
-  const dispatch            = useAppDispatch()
-  const openVisitorAddition = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
+  const dispatch          = useAppDispatch()
+
   return (
     <>
-      {openVisitorAddition && clientsEmployees && clientsEmployees?.length > 0 &&
+      {clientsEmployees && clientsEmployees?.length > 0 &&
       <Card title={
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div>Įmonės Darbuotojai</div>

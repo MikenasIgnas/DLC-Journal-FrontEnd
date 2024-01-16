@@ -182,7 +182,7 @@ export type VisitsType = {
   visitStatus:        VisitStatusType;
   visitors:           VisitorsType[];
   dlcEmployees:       string;
-  visitAddress:       string;
+  visitAddress:       string
   visitingClient:     string;
   clientsGuests:      ClientsGuests[];
   carPlates:          string[];

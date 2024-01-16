@@ -28,9 +28,9 @@ const useSetSingleVisitData = () => {
   const visitAddress                                          = searchParams.get('visitAddress')
   const [clientsEmployees, setClientsEmployees]               = React.useState<EmployeesType[]>()
   const [selectedVisitors, setSelectedVisitors]               = React.useState<number[]>([])
-  const editVisitInformation                  = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
-  const editVisitors                          = useAppSelector((state) => state.visitPageEdits.editVisitors)
-  const editCollocations                      = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const editVisitInformation                                  = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
+  const editVisitors                                          = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const editCollocations                                      = useAppSelector((state) => state.visitPageEdits.editCollocations)
   const fetchData = async () => {
     try {
       const singleVisit   = await get(`getSingleVisit?visitId=${id}`, cookies.access_token)
@@ -78,6 +78,7 @@ const useSetSingleVisitData = () => {
     setCarPlates,
     setSelectedVisitors,
     fetchData,
+    selectedVisitors,
     id,
     cookies,
   }

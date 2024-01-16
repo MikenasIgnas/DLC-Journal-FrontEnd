@@ -20,7 +20,6 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees, removeV
   const visitorsItem: VisitorsType    = form.getFieldValue('visitors')[item.name]
   const windowSize                    = useSetWindowsSize()
 
-
   const deleteVisitor = async () => {
     const filter = visitors.filter(
       (el) => el.selectedVisitor.employeeId !== visitorsItem.selectedVisitor.employeeId
@@ -34,6 +33,7 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees, removeV
       setClientsEmployees([...clientsEmployees, visitorsItem.selectedVisitor])
     }
   }
+
   return (
     <List.Item
       key={item.key}
