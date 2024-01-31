@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
 import React                    from 'react'
 import { CheckboxChangeEvent }  from 'antd/es/checkbox'
 import { State }                from '../types/globalTypes'
+import { UploadFile }           from 'antd'
 
 type CompanyFormType = {
-companyName?:           string,
-companyDescription?:    string,
-companyPhoto?:          string,
+id?: string | undefined;
+_id?: string;
+name?: string;
+description?:    string,
+photo?:          UploadFile<any[]>;
+parentId?: string;
 subClient?: {
   subClientId:          string;
   subClientCompanyName: string

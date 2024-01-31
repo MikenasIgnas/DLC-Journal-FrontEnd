@@ -14,7 +14,7 @@ import ClientsCollocations                                  from '../ClientsColl
 type SubClientsDrawerProps = {
     onClose:                () => void;
     open:                   boolean;
-    subClientId:            number | null;
+    subClientId:            string | null;
     subClientsCollocations: {
       J13?: ColocationDataType[];
       T72?: ColocationDataType[];
@@ -47,12 +47,10 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
   React.useEffect(() => {
     (async () => {
       try{
-        const res  = await get(`getSingleSubClient?parentCompanyId=${id}&subClientId=${subClientId}`, cookies.access_token)
-        const res2 = await get(`getSingleCompaniesEmployees?companyId=${subClientId}`, cookies.access_token)
-        if(!res.error && !res2.error[0]){
-          setSubClient(res.data)
-          setSubClientEmployees(res2.data)
-        }
+        const subClientRes      = await get(`company/company?id=${subClientId}`, cookies.access_token)
+        const companyEmployees  = await get(`company/CompanyEmployee?companyId=${subClientId}&limit=10&page=1`, cookies.access_token)
+        setSubClient(subClientRes)
+        setSubClientEmployees(companyEmployees)
       }catch(err){
         console.log(err)
       }
@@ -66,7 +64,6 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
     return buttons
   }
 
-
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
       <Divider >Imonės Profilis</Divider>
@@ -79,22 +76,22 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
             <Col span={12}>
               <img
                 style={{width: '100px'}}
-                src={`../../CompanyLogos/${subClient?.companyInfo?.companyPhoto ? subClient?.companyInfo?.companyPhoto : 'noImage.jpg'}`}
+                src={subClient?.photo ? subClient?.photo : '../../CompanyLogos/noImage.jpg'}
                 alt='err' />
             </Col>
           </div>
           <div>
             <DescriptionItem
               title='Įmonės pavadinimas'
-              content={subClient?.companyInfo?.companyName}
-              formItemName={'companyName'}
-              initialValue={subClient?.companyInfo?.companyName}
+              content={subClient?.name}
+              formItemName={'name'}
+              initialValue={subClient?.name}
             />
             <DescriptionItem
               title='Įmonės aprašas'
-              content={subClient?.companyInfo?.companyDescription}
-              formItemName={'companyDescription'}
-              initialValue={subClient?.companyInfo?.companyDescription}
+              content={subClient?.description}
+              formItemName={'description'}
+              initialValue={subClient?.description}
             />
           </div>
         </div>
@@ -112,13 +109,10 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
         bordered
         renderItem={(item: EmployeesType) => (
           <ListItem
+            id={item.companyId}
+            item={item}
             listButtons={listButtons}
-            listItemId={item.companyId}
-            primaryKey={item.employeeId}
-            photo={item.employeePhoto}
-            title={`${item.name} ${item.lastName}`}
-            description={item.occupation}
-            photosFolder={'ClientsEmployeesPhotos'}
+            photosFolder={'../ClientsEmployeesPhotos'}
             altImage={'noUserImage.jpeg'}/>
         )}
       />

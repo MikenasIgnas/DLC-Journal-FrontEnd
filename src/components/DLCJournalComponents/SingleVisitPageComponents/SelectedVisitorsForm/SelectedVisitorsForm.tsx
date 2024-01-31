@@ -98,11 +98,11 @@ const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fe
               idType={item.idType}
               employeeId={item.selectedVisitor.employeeId}
               name={item.selectedVisitor.name}
-              lastName={item.selectedVisitor.lastName}
+              lastName={item.selectedVisitor.lastname}
               occupation={item.selectedVisitor.occupation}
               permissions={item.selectedVisitor.permissions}
               deleteVisitor={deleteVisitor}
-              employeePhoto={item.selectedVisitor.employeePhoto}
+              employeePhoto={item.selectedVisitor.photo}
               index={i}
             />
           }

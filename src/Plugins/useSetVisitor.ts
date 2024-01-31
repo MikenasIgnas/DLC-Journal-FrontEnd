@@ -16,20 +16,20 @@ const useSetVisitor = () => {
 
   React.useEffect(() => {
     (async () => {
-      const companies     = await get('getCompanies', cookies.access_token)
-      const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
+      const companies     = await get('company/company', cookies.access_token)
+      const singleCompany = await get(`company/company?id=${companyId}`, cookies.access_token)
       localStorage.removeItem('visitPurpose')
       if(addressId === 'J13'){
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
       }else{
         setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
       }
-      setAllCompanies(companies.data)
+      setAllCompanies(companies)
     })()
   }, [companyId, addressId, selectedVisitors, selectedVisitors?.length])
 
   const companyNames = allCompanies?.map((el)=> {
-    return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
+    return { ...el, value: el.name, label: el.name}
   })
 
   return {

@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React                                                            from 'react'
 import { CollocationsSites, CompaniesType, SubClientsCollocationsType } from '../../../../types/globalTypes'
-import { post }                                                         from '../../../../Plugins/helpers'
+import { put }                                                         from '../../../../Plugins/helpers'
 import { useCookies }                                                   from 'react-cookie'
 import { useAppDispatch, useAppSelector }                               from '../../../../store/hooks'
 import SubClientAdditionModal                                           from '../CompanyAdditionComponent/SubClientAdditionModal'
@@ -48,16 +48,16 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
 
   const mainCompaniesOptions = mainCompanies?.map((el) => {
     return{
-      value: el.id,
-      label: el.companyInfo.companyName,
+      value: el._id,
+      label: el.name,
     }
   })
 
-  const handleChange = async(value: number) => {
-    const selectedMainCompany   = mainCompanies?.filter((el) => el.id === value)
+  const handleChange = async(value: string) => {
+    const selectedMainCompany   = mainCompanies?.filter((el) => el._id === value)
     if(selectedMainCompany){
       setMainCompanies(selectedMainCompany)
-      await post(`addMainCompanyAsSubClient?companyId=${value}&parentCompanyId=${parentCompanyId}`, selectedMainCompany?.[0].companyInfo, cookies.access_token)
+      await put('company/company', {id: value, parentId: parentCompanyId}, cookies.access_token)
       dispatch(setIsSubClientAdded(true))
     }
   }
@@ -70,9 +70,10 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
     <div className='SubClientsTabContainer'>
       {openSubClientAdditionModal &&
         <SubClientAdditionModal
+          parentCompanyId={parentCompanyId}
           collocations={subClientsCollocations}
           additionModalTitle={'Pridėkite sub klientą'}
-          postUrl={`addSubClient?parentCompanyId=${parentCompanyId}`}
+          postUrl={'company/company'}
         />
       }
       <SubClientAddition

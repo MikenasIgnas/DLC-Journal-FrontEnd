@@ -4,84 +4,64 @@ import Box                              from '@mui/joy/Box'
 import { Button, Tag, Typography }      from 'antd'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import HighlightText                    from '../../UniversalComponents/HighlightText'
-import { VisitorsType }                 from '../../../types/globalTypes'
+import { VisitsType }                   from '../../../types/globalTypes'
 import { calculateTimeDifference }      from '../../../Plugins/helpers'
 
 type VisitsTableRowsProps = {
-    visitId:        number;
-    visitStatus:    string | undefined;
-    visitingClient: string;
-    visitAddress:   string;
-    dlcEmployees:   string;
     rowMenu?:       React.ReactNode
-    visitors:       VisitorsType[];
-    visitStartDate: string;
-    visitStartTime: string;
-    visitEndDate:   string;
-    visitEndTime:   string;
-    visitPurpose:   string[];
+    visit: VisitsType
 }
 
 const VisitsTableRows = ({
-  visitId,
-  visitStatus,
-  visitAddress,
-  visitingClient,
-  dlcEmployees,
   rowMenu,
-  visitors,
-  visitStartDate,
-  visitStartTime,
-  visitEndDate,
-  visitEndTime,
-  visitPurpose,
+  visit,
 }: VisitsTableRowsProps) => {
   const [searchParams]  = useSearchParams()
   const filter          = searchParams.get('search')
-  const timeDifference  = calculateTimeDifference(visitStartDate, visitStartTime, visitEndDate,visitEndTime)
+  const timeDifference  = calculateTimeDifference(visit.startDate, visit.startTime, visit.endDate, visit.endTime)
   const navigate = useNavigate()
   return (
-    <tr key={visitId}>
+    <tr key={visit.id}>
       <td style={{padding: '12px' }}>
-        <Typography> {HighlightText(filter, String(visitId))}</Typography>
+        <Typography> {HighlightText(filter, String(visit.id))}</Typography>
       </td>
       <td>
-        <Tag color={visitStatus}>{visitStatus === 'processing' && 'paruoštas' || visitStatus === 'success' && 'pradėtas' || visitStatus === 'error' && 'baigtas'}</Tag>
+        <Tag color={visit.visitStatus}>{visit.visitStatus === 'processing' && 'paruoštas' || visit.visitStatus === 'success' && 'pradėtas' || visit.visitStatus === 'error' && 'baigtas'}</Tag>
       </td>
       <td>
-        <Typography> {HighlightText(filter, visitingClient)}</Typography>
+        <Typography> {HighlightText(filter, visit.visitingClient)}</Typography>
       </td>
       <td>
-        {visitors?.map((el) =>
-          <Typography key={el.selectedVisitor.employeeId}>{HighlightText(filter, `${el.selectedVisitor?.name} ${el.selectedVisitor?.lastName}`)}</Typography>
+        {visit.visitors?.map((el) =>
+          <Typography key={el.selectedVisitor.employeeId}>{HighlightText(filter, `${el.selectedVisitor?.name} ${el.selectedVisitor?.lastname}`)}</Typography>
         )}
       </td>
       <td>
-        {visitPurpose?.map((el, i) => <Typography key={i}>{HighlightText(filter, el)}</Typography>)}
+        {visit.visitPurpose?.map((el, i) => <Typography key={i}>{HighlightText(filter, el)}</Typography>)}
       </td>
       <td>
-        <Typography>{ HighlightText(filter,visitAddress) }</Typography>
+        <Typography>{ HighlightText(filter, visit.visitAddress) }</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, String(visitStartDate ? visitStartDate : '' ))}</Typography>
+        <Typography>{HighlightText(filter, String(visit.startDate ? visit.startDate : '' ))}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, String(visitStartTime ? visitStartTime : ''))}</Typography>
+        <Typography>{HighlightText(filter, String(visit.startTime ? visit.startTime : ''))}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, String(visitEndDate ? visitEndDate : ''))}</Typography>
+        <Typography>{HighlightText(filter, String(visit.endDate ? visit.endDate : ''))}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, String(visitEndTime ? visitEndTime : ''))}</Typography>
+        <Typography>{HighlightText(filter, String(visit.endTime ? visit.endTime : ''))}</Typography>
       </td>
       <td>
         <Typography>{HighlightText(filter, String(timeDifference ? timeDifference : ''))}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, dlcEmployees)}</Typography>
+        <Typography>{HighlightText(filter, visit.dlcEmployees)}</Typography>
       </td>
       <td>
-        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visitId}?visitAddress=${visitAddress}`)}>Peržiūrėti</Button>
+        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visit.id}?visitAddress=${visit.visitAddress}`)}>Peržiūrėti</Button>
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

@@ -3,7 +3,7 @@
 import React                                                                from 'react'
 import { useCookies }                                                       from 'react-cookie'
 import { useSearchParams }                                                  from 'react-router-dom'
-import { get, post, uploadPhoto }                                           from '../../Plugins/helpers'
+import { get, post }                                           from '../../Plugins/helpers'
 import { Avatar, Button, Card, Checkbox, Divider, Form, Input, UploadFile } from 'antd'
 import { EmployeesType }                                                    from '../../types/globalTypes'
 import { useForm }                                                          from 'antd/es/form/Form'
@@ -37,10 +37,9 @@ const SingleClientsEmployeePage = () => {
     setEdit(!edit)
     if(edit) {
       if(companyId && employeeId){
-        values.companyId = Number(companyId)
+        values.companyId = companyId
         values.employeeId = Number(employeeId)
-        await post('updateClientsEmployee', values, cookies.access_token)
-        uploadPhoto(fileList[0], setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`)
+        await post(fileList[0], values, setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`, cookies.access_token)
       }
     }
   }
@@ -56,13 +55,13 @@ const SingleClientsEmployeePage = () => {
               {<Avatar size={150} shape='square' src={<img src={`../ClientsEmployeesPhotos/${companyName}companyId${companyId}employeeId${employeeId}.jpeg`} alt='err' />} />}
               {!edit
                 ?
-                <div>{employee?.name} {employee?.lastName}</div>
+                <div>{employee?.name} {employee?.lastname}</div>
                 :
                 <div>
                   <PhotoUploader setFileList={setFileList} fileList={fileList}/>
                   <div className='DisplayFlex'>
                     <Form.Item name='name' initialValue={employee?.name}><Input/></Form.Item>
-                    <Form.Item name='lastName' initialValue={employee?.lastName} ><Input/></Form.Item>
+                    <Form.Item name='lastName' initialValue={employee?.lastname} ><Input/></Form.Item>
                   </div>
                 </div>
               }
@@ -75,10 +74,10 @@ const SingleClientsEmployeePage = () => {
               </div>
               <Divider />
               <div>
-                <ClientsEmployeesDataDisplay edit={edit} label={'Mobilus Tel: '} employeeData={employee?.phoneNr} formItemName={'phoneNr'}/>
+                <ClientsEmployeesDataDisplay edit={edit} label={'Mobilus Tel: '} employeeData={employee?.phone} formItemName={'phoneNr'}/>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Gimimo data: '} employeeData={employee?.birthday} formItemName={'birthday'}/>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Pareigos: '} employeeData={employee?.occupation} formItemName={'occupation'}/>
-                <ClientsEmployeesDataDisplay edit={edit} label={'Pastabos: '} employeeData={employee?.notes} formItemName={'notes'}/>
+                <ClientsEmployeesDataDisplay edit={edit} label={'Pastabos: '} employeeData={employee?.note} formItemName={'note'}/>
               </div>
             </div>
           </div>

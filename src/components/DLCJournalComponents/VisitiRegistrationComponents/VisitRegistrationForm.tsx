@@ -37,7 +37,8 @@ const VisitRegistrationForm = () => {
   const [messageApi, contextHolder]                    = message.useMessage()
   const [clientsGuests, setClientsGuests]              = React.useState<ClientsGuests[]>([])
   const [carPlates, setCarPlates]                      = React.useState<string[]>([])
-  const [checkedList, setCheckedList]                  = React.useState<{ [key: string]: string[] }>({})
+  const [checkedList, setCheckedList]                  = React.useState<{[key: string]: string[] }>({})
+
   const {
     companyNames,
     companiesColocations,
@@ -51,7 +52,7 @@ const VisitRegistrationForm = () => {
   const companyId                         = searchParams.get('companyId')
 
   const selectCompany = async(_: string, option: CompaniesType) => {
-    setSearchParams(`companyId=${option.id}`)
+    setSearchParams(`companyId=${option._id}`)
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${option.id}`, cookies.access_token)
     setClientsEmployees(companiesEmployees.data)
     setSelectedVisitors([])

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { useSearchParams }       from 'react-router-dom'
+import { useSearchParams }      from 'react-router-dom'
 
 import {
   deleteTableItem,
   get,
   getCurrentDate,
-  getCurrentTime }  from '../../Plugins/helpers'
+  getCurrentTime }               from '../../Plugins/helpers'
 
 import { useCookies }            from 'react-cookie'
 import FullTable                 from '../../components/Table/TableComponents/FullTable'
@@ -90,6 +90,7 @@ const VisitPage = () => {
       })
     }
   }
+
   return (
     <>
       <FullTable
@@ -99,24 +100,14 @@ const VisitPage = () => {
         setSearchParams={setSearchParams}
         documentCount={count}
         tableColumns={<TableColumns />}
-        tableRows={data?.map((el) => (
+        tableRows={data?.map((visit) => (
           <VisitsTableRows
-            key={el.id}
-            visitId={el.id}
-            visitStatus={el.visitStatus}
-            visitingClient={el.visitingClient}
-            visitAddress={el.visitAddress}
-            dlcEmployees={el.dlcEmployees}
-            visitors={el.visitors}
-            visitPurpose={el.visitPurpose}
-            visitStartDate={el.startDate}
-            visitStartTime={el.startTime}
-            visitEndDate={el.endDate}
-            visitEndTime={el.endTime}
+            key={visit.id}
+            visit={visit}
             rowMenu={<RowMenu
-              deleteItem={() => deleteTableItem('deleteVisit', data, setData, el.id, cookies.access_token)}
-              generatePDF={() => generateSingleVisitPDF(el.id)}
-              endVisit={() => endVisit(el.id, el.visitStatus)}
+              deleteItem={() => deleteTableItem('deleteVisit', data, setData, visit.id, cookies.access_token)}
+              generatePDF={() => generateSingleVisitPDF(visit.id)}
+              endVisit={() => endVisit(visit.id, visit.visitStatus)}
               items={rowMenuItems}
             />}
           />

@@ -1,11 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                                                   from 'react'
-import { get, post, uploadPhoto }                              from '../../Plugins/helpers'
+import { get, put }                                            from '../../Plugins/helpers'
 import { useCookies }                                          from 'react-cookie'
 import { useParams }                                           from 'react-router-dom'
-import { Button, Card, Form, Tabs, TabsProps, UploadFile }     from 'antd'
-import { CollocationsSites, CollocationsType, CompaniesType }  from '../../types/globalTypes'
+
+import {
+  Button,
+  Card,
+  Form,
+  Tabs,
+  TabsProps,
+  UploadFile }                                                 from 'antd'
+
+import {
+  CollocationsSites,
+  CollocationsType,
+  CompaniesType,
+  EmployeesType }                                              from '../../types/globalTypes'
+
 import { useForm }                                             from 'antd/es/form/Form'
 import ClientsCollocationsTab                                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
 import ClientsEmployeesTab                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
@@ -14,21 +27,11 @@ import SingleCompanyTitle                                      from '../../compo
 import { useAppSelector }                                      from '../../store/hooks'
 import useSetCheckedCollocationList                            from '../../Plugins/useSetCheckedCollocationList'
 
-type EmployeesType = {
-  _id:            string;
-  companyId:      number;
-  name:           string;
-  lastName:       string;
-  occupation:     string;
-  employeeId:     number;
-  permissions:    string[];
-  employeePhoto:  string
-}
-
 type CompanyFormType = {
-  companyName?:        string,
-  companyDescription?: string,
-  companyPhoto?:       string,
+  name?:        string,
+  description?: string,
+  code:         string;
+  photo?:       string,
   J13?: {
     [key: string]:     string[];
   }[];
@@ -64,14 +67,17 @@ const SingleCompanyPage = () => {
   React.useEffect(() => {
     (async () => {
       try{
-        const singleCompany     = await get(`getSingleCompany?companyId=${id}`, cookies.access_token)
-        const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
-        const allCollocations   = await get('getCollocations', cookies.access_token)
-        const allMainCompanies  = await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
+        const singleCompany         = await get(`company/company?id=${id}`, cookies.access_token)
+        const companyEmployees      = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
+        const allCollocations       = await get('getCollocations', cookies.access_token)
+        const allMainCompanies      = await get('company/company', cookies.access_token)
+
+        const filteredMainCompanies = allMainCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId);
+
         setCollocations(allCollocations.data[0].colocations)
-        setCompany(singleCompany.data)
-        setEmployeesList(companyEmployees.data)
-        setMainCompanies(allMainCompanies.data)
+        setCompany(singleCompany)
+        setEmployeesList(companyEmployees)
+        setMainCompanies(filteredMainCompanies)
       }catch(err){
         console.log(err)
       }
@@ -81,20 +87,22 @@ const SingleCompanyPage = () => {
   const J13 = company?.companyInfo?.J13
   const T72 = company?.companyInfo?.T72
   const collocationsSites = {J13, T72} as CollocationsSites
-  const employeeRemoved = (id: number) => {
+
+  const employeeRemoved = (id: string) => {
     let newEmployeesList = [...employeesList]
-    newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
+    newEmployeesList = newEmployeesList.filter(x => x?._id !== id)
     setEmployeesList(newEmployeesList)
   }
 
   const saveChanges = async(values:CompanyFormType) => {
     setEdit(!edit)
     if(edit){
-      filteredResult.companyName = values.companyName
-      await post(`updateCompaniesData?companyId=${id}`, filteredResult, cookies.access_token)
-      if(fileList[0]){
-        uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}&companyId=${id}`)
-      }
+      filteredResult.name = values.name
+      filteredResult.description = values.description
+      filteredResult.id = id
+      filteredResult.photo = fileList[0]
+
+      await put( 'company/company', filteredResult, cookies.access_token, fileList[0], setUploading, setFileList)
     }
   }
 
@@ -105,7 +113,7 @@ const SingleCompanyPage = () => {
       children: <ClientsEmployeesTab
         setEditClientsEmployee={setEditClientsEmployee}
         editClientsEmployee={editClientsEmployee}
-        companyName={company?.companyInfo?.companyName}
+        companyName={company?.name}
         list={employeesList}
         setEmployeesList={setEmployeesList}
         employeeRemoved={employeeRemoved}
@@ -148,12 +156,9 @@ const SingleCompanyPage = () => {
         bordered={false}
         title={
           <SingleCompanyTitle
-            companyCode={company?.companyInfo.companyCode}
+            company={company}
             setFileList={setFileList}
             fileList={fileList}
-            companyLogo ={company?.companyInfo?.companyPhoto}
-            companyTitle={company?.companyInfo?.companyName}
-            companyDescription={company?.companyInfo.companyDescription}
             edit={edit}
           />}
       >

@@ -2,7 +2,7 @@
 import React                                      from 'react'
 import { Modal, Form, Button, Input, UploadFile } from 'antd'
 import { useForm }                                from 'antd/es/form/Form'
-import { post, uploadPhoto }                      from '../../../../Plugins/helpers'
+import { post }                                   from '../../../../Plugins/helpers'
 import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                        from '../ClientsCollocationsTab/CollocationSelectors'
@@ -15,12 +15,14 @@ type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
     collocations:       CollocationsType[] | undefined
+    parentCompanyId:    string | undefined;
 }
 
 type CompanyFormType = {
   companyName?:           string,
   companyDescription?:    string,
   companyPhoto?:          string,
+  photo?:          string,
   subClient?: {
     subClientId:          string;
     subClientCompanyName: string
@@ -33,7 +35,7 @@ type CompanyFormType = {
   }[];
 };
 
-const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
+const SubClientAdditionModal = ({additionModalTitle, collocations, postUrl, parentCompanyId}: AdditionModalProps) => {
   const [cookies]                 = useCookies(['access_token'])
   const [form]                    = useForm()
   const [uploading, setUploading] = React.useState(false)
@@ -48,13 +50,12 @@ const SubClientAdditionModal = ({postUrl, additionModalTitle, collocations}: Add
   }                               = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    filteredResult.companyName = values.companyName
-    filteredResult.companyDescription = values.companyDescription
-    filteredResult.companyPhoto = ''
-    await post(postUrl, filteredResult, cookies.access_token)
-    if(fileList[0]){
-      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
-    }
+    filteredResult.name = values.companyName
+    filteredResult.description = values.companyDescription
+    filteredResult.photo = fileList[0]
+    filteredResult.parentId = parentCompanyId
+
+    await post(postUrl, filteredResult, cookies.access_token, fileList[0], setUploading, setFileList)
     dispatch(setOpenSubClientAdditionModal(false))
   }
 

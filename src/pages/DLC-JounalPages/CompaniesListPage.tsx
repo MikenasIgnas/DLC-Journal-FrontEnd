@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-import { Button, Input, List }             from 'antd'
+import { Button, Form, Input, List }       from 'antd'
 import React                               from 'react'
-import { get }                             from '../../Plugins/helpers'
+import { deleteItem, get, post }           from '../../Plugins/helpers'
 import { useCookies }                      from 'react-cookie'
 import { CollocationsType, CompaniesType } from '../../types/globalTypes'
 import { Link }                            from 'react-router-dom'
@@ -11,6 +11,8 @@ import ListItem                            from '../../components/DLCJournalComp
 import { useAppSelector }                  from '../../store/hooks'
 import ChildCompaniesTree                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
 import useDelay                            from '../../Plugins/useDelay'
+import PermissionAdditionModal             from '../../components/DLCJournalComponents/ClientCompanyListComponents/PermissionAdditionModal'
+import { Permissions }                     from '../../types/globalTypes'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]           = React.useState(false)
@@ -20,14 +22,19 @@ const CompaniesListPage = () => {
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
   const [searchValue, setSearchValues]  = React.useState<string | null>(null)
   const delay                           = useDelay()
+  const [isModalOpen, setIsModalOpen]   = React.useState(false)
+  const [permissions, setPermissions]   = React.useState<Permissions[]>([])
+  const [form]                          = Form.useForm()
 
   React.useEffect(() => {
     (async () => {
       try{
         setLoading(true)
-        const allComapnies = await get('getCompanies', cookies.access_token)
-        const collocations = await get('getCollocations', cookies.access_token)
-        const mainCompanies = allComapnies.data.filter((el: CompaniesType) => el.parentCompanyId !== null || el.parentCompanyId !== undefined )
+        const res           = await get('company/permission', cookies.access_token)
+        const allComapnies  = await get('company/company', cookies.access_token)
+        const collocations  = await get('getCollocations', cookies.access_token)
+        const mainCompanies = allComapnies.filter((el: CompaniesType) => el.parentId !== null || el.parentId !== undefined )
+        setPermissions(res)
         setCollocations(collocations.data[0].colocations)
         setCompanies(mainCompanies)
         setLoading(false)
@@ -35,27 +42,22 @@ const CompaniesListPage = () => {
         console.log(err)
       }
     })()
-  },[openCompaniesAdditionModal])
+  },[openCompaniesAdditionModal, isModalOpen])
 
-  const companyRemoved = (id:number | undefined) => {
-    let newCompaniesList = [...companies]
-    newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
-    newCompaniesList = newCompaniesList.map((item) => {
-      const {parentCompanyId, wasMainClient, ...rest } = item
-      return rest
-    })
+  const companyRemoved = (id: string | undefined) => {
+    const newCompaniesList = companies.filter(x => x?._id !== id)
     setCompanies(newCompaniesList)
   }
 
-  const deleteCompany = async(companyId: number | undefined, parentCompanyId: number | undefined) => {
-    await get(`deleteCompany?companyId=${companyId}&parentCompanyId=${parentCompanyId}`, cookies.access_token)
+  const deleteCompany = async(companyId: string | undefined) => {
+    await deleteItem('company/company', {id: companyId}, cookies.access_token)
     companyRemoved(companyId)
   }
 
-  const listButtons = (listItemId: number | undefined, parentCompanyId: number | undefined) => {
+  const listButtons = (listItemId: string | undefined) => {
     const buttons = [
       <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
-      <Button type='link' onClick={() => deleteCompany(listItemId, parentCompanyId)} key={listItemId}>Ištrinti</Button>,
+      <Button type='link' onClick={() => deleteCompany(listItemId)} key={listItemId}>Ištrinti</Button>,
     ]
     return buttons
   }
@@ -65,14 +67,14 @@ const CompaniesListPage = () => {
     setSearchValues(searchTerm)
     delay( async() => {
       if (searchTerm === '') {
-        const allCompanies = await get('getCompanies', cookies.access_token)
-        setCompanies(allCompanies.data)
+        const allCompanies = await get('company/company', cookies.access_token)
+        setCompanies(allCompanies)
       } else {
-        const allCompanies =  await get('getCompanies', cookies.access_token)
-        const foundCompany = companies.filter((elem) => elem.companyInfo.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
+        const allCompanies =  await get(`company/company?name=${e.target.value}&page=1&limit=10`, cookies.access_token)
+        const foundCompany = companies.filter((elem) => elem.name.toLowerCase().includes(searchTerm.toLowerCase()))
         setCompanies(foundCompany)
         foundCompany.map((el) => {
-          const childCompanies = allCompanies.data?.filter((ele: CompaniesType) => ele.parentCompanyId === el.id)
+          const childCompanies = allCompanies.data?.filter((ele: CompaniesType) => ele.parentId === el._id)
           if(childCompanies){
             setCompanies([...foundCompany, ...childCompanies])
           }
@@ -80,14 +82,43 @@ const CompaniesListPage = () => {
       }
     })
   }
+  const addPermission = async(values: Permissions) => {
+    const res = await post('company/permission', values, cookies.access_token)
+    if(!res.messsage){
+      setPermissions([...permissions, res])
+      form.resetFields(['name'])
+    }
+  }
+
+  const permissionRemoved = (id:string | undefined) => {
+    let newPermissionsList = [...permissions]
+    newPermissionsList = newPermissionsList.filter(x => x?._id !== id)
+    setPermissions(newPermissionsList)
+  }
+
+  const deletePermission = async(id: string) => {
+    await deleteItem('company/permission',{id: id}, cookies.access_token)
+    permissionRemoved(id)
+  }
 
   return (
     <div className='CompaniesListPageContainer'>
-      <CompanyAddition
-        postUrl={'addCompany'}
-        collocations={collocations}
-        additionModalTitle={'Pridėkite įmonę'}
-      />
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <CompanyAddition
+          postUrl={'company/company'}
+          collocations={collocations}
+          additionModalTitle={'Pridėkite įmonę'}
+        />
+        <PermissionAdditionModal
+          setPermissions={setPermissions}
+          setIsModalOpen={setIsModalOpen }
+          isModalOpen={isModalOpen}
+          form={form}
+          permissions={permissions}
+          addPermission={addPermission}
+          deletePermission={deletePermission}
+        />
+      </div>
       <Input
         onChange={searchForCompany}
         style={{marginTop: '10px', marginBottom: '10px'}}
@@ -98,15 +129,13 @@ const CompaniesListPage = () => {
         loading={loading}
         pagination={{ position: 'bottom', align: 'center'}}
         dataSource={companies}
-        renderItem={(item) => {
+        renderItem={(item: CompaniesType) => {
           return(
             <ListItem
-              listItemId={item.id}
-              photo={item.companyInfo.companyPhoto}
-              description={item?.companyInfo?.companyDescription}
+              id={item._id}
+              item={item}
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
-              primaryKey={item?.parentCompanyId}
               listButtons={listButtons}
               title={<ChildCompaniesTree searchValue={searchValue} companies={companies} item={item}/>}
             />

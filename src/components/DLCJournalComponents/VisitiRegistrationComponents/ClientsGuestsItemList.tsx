@@ -34,7 +34,6 @@ const ClientsGuestsItemList = ({ url, removeUrl, visitors,list, setListItems, se
       setListItems(filtered)
     }
     if (removeUrl && id) {
-      console.log(filtered)
       await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
       if(fetchData){
         fetchData()

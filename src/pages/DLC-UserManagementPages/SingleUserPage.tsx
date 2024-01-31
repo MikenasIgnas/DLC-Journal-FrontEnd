@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import React                                                              from 'react'
-import { post, put }                                                           from '../../Plugins/helpers'
+import { post, put }                                                      from '../../Plugins/helpers'
 import { Card, Form, Input, Button, message, ConfigProvider, Checkbox }   from 'antd'
 import {  useAppDispatch, useAppSelector }                                from '../../store/hooks'
 import { useCookies }                                                     from 'react-cookie'
 import SuccessMessage                                                     from '../../components/UniversalComponents/SuccessMessage'
-import { setEmployeeName, setIsAdmin }                                                from '../../auth/AuthReducer/reducer'
+import { setEmployeeName, setIsAdmin }                                    from '../../auth/AuthReducer/reducer'
 import useSetSingleUser                                                   from '../../Plugins/useSetSingleUser'
 import { jwtDecode }                                                      from 'jwt-decode'
 import { TokenType }                                                      from '../../types/globalTypes'
@@ -119,17 +119,21 @@ const SingleUserPage = () => {
 
   return (
     <div className='CreateUserPageContainer'>
-      <ConfigProvider theme = {{
-        token: {
-          colorTextPlaceholder: '#7d7d7d',
-        },
-      }}>
-        <Card
-          loading={loading}
-          headStyle={{textAlign: 'center' }}
-          title={logedInUser ? 'Mano Profilis' : `Darbuotojas: ${user?.name}`}
-          bordered={true}
-          className='CreateUserCard'>
+      <Card
+        loading={loading}
+        headStyle={{textAlign: 'center' }}
+        title={logedInUser ? 'Mano Profilis' : `Darbuotojas: ${user?.name}`}
+        bordered={true}
+        className='CreateUserCard'>
+        <ConfigProvider
+          theme={{
+            components: {
+              Form: {
+                itemMarginBottom: 100 ,
+              },
+            },
+          }}
+        >
           <Form
             {...formItemLayout}
             form={form}
@@ -166,6 +170,7 @@ const SingleUserPage = () => {
             >
               <Input disabled={logedInUser || isAdmin ? false : true} placeholder='Darbuotojo el. paštas'/>
             </Form.Item>
+
             <Form.Item
               label='Rolė'
               labelAlign='left'
@@ -176,6 +181,7 @@ const SingleUserPage = () => {
               <Checkbox disabled={isAdmin ? false : true}>Admin</Checkbox>
             </Form.Item>
             <Form.Item
+              colon={false}
               label=' '
               labelAlign='left'
               initialValue={user?.isSecurity}
@@ -228,8 +234,8 @@ const SingleUserPage = () => {
               Išsaugoti
             </Button>
           </Form>
-        </Card>
-      </ConfigProvider>
+        </ConfigProvider>
+      </Card>
       <SuccessMessage contextHolder={contextHolder} />
     </div>
   )

@@ -1,37 +1,33 @@
 /* eslint-disable max-len */
-import FullTable                 from '../../components/Table/TableComponents/FullTable'
-import { useSearchParams }       from 'react-router-dom'
-import RowMenu                   from '../../components/Table/TableComponents/RowMenu'
-import UersTableRows             from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
-import archivedUsersRowMenuItems from '../../components/DLCJournalComponents/UserManagementComponents/archivedUsersRowMenuItems'
-import { useAppSelector }        from '../../store/hooks'
-import { deleteItem }            from '../../Plugins/helpers'
-import { useCookies }            from 'react-cookie'
-import useSetAllUsersData        from '../../Plugins/useSetAllUsersData'
-
-const TableColumns = () => {
-  return(
-    <>
-      <th className='TableColumnWidth250px'>Prisijungimas</th>
-      <th className='TableColumnWidth250px'>El. Paštas</th>
-      <th className='TableColumnWidth150px'>Darbuotojas</th>
-      <th className='TableColumnWidth130px'>Rolė</th>
-      <th className='TableColumnWidth100px'>Statusas</th>
-      <th className='TableColumnWidth100px'>Sukurta</th>
-      <th className='TableColumnWidth100px'>Ištrinta</th>
-      <th className='TableColumnWidth100px'>Peržiūrėti</th>
-      <th className='TableColumnWidth100px'>Veiksmai</th>
-    </>
-  )
-}
+import FullTable           from '../../components/Table/TableComponents/FullTable'
+import { useSearchParams } from 'react-router-dom'
+import UersTableRows       from '../../components/DLCJournalComponents/UserManagementComponents/UersTableRows'
+import { deleteItem }      from '../../Plugins/helpers'
+import { useCookies }      from 'react-cookie'
+import useSetAllUsersData  from '../../Plugins/useSetAllUsersData'
+import { useAppSelector }  from '../../store/hooks'
 
 const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
-  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
-  const rowMenuItems                    = archivedUsersRowMenuItems(isAdmin)
   const [cookies]                       = useCookies(['access_token'])
   const { users, setUsers, count }      = useSetAllUsersData()
+  const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const TableColumns = () => {
+    return(
+      <>
+        <th className='TableColumnWidth250px'>Prisijungimas</th>
+        <th className='TableColumnWidth250px'>El. Paštas</th>
+        <th className='TableColumnWidth150px'>Darbuotojas</th>
+        <th className='TableColumnWidth130px'>Rolė</th>
+        <th className='TableColumnWidth100px'>Statusas</th>
+        <th className='TableColumnWidth100px'>Sukurta</th>
+        <th className='TableColumnWidth100px'>Ištrinta</th>
+        <th className='TableColumnWidth100px'>Peržiūrėti</th>
+        {isAdmin ? <th className='TableColumnWidth100px'>Veiksmai</th> : null}
+      </>
+    )
+  }
 
   const tableSorter = [
     {
@@ -53,7 +49,7 @@ const UsersArchivePage = () => {
     }
 
     if(tableItemRemoved){
-      await deleteItem(`user?id=${id}`, cookies.access_token)
+      await deleteItem('user', {id: id}, cookies.access_token)
       tableItemRemoved(id)
     }
 
@@ -64,23 +60,13 @@ const UsersArchivePage = () => {
       tableColumns={<TableColumns/>}
       currentPage={page}
       setSearchParams={setSearchParams}
-      tableRows={users?.map((el, index) => (
+      tableRows={users?.map((item, index) => (
         <UersTableRows
-          userId={el._id}
-          key={el._id}
           id={index + 1}
-          dateCreated={el.created}
-          disabledDate={el.disabledDate}
-          email={el.email}
-          username={el.username}
-          isAdmin={el.isAdmin}
-          isSecurity={el.isSecurity}
-          name={el.name}
-          status={el.isDisabled}
-          rowMenu={<RowMenu
-            items={rowMenuItems}
-            deleteItem={() => deleteUser(el._id)}
-          />}
+          key={item._id}
+          item={item}
+          deleteItem={deleteUser}
+          deleteButtonText={'Ištrinti'}
         />
       ))}
       documentCount={count}

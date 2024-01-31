@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                                                from 'react'
 import { Modal, Form, Button, Input, UploadFile, message }  from 'antd'
 import { useForm }                                          from 'antd/es/form/Form'
-import { post, uploadPhoto }                                from '../../../../Plugins/helpers'
+import { post }                                             from '../../../../Plugins/helpers'
 import { useCookies }                                       from 'react-cookie'
 import PhotoUploader                                        from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                                  from '../ClientsCollocationsTab/CollocationSelectors'
@@ -19,9 +20,9 @@ type AdditionModalProps = {
 }
 
 type CompanyFormType = {
-  companyName?:           string,
-  companyDescription?:    string,
-  companyPhoto?:          string,
+  name?:           string,
+  description?:    string,
+  photo?:          string,
   subClient?: {
     subClientId:          string;
     subClientCompanyName: string
@@ -58,13 +59,13 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
         content: 'Privaloma pasirinkti kolokaciją',
       })
     }else{
-      filteredResult.companyName = values.companyName
-      filteredResult.companyDescription = values.companyDescription
-      filteredResult.companyPhoto = ''
-      const res = await post(postUrl, filteredResult, cookies.access_token)
-      if(fileList[0]){
-        uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
+      filteredResult.name = values.name
+      filteredResult.description = values.description
+      if (fileList && fileList.length > 0) {
+        filteredResult.photo = fileList[0]
       }
+
+      const res = await post(postUrl, filteredResult, cookies.access_token, fileList, setUploading, setFileList)
       if(!res.error){
         form.resetFields()
         dispatch(setOpenCompaniesAdditionModal(false))
@@ -96,13 +97,13 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
     >
       <Form form={form} onFinish={addCompany} style={{textAlign: 'center', width: '100%'}}>
         <div>
-          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
+          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='name'>
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
-          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės kodą'}]} name='companyCode'>
+          {/* <Form.Item rules={[{ required: true, message: 'Įveskite įmonės kodą'}]} name='companyCode'>
             <Input placeholder='Įmonės kodas'/>
-          </Form.Item>
-          <Form.Item name='companyDescription'>
+          </Form.Item> */}
+          <Form.Item name='description'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>

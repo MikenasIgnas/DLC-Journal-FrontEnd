@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /* eslint-disable max-len */
 export type RouteType = {
   routeNumber:        number;
@@ -99,9 +101,12 @@ export type ColocationDataType = {
 export type CompaniesType = {
   _id:              string;
   id:               number;
-  parentCompanyId?: number;
-  wasMainClient?:   boolean;
-  companyInfo:      CompanyInfoType;
+  parentId?: string;
+  name:             string;
+  racks:            any[]
+  code:             string | undefined;
+  description:      string;
+  photo:            string;
 };
 
 export type CompanyInfoType = {
@@ -146,17 +151,19 @@ export type CompaniesEmlployeesType = {
 
 export type EmployeesType = {
   _id:            string;
-  companyId:      number | undefined;
+  id:             string | undefined;
+  companyId:      string | undefined;
   name:           string;
-  lastName:       string;
+  lastname:       string;
   occupation:     string;
   employeeId:     number | undefined;
   permissions:    string[];
-  employeePhoto?: string;
+  photo?:         string | undefined;
   email?:         string;
-  phoneNr?:       string;
+  phone?:         string;
   birthday?:      string;
-  notes?:         string;
+  note?:          string;
+  isDisabled:     boolean
 }
 
 export type CollocationType = {
@@ -253,4 +260,9 @@ export interface CheckAllStates {
 export interface State {
   checkedList: CheckedList;
   checkAllStates: CheckAllStates;
+}
+
+export interface Permissions {
+  _id: string
+  name: string | undefined
 }

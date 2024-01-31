@@ -13,21 +13,22 @@ type ChildCompaniesTreeProps = {
 
 const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreeProps) => {
   const treeCompanies = companies?.map((el, i) => {
-    const childCompanies = companies.filter((ele) => ele.parentCompanyId === el.id)
+    const childCompanies = companies.filter((ele) => ele.parentId === el._id)
     return{
-      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}`}>{el.companyInfo.companyName}</Link>,
-      key:      el.id,
+      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el._id}`}>{el.name}</Link>,
+      key:      el._id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem.id}`}>{elem.companyInfo.companyName}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem._id}`}>{elem.name}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),
     }
   })
 
-  const filter = treeCompanies.filter((el) => el.key === item.id)
+  const filter      = treeCompanies.filter((el) => el.key === item._id)
   const hasChildren = filter[0].children.length >= 1
+
   return (
     <>
       {hasChildren ?
@@ -38,7 +39,7 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
             defaultExpandedKeys={['0-0-0']}
             treeData={filter} />
         </ConfigProvider>
-        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item.id}`}>{HighlightText(searchValue, item.companyInfo.companyName)}</Link>}
+        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item._id}`}>{HighlightText(searchValue, item.name)}</Link>}
     </>
   )
 }

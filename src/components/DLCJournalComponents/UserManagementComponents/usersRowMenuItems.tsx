@@ -6,7 +6,7 @@ const usersRowMenuItems = (isAdmin: boolean | null) => {
     {
       label:    'Archyvuoti',
       danger:   true,
-      key:      '1',
+      key:      '3',
       disabled: isAdmin ? false : true,
     },
 

@@ -17,7 +17,6 @@ const CompanyAddition = ({postUrl, additionModalTitle, collocations}:CompanyAddi
   return (
     <div>
       <Button
-        style={{display: 'flex', margin: 'auto', marginTop: '10px'}}
         icon={<AppstoreAddOutlined rev='' />}
         onClick={()=> dispatch(setOpenCompaniesAdditionModal(true))}>
           Pridėti įmonę
