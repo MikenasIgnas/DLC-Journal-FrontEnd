@@ -7,7 +7,8 @@ import checklistDataReducer         from '../auth/FetchedDataReducer/ChecklistHi
 import ModalStateReducer            from '../auth/ModalStateReducer/ModalStateReducer'
 import addSubClientReducer          from '../auth/AddSubClientReducer/addSubClientReducer'
 import collocationItemReducer       from '../auth/CollocationItemReducer/collocationItemReducer'
-import singleVisitPageEditsReducer  from '../auth/SingleVisitPageEditsReducer/SingleVisitPageEditsReducer'
+import SitesReducer                 from '../auth/SitesReducer/SitesReducer'
+import singleVisitPageEditsReducer  from '../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 
 export default combineReducers({
   auth:                      authReducer,
@@ -18,4 +19,5 @@ export default combineReducers({
   isSubClientAdded:          addSubClientReducer,
   collocationItem:           collocationItemReducer,
   visitPageEdits:            singleVisitPageEditsReducer,
+  sites:                     SitesReducer,
 })

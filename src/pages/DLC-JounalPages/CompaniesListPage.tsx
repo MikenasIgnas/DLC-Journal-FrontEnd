@@ -4,27 +4,28 @@ import { Button, Form, Input, List }       from 'antd'
 import React                               from 'react'
 import { deleteItem, get, post }           from '../../Plugins/helpers'
 import { useCookies }                      from 'react-cookie'
-import { CollocationsType, CompaniesType } from '../../types/globalTypes'
+import { CompaniesType }                   from '../../types/globalTypes'
 import { Link }                            from 'react-router-dom'
 import CompanyAddition                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
 import ListItem                            from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
-import { useAppSelector }                  from '../../store/hooks'
+import { useAppDispatch, useAppSelector }  from '../../store/hooks'
 import ChildCompaniesTree                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
 import useDelay                            from '../../Plugins/useDelay'
 import PermissionAdditionModal             from '../../components/DLCJournalComponents/ClientCompanyListComponents/PermissionAdditionModal'
 import { Permissions }                     from '../../types/globalTypes'
+import { setPremise, setRacks, setSite }   from '../../auth/SitesReducer/SitesReducer'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]           = React.useState(false)
   const [cookies]                       = useCookies(['access_token'])
   const [companies, setCompanies]       = React.useState<CompaniesType[]>([])
-  const [collocations, setCollocations] = React.useState<CollocationsType[]>()
   const openCompaniesAdditionModal      = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
   const [searchValue, setSearchValues]  = React.useState<string | null>(null)
   const delay                           = useDelay()
   const [isModalOpen, setIsModalOpen]   = React.useState(false)
   const [permissions, setPermissions]   = React.useState<Permissions[]>([])
   const [form]                          = Form.useForm()
+  const dispatch                        = useAppDispatch()
 
   React.useEffect(() => {
     (async () => {
@@ -32,10 +33,14 @@ const CompaniesListPage = () => {
         setLoading(true)
         const res           = await get('company/permission', cookies.access_token)
         const allComapnies  = await get('company/company', cookies.access_token)
-        const collocations  = await get('getCollocations', cookies.access_token)
+        const siteRes       = await get('site/site', cookies.access_token)
+        const premiseRes    = await get('site/premise', cookies.access_token)
+        const racksRes      = await get('site/rack', cookies.access_token)
+        dispatch(setSite(siteRes))
+        dispatch(setPremise(premiseRes))
+        dispatch(setRacks(racksRes))
         const mainCompanies = allComapnies.filter((el: CompaniesType) => el.parentId !== null || el.parentId !== undefined )
         setPermissions(res)
-        setCollocations(collocations.data[0].colocations)
         setCompanies(mainCompanies)
         setLoading(false)
       }catch(err){
@@ -106,7 +111,6 @@ const CompaniesListPage = () => {
       <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
         <CompanyAddition
           postUrl={'company/company'}
-          collocations={collocations}
           additionModalTitle={'Pridėkite įmonę'}
         />
         <PermissionAdditionModal

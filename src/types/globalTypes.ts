@@ -99,6 +99,7 @@ export type ColocationDataType = {
 };
 
 export type CompaniesType = {
+  document:         string[]
   _id:              string;
   id:               number;
   parentId?: string;
@@ -236,12 +237,13 @@ export type FilterOptions = {
       label: string;
   }[];
 }[]
+
 export type SubClientsCollocationsType = {
   site: string;
-  id: number;
+  id:   number;
   premises: {
-      premiseName: string;
-      racks: string[];
+      premiseName:  string;
+      racks:        string[];
   }[];
 }[]
 
@@ -258,11 +260,32 @@ export interface CheckAllStates {
 }
 
 export interface State {
-  checkedList: CheckedList;
+  checkedList:    CheckedList[];
   checkAllStates: CheckAllStates;
 }
 
 export interface Permissions {
-  _id: string
+  _id:  string
   name: string | undefined
+}
+
+export type Premises = {
+  name:   string;
+  siteId: string;
+  _id:    string;
+}
+
+export type Racks = {
+  id:         string | undefined;
+  name:       string | undefined;
+  _id:        string | undefined
+  premiseId:  string | undefined;
+}
+
+export type Sites = {
+  name:       string;
+  _id:         string;
+  label:       React.ReactNode;
+  children?:  React.ReactNode;
+  key:        string
 }

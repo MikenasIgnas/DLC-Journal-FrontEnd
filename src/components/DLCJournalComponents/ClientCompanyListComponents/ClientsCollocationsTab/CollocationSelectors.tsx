@@ -1,57 +1,54 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import { Checkbox, Collapse, CollapseProps, Form }  from 'antd'
-import { CheckboxChangeEvent }                      from 'antd/es/checkbox'
+import { Checkbox, Collapse, CollapseProps, Form } from 'antd'
+import { useAppSelector } from '../../../../store/hooks'
+import { Racks, Sites } from '../../../../types/globalTypes'
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 type ColocationSelectorsProps = {
-  collocationSite: string;
-  colocationPremises: {
-    premiseName: string;
-    racks: string[];
-  }[];
-  colocationId: number;
-  checkedList: {
-    [site: string]: {
-        [premiseName: string]: string[];
-    }[];
-  };
+  item: Sites;
+  checkboxList: string[];
+  onCheckAllChange: (e: CheckboxChangeEvent, racks: Racks[], premiseName: string, site: string) => void;
+  onCheckboxChange: (selectedRacks: CheckboxValueType[], premiseName: string, site: string, racks: Racks[]) => void;
   checkAllStates: {
     [key: string]: boolean;
   };
-  onCheckAllChange: (e: CheckboxChangeEvent, racks: string[], premiseName: string, site: string) => void;
-  onCheckboxChange: (selectedRacks: string[], premiseName: string, site: string, racks: string[]) => void;
+  companyRacks?: string[];
 };
 
 const ColocationSelectors = ({
-  collocationSite,
-  colocationPremises,
-  colocationId,
-  checkAllStates,
-  checkedList,
+  item,
+  checkboxList,
   onCheckAllChange,
   onCheckboxChange,
+  checkAllStates,
 }: ColocationSelectorsProps) => {
+  const premises = useAppSelector((state) => state.sites.premise)?.filter((el) => el.siteId === item._id)
+  const racks = useAppSelector((state) => state.sites.racks)
 
-  const nestedItems = colocationPremises.map((premise, index) => {
-    const premiseKey = `${collocationSite}_${premise.premiseName}`
-    const checkedRacks = checkedList[collocationSite]?.find(p => p[premise.premiseName])?.[premise.premiseName] || []
-
+  const nestedItems = premises?.map((premise) => {
+    const filteredRacks = racks?.filter((el) => el.premiseId === premise._id) || []
+    const premiseKey = `${item.name}_${premise.name}`
+    const checkedRacks = filteredRacks.filter(rack => checkboxList.includes(rack._id!)).map(rack => rack._id!)
     return {
-      key:      index.toString(),
-      label:    premise.premiseName,
+      key:      premise._id,
+      label:    premise.name,
       children: (
         <>
           <Checkbox
-            onChange={(e) => onCheckAllChange(e, premise.racks, premise.premiseName, collocationSite)}
-
+            onChange={(e) => onCheckAllChange(e, filteredRacks, premise.name, item.name)}
             checked={checkAllStates[premiseKey]}
           >
-            {checkAllStates[premiseKey] ? 'Atžymėti visas' : 'Pažymėti visas'}
+            {checkAllStates[premiseKey] ? 'Uncheck All' : 'Check All'}
           </Checkbox>
           <Checkbox.Group
-            options={premise.racks.map(rack => ({ label: rack, value: rack }))}
+            options={filteredRacks.map((rack) => ({
+              label: rack.name || 'Unnamed Rack',
+              value: rack._id || 'undefined-id',
+            })).filter((rack) => rack.value !== 'undefined-id')}
             value={checkedRacks}
-            onChange={(selectedRacks) => onCheckboxChange(selectedRacks as string[], premise.premiseName, collocationSite, premise.racks)}
+            onChange={(selectedValues) => onCheckboxChange(selectedValues, premise.name, item.name, filteredRacks)}
           />
         </>
       ),
@@ -59,10 +56,7 @@ const ColocationSelectors = ({
   })
 
   const formList = (
-    <Form.List
-      name={collocationSite}
-      initialValue={colocationPremises?.map((ele) => ({[ele.premiseName]: []}))}
-    >
+    <Form.List name={item.name}>
       {() => (
         <Collapse items={nestedItems} />
       )}
@@ -72,13 +66,13 @@ const ColocationSelectors = ({
   const items: CollapseProps['items'] = [
     {
       key:      '1',
-      label:    collocationSite,
+      label:    item.name,
       children: formList,
     },
   ]
 
   return (
-    <div style={{ width: '100%' }} key={colocationId}>
+    <div style={{ width: '100%' }} key={item._id}>
       <Collapse items={items} />
     </div>
   )

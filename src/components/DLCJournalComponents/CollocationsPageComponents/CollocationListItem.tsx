@@ -1,130 +1,66 @@
 /* eslint-disable max-len */
-import { DeleteOutlined, FileExcelOutlined }  from '@ant-design/icons'
-import { Collapse, List, Tag, message }       from 'antd'
-import { useAppDispatch }                     from '../../../store/hooks'
-import { setOpenCollocationRemovalModal }     from '../../../auth/ModalStateReducer/ModalStateReducer'
-import { useSearchParams }                    from 'react-router-dom'
-import SuccessMessage                         from '../../UniversalComponents/SuccessMessage'
-import { setCollocationItem }                 from '../../../auth/CollocationItemReducer/collocationItemReducer'
-import { generateCsv }                        from '../../../Plugins/helpers'
-import { useCookies }                         from 'react-cookie'
-
-type MatchingCompaniesType = {
-  companyName:  string;
-  premiseName:  string;
-  racks:        string[]
-}
+import React                                                      from 'react'
+import { Collapse }                                               from 'antd'
+import { Premises }                                               from '../../../types/globalTypes'
+import { AppstoreAddOutlined, DeleteOutlined, FileExcelOutlined } from '@ant-design/icons'
+import { useCookies }                                             from 'react-cookie'
+import { deleteItem, generateCsv }                                from '../../../Plugins/helpers'
+import { setOpenRacksAdditionModal }                              from '../../../auth/ModalStateReducer/ModalStateReducer'
+import { useAppDispatch }                                         from '../../../store/hooks'
+import RacksList                                                  from './RacksList'
+import { useSearchParams }                                        from 'react-router-dom'
 
 type CollocationListItemProps = {
-  item : {
-    premiseName:  string;
-    racks:        string[];
-    addressId?:   string | null
-  }
-  index: number
-  companyCollocation: MatchingCompaniesType[] | undefined
+  item:         Premises
+  setPremises:  React.Dispatch<React.SetStateAction<Premises[] | undefined>>
+  premises:     Premises[] | undefined
+  siteId:       string | undefined
 }
 
-const CollocationListItem = ({item, index, companyCollocation}: CollocationListItemProps) => {
-  const [searchParams]              = useSearchParams()
-  const tabKey                      = searchParams.get('tabKey')
-  const dispatch                    = useAppDispatch()
-  const [messageApi, contextHolder] = message.useMessage()
-  const [cookies]                   = useCookies(['access_token'])
+const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationListItemProps) => {
+  const [cookies]           = useCookies(['access_token'])
+  const [, setSearchParams] = useSearchParams()
+  const dispatch            = useAppDispatch()
 
-  const data = [
-    {
-      'Column 1': '1-1',
-      'Column 2': '1-2',
-      'Column 3': '1-3',
-      'Column 4': '1-4',
-    },
-    {
-      'Column 1': '2-1',
-      'Column 2': '2-2',
-      'Column 3': '2-3',
-      'Column 4': '2-4',
-    },
-    {
-      'Column 1': '3-1',
-      'Column 2': '3-2',
-      'Column 3': '3-3',
-      'Column 4': '3-4',
-    },
-    {
-      'Column 1': 4,
-      'Column 2': 5,
-      'Column 3': 6,
-      'Column 4': 7,
-    },
-  ]
-
-  const onDeleteIconClick = async(event: React.MouseEvent<HTMLSpanElement, MouseEvent>, premiseName: string) => {
-    const find = companyCollocation?.find((el) => el.premiseName === premiseName)
-    if( find && find?.racks.length > 0){
-      event.stopPropagation()
-      messageApi.error({
-        type:    'error',
-        content: 'Kolokacijoje negali būti klientų',
-      })
-    }else{
-      item.addressId = tabKey
-      dispatch(setOpenCollocationRemovalModal(true))
-      if(item.addressId && item){
-        event.stopPropagation()
-        dispatch(setCollocationItem(item))
-      }
-    }
+  const addRacks = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    e.stopPropagation()
+    dispatch(setOpenRacksAdditionModal(true))
+    setSearchParams(`?menuKey=5&tabKey=1&siteId=${siteId}&premiseId=${id}`)
   }
 
-  const onGenerateCsvIconClick = (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
-    generateCsv('generateSingleCollocationCSV', data, cookies.access_token)
-    event.stopPropagation()
+  const deletePremise = async(e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    e.stopPropagation()
+    await deleteItem('site/premise', {id: item._id} ,cookies.access_token)
+    const newPremises = premises?.filter((el) => el._id !== id)
+    setPremises(newPremises)
   }
 
-  const genExtra = (premiseName: string) => (
+  const generateSingleCollocationCSV = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    e.stopPropagation()
+    generateCsv('generateSingleCollocationCSV', {premiseId: id}, cookies.access_token)
+  }
+
+  const genExtra = (id: string) => (
     <div className='SingleCollocationIconContainer'>
-      <FileExcelOutlined style={{color: 'green'}} onClick={onGenerateCsvIconClick}/>
-      <DeleteOutlined style={{color: 'red'}} onClick={ (event) => onDeleteIconClick(event, premiseName)}/>
+      <AppstoreAddOutlined onClick={(e) => addRacks(e, id)}/>
+      <FileExcelOutlined style={{color: 'green'}} onClick={(e) => generateSingleCollocationCSV(e, id)}/>
+      <DeleteOutlined style={{color: 'red'}} onClick={(e) => deletePremise(e, id)}/>
     </div>
   )
 
   return(
     <div>
       <Collapse
-        defaultActiveKey={[`${index}`]}
+        defaultActiveKey={[`${item._id}`]}
         items={[
           {
-            key:      index,
-            label:    item.premiseName,
-            extra:    genExtra(item.premiseName),
-            children: (
-              <List
-                style={{overflow: 'auto', height: '330px'}}
-                dataSource={item.racks}
-                renderItem={(rackItem) => (
-                  <List.Item >
-                    <div>
-                      {rackItem}
-                    </div>
-                    <div>
-                      {companyCollocation?.map((match, collocationIndex) =>
-                        match.racks.includes(rackItem) &&
-                          match.premiseName === item.premiseName && (
-                          <Tag key={collocationIndex} color='blue'>
-                            {match.companyName}
-                          </Tag>
-                        )
-                      )}
-                    </div>
-                  </List.Item>
-                )}
-              />
-            ),
+            key:      item._id,
+            label:    item.name,
+            extra:    genExtra(item._id),
+            children: <RacksList premiseId={item._id}/>,
           },
         ]}
       />
-      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

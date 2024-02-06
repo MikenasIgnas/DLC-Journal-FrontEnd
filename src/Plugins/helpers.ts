@@ -96,7 +96,7 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
     const formData = new FormData()
 
     if (fileList && fileList.length > 0) {
-      formData.append('photo', fileList)
+      formData.append('file', fileList)
     }
 
     for (const key in values) {
@@ -182,6 +182,47 @@ const getPdfFile = async (url: string, token: TokenType) => {
     return null
   }
 }
+
+
+const getFile = async (url: string, token: TokenType) => {
+  try {
+    const response = await fetch(`http://localhost:4002/${url}`, {
+      method:  'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token':        `${token}`,
+      },
+    })
+
+    if (response.status === 401) {
+      console.error('Unauthorized request')
+      return null
+    }
+
+    const data = await response.blob()
+    return data
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+const downloadFile = async (url: string, token: TokenType) => {
+  const blob = await getFile(url, token)
+  if (blob) {
+    const blobUrl = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = 'filename.csv'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(blobUrl)
+  } else {
+    console.error('Failed to download file')
+  }
+}
+
 const getCsvFile = async (url: string, data: any, token: TokenType) => {
   const options = {
     method:  'POST',
@@ -196,6 +237,7 @@ const getCsvFile = async (url: string, data: any, token: TokenType) => {
   const doc = await response.blob()
   return doc
 }
+
 const generateCsv = async (url: string, data: any, cookie: TokenType) => {
   try {
     const response = await getCsvFile(url, data, cookie)
@@ -384,5 +426,7 @@ export {
   generateCsv,
   put,
   deleteItem,
+  getFile,
+  downloadFile,
 }
 
