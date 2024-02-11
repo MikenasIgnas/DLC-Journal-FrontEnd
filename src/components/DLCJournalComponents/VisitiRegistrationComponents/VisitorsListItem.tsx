@@ -3,36 +3,37 @@
 import React                                from 'react'
 import { Avatar, Button, Form, List, Tag }  from 'antd'
 import { FormListFieldData }                from 'antd/es/form'
-import { EmployeesType, VisitorsType }      from '../../../types/globalTypes'
+import { EmployeesType, VisitorsType, Permissions }      from '../../../types/globalTypes'
 import { DeleteOutlined }                   from '@ant-design/icons'
 import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
 
 type VisitorsListItemProps = {
   item:                 FormListFieldData
-  setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
-  clientsEmployees?:    EmployeesType[] | undefined
-  removeVisitor:        (id: number) => void
+  setCompanyEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+  companyEmployees?:    EmployeesType[] | undefined
+  removeVisitor:        (id: string) => void
+  permissions:          Permissions[]
 }
 
-const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees, removeVisitor }: VisitorsListItemProps) => {
+const VisitorsListItem = ({ item, setCompanyEmployees, companyEmployees, removeVisitor, permissions }: VisitorsListItemProps) => {
   const form                          = Form.useFormInstance()
   const visitors: VisitorsType[]      = form.getFieldValue('visitors')
   const visitorsItem: VisitorsType    = form.getFieldValue('visitors')[item.name]
   const windowSize                    = useSetWindowsSize()
-
   const deleteVisitor = async () => {
     const filter = visitors.filter(
-      (el) => el.selectedVisitor.employeeId !== visitorsItem.selectedVisitor.employeeId
+      (el) => el.selectedVisitor._id !== visitorsItem.selectedVisitor._id
     )
-    removeVisitor(Number(visitorsItem.selectedVisitor.employeeId))
+    removeVisitor(visitorsItem.selectedVisitor._id)
     form.setFieldsValue({
       visitors: filter,
     })
 
-    if (setClientsEmployees && clientsEmployees) {
-      setClientsEmployees([...clientsEmployees, visitorsItem.selectedVisitor])
+    if (setCompanyEmployees && companyEmployees) {
+      setCompanyEmployees([...companyEmployees, visitorsItem.selectedVisitor])
     }
   }
+  const matchingItems = permissions.filter(item => visitorsItem.selectedVisitor.permissions.includes(item._id))
 
   return (
     <List.Item
@@ -48,15 +49,15 @@ const VisitorsListItem = ({ item, setClientsEmployees, clientsEmployees, removeV
         avatar={
           <Avatar
             shape='square' size={windowSize > 600 ? 90 : 40}
-            src={visitorsItem.selectedVisitor.employeePhoto ?
-              `../ClientsEmployeesPhotos/${visitorsItem.selectedVisitor.employeePhoto}` :
+            src={visitorsItem.selectedVisitor.photo ?
+              visitorsItem.selectedVisitor.photo :
               '../ClientsEmployeesPhotos/noUserImage.jpeg'
             }
           />}
-        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastName}</p>}
+        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastname}</p>}
         description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{visitorsItem.selectedVisitor.occupation}</p>}
       />
-      <div>{visitorsItem.selectedVisitor.permissions.map((el: string, i: number) => <Tag key={i}>{el}</Tag>)}</div>
+      <div>{matchingItems.map((el) => <Tag key={el._id}>{el.name}</Tag>)}</div>
     </List.Item>
   )
 }

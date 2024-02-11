@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                                        from 'react'
@@ -6,22 +7,25 @@ import RegisteredVisitorsListItem                   from '../RegisteredVisitorsL
 import { Button, Card, Form, List }                 from 'antd'
 import { useParams }                                from 'react-router'
 import { useAppDispatch, useAppSelector }           from '../../../../store/hooks'
-import { get, post }                                from '../../../../Plugins/helpers'
-import { setEditVisitors, setOpenVisitorAddition }  from '../../../../auth/SingleVisitPageEditsReducer/SingleVisitPageEditsReducer'
+import { deleteItem, get, put }                          from '../../../../Plugins/helpers'
 import VisitorAdditionList                          from '../../VisitiRegistrationComponents/VisitorAdditionList'
 import { useCookies }                               from 'react-cookie'
-import { EmployeesType, VisitsType }                from '../../../../types/globalTypes'
+import { EmployeesType, VisitsType, Permissions, VisitorsIdTypes, Visitors }   from '../../../../types/globalTypes'
+import { setEditVisitors, setOpenVisitorAddition }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 
 
 type SelectedVisitorsFormProps = {
-  visitData:            VisitsType[] | undefined
-  setVisitData:         React.Dispatch<React.SetStateAction<VisitsType[] | undefined>>
-  setSelectedVisitors:  React.Dispatch<React.SetStateAction<number[]>>
-  fetchData:            () => Promise<void>
-  clientsEmployees:     EmployeesType[] | undefined
+  visitData:            VisitsType | undefined
+  companyEmployees:     EmployeesType[]
+  setCompanyEmployees:  React.Dispatch<React.SetStateAction<EmployeesType[]>>
+  permissions:          Permissions[]
+  visitorIdTypes:       VisitorsIdTypes[]
+  visitors: Visitors[]
+  setVisitors: React.Dispatch<React.SetStateAction<Visitors[]>>
+  setSelectedVisitors: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fetchData, clientsEmployees }: SelectedVisitorsFormProps) => {
+const SelectedVisitorsForm = ({ visitData, companyEmployees, visitors, setCompanyEmployees, permissions, visitorIdTypes, setVisitors, setSelectedVisitors }: SelectedVisitorsFormProps) => {
   const [form]                                          = Form.useForm()
   const {id}                                            = useParams()
   const [cookies]                                       = useCookies(['access_token'])
@@ -33,37 +37,45 @@ const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fe
     setSearchEmployeeValue(e.target.value.toLowerCase())
   }
 
-  const addVisitor = (id: number) => {
-    setSelectedVisitors((prev) => prev.includes(id) ? prev : [...prev, id])
+  const addVisitor =  async(visitorId: string | undefined) => {
+    if(visitorId){
+      setSelectedVisitors((prev) => prev.includes(visitorId) ? prev : [...prev, visitorId])
+    }
   }
+
+
 
   const saveChanges = async(values: any) => {
     dispatch(setEditVisitors(!editVisitors))
     if(editVisitors){
-      const updateIdTypes = visitData?.[0].visitors.map((el, i) => ({
-        idType:          values?.visitors[i]?.idType,
-        selectedVisitor: el.selectedVisitor,
-      }))
-      values.visitors = updateIdTypes
-      await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)
-      await fetchData()
+      visitors.forEach(visitor => {
+        if (values.visitors[visitor._id]) {
+          visitor.visitorIdType = values.visitors[visitor._id].visitorIdType
+        }
+      })
+      for(const visitor of visitors){
+        const res = await get(`company/CompanyEmployee?id=${visitor.employeeId}&visitId=${id}`, cookies.access_token)
+        const res2 = await get(`visit/visitor?employeeId=${res._id}&visitId=${id}`, cookies.access_token)
+        console.log(res2)
+        await put('visit/visitor', { id: res2?.[0]._id, visitId: id, visitorIdType: visitor.visitorIdType }, cookies.access_token)
+      }
     }
   }
 
-  const removeVisitor = (id: number) => {
-    setSelectedVisitors((prev) => prev.filter((el) => el !== id))
+  const removeVisitor = (visitorId: string | undefined) => {
+    setSelectedVisitors((prev) => prev.filter((el) => el !== visitorId))
   }
 
-  const deleteVisitor = async(employeeId: number | undefined) => {
+  const deleteVisitor = async(visitorId: string | undefined) => {
     if (visitData) {
-      const updatedVisitData = [...visitData]
-      if (updatedVisitData[0]?.visitors) {
-        updatedVisitData[0].visitors = updatedVisitData[0].visitors.filter(
-          (el) => el.selectedVisitor.employeeId !== employeeId
+      const updatedVisitData = [...visitors]
+      if (visitors) {
+        visitors = updatedVisitData.filter(
+          (el) => el._id !== visitorId
         )
-        setVisitData(updatedVisitData)
-        removeVisitor(Number(employeeId))
-        await get(`deleteVisitor?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
+        setVisitors(updatedVisitData)
+        removeVisitor(visitorId)
+        await deleteItem('visit/visitor', {id: visitorId, visitId: id} ,cookies.access_token)
       }
     }
   }
@@ -80,31 +92,19 @@ const SelectedVisitorsForm = ({ visitData, setVisitData, setSelectedVisitors, fe
       { openVisitorAddition &&
         <VisitorAdditionList
           setOpenVisitorAddition={setOpenVisitorAddition}
-          clientsEmployees={clientsEmployees}
+          companyEmployees={companyEmployees}
           searchEmployee={searchEmployee}
           searchEmployeeValue={searchEmployeeValue}
           addVisitor={addVisitor}
-          removeVisitor={removeVisitor}
-        />
+          removeVisitor={removeVisitor} setCompanyEmployees={setCompanyEmployees} />
       }
       <Card
         title={<RegisteredVisitorsListItemCardTitle/>} style={{margin: '10px', backgroundColor: '#f9f9f9'}}
         extra={<Button onClick={() => dispatch(setOpenVisitorAddition(true))} type='link' >Pridėti Lankytoją</Button>}>
         <List
-          dataSource={visitData?.[0].visitors}
-          renderItem={(item, i) =>
-            <RegisteredVisitorsListItem
-              signature={item.signature}
-              idType={item.idType}
-              employeeId={item.selectedVisitor.employeeId}
-              name={item.selectedVisitor.name}
-              lastName={item.selectedVisitor.lastname}
-              occupation={item.selectedVisitor.occupation}
-              permissions={item.selectedVisitor.permissions}
-              deleteVisitor={deleteVisitor}
-              employeePhoto={item.selectedVisitor.photo}
-              index={i}
-            />
+          dataSource={visitors}
+          renderItem={(item) =>
+            <RegisteredVisitorsListItem visitorIdTypes={visitorIdTypes} item={item} deleteVisitor={deleteVisitor} permissions={permissions}/>
           }
         />
       </Card>

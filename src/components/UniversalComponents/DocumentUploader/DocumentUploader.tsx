@@ -1,41 +1,50 @@
+/* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React                                                from 'react'
-import { DownloadOutlined, StarOutlined, UploadOutlined }   from '@ant-design/icons'
+import { DeleteOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons'
 import { Button, Upload }                                   from 'antd'
-import type { RcFile, UploadFile, UploadProps }             from 'antd/es/upload/interface'
-import { downloadFile }                                     from '../../../Plugins/helpers'
+import type { UploadFile, UploadProps }                     from 'antd/es/upload/interface'
+import { deleteItem, downloadFile, postDocument }           from '../../../Plugins/helpers'
 import { useCookies }                                       from 'react-cookie'
+import { useParams }                                        from 'react-router'
 
 type CompanyPhotoUploaderProps = {
-  setFileList:  React.Dispatch<React.SetStateAction<UploadFile<RcFile>[]>>
-  fileList:     UploadFile<RcFile>[]
-  defFileList: any[]
+  setUploading:     React.Dispatch<React.SetStateAction<boolean>>
+  companyDocuments: string[] | undefined
 }
 
-const DocumentUploader = ({ fileList, setFileList, defFileList }: CompanyPhotoUploaderProps) => {
-  const [cookies]           = useCookies(['access_token'])
+const DocumentUploader = ({ setUploading, companyDocuments }: CompanyPhotoUploaderProps) => {
+  const [cookies]       = useCookies(['access_token'])
+  const [, setFileList] = React.useState<UploadFile[]>([])
+  const {id}            = useParams()
+
+  const defaultFileList: UploadFile<any>[] = companyDocuments?.map((el, i) => ({
+    uid:    String(i),
+    name:   el,
+    status: 'done',
+  })) || []
+
   const props: UploadProps  = {
-    maxCount: 1000,
     multiple: true,
-    onRemove: (file) => {
-      const index = fileList ? fileList.indexOf(file) : -1
-      if (index !== -1) {
-        const newFileList = fileList.slice()
-        newFileList.splice(index, 1)
-        setFileList(newFileList)
-      }
+    onRemove: async(file) => {
+      await deleteItem('company/document', {id: id, file: file}, cookies.access_token)
+      setFileList((currentFileList) => currentFileList.filter(f => f.uid !== file.uid))
     },
 
-    beforeUpload: (file) => {
-      setFileList([...fileList, file])
+    beforeUpload: async(file) => {
+      setUploading(true)
+      const res = await postDocument('company/document', {id: id, file: file}, cookies.access_token, file, setUploading, setFileList)
+      setFileList([...res.document, file])
+      setUploading(false)
       return false
     },
 
     showUploadList: {
+      showPreviewIcon:  false,
       showDownloadIcon: true,
       downloadIcon:     <DownloadOutlined/>,
       showRemoveIcon:   true,
-      removeIcon:       <StarOutlined />,
+      removeIcon:       <DeleteOutlined />,
     },
 
     onDownload: (file) => {
@@ -45,7 +54,7 @@ const DocumentUploader = ({ fileList, setFileList, defFileList }: CompanyPhotoUp
 
   return (
     <div style={{display: 'flex', justifyContent: 'center', paddingBottom: '10px'}}>
-      <Upload defaultFileList={[...defFileList]} listType='picture-card' {...props}>
+      <Upload defaultFileList={[...defaultFileList]} listType='picture-card' {...props}>
         <Button icon={<UploadOutlined rev='' />}></Button>
       </Upload>
     </div>

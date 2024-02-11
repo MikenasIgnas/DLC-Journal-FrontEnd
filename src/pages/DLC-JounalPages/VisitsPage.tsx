@@ -3,6 +3,7 @@
 import { useSearchParams }      from 'react-router-dom'
 
 import {
+  deleteItem,
   deleteTableItem,
   get,
   getCurrentDate,
@@ -69,13 +70,13 @@ const VisitPage = () => {
   const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
   const [messageApi, contextHolder]       = message.useMessage()
 
-  const endVisit = async (id: number, visitStatus: string | undefined) => {
+  const endVisit = async (id: string, visitStatus: string | undefined) => {
     if (visitStatus === 'success') {
       const response = await get(`endVisit?visitId=${id}`, cookies.access_token)
       if (response) {
         if (data) {
           const newData = data.map(visit =>
-            visit.id === id ? { ...visit, visitStatus: 'error' as VisitStatusType, endDate: getCurrentDate(), endTime: getCurrentTime() } : visit
+            visit._id === id ? { ...visit, visitStatus: 'error' as VisitStatusType, endDate: getCurrentDate(), endTime: getCurrentTime() } : visit
           )
           setData(newData)
           messageApi.success('Visit ended successfully')
@@ -90,7 +91,6 @@ const VisitPage = () => {
       })
     }
   }
-
   return (
     <>
       <FullTable
@@ -102,12 +102,12 @@ const VisitPage = () => {
         tableColumns={<TableColumns />}
         tableRows={data?.map((visit) => (
           <VisitsTableRows
-            key={visit.id}
+            key={visit._id}
             visit={visit}
             rowMenu={<RowMenu
-              deleteItem={() => deleteTableItem('deleteVisit', data, setData, visit.id, cookies.access_token)}
-              generatePDF={() => generateSingleVisitPDF(visit.id)}
-              endVisit={() => endVisit(visit.id, visit.visitStatus)}
+              deleteItem={() => deleteTableItem('visit/visit', data, {id: visit._id}, setData, cookies.access_token)}
+              generatePDF={() => generateSingleVisitPDF(visit._id)}
+              endVisit={() => endVisit(visit._id, visit.visitStatus)}
               items={rowMenuItems}
             />}
           />

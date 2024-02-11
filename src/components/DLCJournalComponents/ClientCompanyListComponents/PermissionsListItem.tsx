@@ -28,7 +28,6 @@ const PermissionsListItem = ({item, deletePermission, permissions, setPermission
       perm._id === id ? { ...perm, name: inputValue } : perm
     )
 
-    // Update the state in the parent component
     setPermissions(updatedPermissions)
     setEdit(false)
   }

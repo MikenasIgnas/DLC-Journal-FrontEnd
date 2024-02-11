@@ -87,6 +87,7 @@ const CompaniesListPage = () => {
       }
     })
   }
+
   const addPermission = async(values: Permissions) => {
     const res = await post('company/permission', values, cookies.access_token)
     if(!res.messsage){

@@ -18,7 +18,7 @@ const useSetVisitsData = () => {
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      let fetchUrl        = `visitsData?page=${page}&limit=${limit}`
+      let fetchUrl        = `visit/visit?page=${page}&limit=${limit}`
 
       if (searchFilter) {
         fetchUrl += `&search=${searchFilter}`

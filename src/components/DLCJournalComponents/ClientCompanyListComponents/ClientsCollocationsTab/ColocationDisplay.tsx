@@ -20,10 +20,6 @@ const ColocationDisplay = ({ site, companyRacks }:ColocationViewProps) => {
             <CollocationListItems companyRacks={companyRacks} premise={premise}/>
           </div>
         )}
-        {/* <div className='CollocationDisplayCounter'>
-          <strong>{`Kolokacijos ${locationName}: ${locationData?.length}`}</strong>
-          <strong>{`Spintos: ${totalItemCount}`}</strong>
-        </div> */}
       </Card>
     </div>
   )

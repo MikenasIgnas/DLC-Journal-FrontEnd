@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { Button, Card, Input, List } from 'antd'
 import React                         from 'react'
-import { get, post }                 from '../../../Plugins/helpers'
+import { get, put }                  from '../../../Plugins/helpers'
 import { useParams }                 from 'react-router'
 import { useCookies }                from 'react-cookie'
 import { SearchProps }               from 'antd/es/input'
@@ -9,10 +9,10 @@ import { SearchProps }               from 'antd/es/input'
 type ItemListProps = {
     url?:               string;
     removeUrl?:         string;
-    list:               string[]
+    list:               string[] | undefined
     companyNameInput?:  React.ReactNode
-    setList:            React.Dispatch<React.SetStateAction<string[]>>
-    visitAddress:       string | null
+    setList:            React.Dispatch<React.SetStateAction<string[] | undefined>>
+    visitAddress:       string | undefined
     selectedVisitors:   number | undefined
 }
 
@@ -25,7 +25,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, vi
 
 
   const removeListItem = async(index: number) => {
-    const filtered = list.filter((_el, i) => index !== i)
+    const filtered = list?.filter((_el, i) => index !== i)
     setList(filtered)
     if(removeUrl){
       await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
@@ -33,14 +33,11 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, vi
   }
 
   const onListItemAddition: SearchProps['onSearch'] = async(value) => {
-    if(value !== ''){
+    if(value !== '' && list){
       setList([...list, value])
       setCarPlatesInput('')
       if(url){
-        const updateValue = {
-          value,
-        }
-        await post(`${url}?visitId=${id}`, updateValue, cookies.access_token)
+        await put(url, {id: id, carPlates: value}, cookies.access_token)
       }
     }
   }
@@ -57,7 +54,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, vi
             enterButton={<div>Pridėti</div>}
           />
           {
-            list.length > 0 &&
+            list && list?.length > 0 &&
         <List
           style={{marginTop: '50px'}}
           dataSource={list}

@@ -11,15 +11,15 @@ import HighlightText                  from '../../UniversalComponents/HighlightT
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
-    addVisitor:           (id:number) => void
-    removeVisitor:        (id:number) => void
+    addVisitor:           (item: string | undefined) => void
+    removeVisitor:        (id: string | undefined) => void
     photoFolder:          string;
-    clientsEmployees?:    EmployeesType[] | undefined
-    setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    clientsEmployees:    EmployeesType[]
+    setCompanyEmployees: React.Dispatch<React.SetStateAction<EmployeesType[]>>
     searchEmployeeValue:  string | undefined
 }
 
-const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setClientsEmployees, searchEmployeeValue}: VisitorAdditionListItemProps) => {
+const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setCompanyEmployees, searchEmployeeValue}: VisitorAdditionListItemProps) => {
   const [cookies]   = useCookies(['access_token'])
   const {id}        = useParams()
   const form        = Form.useFormInstance<VisitsType>()
@@ -27,23 +27,28 @@ const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployee
   const windowSize  = useSetWindowsSize()
 
   const addVisitingClient = async() => {
-    const updatedVisitors = [...(visitor || []), { idType: undefined, selectedVisitor: item }]
-    addVisitor(Number(item.employeeId))
-    form.setFieldsValue({
-      visitors: updatedVisitors,
-    })
+    try{
 
-    const filter = clientsEmployees?.filter((el) => el.employeeId !== item.employeeId)
+      const res = await post('visit/visitor', {visitId: id, employeeId: item._id}, cookies.access_token)
+      addVisitor(res._id)
 
-    if(setClientsEmployees){
-      setClientsEmployees(filter)
+      if(!id){
+        const updatedVisitors = [...(visitor || []), { idType: undefined, selectedVisitor: item }]
+        form.setFieldsValue({
+          visitors: updatedVisitors,
+        })
+      }
+
+      const filter = clientsEmployees?.filter((el) => el._id !== item._id)
+
+      if(setCompanyEmployees){
+        setCompanyEmployees(filter)
+      }
+    }catch(err){
+      console.log(err)
     }
-
-    if (id) {
-      await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
-    }
-
   }
+
 
   return (
     <List.Item>
@@ -53,8 +58,8 @@ const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployee
         style={{ margin: '10px', width: windowSize > 600 ? 300 : 220, cursor: 'pointer' }}
       >
         <Meta
-          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
-          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item.lastName)}</div>}
+          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item.photo ? item.photo : `${photoFolder}noUserImage.jpeg`} />}
+          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item.lastname)}</div>}
           description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item.occupation}</p>}
         />
       </Card>

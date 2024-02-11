@@ -10,12 +10,15 @@ type ColocationSelectorsProps = {
   companyRacks?:    string[];
   setCheckedLists:  React.Dispatch<React.SetStateAction<CheckboxValueType[]>>
   checkedLists:     CheckboxValueType[]
+  siteId?:           string | null | undefined
 };
 
-const ColocationSelectors = ({ item, companyRacks = [], setCheckedLists, checkedLists }: ColocationSelectorsProps) => {
+const ColocationSelectors = ({ item, companyRacks = [], setCheckedLists, checkedLists, siteId }: ColocationSelectorsProps) => {
   const premises = useAppSelector(state => state.sites.premise)?.filter(el => el.siteId === item._id)
   const racks    = useAppSelector(state => state.sites.racks)
+  const selectedRacks = racks?.filter((el) => el._id !== undefined && companyRacks.includes(el._id)).map((el) => el.premiseId)
 
+  const sitePremises = premises?.filter((el) => selectedRacks?.includes(el._id))
   useEffect(() => {
     setCheckedLists((prev) => Array.from(new Set([...prev, ...companyRacks])))
   }, [companyRacks, setCheckedLists])
@@ -29,7 +32,7 @@ const ColocationSelectors = ({ item, companyRacks = [], setCheckedLists, checked
     setCheckedLists([...newCheckedLists, ...selectedValues])
   }
 
-  const nestedItems = premises?.map(premise => {
+  const nestedItems = (siteId ? sitePremises : premises)?.map(premise => {
     const filteredRacks = racks?.filter(el => el.premiseId === premise._id).map(el => ({
       value: el._id || 'err',
       label: el.name || 'err',

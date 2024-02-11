@@ -1,30 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                              from 'react'
-import { Button, Card, Input, List, Tag } from 'antd'
-import { get, post }                      from '../../../Plugins/helpers'
-import { useCookies }                     from 'react-cookie'
-import { ClientsGuests, VisitorsType }    from '../../../types/globalTypes'
-import filterPermisions                   from './filterPermisions'
-import { useParams }                      from 'react-router'
+import React                         from 'react'
+import { Button, Card, Input, List } from 'antd'
+import { get, put }                  from '../../../Plugins/helpers'
+import { useCookies }                from 'react-cookie'
+import { Guest, Visitors }      from '../../../types/globalTypes'
+import { useParams }                 from 'react-router'
 
 type ItemListProps = {
     url?:               string;
     removeUrl?:         string;
     cardTitle?:         string;
     inputPlaceHolder?:  string;
-    list:               ClientsGuests[] | undefined
-    setListItems:       React.Dispatch<React.SetStateAction<ClientsGuests[]>>
+    list:               Guest[] | undefined
+    setListItems:       React.Dispatch<React.SetStateAction<Guest[] | undefined>>
     companyNameInput?:  React.ReactNode
-    visitors:           VisitorsType[] | undefined
+    visitors:           Visitors[]
     selectedVisitors:   number | undefined
-    fetchData?:          () => Promise<void>
+    fetchData?:         () => Promise<void>
 }
 
-const ClientsGuestsItemList = ({ url, removeUrl, visitors,list, setListItems, selectedVisitors, fetchData }: ItemListProps) => {
+const ClientsGuestsItemList = ({ removeUrl,list, setListItems, selectedVisitors, fetchData }: ItemListProps) => {
   const [cookies]       = useCookies(['access_token'])
   const { id }          = useParams()
-  const canBringCompany = filterPermisions(visitors).includes('Įleisti Trečius asmenis')
   const [clientsGuestNamesInput, setClientsGuestsNamesInput]      = React.useState<string>('')
   const [clientsGuestCompanyInput, setClientsGuestCompanyInput]   = React.useState<string>('')
 
@@ -43,25 +41,22 @@ const ClientsGuestsItemList = ({ url, removeUrl, visitors,list, setListItems, se
   }
 
   const onCreate = async() => {
-    const values = {
-      guestName:   clientsGuestNamesInput,
-      companyName: clientsGuestNamesInput,
+    const guests = {
+      name:    clientsGuestNamesInput,
+      company: clientsGuestCompanyInput,
     }
-
+    await put('visit/visit', {id: id, guests}, cookies.access_token)
     if(clientsGuestNamesInput !== ''){
-      setListItems((prev) => [...prev, values])
+      setListItems((prev) => prev && [...prev, guests])
       setClientsGuestsNamesInput('')
       setClientsGuestCompanyInput('')
-      if(url && fetchData){
-        await post(`${url}?visitId=${id}`, values, cookies.access_token)
-        fetchData()
-      }
     }
   }
+
   return (
     <>
       {
-        selectedVisitors && selectedVisitors > 0 && canBringCompany ?
+        selectedVisitors && selectedVisitors > 0 ?
           <Card title={'Atvykstanty tretieji asmenys'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
             <Input addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
             <Input addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
@@ -82,8 +77,8 @@ const ClientsGuestsItemList = ({ url, removeUrl, visitors,list, setListItems, se
                   ]}
                 >
                   <List.Item.Meta
-                    title={item.guestName || 'Unknown Name'}
-                    description={item.companyName || 'Unknown Company'}
+                    title={item.name || 'Unknown Name'}
+                    description={item.company || 'Unknown Company'}
                   />
                 </List.Item>
               )}
@@ -92,12 +87,12 @@ const ClientsGuestsItemList = ({ url, removeUrl, visitors,list, setListItems, se
           : null
       }
 
-      {selectedVisitors && selectedVisitors > 0 && !canBringCompany ?
+      {/* {selectedVisitors && selectedVisitors > 0 && !canBringCompany ?
         <div style={{ textAlign: 'center', margin: '30px'}}>
           <Tag color='error'>Klientas negali turėti palydos</Tag>
         </div>
         : null
-      }
+      } */}
     </>
   )
 }

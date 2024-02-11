@@ -1,37 +1,68 @@
 /* eslint-disable max-len */
-import { calculateTimeDifference }                  from '../../../Plugins/helpers'
-import { Badge, ConfigProvider, Form, Select, Tag } from 'antd'
-import type { DescriptionsProps }                   from 'antd'
-import VisitDateItem                                from '../SingleVisitPageComponents/VisitDateItem'
-import { UserType, VisitsType }                     from '../../../types/globalTypes'
-import { Link, useSearchParams }                    from 'react-router-dom'
-import { addresses }                                from './StaticSelectOptions'
-import { useAppSelector }                           from '../../../store/hooks'
+import { Badge, ConfigProvider, Form, Select, Tag }         from 'antd'
+import type { DescriptionsProps }                           from 'antd'
+import VisitDateItem                                        from '../SingleVisitPageComponents/VisitDateItem'
 
-const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolean, dlcEmployees: UserType[] | undefined ) => {
+import {
+  CompaniesType,
+  Sites,
+  VisitPurpose,
+  VisitsType,
+  Permissions,
+  Visitors,
+  VisitStatus,
+}                                                           from '../../../types/globalTypes'
+
+import { Link, useSearchParams }                            from 'react-router-dom'
+import { useAppSelector }                                   from '../../../store/hooks'
+import { calculateTimeDifference, convertUTCtoLocalDate, convertUTCtoLocalDateTime } from '../../../Plugins/helpers'
+
+type StatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+
+const VisitInformationItems = (
+  visitData:    VisitsType | undefined,
+  edit:         boolean,
+  sites:        Sites[] | undefined,
+  company:      CompaniesType | undefined,
+  visitPurpose: VisitPurpose[],
+  permissions:  Permissions[],
+  visitors:     Visitors[],
+  visitStatus:  VisitStatus | undefined
+) => {
   const [, setSearchParams] = useSearchParams()
   const logedInUser         = useAppSelector((state) => state.auth.name)
-  const DLCEmployees = dlcEmployees?.map((el) => {
-    return {...el, value: el.name, label: el.name}
-  })
+  const addresses           = sites?.map((el) => ({value: el._id, label: el.name}))
+  const [searchParams]      = useSearchParams()
+  const addressId           = searchParams.get('visitAddress')
+  const site                = sites?.filter((el) => el._id === addressId)
+  const creationDate        = convertUTCtoLocalDate(visitData?.date)
+  const creationTime        = convertUTCtoLocalDateTime(visitData?.date)
+  const visitorsPermissions = visitors.map((el) => el.permissions)
+  const combinedPermissions = visitorsPermissions.reduce((acc, current) => acc.concat(current), [])
+  const employeePermissions = permissions.filter((el) => combinedPermissions.includes(el._id))
 
   const changeAddress = async(value:string) => {
     setSearchParams(`visitAddress=${value}`)
   }
 
   const getUniquePermissions = () => {
-    const filteredVisits: string[] = []
-    visitData?.[0].visitors?.map(( {selectedVisitor: { permissions }} ) => {
-      permissions.map(item => {
-        if (!filteredVisits.includes(item) && item !== 'Įleisti Trečius asmenis' ) {
-          filteredVisits.push(item)
-        }
-      })
+    const filteredVisits: Permissions[] = []
+    employeePermissions?.forEach((permission) => {
+      if (permission.name && !filteredVisits.some(p => p.name === permission.name) && permission.name !== 'Įleisti Trečius asmenis') {
+        filteredVisits.push(permission)
+      }
     })
-    const mapped = filteredVisits.map((el) => ({value: el, label: el}))
+
+    const mapped = filteredVisits.map((el) => ({ value: el._id, label: el.name }))
     return mapped
   }
 
+  const statusMap: { [key: string]: StatusType } = {
+    Pradėti:  'success',
+    Paruošti: 'processing',
+    Baigti:   'error',
+  }
+  const status = visitStatus && statusMap[visitStatus.name]
   const items: DescriptionsProps['items'] = [
     {
       key:      '1',
@@ -44,27 +75,25 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
         },
       }}>
         <Badge
-          status={visitData?.[0]?.visitStatus}
+          status={status}
           text={
-            visitData?.[0]?.visitStatus === 'success' && 'Pradėtas' ||
-                visitData?.[0]?.visitStatus === 'processing' && 'Paruoštas' ||
-                visitData?.[0]?.visitStatus === 'error' && 'Baigtas'
+            visitStatus?.name
           }/>
       </ConfigProvider>,
     },
     {
       key:      '2',
       label:    'Įmonė',
-      children: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${visitData?.[0]?.companyId}`}>{visitData?.[0]?.visitingClient}</Link>,
+      children: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${company?._id}`}>{company?.name}</Link>,
     },
     {
       key:      '3',
       label:    'Adresas',
       children: <div>
         {!edit ?
-          <div>{visitData?.[0].visitAddress}</div> :
-          <Form.Item name='visitAddress' initialValue={visitData?.[0].visitAddress}>
-            <Select onChange={changeAddress} value={visitData?.[0].visitAddress} style={{width: '150px'}} options={addresses}/>
+          <div>{site?.[0]?.name}</div> :
+          <Form.Item name='visitAddress' initialValue={site?.[0]?.name}>
+            <Select onChange={changeAddress} value={site?.[0]?.name} style={{width: '150px'}} options={addresses}/>
           </Form.Item>
         }
       </div>,
@@ -72,46 +101,36 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
     {
       key:      '4',
       label:    'Sukūrimo data',
-      children: `${visitData?.[0].creationDate} ${visitData?.[0].creationTime}`,
+      children: `${creationDate} ${creationTime}`,
     },
     {
       key:      '5',
       label:    'Pradžios laikas',
-      children: <VisitDateItem dateFormItemName='startDate' timeFormItemName='startTime' edit={edit} date={visitData?.[0]?.startDate} time={visitData?.[0]?.startTime}/>,
+      children: <VisitDateItem dateFormItemName='startDate' edit={edit} date={visitData?.startDate}/>,
 
     },
     {
       key:      '6',
       label:    'Pabaigos laikas',
-      children: <VisitDateItem dateFormItemName='endDate' timeFormItemName='endTime' edit={edit} date={visitData?.[0]?.endDate} time={visitData?.[0]?.endTime}/>,
+      children: <VisitDateItem dateFormItemName='endDate' edit={edit} date={visitData?.endDate}/>,
     },
     {
       key:   '7',
       label: 'Lydintis asmuo',
       children:
-          <div style={{display: 'flex', justifyContent: 'center'}}>
-            {!edit ?
-              <div>{visitData?.[0].dlcEmployees}</div> :
-              <Form.Item name='dlcEmployees' initialValue={visitData?.[0].dlcEmployees ? visitData?.[0].dlcEmployees : logedInUser}>
-                <Select
-                  value={visitData?.[0].dlcEmployees ? visitData?.[0].dlcEmployees : logedInUser}
-                  style={{width: '200px'}}
-                  options={DLCEmployees}/>
-              </Form.Item>
-            }
-          </div>,
+            <div>{logedInUser}</div>,
     },
     {
       key:      '8',
       label:    'Vizito tikslas',
       children: <div>
         {!edit ?
-          <div>{visitData?.[0]?.visitPurpose?.map((el, i) => <Tag key={i}>{el}</Tag>)}</div> :
-          <Form.Item name='visitPurpose' initialValue={visitData?.[0]?.visitPurpose}>
+          <div>{visitPurpose?.map((el, i) => <Tag key={i}>{el.name}</Tag>)}</div> :
+          <Form.Item name='visitPurpose' initialValue={visitData?.visitPurpose}>
             <Select
               mode='multiple'
               style={{width: '250px'}}
-              value={visitData?.[0]?.visitPurpose}
+              value={visitData?.visitPurpose}
               options={getUniquePermissions()}
             />
           </Form.Item>
@@ -121,7 +140,7 @@ const VisitInformationItems = (visitData: VisitsType[] | undefined, edit: boolea
     {
       key:      '9',
       label:    'Užtrukta',
-      children: <div>{calculateTimeDifference(visitData?.[0]?.startDate, visitData?.[0]?.startTime, visitData?.[0]?.endDate, visitData?.[0]?.endTime)}</div>,
+      children: <div>{calculateTimeDifference(visitData?.startDate, visitData?.endDate)}</div>,
     },
   ]
 

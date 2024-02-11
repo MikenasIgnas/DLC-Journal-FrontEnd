@@ -1,32 +1,33 @@
 /* eslint-disable max-len */
 import React      from 'react'
 import { Button } from 'antd'
+import { Permissions }       from '../../../types/globalTypes'
 
 type VisitPurposeButtonsProps = {
-  buttonText:   string;
   buttonWidth:  number;
+  item: Permissions
 };
 
-const VisitPurposeButtons = ({ buttonText }: VisitPurposeButtonsProps) => {
+const VisitPurposeButtons = ({ item }: VisitPurposeButtonsProps) => {
   const [isToggled, setToggled] = React.useState(false)
 
   React.useEffect(() => {
     const selectedButtons = JSON.parse(localStorage.getItem('visitPurpose') || '[]')
-    setToggled(selectedButtons.includes(buttonText))
-  }, [buttonText])
+    setToggled(selectedButtons.includes(item.name))
+  }, [item.name])
 
   const handleToggle = () => {
     setToggled(!isToggled)
     const visitPurposeButtons = JSON.parse(localStorage.getItem('visitPurpose') || '[]')
     const updatedButtons = isToggled
-      ? visitPurposeButtons.filter((button: string) => button !== buttonText)
-      : [...visitPurposeButtons, buttonText]
+      ? visitPurposeButtons.filter((button: string) => button !== item._id)
+      : [...visitPurposeButtons, item._id]
     localStorage.setItem('visitPurpose', JSON.stringify(updatedButtons))
   }
 
   return (
     <Button className='VisitPurposeButton' type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
-      {buttonText}
+      {item.name}
     </Button>
   )
 }

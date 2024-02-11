@@ -5,6 +5,7 @@ import Table                  from './Table'
 import { FilterOptions }      from '../../../types/globalTypes'
 import { SetURLSearchParams } from 'react-router-dom'
 import TablePagination        from './TablePagination'
+import VisitsConfigModal      from '../../DLCJournalComponents/VisistPageComponents/VisitsConfigModal'
 
 type FullTableProps = {
   tableColumns:     React.ReactNode;
@@ -28,6 +29,7 @@ const FullTable = ({
   return (
     <>
       <TableControls pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>
+      <VisitsConfigModal/>
       <Table tableRows={tableRows} tableColumns={tableColumns}/>
       <TablePagination documentCount={documentCount} currentPage={currentPage} setSearchParams={setSearchParams}
       />

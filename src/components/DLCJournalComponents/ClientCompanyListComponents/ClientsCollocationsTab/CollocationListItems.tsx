@@ -20,11 +20,6 @@ const CollocationListItems = ({ premise, companyRacks }: CollocationListItemsPro
             key={premise._id}
             size='small'
             header={<strong>{premise.name}</strong>}
-            footer={
-              <div className='CollocationDisplayFooter'>
-                {/* <strong>{`Spintos: ${el..length}`}</strong> */}
-              </div>
-            }
             bordered
             dataSource={clientsRacks}
             renderItem={(item) =>

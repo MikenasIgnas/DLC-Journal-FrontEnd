@@ -1,62 +1,90 @@
 /* eslint-disable max-len */
-import { Input }                from 'antd'
 import ClientsGuestsItemList    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ClientsGuestsItemList'
-import CarPlatesItemList        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
-import SelectedVisitorsForm     from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedVisitorsForm/SelectedVisitorsForm'
 import CollocationsForm         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsForm/CollocationsForm'
+import SelectedVisitorsForm     from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedVisitorsForm/SelectedVisitorsForm'
 import VisitInformationForm     from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitInformationForm/VisitInformationForm'
-import VisitStatusButton        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
 import useSetSingleVisitData    from '../../Plugins/useSetSingleVisitData'
+import { Input }                from 'antd'
+import CarPlatesItemList        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
+import VisitStatusButton        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
 
 const SingleVisitPage = () => {
   const {
     visitData,
-    fetchData,
-    setVisitData,
-    setSelectedVisitors,
-    clientsEmployees,
-    setClientsGuests,
+    company,
+    companies,
+    visitPurpose,
+    visitors,
+    companyEmployees,
+    sites,
+    setCompanyEmployees,
+    permissions,
+    visitorIdTypes,
+    visitAddress,
+    setGuests,
+    guests,
+    companyPremise,
+    companyRacks,
     carPlates,
     setCarPlates,
-    clientsGuests,
+    visitStatus,
+    visitStatuses,
+    setVisitors,
+    setSelectedVisitors,
+    fetchData,
   } = useSetSingleVisitData()
+
+  const site = sites?.filter(el => el._id === visitAddress)
 
   return (
     <>
       <VisitInformationForm
+        permissions={permissions}
+        sites={sites}
+        visitPurpose={visitPurpose}
+        company={company}
         visitData={visitData}
-        fetchData={fetchData}
+        visitors={visitors}
+        visitStatus={visitStatus}
       />
       <SelectedVisitorsForm
-        visitData={visitData}
-        setVisitData={setVisitData}
         setSelectedVisitors={setSelectedVisitors}
-        fetchData={fetchData}
-        clientsEmployees={clientsEmployees}
+        setVisitors={setVisitors}
+        permissions={permissions}
+        visitData={visitData}
+        visitors={visitors}
+        setCompanyEmployees={setCompanyEmployees}
+        companyEmployees={companyEmployees}
+        visitorIdTypes={visitorIdTypes}
       />
-      <CollocationsForm/>
+      <CollocationsForm
+        companyRacks={companyRacks}
+        visitData={visitData}
+        siteId={visitAddress}
+        companies={companies}
+        companyPremise={companyPremise}
+      />
       <ClientsGuestsItemList
-        selectedVisitors={visitData?.[0].visitors.length}
-        visitors={visitData?.[0].visitors}
-        list={clientsGuests}
-        fetchData={fetchData}
-        setListItems={setClientsGuests}
+        selectedVisitors={visitors.length}
+        visitors={visitors}
+        list={guests}
+        setListItems={setGuests}
         removeUrl={'removeClientsGuest'}
-        url={'updateClientsGests'}
+        url={'visit/visit'}
         companyNameInput={<Input placeholder='Imonė'/>}
       />
       <CarPlatesItemList
-        selectedVisitors={visitData?.[0].visitors.length}
-        visitAddress={visitData?.[0]?.visitAddress as string | null}
-        url={'updateCarPlates'}
-        removeUrl={'removeCarPlates'}
+        selectedVisitors={visitors.length}
+        visitAddress={site?.[0]?.name}
+        url={'visit/visit'}
         list={carPlates}
         setList={setCarPlates}
       />
       <VisitStatusButton
-        visitData={visitData}
         fetchData={fetchData}
-        setVisitData={setVisitData}
+        visitStatuses={visitStatuses}
+        visitors={visitors}
+        visitData={visitData}
       />
     </>
   )

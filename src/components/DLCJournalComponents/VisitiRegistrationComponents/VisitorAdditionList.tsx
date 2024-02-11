@@ -7,21 +7,20 @@ import { ActionCreatorWithPayload }   from '@reduxjs/toolkit'
 import { useAppDispatch }             from '../../../store/hooks'
 
 type VisitorAdditionListProps = {
-    clientsEmployees:         EmployeesType[] | undefined
+  companyEmployees:         EmployeesType[]
     searchEmployee:           (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
     searchEmployeeValue:      string | undefined
-    addVisitor:               (id:number) => void
-    removeVisitor:            (id:number) => void
+    addVisitor:               (item: string | undefined) => void
+    removeVisitor:            (id: string | undefined) => void
     setOpenVisitorAddition?:  ActionCreatorWithPayload<boolean>
-    setClientsEmployees?:     React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
+    setCompanyEmployees:     React.Dispatch<React.SetStateAction<EmployeesType[]>>
 }
 
-const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
+const VisitorAdditionList = ({setCompanyEmployees, companyEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
   const dispatch          = useAppDispatch()
-
   return (
     <>
-      {clientsEmployees && clientsEmployees?.length > 0 &&
+      {companyEmployees && companyEmployees?.length > 0 &&
       <Card title={
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div>Įmonės Darbuotojai</div>
@@ -40,16 +39,16 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
             xl:     2,
             xxl:    4,
           }}
-          dataSource={clientsEmployees}
-          renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
+          dataSource={companyEmployees}
+          renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastname}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
           <VisitorAdditionListItem
             searchEmployeeValue={searchEmployeeValue}
             item={item}
             addVisitor={addVisitor}
             removeVisitor={removeVisitor}
             photoFolder='../../ClientsEmployeesPhotos/'
-            clientsEmployees={clientsEmployees}
-            setClientsEmployees={setClientsEmployees} />
+            clientsEmployees={companyEmployees}
+            setCompanyEmployees={setCompanyEmployees} />
           }>
         </List>
       </Card>

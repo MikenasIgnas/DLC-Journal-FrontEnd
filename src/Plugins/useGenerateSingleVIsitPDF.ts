@@ -7,7 +7,7 @@ const useGenerateSingleVisitPDF = () => {
   const [loading, setLoading] = React.useState(false)
   const [cookies]             = useCookies(['access_token'])
 
-  const generateSingleVisitPDF = async (visitId: number) => {
+  const generateSingleVisitPDF = async (visitId: string) => {
     try {
       setLoading(true)
       const response = await getPdfFile(`generatePDF?visitId=${visitId}`, cookies.access_token)
