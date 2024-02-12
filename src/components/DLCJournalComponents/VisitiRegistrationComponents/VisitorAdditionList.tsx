@@ -1,23 +1,20 @@
 /* eslint-disable max-len */
-import React                          from 'react'
-import { Button, Card, Input, List }  from 'antd'
-import { EmployeesType }              from '../../../types/globalTypes'
-import VisitorAdditionListItem        from './VisitorAdditionListItem'
-import { ActionCreatorWithPayload }   from '@reduxjs/toolkit'
-import { useAppDispatch }             from '../../../store/hooks'
+import React                                from 'react'
+import { Button, Card, Input, List }        from 'antd'
+import VisitorAdditionListItem              from './VisitorAdditionListItem'
+import { ActionCreatorWithPayload }         from '@reduxjs/toolkit'
+import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
+import { selectNonVisitingCompanyEmplyees } from '../../../auth/VisitorEmployeeReducer/selectors'
 
 type VisitorAdditionListProps = {
-  companyEmployees:         EmployeesType[]
     searchEmployee:           (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
     searchEmployeeValue:      string | undefined
-    addVisitor:               (item: string | undefined) => void
-    removeVisitor:            (id: string | undefined) => void
     setOpenVisitorAddition?:  ActionCreatorWithPayload<boolean>
-    setCompanyEmployees:     React.Dispatch<React.SetStateAction<EmployeesType[]>>
 }
 
-const VisitorAdditionList = ({setCompanyEmployees, companyEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
+const VisitorAdditionList = ({ searchEmployee, searchEmployeeValue, setOpenVisitorAddition }: VisitorAdditionListProps) => {
   const dispatch          = useAppDispatch()
+  const companyEmployees  = useAppSelector(selectNonVisitingCompanyEmplyees)
   return (
     <>
       {companyEmployees && companyEmployees?.length > 0 &&
@@ -44,11 +41,8 @@ const VisitorAdditionList = ({setCompanyEmployees, companyEmployees, searchEmplo
           <VisitorAdditionListItem
             searchEmployeeValue={searchEmployeeValue}
             item={item}
-            addVisitor={addVisitor}
-            removeVisitor={removeVisitor}
             photoFolder='../../ClientsEmployeesPhotos/'
-            clientsEmployees={companyEmployees}
-            setCompanyEmployees={setCompanyEmployees} />
+          />
           }>
         </List>
       </Card>

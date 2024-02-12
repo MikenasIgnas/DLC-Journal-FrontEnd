@@ -82,7 +82,6 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
     if(editClientsEmployee) {
       values.companyId = employee?.companyId
       values.id = employee?._id
-      values.photo = fileList[0]
       await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
     }
   }

@@ -1,20 +1,18 @@
 /* eslint-disable max-len */
 import { Card, Form }       from 'antd'
 import VisitPurposeButtons  from './VisitPurposeButtons'
-import { VisitsType, Permissions }       from '../../../types/globalTypes'
+import { VisitsType }       from '../../../types/globalTypes'
 import filterPermisions     from './filterPermisions'
+import { useAppSelector } from '../../../store/hooks'
+import { selectAllSelectedVisitorPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
 
-type VisitPurposeListProps = {
-  permissions: Permissions[]
 
-}
-
-const VisitPurposeList = ({ permissions }: VisitPurposeListProps) => {
+const VisitPurposeList = () => {
 
   const form                = Form.useFormInstance<VisitsType>()
   const values              = Form.useWatch('visitors', form)
   const filteredPermisions  = filterPermisions(values)
-  const matchingItems = permissions.filter(item => filteredPermisions.includes(item._id))
+  const matchingItems =  useAppSelector(selectAllSelectedVisitorPermissions)
 
   return (
     <Card style={{margin: '10px', backgroundColor: '#f9f9f9'}} title={'Vizito Tikslas'}>

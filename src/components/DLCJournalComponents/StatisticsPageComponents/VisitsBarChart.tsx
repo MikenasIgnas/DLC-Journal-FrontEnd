@@ -33,7 +33,7 @@ const VisitsBarChart = ({ visits }: VisitsBarChartProps) => {
 
   const data: ChartDataType[] = []
   for (let i = 0; i < allDates.length; i++) {
-    const visitCounter = visits?.filter((visit) => visit.endDate === formatDateString(allDates[i])).length || 0
+    const visitCounter = visits?.filter((visit) => formatDateString(visit.endDate) === formatDateString(allDates[i])).length || 0
     data.push({ name: formatDateString(allDates[i]), Vizitai: visitCounter })
   }
 

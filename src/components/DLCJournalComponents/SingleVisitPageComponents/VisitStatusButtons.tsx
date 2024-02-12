@@ -1,19 +1,19 @@
 /* eslint-disable max-len */
-import { Button }                            from 'antd'
-import useVisitValidation                    from './useVisitValidation'
-import SuccessMessage                        from '../../UniversalComponents/SuccessMessage'
-import { VisitStatus, Visitors, VisitsType } from '../../../types/globalTypes'
+import { Button }                 from 'antd'
+import useVisitValidation         from './useVisitValidation'
+import SuccessMessage             from '../../UniversalComponents/SuccessMessage'
+import { VisitStatus, Visitors }  from '../../../types/globalTypes'
+import { useAppSelector }         from '../../../store/hooks'
 
 type VisitStatusButtonProps = {
   visitors:       Visitors[]
-  visitData:      VisitsType | undefined
   visitStatuses:  VisitStatus[] | undefined
   fetchData:      () => Promise<void>
 }
 
-const VisitStatusButton = ({ visitData, visitors, visitStatuses, fetchData }: VisitStatusButtonProps) => {
+const VisitStatusButton = ({ visitors, visitStatuses, fetchData }: VisitStatusButtonProps) => {
   const { validate, contextHolder } = useVisitValidation()
-
+  const visitData                   = useAppSelector((state) => state.visit.visit)
   const startVisit = async() => {
     validate(visitData, visitors, 'visit/start', 'Vizitas Pradėtas!', visitStatuses?.[0], fetchData)
   }

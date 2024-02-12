@@ -14,7 +14,7 @@ const VisitDescriptionTitle = () => {
     <div style={{width: '100%', display: 'flex', justifyContent: 'space-between'}}>
       <div>Vizito informacija</div>
       <div>
-        <Button loading={loading} icon={<FilePdfOutlined />} onClick={() => generateSingleVisitPDF(Number(id))}></Button>
+        <Button loading={loading} icon={<FilePdfOutlined />} onClick={() => id && generateSingleVisitPDF(id)}></Button>
         <Button htmlType='submit'>{!editVisitInformation ? 'Edit' : 'Save'}</Button>
       </div>
     </div>

@@ -1,34 +1,32 @@
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Card }                             from 'antd'
-import { CompaniesType, Premises, Racks } from '../../../types/globalTypes'
-import RacksCheckboxGroup                   from './RacksCheckboxGroup'
+import { Card }               from 'antd'
+import RacksCheckboxGroup     from './RacksCheckboxGroup'
+import { useAppSelector }     from '../../../store/hooks'
+import { useSearchParams }    from 'react-router-dom'
 
-type CollocationsListProps = {
-  setCheckedList:       React.Dispatch<React.SetStateAction<string[]>>
-  checkedList:          string[]
-  companyPremise:       Premises[]
-  companyRacks:         Racks[]
-  companies: CompaniesType[]
-};
 
-const VisitRegistrationCollocationList = ({ setCheckedList, checkedList, companyPremise, companyRacks, companies }: CollocationsListProps) => {
+
+const VisitRegistrationCollocationList = () => {
+  const companyPremise = useAppSelector((state) => state.racks.premise)
+  const [searchParams] = useSearchParams()
+  const addressId = searchParams.get('addressId')
   return (
-    <Card
-      title='Kolokacijos'
-      className='CollocationsListCard'
-    >
-      {companyPremise.map((el) =>
-        <RacksCheckboxGroup
-          key={el._id}
-          companies={companies}
-          companyRacks={companyRacks}
-          premise={el}
-          setCheckedList={setCheckedList}
-          checkedList={checkedList}
-        />
-      )}
-    </Card>
+    <>
+      {
+        addressId &&
+      <Card
+        title='Kolokacijos'
+        className='CollocationsListCard'
+      >
+        {companyPremise.map((el) =>
+          <RacksCheckboxGroup
+            key={el._id}
+            premise={el}
+          />
+        )}
+      </Card>
+      }
+    </>
   )
 }
 

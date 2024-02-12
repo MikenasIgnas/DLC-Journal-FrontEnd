@@ -8,7 +8,7 @@ type VisitRacksProps = {
 }
 
 const VisitRacks = ({ companyRacks } : VisitRacksProps) => {
-  const racks = useAppSelector((state) => state.sites.racks)?.filter((el) => companyRacks?.includes(el._id))
+  const racks = useAppSelector((state) => state.sites.racks)?.filter((el) => el._id && companyRacks?.includes(el._id))
   return (
     <div>{racks?.map((rack) => <VisitCheckBoxGroup key={rack._id} rack={rack}/>)}</div>
   )

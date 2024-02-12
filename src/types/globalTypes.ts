@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import store from '../store/store'
+
 /* eslint-disable max-len */
 export type RouteType = {
   routeNumber:        number;
@@ -8,8 +10,8 @@ export type RouteType = {
   title:              string;
   description?:       string;
   userName:           string;
-  endDate:            string;
-  startDate:          string;
+  endDate:            Date;
+  startDate:          Date;
   startTime:          string;
   endTime:            string;
   problemCount:       number;
@@ -76,8 +78,8 @@ export type UserType = {
   isSecurity:     boolean;
   name:           string;
   username:       string;
-  created:        string;
-  disabledDate:   string;
+  created:        Date;
+  disabledDate:   Date;
   isDisabled:     boolean;
   _id:            string;
 };
@@ -161,7 +163,7 @@ export type EmployeesType = {
   photo?:         string | undefined;
   email?:         string;
   phone?:         string;
-  birthday?:      string;
+  birthday?:      Date;
   note?:          string;
   isDisabled:     boolean
   visitorIdType:  string;
@@ -197,9 +199,9 @@ export type VisitsType = {
     visitors: any;
     _id:          string;
     companyId:    string | null;
-    guests:       Guest[];
-    carPlates:    string[]
-    racks:        string[]
+    guests:       Guest[] | undefined;
+    carPlates:    string[] | undefined
+    racks:        string[] | undefined
     permissions:  string[]
     siteId:       string | null;
     visitPurpose: string[]
@@ -307,3 +309,8 @@ export type VisitStatus = {
   _id:  string;
   name: string;
 }
+export interface VisitorEmployee extends Visitors {
+  employee: EmployeesType
+}
+
+export type RootState = ReturnType<typeof store.getState>

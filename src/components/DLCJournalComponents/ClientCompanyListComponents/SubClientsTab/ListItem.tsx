@@ -10,7 +10,7 @@ type ListItemProps = {
   listButtons:              (listItemId: string | undefined) => JSX.Element[] | undefined
   item: any
   title?: JSX.Element
-  id: string
+  id: string | undefined
 };
 
 const ListItem = ({

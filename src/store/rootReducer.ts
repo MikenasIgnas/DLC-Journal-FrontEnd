@@ -9,6 +9,8 @@ import addSubClientReducer          from '../auth/AddSubClientReducer/addSubClie
 import collocationItemReducer       from '../auth/CollocationItemReducer/collocationItemReducer'
 import SitesReducer                 from '../auth/SitesReducer/SitesReducer'
 import singleVisitPageEditsReducer  from '../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
+import VisitorEmployeeReducer       from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import RacksReducer from '../auth/RacksReducer/RacksReducer'
 
 export default combineReducers({
   auth:                      authReducer,
@@ -20,4 +22,6 @@ export default combineReducers({
   collocationItem:           collocationItemReducer,
   visitPageEdits:            singleVisitPageEditsReducer,
   sites:                     SitesReducer,
+  visit:                     VisitorEmployeeReducer,
+  racks:                     RacksReducer,
 })

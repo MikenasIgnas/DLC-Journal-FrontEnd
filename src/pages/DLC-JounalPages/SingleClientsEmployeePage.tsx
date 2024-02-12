@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import React                                                                from 'react'
 import { useCookies }                                                       from 'react-cookie'
 import { useSearchParams }                                                  from 'react-router-dom'
-import { get, post }                                           from '../../Plugins/helpers'
+import { convertUTCtoLocalDate, get }                                           from '../../Plugins/helpers'
 import { Avatar, Button, Card, Checkbox, Divider, Form, Input, UploadFile } from 'antd'
 import { EmployeesType }                                                    from '../../types/globalTypes'
 import { useForm }                                                          from 'antd/es/form/Form'
@@ -19,7 +20,7 @@ const SingleClientsEmployeePage = () => {
   const [companyName, setCompanyName] = React.useState()
   const [edit, setEdit]               = React.useState(false)
   const [fileList, setFileList]       = React.useState<UploadFile[]>([])
-  const [uploading, setUploading]     = React.useState(false)
+  // const [uploading, setUploading]     = React.useState(false)
 
   React.useEffect(() => {
     (async () => {
@@ -38,8 +39,8 @@ const SingleClientsEmployeePage = () => {
     if(edit) {
       if(companyId && employeeId){
         values.companyId = companyId
-        values.employeeId = Number(employeeId)
-        await post(fileList[0], values, setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`, cookies.access_token)
+        values._id = employeeId
+        // await post(fileList[0], values, setUploading, setFileList, `uploadCliesntEmployeesPhoto?companyName=${companyName}&companyId=${companyId}`, cookies.access_token)
       }
     }
   }
@@ -49,7 +50,7 @@ const SingleClientsEmployeePage = () => {
       <Card className='SingleClientsEmployeeCard'>
         { employee &&
         <Form onFinish={editUser} form={form}>
-          <Button loading={uploading} htmlType='submit' className='EditButton' type='link'>{!edit ? 'Edit' : 'Save' }</Button>
+          <Button htmlType='submit' className='EditButton' type='link'>{!edit ? 'Edit' : 'Save' }</Button>
           <div className='DisplayFlex'>
             <div className='ClientsEmployeesContainer'>
               {<Avatar size={150} shape='square' src={<img src={`../ClientsEmployeesPhotos/${companyName}companyId${companyId}employeeId${employeeId}.jpeg`} alt='err' />} />}
@@ -75,7 +76,7 @@ const SingleClientsEmployeePage = () => {
               <Divider />
               <div>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Mobilus Tel: '} employeeData={employee?.phone} formItemName={'phoneNr'}/>
-                <ClientsEmployeesDataDisplay edit={edit} label={'Gimimo data: '} employeeData={employee?.birthday} formItemName={'birthday'}/>
+                <ClientsEmployeesDataDisplay edit={edit} label={'Gimimo data: '} employeeData={convertUTCtoLocalDate(employee?.birthday)} formItemName={'birthday'}/>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Pareigos: '} employeeData={employee?.occupation} formItemName={'occupation'}/>
                 <ClientsEmployeesDataDisplay edit={edit} label={'Pastabos: '} employeeData={employee?.note} formItemName={'note'}/>
               </div>

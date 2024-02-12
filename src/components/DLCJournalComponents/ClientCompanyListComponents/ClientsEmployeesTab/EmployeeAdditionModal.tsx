@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import {
   Button,
@@ -53,7 +54,6 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
     if(id){
       values.companyId = id
       values.isDisabled = false
-      values.photo = fileList[0]
       const res =  await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
       if(res.messsage){
         messageApi.error({

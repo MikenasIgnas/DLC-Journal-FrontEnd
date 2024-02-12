@@ -4,8 +4,9 @@ import React                         from 'react'
 import { Button, Card, Input, List } from 'antd'
 import { get, put }                  from '../../../Plugins/helpers'
 import { useCookies }                from 'react-cookie'
-import { Guest, Visitors }      from '../../../types/globalTypes'
+import { Guest, Visitors }           from '../../../types/globalTypes'
 import { useParams }                 from 'react-router'
+import { useAppSelector }            from '../../../store/hooks'
 
 type ItemListProps = {
     url?:               string;
@@ -16,15 +17,15 @@ type ItemListProps = {
     setListItems:       React.Dispatch<React.SetStateAction<Guest[] | undefined>>
     companyNameInput?:  React.ReactNode
     visitors:           Visitors[]
-    selectedVisitors:   number | undefined
     fetchData?:         () => Promise<void>
 }
 
-const ClientsGuestsItemList = ({ removeUrl,list, setListItems, selectedVisitors, fetchData }: ItemListProps) => {
-  const [cookies]       = useCookies(['access_token'])
-  const { id }          = useParams()
+const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: ItemListProps) => {
+  const [cookies]                                                 = useCookies(['access_token'])
+  const { id }                                                    = useParams()
   const [clientsGuestNamesInput, setClientsGuestsNamesInput]      = React.useState<string>('')
   const [clientsGuestCompanyInput, setClientsGuestCompanyInput]   = React.useState<string>('')
+  const visitorsCount                                             = useAppSelector((state) => state.visit.visitor.length)
 
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
@@ -56,7 +57,7 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, selectedVisitors,
   return (
     <>
       {
-        selectedVisitors && selectedVisitors > 0 ?
+        visitorsCount && visitorsCount > 0 ?
           <Card title={'Atvykstanty tretieji asmenys'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
             <Input addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
             <Input addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
@@ -87,7 +88,7 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, selectedVisitors,
           : null
       }
 
-      {/* {selectedVisitors && selectedVisitors > 0 && !canBringCompany ?
+      {/* {visitorsCount && visitorsCount > 0 && !canBringCompany ?
         <div style={{ textAlign: 'center', margin: '30px'}}>
           <Tag color='error'>Klientas negali turėti palydos</Tag>
         </div>

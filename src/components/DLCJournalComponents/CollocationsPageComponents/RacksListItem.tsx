@@ -31,7 +31,9 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   }
 
   const saveChanges = async(values:Racks, id: string | undefined) => {
-    values.premiseId = premiseId
+    if(premiseId){
+      values.premiseId = premiseId
+    }
     values.id = id
     const res = await put('site/rack', values ,cookies.access_token)
     setEdit(false)
@@ -39,7 +41,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   }
 
   function findMatchingCompanies(companies: CompaniesType[] | undefined, itemId: string | undefined) {
-    const matchingCompanies = companies?.filter(item => item.racks.includes(itemId)).map(item => item.name)
+    const matchingCompanies = companies?.filter(item => itemId && item.racks.includes(itemId)).map(item => item.name)
     if(matchingCompanies){
       return { matchFound: true, companyNames: matchingCompanies }
     }

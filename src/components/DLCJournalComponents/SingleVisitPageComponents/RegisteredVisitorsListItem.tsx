@@ -1,33 +1,31 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                                                      from 'react'
-import { Button, Form, List, Select, Avatar, Modal, Tag }         from 'antd'
+import { Button, Form, List, Avatar, Modal }         from 'antd'
 import SignatureCanvas                                            from 'react-signature-canvas'
 import { useCookies }                                             from 'react-cookie'
 import { get, post }                                                   from '../../../Plugins/helpers'
 import { useParams }                                              from 'react-router'
 import useSetWindowsSize                                          from '../../../Plugins/useSetWindowsSize'
-import { useAppSelector }                                         from '../../../store/hooks'
-import { EmployeesType, Permissions, Visitors, VisitorsIdTypes }  from '../../../types/globalTypes'
+// import { useAppSelector }                                         from '../../../store/hooks'
+import { EmployeesType, Visitors }  from '../../../types/globalTypes'
 
 type RegisteredVisitorsListItemProps = {
   item:           Visitors
   deleteVisitor:  (employeeId: string | undefined, item: EmployeesType ) => Promise<void>
-  permissions:    Permissions[]
-  visitorIdTypes: VisitorsIdTypes[]
 }
 
-const RegisteredVisitorsListItem = ({ item, deleteVisitor, permissions, visitorIdTypes }: RegisteredVisitorsListItemProps) => {
-  const {id}                    = useParams()
-  const [cookies]               = useCookies(['access_token'])
-  const signatureCanvasRef      = React.useRef<any>(null)
-  const [open, setOpen]         = React.useState(false)
-  const windowSize              = useSetWindowsSize()
-  const editVisitors            = useAppSelector((state) => state.visitPageEdits.editVisitors)
+const RegisteredVisitorsListItem = ({ item, deleteVisitor }: RegisteredVisitorsListItemProps) => {
+  const {id}                                    = useParams()
+  const [cookies]                               = useCookies(['access_token'])
+  const signatureCanvasRef                      = React.useRef<any>(null)
+  const [open, setOpen]                         = React.useState(false)
+  const windowSize                              = useSetWindowsSize()
+  // const editVisitors            = useAppSelector((state) => state.visitPageEdits.editVisitors)
   const [clientsEmployee, setClientsEmployee]   = React.useState<EmployeesType>()
-  const employeePermissions     = permissions.filter((el) => clientsEmployee?.permissions.includes(el._id))
-  const visitorsIdSelectOptions = visitorIdTypes.map((el) => ({value: el._id, label: el.name}))
-  const visitorsIdType          = visitorsIdSelectOptions.find((el) => el.value === item.visitorIdType)
+  // const employeePermissions     = permissions.filter((el) => clientsEmployee?.permissions.includes(el._id))
+  // const visitorsIdSelectOptions = visitorIdTypes.map((el) => ({value: el._id, label: el.name}))
+  // const visitorsIdType          = visitorsIdSelectOptions.find((el) => el.value === item.visitorIdType)
 
   React.useEffect(() => {
     (async () => {
@@ -65,9 +63,9 @@ const RegisteredVisitorsListItem = ({ item, deleteVisitor, permissions, visitorI
         <div key={item._id} className='SelectedVisitorsButtonContainer'>
           <div>
           </div>
-          <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={visitorsIdType?.label}>
+          {/* <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={visitorsIdType?.label}>
             <Select style={{width: '100%'}} disabled={!editVisitors} options={visitorsIdSelectOptions}/>
-          </Form.Item>
+          </Form.Item> */}
           <Button onClick={() => clientsEmployee && deleteVisitor(item?._id, clientsEmployee)}>Pašalinti lankytoją</Button>,
         </div>,
       ]}
@@ -82,7 +80,7 @@ const RegisteredVisitorsListItem = ({ item, deleteVisitor, permissions, visitorI
         title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{clientsEmployee?.name} {clientsEmployee?.lastname}</p>}
         description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{clientsEmployee?.occupation}</p>}
       />
-      <div className='PermissionTags'>{employeePermissions.map((el, i: number) => <div key={i}><Tag key={i}>{el.name}</Tag></div>)}</div>
+      {/* <div className='PermissionTags'>{employeePermissions.map((el, i: number) => <div key={i}><Tag key={i}>{el.name}</Tag></div>)}</div> */}
       <Modal
         open={open}
         onCancel={onCancel}

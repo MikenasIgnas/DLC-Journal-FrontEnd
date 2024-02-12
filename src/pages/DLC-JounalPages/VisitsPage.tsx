@@ -2,12 +2,12 @@
 /* eslint-disable max-len */
 import { useSearchParams }      from 'react-router-dom'
 
-import {
-  deleteItem,
-  deleteTableItem,
-  get,
-  getCurrentDate,
-  getCurrentTime }               from '../../Plugins/helpers'
+// import {
+//   deleteItem,
+//   deleteTableItem,
+//   get,
+//   getCurrentDate,
+//   getCurrentTime }               from '../../Plugins/helpers'
 
 import { useCookies }            from 'react-cookie'
 import FullTable                 from '../../components/Table/TableComponents/FullTable'
@@ -18,9 +18,10 @@ import useGenerateSingleVisitPDF from '../../Plugins/useGenerateSingleVIsitPDF'
 import PdfGenerator              from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
 import visitsRowMenuItems        from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 import { useAppSelector }        from '../../store/hooks'
-import { message }               from 'antd'
-import SuccessMessage            from '../../components/UniversalComponents/SuccessMessage'
-import { VisitStatusType }       from '../../types/globalTypes'
+import { deleteTableItem } from '../../Plugins/helpers'
+// import { message }               from 'antd'
+// import SuccessMessage            from '../../components/UniversalComponents/SuccessMessage'
+// import { VisitStatusType }       from '../../types/globalTypes'
 
 const TableColumns = () => {
   return(
@@ -68,29 +69,29 @@ const VisitPage = () => {
   const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
   const isSecurity                        = useAppSelector((state) => state.auth.isSecurity)
   const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
-  const [messageApi, contextHolder]       = message.useMessage()
+  // const [messageApi, contextHolder]       = message.useMessage()
 
-  const endVisit = async (id: string, visitStatus: string | undefined) => {
-    if (visitStatus === 'success') {
-      const response = await get(`endVisit?visitId=${id}`, cookies.access_token)
-      if (response) {
-        if (data) {
-          const newData = data.map(visit =>
-            visit._id === id ? { ...visit, visitStatus: 'error' as VisitStatusType, endDate: getCurrentDate(), endTime: getCurrentTime() } : visit
-          )
-          setData(newData)
-          messageApi.success('Visit ended successfully')
-        }
-      } else {
-        messageApi.error('Error ending visit')
-      }
-    } else {
-      messageApi.error({
-        content: 'Vizitas turi būti pradėtas',
-        type:    'error',
-      })
-    }
-  }
+  // const endVisit = async (id: string, visitStatus: string | undefined) => {
+  //   if (visitStatus === 'success') {
+  //     const response = await get(`endVisit?visitId=${id}`, cookies.access_token)
+  //     if (response) {
+  //       if (data) {
+  //         const newData = data.map(visit =>
+  //           visit._id === id ? { ...visit, visitStatus: 'error' as VisitStatusType, endDate: getCurrentDate(), endTime: getCurrentTime() } : visit
+  //         )
+  //         setData(newData)
+  //         messageApi.success('Visit ended successfully')
+  //       }
+  //     } else {
+  //       messageApi.error('Error ending visit')
+  //     }
+  //   } else {
+  //     messageApi.error({
+  //       content: 'Vizitas turi būti pradėtas',
+  //       type:    'error',
+  //     })
+  //   }
+  // }
   return (
     <>
       <FullTable
@@ -107,13 +108,13 @@ const VisitPage = () => {
             rowMenu={<RowMenu
               deleteItem={() => deleteTableItem('visit/visit', data, {id: visit._id}, setData, cookies.access_token)}
               generatePDF={() => generateSingleVisitPDF(visit._id)}
-              endVisit={() => endVisit(visit._id, visit.visitStatus)}
+              // endVisit={() => endVisit(visit._id, visit.visitStatus)}
               items={rowMenuItems}
             />}
           />
         ))}
       />
-      <SuccessMessage contextHolder={contextHolder}/>
+      {/* <SuccessMessage contextHolder={contextHolder}/> */}
     </>
   )
 }

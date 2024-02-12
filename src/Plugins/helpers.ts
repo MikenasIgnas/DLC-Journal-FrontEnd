@@ -128,10 +128,12 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
 
     } catch (error) {
       console.log(error)
+      throw error
     } finally {
       setUploading(false)
     }
   }else{
+
     const options = {
       method:  'POST',
       headers: {
@@ -142,7 +144,12 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
     }
 
     const response = await fetch(`http://localhost:4002/${url}`, options)
-    return response.json()
+    if(response.ok){
+      return response.json()
+    }else{
+      const responseJson = await response.json()
+      throw new Error(responseJson)
+    }
   }
 }
 

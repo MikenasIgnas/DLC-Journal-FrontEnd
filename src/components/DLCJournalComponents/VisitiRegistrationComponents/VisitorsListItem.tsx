@@ -1,45 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Avatar, Button, Form, List, Tag }  from 'antd'
-import { FormListFieldData }                from 'antd/es/form'
-import { EmployeesType, VisitorsType, Permissions }      from '../../../types/globalTypes'
-import { DeleteOutlined }                   from '@ant-design/icons'
-import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
+import { Avatar, Button, List, Tag }  from 'antd'
+import { Permissions, VisitorEmployee } from '../../../types/globalTypes'
+import { DeleteOutlined }        from '@ant-design/icons'
+import useSetWindowsSize         from '../../../Plugins/useSetWindowsSize'
+import { removeVisitor }         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useAppDispatch, useAppSelector }        from '../../../store/hooks'
+import { deleteItem }       from '../../../Plugins/helpers'
+import { useCookies }            from 'react-cookie'
+import { selectVisitorsPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
 
 type VisitorsListItemProps = {
-  item:                 FormListFieldData
-  setCompanyEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
-  companyEmployees?:    EmployeesType[] | undefined
-  removeVisitor:        (id: string) => void
-  permissions:          Permissions[]
+  item:         VisitorEmployee
+  permissions:  Permissions[]
 }
 
-const VisitorsListItem = ({ item, setCompanyEmployees, companyEmployees, removeVisitor, permissions }: VisitorsListItemProps) => {
-  const form                          = Form.useFormInstance()
-  const visitors: VisitorsType[]      = form.getFieldValue('visitors')
-  const visitorsItem: VisitorsType    = form.getFieldValue('visitors')[item.name]
-  const windowSize                    = useSetWindowsSize()
-  const deleteVisitor = async () => {
-    const filter = visitors.filter(
-      (el) => el.selectedVisitor._id !== visitorsItem.selectedVisitor._id
-    )
-    removeVisitor(visitorsItem.selectedVisitor._id)
-    form.setFieldsValue({
-      visitors: filter,
-    })
+const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
+  const windowSize  = useSetWindowsSize()
+  const [cookies]   = useCookies(['access_token'])
+  const dispatch    = useAppDispatch()
 
-    if (setCompanyEmployees && companyEmployees) {
-      setCompanyEmployees([...companyEmployees, visitorsItem.selectedVisitor])
+  const deleteVisitor = async () => {
+    try{
+      await deleteItem('visit/visitor', {id: item._id}, cookies.access_token)
+      dispatch(removeVisitor(item._id))
+    }catch (error){
+      console.log(error)
     }
   }
-  const matchingItems = permissions.filter(item => visitorsItem.selectedVisitor.permissions.includes(item._id))
+
+  const permissions = useAppSelector((state) => selectVisitorsPermissions(state, item.employee._id))
 
   return (
     <List.Item
-      key={item.key}
+      key={item._id}
       actions={[
-        <div key={item.key} className='SelectedVisitorsButtons'>
+        <div key={item._id} className='SelectedVisitorsButtons'>
           <Button icon={<DeleteOutlined style={{color: 'red'}}/>} onClick={deleteVisitor}>Pašalinti lankytoją</Button>
         </div>,
       ]}
@@ -49,15 +45,15 @@ const VisitorsListItem = ({ item, setCompanyEmployees, companyEmployees, removeV
         avatar={
           <Avatar
             shape='square' size={windowSize > 600 ? 90 : 40}
-            src={visitorsItem.selectedVisitor.photo ?
-              visitorsItem.selectedVisitor.photo :
+            src={item?.employee.photo ?
+              item?.employee.photo :
               '../ClientsEmployeesPhotos/noUserImage.jpeg'
             }
           />}
-        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{visitorsItem.selectedVisitor.name} {visitorsItem.selectedVisitor.lastname}</p>}
-        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{visitorsItem.selectedVisitor.occupation}</p>}
+        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{item?.employee.name} {item?.employee.lastname}</p>}
+        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item?.employee.occupation}</p>}
       />
-      <div>{matchingItems.map((el) => <Tag key={el._id}>{el.name}</Tag>)}</div>
+      <div>{permissions.map((el) => <Tag key={el._id}>{el.name}</Tag>)}</div>
     </List.Item>
   )
 }
