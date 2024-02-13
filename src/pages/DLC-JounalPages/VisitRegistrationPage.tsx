@@ -3,7 +3,7 @@ import React                  from 'react'
 import { Card, theme }        from 'antd'
 import VisitRegistrationForm  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
 import useFetchVisitData      from '../../Plugins/useFethcVisitData'
-import useFetchCompanyRacks   from '../../Plugins/useFetchCompanyRacks'
+import useFetchSites          from '../../Plugins/useFetchSites'
 
 const VisitRegistrationPage= () => {
   const { token } = theme.useToken()
@@ -19,7 +19,7 @@ const VisitRegistrationPage= () => {
   }
 
   useFetchVisitData()
-  useFetchCompanyRacks()
+  useFetchSites()
   return (
     <div style={contentStyle}>
       <Card style={{width: '100% '}}>

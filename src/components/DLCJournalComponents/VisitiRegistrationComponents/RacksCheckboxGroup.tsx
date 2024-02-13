@@ -8,6 +8,7 @@ import CollocationCardTitle               from './CollocationCardTitle'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { setCheckedList }                 from '../../../auth/RacksReducer/RacksReducer'
 import { useSearchParams } from 'react-router-dom'
+import { selectRacks } from '../../../auth/SitesReducer/selectors'
 
 type RacksCheckboxGroupProps = {
     premise:          Premises;
@@ -15,20 +16,22 @@ type RacksCheckboxGroupProps = {
 };
 
 const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps) => {
-  const checkedList     = useAppSelector((state) => state.racks.checkedList)
-  const companyRacks    = useAppSelector((state) => state.racks.racks)
-  const dispatch        = useAppDispatch()
-  const companies       = useAppSelector((state) => state.visit.companies)
-  const [searchParams]  = useSearchParams()
-  const siteId = searchParams.get('addressId')
+  const checkedList         = useAppSelector((state) => state.racks.checkedList)
+  const dispatch            = useAppDispatch()
+  const companies           = useAppSelector((state) => state.visit.companies)
+  const [searchParams]      = useSearchParams()
+  const siteId              = searchParams.get('addressId')
 
-  const matchingCompanies = companies.filter(company =>
-    company.racks.some(rack => (checkedList && checkedList?.length > 0 ? checkedList : visitDataRacks)?.includes(rack))
-  )
+  const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
+
+  console.log(selectPremiseRacks)
+
+  // const matchingCompanies = companies.filter(company =>
+  //   company.selectPremiseRacks.some(rack => (checkedList && checkedList?.length > 0 ? checkedList : visitDataRacks)?.includes(rack))
+  // )
 
   const [hasMatchingRacks, setHasMatchingRacks] = React.useState<boolean | undefined>(matchingCompanies.length > 1)
-  const racks                                   = companyRacks?.filter((el) => el.premiseId === premise._id)
-  const mappedRacks                             = racks?.map((item) => ({ value: item._id || 'error', label: item.name || 'error' }))
+  const mappedRacks                             = selectPremiseRacks?.map((item) => ({ value: item._id || 'error', label: item.name || 'error' }))
   const safeCheckedList                         = Array.isArray(checkedList) ? checkedList : []
 
   React.useEffect(() => {
@@ -37,12 +40,12 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
     }
   }, [visitDataRacks])
 
-  const allChecked = racks && racks.length > 0 && racks.every(rack => checkedList?.includes(rack._id as string))
-  const someChecked = racks?.some(rack => checkedList?.includes(rack._id as string)) && !allChecked
+  const allChecked = selectPremiseRacks && selectPremiseRacks.length > 0 && selectPremiseRacks.every(rack => checkedList?.includes(rack._id as string))
+  const someChecked = selectPremiseRacks?.some(rack => checkedList?.includes(rack._id as string)) && !allChecked
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked && safeCheckedList) {
-      const newCheckedList = Array.from(new Set([...safeCheckedList, ...racks?.map(rack => rack._id).filter(id => id !== undefined) || []] as string[]))
-      const matchingCompanies = companies?.filter(company => company.racks.some(rack => newCheckedList.includes(rack)))
+      const newCheckedList = Array.from(new Set([...safeCheckedList, ...selectPremiseRacks?.map(rack => rack._id).filter(id => id !== undefined) || []] as string[]))
+      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => newCheckedList.includes(rack)))
       dispatch(setCheckedList(newCheckedList))
       if(matchingCompanies && matchingCompanies.length > 1){
         setHasMatchingRacks(true)
@@ -50,9 +53,9 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
         setHasMatchingRacks(false)
       }
     } else {
-      const currentGroupIds = racks?.map(rack => rack._id)
+      const currentGroupIds = selectPremiseRacks?.map(rack => rack._id)
       const newCheckedList = safeCheckedList?.filter(id => !currentGroupIds?.includes(id as string))
-      const matchingCompanies = companies?.filter(company => company.racks.some(rack => newCheckedList?.includes(rack)))
+      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => newCheckedList?.includes(rack)))
 
       if(matchingCompanies && matchingCompanies.length > 1){
         setHasMatchingRacks(true)
@@ -66,9 +69,9 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
   const onCheckboxChange = (checkedValues: string[]) => {
     const checkedIds = checkedValues.map(value => value.toString())
     if(safeCheckedList){
-      const newCheckedList = [...new Set([...safeCheckedList.filter(id => !racks?.map(rack => rack._id).includes(id as string)), ...checkedIds])] as string[]
+      const newCheckedList = [...new Set([...safeCheckedList.filter(id => !selectPremiseRacks?.map(rack => rack._id).includes(id as string)), ...checkedIds])] as string[]
       dispatch(setCheckedList(newCheckedList))
-      const matchingCompanies = companies?.filter(company => company.racks.some(rack => checkedValues.includes(rack)))
+      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => checkedValues.includes(rack)))
       if(matchingCompanies.length > 1){
         setHasMatchingRacks(true)
       }else{
@@ -92,7 +95,7 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
           disabled={!siteId}
           options={mappedRacks}
           value={checkedList}
-          onChange={(val) => typeof val === 'string' && onCheckboxChange(val)}
+          onChange={(val) => onCheckboxChange(val)}
         />
       </div>
     </Card>

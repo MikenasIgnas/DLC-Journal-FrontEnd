@@ -5,11 +5,12 @@ import { CompaniesType, EmployeesType, VisitorEmployee, Visitors, VisitsType, Pe
 interface Visits {
     visitor:            Visitors[]
     visit?:             VisitsType
-    company?:           CompaniesType
     companyEmployees:   EmployeesType[]
     companies:          CompaniesType[]
     permissions:        Permissions[]
-}
+    companyId?:         string
+    siteId?:            string
+  }
 const initialState: Visits = {
   visitor:          [],
   companyEmployees: [],
@@ -26,9 +27,6 @@ const visitReducerSlice = createSlice({
     },
     setVisit(state, { payload }: PayloadAction<VisitsType>) {
       state.visit = payload
-    },
-    setCompany(state, { payload }: PayloadAction<CompaniesType>) {
-      state.company = payload
     },
     setCompanyEmployees(state, { payload }: PayloadAction<EmployeesType[]>) {
       state.companyEmployees = payload
@@ -51,6 +49,12 @@ const visitReducerSlice = createSlice({
     setPermissions(state, { payload }: PayloadAction<Permissions[]>){
       state.permissions = payload
     },
+    setCompanyId(state, { payload }: PayloadAction<string | undefined>){
+      state.companyId = payload
+    },
+    setSiteId(state, { payload }: PayloadAction<string | undefined>){
+      state.siteId = payload
+    },
     resetVisitReducer() {
       return initialState
     },
@@ -60,13 +64,14 @@ const visitReducerSlice = createSlice({
 export const {
   setVisitorEmployee,
   setVisit,
-  setCompany,
   setCompanyEmployees,
   addVisitor,
   removeVisitor,
   setVisitors,
   setCompanies,
   setPermissions,
+  setCompanyId,
+  setSiteId,
   resetVisitReducer,
 } = visitReducerSlice.actions
 

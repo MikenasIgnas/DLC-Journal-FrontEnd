@@ -8,7 +8,7 @@ type ClientsCollocations = {
 }
 
 const ClientsCollocations = ({ companyRacks }: ClientsCollocations) => {
-  const sites = useAppSelector((state) => state.sites.site)
+  const sites = useAppSelector((state) => state.sites.fullSiteData)
 
   const items: TabsProps['items'] = sites?.map((site) => ({
     key:      site._id,

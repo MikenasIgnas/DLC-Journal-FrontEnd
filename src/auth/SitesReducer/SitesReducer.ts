@@ -1,22 +1,27 @@
-import { createSlice, PayloadAction }   from '@reduxjs/toolkit'
-import { Sites, Premises, Racks }       from '../../types/globalTypes'
+import { createSlice, PayloadAction }           from '@reduxjs/toolkit'
+import { Sites, Premises, Racks, FullSiteData } from '../../types/globalTypes'
 
 interface SitesReducer {
-    site:       Sites[] | null
-    premise:    Premises[] | null
-    racks:      Racks[] | null
+    fullSiteData:   FullSiteData[]
+    site:           Sites[] | null
+    premise:        Premises[] | null
+    racks:          Racks[] | null
 }
 
 const initialState: SitesReducer = {
-  site:    null,
-  premise: null,
-  racks:   null,
+  fullSiteData: [],
+  site:         null,
+  premise:      null,
+  racks:        null,
 }
 
 const siteSlice = createSlice({
   name:     'sites',
   initialState,
   reducers: {
+    setFullSiteData(state, { payload }: PayloadAction<FullSiteData[]>){
+      state.fullSiteData = payload
+    },
     setSite(state, { payload }: PayloadAction<Sites[] | null>) {
       state.site = payload
     },
@@ -30,6 +35,7 @@ const siteSlice = createSlice({
 })
 
 export const {
+  setFullSiteData,
   setSite,
   setPremise,
   setRacks,

@@ -13,7 +13,7 @@ type CollocationFormListProps = {
 
 
 const EditableCollocationFormList = ({ companyRacks, checkedLists, setCheckedLists }: CollocationFormListProps) => {
-  const sites = useAppSelector((state) => state.sites.site)
+  const sites = useAppSelector((state) => state.sites.fullSiteData)
 
   return (
     <div className='EditableCollocationContainer'>

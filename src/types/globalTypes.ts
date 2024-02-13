@@ -290,9 +290,6 @@ export type Racks = {
 export type Sites = {
   name:       string;
   _id:         string;
-  label:       React.ReactNode;
-  children?:  React.ReactNode;
-  key:        string
 }
 
 export type VisitPurpose = {
@@ -314,3 +311,11 @@ export interface VisitorEmployee extends Visitors {
 }
 
 export type RootState = ReturnType<typeof store.getState>
+
+
+export interface PremiseRacks extends Premises {
+  racks: Racks[]
+}
+export interface FullSiteData extends Sites {
+  premises: PremiseRacks[]
+}

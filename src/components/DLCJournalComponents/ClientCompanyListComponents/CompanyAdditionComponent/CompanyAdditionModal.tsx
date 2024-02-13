@@ -42,7 +42,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
   const dispatch                    = useAppDispatch()
   const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
   const [messageApi, contextHolder] = message.useMessage()
-  const sites                       = useAppSelector((state) => state.sites.site)
+  const sites                       = useAppSelector((state) => state.sites.fullSiteData)
   const {
     checkboxList, checkAllStates, onCheckAllChange, onCheckboxChange, setCheckboxList,
   } = useSetCheckedCollocationList()

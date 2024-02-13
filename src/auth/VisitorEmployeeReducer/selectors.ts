@@ -1,7 +1,9 @@
 /* eslint-disable max-len */
 import { createSelector } from '@reduxjs/toolkit'
-import { EmployeesType, Permissions, RootState, VisitorEmployee, Visitors } from '../../types/globalTypes'
+import { CompaniesType, EmployeesType, Permissions, RootState, VisitorEmployee, Visitors } from '../../types/globalTypes'
 
+const selectAllCompnies               = (state: RootState) => state.visit.companies
+const companyId                       = (state: RootState) => state.visit.companyId
 const selectVisitAllCompanyEmployees  = (state: RootState) => state.visit.companyEmployees
 const selectVisitVisitors             = (state: RootState) => state.visit.visitor
 const selectVisitorPermissions        = (state: RootState) => state.visit.permissions
@@ -10,6 +12,11 @@ const filterNonVisitingEmployees = (companyEmployess: EmployeesType[], visitors:
   const filteredCompanyEmployess = companyEmployess.filter((el) => !visitors.some((item) => item.employeeId === el._id))
   return filteredCompanyEmployess
 }
+
+export const selectNonVisitingCompanyEmplyees = createSelector(
+  [selectVisitAllCompanyEmployees, selectVisitVisitors],
+  filterNonVisitingEmployees
+)
 
 const filterVisitingEmployees = (companyEmployess: EmployeesType[], visitors: Visitors[]) => {
   const filteredCompanyEmployess: VisitorEmployee[] = []
@@ -22,6 +29,11 @@ const filterVisitingEmployees = (companyEmployess: EmployeesType[], visitors: Vi
   }
   return filteredCompanyEmployess
 }
+
+export const selectVisitingCompanyEmplyees = createSelector(
+  [selectVisitAllCompanyEmployees, selectVisitVisitors],
+  filterVisitingEmployees
+)
 
 const filterVisitorsPermissions = (permissions: Permissions[], companyEmployee?: EmployeesType) => {
   const filterdPermissions: Permissions[] = []
@@ -36,16 +48,6 @@ const filterVisitorsPermissions = (permissions: Permissions[], companyEmployee?:
   }
   return filterdPermissions
 }
-
-export const selectNonVisitingCompanyEmplyees = createSelector(
-  [selectVisitAllCompanyEmployees, selectVisitVisitors],
-  filterNonVisitingEmployees
-)
-
-export const selectVisitingCompanyEmplyees = createSelector(
-  [selectVisitAllCompanyEmployees, selectVisitVisitors],
-  filterVisitingEmployees
-)
 
 const findCompanyEmployee = (companyEmployees: EmployeesType[], id: string) => {
   const employee = companyEmployees.find((el) => el._id === id)
@@ -62,7 +64,6 @@ export const selectVisitorsPermissions = createSelector(
   filterVisitorsPermissions
 )
 
-
 const filterAllSelectedVisitorsPermissions = (permission: Permissions[], companyEmployess: VisitorEmployee[]) => {
   const allEmployeePermissions: string[] = []
 
@@ -74,8 +75,6 @@ const filterAllSelectedVisitorsPermissions = (permission: Permissions[], company
       }
     })
   }
-
-
 
   const uniquePermissions:Permissions[] = []
   for (let index = 0; index < allEmployeePermissions?.length; index++) {
@@ -95,3 +94,12 @@ export const selectAllSelectedVisitorPermissions = createSelector(
   filterAllSelectedVisitorsPermissions
 )
 
+const findSingleCompany = (allCompanies: CompaniesType[], companyId: string | undefined) => {
+  const company = allCompanies.find((el) => el._id === companyId)
+  return company
+}
+
+export const selectCompany= createSelector([
+  selectAllCompnies, companyId],
+findSingleCompany
+)

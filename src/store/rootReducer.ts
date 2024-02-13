@@ -10,7 +10,7 @@ import collocationItemReducer       from '../auth/CollocationItemReducer/colloca
 import SitesReducer                 from '../auth/SitesReducer/SitesReducer'
 import singleVisitPageEditsReducer  from '../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 import VisitorEmployeeReducer       from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import RacksReducer from '../auth/RacksReducer/RacksReducer'
+import RacksReducer                 from '../auth/RacksReducer/RacksReducer'
 
 export default combineReducers({
   auth:                      authReducer,

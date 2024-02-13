@@ -11,7 +11,6 @@ type VisitDateItemProps = {
 }
 
 const VisitDateItem = ({edit, date, dateFormItemName}:VisitDateItemProps) => {
-  console.log(date)
   return (
     <div className='VisitDateItemContainer'>
       {!edit ?

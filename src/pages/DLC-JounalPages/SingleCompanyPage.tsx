@@ -24,9 +24,8 @@ import ClientsCollocationsTab             from '../../components/DLCJournalCompo
 import ClientsEmployeesTab                from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
 import SingleCompanyTitle                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { useAppSelector } from '../../store/hooks'
 import ClientsDocumentsTab                from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
-import { setPremise, setRacks, setSite }  from '../../auth/SitesReducer/SitesReducer'
 import { CheckboxValueType }              from 'antd/es/checkbox/Group'
 
 type CompanyFormType = {
@@ -58,7 +57,6 @@ const SingleCompanyPage = () => {
   const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const [uploading, setUploading]                     = React.useState(false)
-  const dispatch                                      = useAppDispatch()
   const [checkedLists, setCheckedLists]               = React.useState<CheckboxValueType[]>([])
 
   React.useEffect(() => {
@@ -68,12 +66,6 @@ const SingleCompanyPage = () => {
         const companyEmployees      = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
         const allMainCompanies      = await get('company/company', cookies.access_token)
         const filteredMainCompanies = allMainCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
-        const siteRes               = await get('site/site', cookies.access_token)
-        const premiseRes            = await get('site/premise', cookies.access_token)
-        const racksRes              = await get('site/rack', cookies.access_token)
-        dispatch(setSite(siteRes))
-        dispatch(setPremise(premiseRes))
-        dispatch(setRacks(racksRes))
         setCompany(singleCompany)
         setEmployeesList(companyEmployees)
         setMainCompanies(filteredMainCompanies)

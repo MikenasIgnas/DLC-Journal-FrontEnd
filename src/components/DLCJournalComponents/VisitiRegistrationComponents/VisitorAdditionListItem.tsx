@@ -50,8 +50,8 @@ const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: Visit
         style={{ margin: '10px', width: windowSize > 600 ? 300 : 220, cursor: 'pointer' }}
       >
         <Meta
-          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item.photo ? item.photo : `${photoFolder}noUserImage.jpeg`} />}
-          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item.lastname)}</div>}
+          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item?.photo ? item?.photo : `${photoFolder}noUserImage.jpeg`} />}
+          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item?.lastname)}</div>}
           description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item.occupation}</p>}
         />
       </Card>

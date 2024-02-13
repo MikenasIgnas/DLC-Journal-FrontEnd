@@ -14,11 +14,11 @@ const VisitInformationItems = (
 ) => {
   const [, setSearchParams] = useSearchParams()
   const logedInUser         = useAppSelector((state) => state.auth.name)
-  const sites               = useAppSelector((state) => state.sites.site)
+  const sites               = useAppSelector((state) => state.sites.fullSiteData)
   const addresses           = sites?.map((el) => ({value: el._id, label: el.name}))
   const [searchParams]      = useSearchParams()
   const visitData            = useAppSelector((state) => state.visit.visit)
-  const company              = useAppSelector((state) => state.visit.company)
+  const company              = useAppSelector((state) => state.visit.companies)
   const addressId           = searchParams.get('visitAddress')
   const site                = sites?.filter((el) => el._id === addressId)
   const creationDate        = convertUTCtoLocalDate(visitData?.date)

@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { Avatar, Button, List, Tag }  from 'antd'
-import { Permissions, VisitorEmployee } from '../../../types/globalTypes'
-import { DeleteOutlined }        from '@ant-design/icons'
-import useSetWindowsSize         from '../../../Plugins/useSetWindowsSize'
-import { removeVisitor }         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { useAppDispatch, useAppSelector }        from '../../../store/hooks'
-import { deleteItem }       from '../../../Plugins/helpers'
-import { useCookies }            from 'react-cookie'
-import { selectVisitorsPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
+import { Avatar, Button, List, Tag }      from 'antd'
+import { VisitorEmployee }                from '../../../types/globalTypes'
+import { DeleteOutlined }                 from '@ant-design/icons'
+import useSetWindowsSize                  from '../../../Plugins/useSetWindowsSize'
+import { removeVisitor }                  from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { deleteItem }                     from '../../../Plugins/helpers'
+import { useCookies }                     from 'react-cookie'
+import { selectVisitorsPermissions }      from '../../../auth/VisitorEmployeeReducer/selectors'
 
 type VisitorsListItemProps = {
-  item:         VisitorEmployee
-  permissions:  Permissions[]
+  item: VisitorEmployee
 }
 
 const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
@@ -45,10 +44,7 @@ const VisitorsListItem = ({ item }: VisitorsListItemProps) => {
         avatar={
           <Avatar
             shape='square' size={windowSize > 600 ? 90 : 40}
-            src={item?.employee.photo ?
-              item?.employee.photo :
-              '../ClientsEmployeesPhotos/noUserImage.jpeg'
-            }
+            src={item?.employee?.photo ? item?.employee?.photo : '../ClientsEmployeesPhotos/noUserImage.jpeg'}
           />}
         title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{item?.employee.name} {item?.employee.lastname}</p>}
         description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item?.employee.occupation}</p>}

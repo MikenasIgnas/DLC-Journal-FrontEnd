@@ -7,7 +7,7 @@ import VisitInformationForm     from '../../components/DLCJournalComponents/Sing
 // import CarPlatesItemList        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
 // import VisitStatusButton        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
 import useFetchVisitData        from '../../Plugins/useFethcVisitData'
-import useFetchCompanyRacks     from '../../Plugins/useFetchCompanyRacks'
+import useFetchCompanyRacks     from '../../Plugins/useFetchSites'
 
 const SingleVisitPage = () => {
   useFetchVisitData()
