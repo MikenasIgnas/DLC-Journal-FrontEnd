@@ -8,7 +8,7 @@ type VisitPurposeButtonsProps = {
   item: Permissions
 };
 
-const VisitPurposeButtons = ({ item }: VisitPurposeButtonsProps) => {
+const VisitPurposeButtons = ({ item, buttonWidth }: VisitPurposeButtonsProps) => {
   const [isToggled, setToggled] = React.useState(false)
 
   React.useEffect(() => {
@@ -26,7 +26,7 @@ const VisitPurposeButtons = ({ item }: VisitPurposeButtonsProps) => {
   }
 
   return (
-    <Button className='VisitPurposeButton' type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
+    <Button className='VisitPurposeButton' style={{width: `${buttonWidth}%`}} type={isToggled ? 'primary' : 'default'} onClick={handleToggle}>
       {item.name}
     </Button>
   )

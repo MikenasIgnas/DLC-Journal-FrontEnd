@@ -61,13 +61,14 @@ const VisitSitesSelectors = () => {
           siteId:       data.value,
           statusId:     '123131313131',
         }, cookies .access_token)
-      setSearchParams(`companyId=${companyId}&addressId=${data.value}&id=${res._id}`)
+      setSearchParams(`companyId=${companyId}&siteId=${data.value}&id=${res._id}`)
       dispatch(setSiteId(data.value))
       dispatch(setVisit(res))
     }else{
-      setSearchParams(`companyId=${companyId}&addressId=${data.value}&id=${visitId}`)
+      setSearchParams(`companyId=${companyId}&siteId=${data.value}&id=${visitId}`)
     }
   }
+
   return (
     <div className='VisitRegistrationFormContainer'>
       <Form.Item

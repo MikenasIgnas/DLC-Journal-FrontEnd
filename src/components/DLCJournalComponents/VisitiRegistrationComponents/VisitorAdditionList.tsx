@@ -16,7 +16,7 @@ const VisitorAdditionList = ({ setOpenVisitorAddition }: VisitorAdditionListProp
   const [searchParams]                                = useSearchParams()
   const dispatch                                      = useAppDispatch()
   const companyEmployees                              = useAppSelector(selectNonVisitingCompanyEmplyees)
-  const siteId                                        = searchParams.get('addressId')
+  const siteId                                        = searchParams.get('siteId')
 
   const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearchEmployeeValue(e.target.value.toLowerCase())

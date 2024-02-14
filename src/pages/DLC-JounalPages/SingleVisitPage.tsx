@@ -27,7 +27,7 @@ const SingleVisitPage = () => {
         companyNameInput={<Input placeholder='Imonė'/>}
       />
       <CarPlatesItemList
-        visitAddress={site?.[0]?.name}
+        siteId={site?.[0]?.name}
         url={'visit/visit'}
         list={carPlates}
         setList={setCarPlates}

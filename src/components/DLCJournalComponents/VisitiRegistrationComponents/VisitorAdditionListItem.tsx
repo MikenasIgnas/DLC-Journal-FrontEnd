@@ -1,14 +1,14 @@
 /* eslint-disable max-len */
-import { Avatar, Card, Form, List }         from 'antd'
-import { EmployeesType, VisitsType }        from '../../../types/globalTypes'
-import { useCookies }                       from 'react-cookie'
-import Meta                                 from 'antd/es/card/Meta'
-import { post }                             from '../../../Plugins/helpers'
-import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
-import HighlightText                        from '../../UniversalComponents/HighlightText'
-import { useAppDispatch }                   from '../../../store/hooks'
-import { addVisitor}                        from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { useSearchParams }                  from 'react-router-dom'
+import { Avatar, Card, List } from 'antd'
+import { EmployeesType }      from '../../../types/globalTypes'
+import { useCookies }         from 'react-cookie'
+import Meta                   from 'antd/es/card/Meta'
+import { post }               from '../../../Plugins/helpers'
+import useSetWindowsSize      from '../../../Plugins/useSetWindowsSize'
+import HighlightText          from '../../UniversalComponents/HighlightText'
+import { useAppDispatch }     from '../../../store/hooks'
+import { addVisitor}          from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useSearchParams }    from 'react-router-dom'
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
@@ -18,8 +18,6 @@ type VisitorAdditionListItemProps = {
 
 const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: VisitorAdditionListItemProps) => {
   const [cookies]         = useCookies(['access_token'])
-  const form              = Form.useFormInstance<VisitsType>()
-  const visitor           = Form.useWatch('visitors', form)
   const windowSize        = useSetWindowsSize()
   const dispatch          = useAppDispatch()
   const [searchParams]    = useSearchParams()
@@ -28,19 +26,11 @@ const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: Visit
   const addVisitingClient = async() => {
     try{
       const res = await post('visit/visitor', {visitId: visitId, employeeId: item._id}, cookies.access_token)
-
-      if(!visitId){
-        const updatedVisitors = [...(visitor || []), { idType: undefined, selectedVisitor: item }]
-        form.setFieldsValue({
-          visitors: updatedVisitors,
-        })
-      }
       dispatch(addVisitor(res))
     }catch(err){
       console.log(err)
     }
   }
-
 
   return (
     <List.Item>

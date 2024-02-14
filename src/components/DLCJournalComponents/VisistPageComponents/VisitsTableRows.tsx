@@ -102,7 +102,7 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
         <Typography>{HighlightText(filter, dlcEmployee?.name)}</Typography>
       </td>
       <td>
-        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visit._id}?visitAddress=${visit.siteId}`)}>Peržiūrėti</Button>
+        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visit._id}?siteId=${visit.siteId}`)}>Peržiūrėti</Button>
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

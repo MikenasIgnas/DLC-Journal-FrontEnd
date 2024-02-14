@@ -35,7 +35,6 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
     })()
   }, [siteId, openCollocationAdditionModal])
 
-
   return (
     <div>
       <Card

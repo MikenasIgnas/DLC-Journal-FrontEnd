@@ -1,6 +1,14 @@
 /* eslint-disable max-len */
 import { createSelector } from '@reduxjs/toolkit'
-import { CompaniesType, EmployeesType, Permissions, RootState, VisitorEmployee, Visitors } from '../../types/globalTypes'
+
+import {
+  CompaniesType,
+  EmployeesType,
+  Permissions,
+  RootState,
+  VisitorEmployee,
+  Visitors,
+} from '../../types/globalTypes'
 
 const selectAllCompnies               = (state: RootState) => state.visit.companies
 const companyId                       = (state: RootState) => state.visit.companyId

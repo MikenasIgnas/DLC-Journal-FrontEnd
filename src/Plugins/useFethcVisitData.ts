@@ -28,9 +28,8 @@ const useFetchVisitData = () => {
   const dispatch        = useAppDispatch()
   const [searchParams]  = useSearchParams()
   const visitId         = searchParams.get('id')
-  const siteId          = searchParams.get('addressId')
+  const siteId          = searchParams.get('siteId')
   const companyId       = searchParams.get('companyId')
-
   React.useEffect(() => {
     const fetchData = async () => {
       const companies                               = await get('company/company', cookies.access_token)

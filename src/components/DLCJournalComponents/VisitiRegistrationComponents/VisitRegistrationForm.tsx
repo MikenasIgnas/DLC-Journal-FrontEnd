@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
 import React                            from 'react'
-import { post }                         from '../../../Plugins/helpers'
+import { put }                         from '../../../Plugins/helpers'
 import { useCookies }                   from 'react-cookie'
 import {
   Button,
   Empty,
   Form,
-  Input,
   message,
 }                                       from 'antd'
 import {
@@ -32,26 +31,38 @@ import { useSearchParams }              from 'react-router-dom'
 import VisitSitesSelectors              from './VisitSitesSelectors'
 
 const VisitRegistrationForm = () => {
-  const [cookies]                                     = useCookies(['access_token'])
-  const [form]                                        = Form.useForm()
-  const navigate                                      = useNavigate()
-  const [messageApi, contextHolder]                   = message.useMessage()
-  const [clientsGuests, setClientsGuests]             = React.useState<Guest[] | undefined>([])
-  const [carPlates, setCarPlates]                     = React.useState<string[] | undefined>([])
-  const companyEmployees                              = useAppSelector((state) => state.visit.companyEmployees)
-  const dispatch                                      = useAppDispatch()
-  const [searchParams]                                = useSearchParams()
-  const visitStatus                                   = useAppSelector((state) => state.visit.visitStatus)
-  const siteId                                        = searchParams.get('addressId')
-  const companyId                                     = searchParams.get('companyId')
-  const visitId                                       = searchParams.get('id')
-  const checkedList                                   = useAppSelector((state) => state.racks.checkedList)
+  const [cookies]                         = useCookies(['access_token'])
+  const [form]                            = Form.useForm()
+  const navigate                          = useNavigate()
+  const [messageApi, contextHolder]       = message.useMessage()
+  const [clientsGuests, setClientsGuests] = React.useState<Guest[] | undefined>([])
+  const [carPlates, setCarPlates]         = React.useState<string[] | undefined>([])
+  const companyEmployees                  = useAppSelector((state) => state.visit.companyEmployees)
+  const dispatch                          = useAppDispatch()
+  const [searchParams]                    = useSearchParams()
+  const visitStatus                       = useAppSelector((state) => state.visit.visitStatus)
+  const siteId                            = searchParams.get('siteId')
+  const companyId                         = searchParams.get('companyId')
+  const visitId                           = searchParams.get('id')
+  const checkedList                       = useAppSelector((state) => state.racks.checkedList)
+
+
+  React.useEffect(() => {
+
+
+
+    return () => {
+      form.resetFields()
+    }
+  },[])
+
 
   const registerVisit = async(values: VisitsType) => {
-    const visitPurpose = localStorage.getItem('visitPurpose')
-    const preparedStatus = visitStatus.filter((el) => el.name === 'Paruošti')
-    if(visitPurpose){
+    const visitPurpose    = localStorage.getItem('visitPurpose')
+    const preparedStatus  = visitStatus.filter((el) => el.name === 'Paruošti')
+    if(visitPurpose && visitId){
       const selectedPermissions = JSON.parse(visitPurpose)
+      values.id = visitId
       values.companyId = companyId
       values.racks = checkedList
       values.carPlates = carPlates
@@ -59,17 +70,11 @@ const VisitRegistrationForm = () => {
       values.siteId = siteId
       values.visitPurpose = selectedPermissions
       values.statusId = preparedStatus?.[0]._id
-      const myObject = values
-      const { visitors, ...newObject } = myObject
-      const res = await post('visit/visit', newObject, cookies.access_token)
-
-      for( const item of visitors ) {
-        await post('visit/visitor', {visitId: res._id, employeeId: item.selectedVisitor._id}, cookies.access_token)
-      }
-
+      const res = await put('visit/visit', values, cookies.access_token)
       if(!res.message){
         localStorage.clear()
-        navigate(`/DLC Žurnalas/Vizitai/${visitId}?visitAddress=${values.siteId}`)
+        form.resetFields()
+        navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${values.siteId}&id=${visitId}&companyId=${companyId}`)
       }else{
         messageApi.error({
           type:    'error',
@@ -104,12 +109,7 @@ const VisitRegistrationForm = () => {
           <VisitPurposeList/>
           <VisitRegistrationCollocationList/>
         </div>
-        <ClientsGuestsItemList
-          inputPlaceHolder={'Pridėti'}
-          list={clientsGuests}
-          setListItems={setClientsGuests}
-          companyNameInput={<Input placeholder='Imonė'/>}
-        />
+        <ClientsGuestsItemList list={clientsGuests} setListItems={setClientsGuests}/>
         <CarPlatesItemList list={carPlates} setList={setCarPlates}/>
         <div className='VisitRegistrationButtonContainer'>
           <Button htmlType='submit'>Registruoti</Button>

@@ -19,12 +19,12 @@ const VisitInformationForm = () => {
   const editVisitInformation = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
   const items                = VisitInformationItems(editVisitInformation)
   const [searchParams]       = useSearchParams()
-  const visitAddress         = searchParams.get('visitAddress')
+  const siteId               = searchParams.get('siteId')
 
   const saveChanges = async (values: any) => {
     dispatch(setEditVisitInformation(!editVisitInformation))
     if(editVisitInformation){
-      await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: visitAddress}, cookies.access_token)
+      await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId}, cookies.access_token)
     }
   }
 

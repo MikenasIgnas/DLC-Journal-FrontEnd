@@ -196,7 +196,7 @@ export interface Guest {
   company: string
 }
 export type VisitsType = {
-    visitors: any;
+    id:           string;
     _id:          string;
     companyId:    string | null;
     guests:       Guest[] | undefined;
@@ -283,7 +283,7 @@ export type Premises = {
 export type Racks = {
   id:         string | undefined;
   name:       string | undefined;
-  _id:        string | undefined
+  _id:        string
   premiseId:  string
 }
 

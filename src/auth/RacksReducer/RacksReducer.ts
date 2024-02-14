@@ -19,6 +19,18 @@ const racksSlice = createSlice({
     setCompanyRacks(state, { payload }: PayloadAction<Racks[]>) {
       state.racks = payload
     },
+    addToChecklist(state, { payload }: PayloadAction<string[]>){
+      for (let index = 0; index < payload.length; index++) {
+        const element = payload[index]
+        if(!state.checkedList.includes(element)){
+          state.checkedList.push(element)
+        }
+      }
+    },
+    removeFromChecklist(state, { payload }: PayloadAction<string[]>){
+      const filterUnchecked = state.checkedList.filter((el) => !payload.includes(el))
+      state.checkedList = filterUnchecked
+    },
     setCheckedList(state, { payload }: PayloadAction<string[]>) {
       state.checkedList = payload
     },
@@ -30,6 +42,8 @@ const racksSlice = createSlice({
 
 export const {
   setCompanyRacks,
+  addToChecklist,
+  removeFromChecklist,
   setCheckedList,
   setPermise,
 } = racksSlice.actions

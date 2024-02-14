@@ -16,7 +16,7 @@ const useFetchSites = () => {
   const [cookies]       = useCookies(['access_token'])
   const [searchParams]  = useSearchParams()
   const companyId       = searchParams.get('companyId')
-  const addressId       = searchParams.get('addressId')
+  const siteId       = searchParams.get('siteId')
   const dispatch        = useAppDispatch()
 
   React.useEffect(() => {
@@ -29,7 +29,7 @@ const useFetchSites = () => {
     return () => {
       dispatch(resetFullSiteData())
     }
-  },[addressId, companyId, cookies.access_token, dispatch])
+  },[siteId, companyId, cookies.access_token, dispatch])
 
 }
 

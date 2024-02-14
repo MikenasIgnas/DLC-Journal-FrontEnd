@@ -11,6 +11,8 @@ import { useAppDispatch, useAppSelector }           from '../../../../store/hook
 import VisitorAdditionList                          from '../../VisitiRegistrationComponents/VisitorAdditionList'
 // import { useCookies }                               from 'react-cookie'
 import { setOpenVisitorAddition }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
+import { selectVisitingCompanyEmplyees } from '../../../../auth/VisitorEmployeeReducer/selectors'
+import VisitorsListItem from '../../VisitiRegistrationComponents/VisitorsListItem'
 
 
 
@@ -20,11 +22,8 @@ const SelectedVisitorsForm = () => {
   // const [cookies]                                       = useCookies(['access_token'])
   // const editVisitors                                    = useAppSelector((state) => state.visitPageEdits.editVisitors)
   const dispatch                                        = useAppDispatch()
-  const [searchEmployeeValue, setSearchEmployeeValue]   = React.useState<string | undefined>()
   // const visitData = useAppSelector((state) => state.visit.visit)
-  const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearchEmployeeValue(e.target.value.toLowerCase())
-  }
+
 
   // const addVisitor =  async(visitorId: string | undefined) => {
   //   if(visitorId){
@@ -32,7 +31,7 @@ const SelectedVisitorsForm = () => {
   //   }
   // }
 
-
+  const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
 
   const saveChanges = async(_values: any) => {
     // dispatch(setEditVisitors(!editVisitors))
@@ -79,20 +78,16 @@ const SelectedVisitorsForm = () => {
   return (
     <Form form={form} onFinish={saveChanges} onKeyDown={onkeydown}>
       { openVisitorAddition &&
-        <VisitorAdditionList
-          setOpenVisitorAddition={setOpenVisitorAddition}
-          searchEmployee={searchEmployee}
-          searchEmployeeValue={searchEmployeeValue}
-        />
+        <VisitorAdditionList setOpenVisitorAddition={setOpenVisitorAddition}/>
       }
       <Card
         title={<RegisteredVisitorsListItemCardTitle/>} style={{margin: '10px', backgroundColor: '#f9f9f9'}}
         extra={<Button onClick={() => dispatch(setOpenVisitorAddition(true))} type='link' >Pridėti Lankytoją</Button>}>
         <List
-          dataSource={[]}
-          // dataSource={visitors}
+          dataSource={visitingEmployees}
           renderItem={(item) =>
-            <RegisteredVisitorsListItem item={item} deleteVisitor={deleteVisitor} />
+            // <RegisteredVisitorsListItem item={item} deleteVisitor={deleteVisitor} />
+            <VisitorsListItem item={item}/>
           }
         />
       </Card>

@@ -17,10 +17,8 @@ type ItemListProps = {
     url?:               string;
     removeUrl?:         string;
     cardTitle?:         string;
-    inputPlaceHolder?:  string;
     list:               Guest[] | undefined
     setListItems:       React.Dispatch<React.SetStateAction<Guest[] | undefined>>
-    companyNameInput?:  React.ReactNode
     fetchData?:         () => Promise<void>
 }
 
@@ -49,7 +47,9 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: Item
       name:    clientsGuestNamesInput,
       company: clientsGuestCompanyInput,
     }
-    await put('visit/visit', {id: id, guests}, cookies.access_token)
+    if(id){
+      await put('visit/visit', {id: id, guests}, cookies.access_token)
+    }
     if(clientsGuestNamesInput !== ''){
       setListItems((prev) => prev && [...prev, guests])
       setClientsGuestsNamesInput('')
@@ -76,7 +76,7 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: Item
                   key={index}
                   actions={[
                     <Button key={index} onClick={() => removeListItem(index)} type='link'>
-                  Ištrinti
+                      Ištrinti
                     </Button>,
                   ]}
                 >

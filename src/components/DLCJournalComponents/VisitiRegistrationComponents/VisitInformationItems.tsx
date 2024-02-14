@@ -6,6 +6,7 @@ import VisitDateItem                                 from '../SingleVisitPageCom
 import { Link, useSearchParams }                     from 'react-router-dom'
 import { useAppSelector }                            from '../../../store/hooks'
 import { calculateTimeDifference, convertUTCtoLocalDate, convertUTCtoLocalDateTime } from '../../../Plugins/helpers'
+import { selectCompany } from '../../../auth/VisitorEmployeeReducer/selectors'
 
 // type StatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
 
@@ -17,10 +18,10 @@ const VisitInformationItems = (
   const sites               = useAppSelector((state) => state.sites.fullSiteData)
   const addresses           = sites?.map((el) => ({value: el._id, label: el.name}))
   const [searchParams]      = useSearchParams()
-  const visitData            = useAppSelector((state) => state.visit.visit)
-  const company              = useAppSelector((state) => state.visit.companies)
-  const addressId           = searchParams.get('visitAddress')
-  const site                = sites?.filter((el) => el._id === addressId)
+  const visitData           = useAppSelector((state) => state.visit.visit)
+  const company             = useAppSelector(selectCompany)
+  const siteId              = searchParams.get('siteId')
+  const site                = sites?.filter((el) => el._id === siteId)
   const creationDate        = convertUTCtoLocalDate(visitData?.date)
   const creationTime        = convertUTCtoLocalDateTime(visitData?.date)
   // const visitorsPermissions = visitors.map((el) => el.permissions)
@@ -28,7 +29,7 @@ const VisitInformationItems = (
   // const employeePermissions = permissions.filter((el) => combinedPermissions.includes(el._id))
 
   const changeAddress = async(value:string) => {
-    setSearchParams(`visitAddress=${value}`)
+    setSearchParams(`siteId=${value}`)
   }
 
   // const getUniquePermissions = () => {
@@ -78,7 +79,7 @@ const VisitInformationItems = (
       children: <div>
         {!edit ?
           <div>{site?.[0]?.name}</div> :
-          <Form.Item name='visitAddress' initialValue={site?.[0]?.name}>
+          <Form.Item name='siteId' initialValue={site?.[0]?.name}>
             <Select onChange={changeAddress} value={site?.[0]?.name} style={{width: '150px'}} options={addresses}/>
           </Form.Item>
         }
