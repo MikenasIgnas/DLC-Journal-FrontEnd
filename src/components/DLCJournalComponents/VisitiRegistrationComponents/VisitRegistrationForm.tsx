@@ -1,93 +1,51 @@
 /* eslint-disable max-len */
-import React                                           from 'react'
+import React                            from 'react'
+import { post }                         from '../../../Plugins/helpers'
+import { useCookies }                   from 'react-cookie'
 import {
-  get,
-  post,
-}                                                      from '../../../Plugins/helpers'
-import { useCookies }                                  from 'react-cookie'
-import { Button, Empty, Form, Input, Select, message } from 'antd'
-import { VisitsType, Guest }                           from '../../../types/globalTypes'
-import VisitRegistrationFormItem                       from './VisitRegistrationSelect'
-import VisitorsList                                    from './VisitorsList'
-import VisitPurposeList                                from './VisitPurposeList'
-import VisitorAdditionList                             from './VisitorAdditionList'
-import { DatePicker }                                  from 'antd'
-import VisitRegistrationCollocationList                from './VisitRegistrationCollocationList'
-import CarPlatesItemList                               from './CarPlatesItemList'
-import useSetVisitor                                   from '../../../Plugins/useSetVisitor'
-import ClientsGuestsItemList                           from './ClientsGuestsItemList'
-import { useNavigate }                                 from 'react-router'
-import SuccessMessage                                  from '../../UniversalComponents/SuccessMessage'
-import { useAppDispatch, useAppSelector }              from '../../../store/hooks'
-import { setCompanyEmployees, setCompanyId, setSiteId, setVisit }               from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { selectSite }                                  from '../../../auth/SitesReducer/selectors'
+  Button,
+  Empty,
+  Form,
+  Input,
+  message,
+}                                       from 'antd'
+import {
+  VisitsType,
+  Guest,
+}                                       from '../../../types/globalTypes'
+import VisitorsList                     from './VisitorsList'
+import VisitPurposeList                 from './VisitPurposeList'
+import VisitorAdditionList              from './VisitorAdditionList'
+import VisitRegistrationCollocationList from './VisitRegistrationCollocationList'
+import CarPlatesItemList                from './CarPlatesItemList'
+import ClientsGuestsItemList            from './ClientsGuestsItemList'
+import { useNavigate }                  from 'react-router'
+import SuccessMessage                   from '../../UniversalComponents/SuccessMessage'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                       from '../../../store/hooks'
+
+import { setCompanyEmployees}           from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useSearchParams }              from 'react-router-dom'
+import VisitSitesSelectors              from './VisitSitesSelectors'
 
 const VisitRegistrationForm = () => {
   const [cookies]                                     = useCookies(['access_token'])
-  const [searchEmployeeValue, setSearchEmployeeValue] = React.useState<string | undefined>()
   const [form]                                        = Form.useForm()
-  const visitors                                      = Form.useWatch('visitors', form)
   const navigate                                      = useNavigate()
   const [messageApi, contextHolder]                   = message.useMessage()
   const [clientsGuests, setClientsGuests]             = React.useState<Guest[] | undefined>([])
   const [carPlates, setCarPlates]                     = React.useState<string[] | undefined>([])
   const companyEmployees                              = useAppSelector((state) => state.visit.companyEmployees)
   const dispatch                                      = useAppDispatch()
-
-  const {
-    companyNames,
-    setSearchParams,
-    searchParams,
-    addressId,
-    visitStatus,
-  } = useSetVisitor()
-  const companyId         = searchParams.get('companyId')
-  const visitId           = searchParams.get('id')
-  const sites             = useAppSelector((state) => state.sites.fullSiteData)
-  const checkedList       = useAppSelector((state) => state.racks.checkedList)
-  const addressesOptions  = sites?.map((el) => ({value: el._id, label: el.name}))
-  const seletedSite       = useAppSelector(selectSite)
-
-  const selectCompany = async(value: string) => {
-    setSearchParams(`companyId=${value}`)
-    const companiesEmployees = await get(`company/CompanyEmployee?companyId=${value}`, cookies.access_token)
-    dispatch(setCompanyId(value))
-    dispatch(setSiteId(undefined))
-    dispatch(setCompanyEmployees(companiesEmployees))
-    localStorage.removeItem('visitPurpose')
-    form.setFieldValue('visitAddress', null)
-  }
-
-  const selectAddress = async(_: string, data: {value: string, label: string}) => {
-    const companyId = searchParams.get('companyId')
-    if(!visitId && data.value && companyId){
-      const res = await post('visit/visit',
-        { companyId:    companyId,
-          permissions:  [],
-          racks:        [],
-          visitPurpose: [],
-          siteId:       data.value,
-          statusId:     '123131313131',
-        }, cookies .access_token)
-      setSearchParams(`companyId=${companyId}&addressId=${data.value}&id=${res._id}`)
-      dispatch(setSiteId(data.value))
-      dispatch(setVisit(res))
-    }else{
-      setSearchParams(`companyId=${companyId}&addressId=${data.value}&id=${visitId}`)
-    }
-  }
-
-  const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearchEmployeeValue(e.target.value.toLowerCase())
-  }
-
-  const resetForm = () => {
-    form.resetFields()
-    setCompanyEmployees([])
-    setClientsGuests([])
-    setCarPlates([])
-    localStorage.removeItem('visitPurpose')
-  }
+  const [searchParams]                                = useSearchParams()
+  const visitStatus                                   = useAppSelector((state) => state.visit.visitStatus)
+  const siteId                                        = searchParams.get('addressId')
+  const companyId                                     = searchParams.get('companyId')
+  const visitId                                       = searchParams.get('id')
+  const checkedList                                   = useAppSelector((state) => state.racks.checkedList)
 
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
@@ -98,7 +56,7 @@ const VisitRegistrationForm = () => {
       values.racks = checkedList
       values.carPlates = carPlates
       values.guests = clientsGuests
-      values.siteId = addressId
+      values.siteId = siteId
       values.visitPurpose = selectedPermissions
       values.statusId = preparedStatus?.[0]._id
       const myObject = values
@@ -127,56 +85,32 @@ const VisitRegistrationForm = () => {
     }
   }
 
+  const resetForm = () => {
+    form.resetFields()
+    dispatch(setCompanyEmployees([]))
+    setClientsGuests([])
+    setCarPlates([])
+    localStorage.removeItem('visitPurpose')
+  }
+
   return (
     <>
-      <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown} initialValues={{visitingClient: companyId, siteId: addressId}}>
+      <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown} initialValues={{visitingClient: companyId, siteId: siteId}}>
         <div>
-          <div className='VisitRegistrationFormContainer'>
-            <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
-              <Select
-                showSearch
-                placeholder='Pasirinkite įmonę'
-                onSelect={selectCompany}
-                allowClear
-                options={companyNames}
-              >
-              </Select>
-            </Form.Item>
-            {companyId &&
-              <VisitRegistrationFormItem
-                formItemName={'siteId'}
-                placeholder={'Pasirinkite Adresą'}
-                slectOptions={addressesOptions}
-                onSelect={selectAddress}
-                fieldValue={'visitingClient'}
-                updateValue={(prevValues, currentValues) => prevValues.visitingClient !== currentValues.visitingClient}
-                validationMessage={'Butina pasirinkti adresą'}
-              />
-            }
-            {companyId && seletedSite?.name === 'T72' &&
-          <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
-            <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
-          </Form.Item>
-            }
-          </div>
-          <VisitorAdditionList searchEmployee={searchEmployee} searchEmployeeValue={searchEmployeeValue}/>
+          <VisitSitesSelectors/>
+          <VisitorAdditionList />
           {companyEmployees && companyEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           <VisitorsList/>
-          <VisitPurposeList />
+          <VisitPurposeList/>
           <VisitRegistrationCollocationList/>
         </div>
         <ClientsGuestsItemList
-          visitors={visitors}
           inputPlaceHolder={'Pridėti'}
           list={clientsGuests}
           setListItems={setClientsGuests}
           companyNameInput={<Input placeholder='Imonė'/>}
         />
-        <CarPlatesItemList
-          visitAddress={addressId as string}
-          list={carPlates}
-          setList={setCarPlates}
-        />
+        <CarPlatesItemList list={carPlates} setList={setCarPlates}/>
         <div className='VisitRegistrationButtonContainer'>
           <Button htmlType='submit'>Registruoti</Button>
           <Button style={{marginLeft: '20px'}} onClick={resetForm}> Išvalyti</Button>

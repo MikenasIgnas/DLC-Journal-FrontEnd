@@ -5,7 +5,8 @@ import { get, put }                  from '../../../Plugins/helpers'
 import { useParams }                 from 'react-router'
 import { useCookies }                from 'react-cookie'
 import { SearchProps }               from 'antd/es/input'
-import { useAppSelector } from '../../../store/hooks'
+import { useAppSelector }            from '../../../store/hooks'
+import { selectSite }                from '../../../auth/SitesReducer/selectors'
 
 type ItemListProps = {
     url?:               string;
@@ -13,17 +14,17 @@ type ItemListProps = {
     list:               string[] | undefined
     companyNameInput?:  React.ReactNode
     setList:            React.Dispatch<React.SetStateAction<string[] | undefined>>
-    visitAddress:       string | undefined
 }
 
 const {Search} = Input
 
-const CarPlatesItemList = ({ removeUrl, url, list, setList, visitAddress }: ItemListProps) => {
+const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => {
   const {id}                                  = useParams()
   const [cookies]                             = useCookies(['access_token'])
   const [carPlatesInput, setCarPlatesInput]   = React.useState<string>('')
+  const selectedSite                          = useAppSelector(selectSite)
+  const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
 
-  const visitorCount = useAppSelector((state) => state.visit.visitor.length)
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
     setList(filtered)
@@ -44,7 +45,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, visitAddress }: Item
 
   return (
     <>
-      {visitorCount && visitorCount > 0 && visitAddress === 'T72' ?
+      {visitorCount && visitorCount > 0 && selectedSite?.name === 'T72' ?
         <Card title='Pridėti automobilį' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
           <Search
             value={carPlatesInput}

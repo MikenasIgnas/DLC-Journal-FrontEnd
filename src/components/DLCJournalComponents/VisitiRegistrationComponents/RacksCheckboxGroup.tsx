@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import { setCheckedList }                 from '../../../auth/RacksReducer/RacksReducer'
 import { useSearchParams } from 'react-router-dom'
 import { selectRacks } from '../../../auth/SitesReducer/selectors'
+import { CheckboxValueType } from 'antd/es/checkbox/Group'
 
 type RacksCheckboxGroupProps = {
     premise:          Premises;
@@ -21,14 +22,11 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
   const companies           = useAppSelector((state) => state.visit.companies)
   const [searchParams]      = useSearchParams()
   const siteId              = searchParams.get('addressId')
-
   const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
 
-  console.log(selectPremiseRacks)
-
-  // const matchingCompanies = companies.filter(company =>
-  //   company.selectPremiseRacks.some(rack => (checkedList && checkedList?.length > 0 ? checkedList : visitDataRacks)?.includes(rack))
-  // )
+  const matchingCompanies = companies.filter(company =>
+    company.racks.some(rack => (checkedList && checkedList?.length > 0 ? checkedList : visitDataRacks)?.includes(rack))
+  )
 
   const [hasMatchingRacks, setHasMatchingRacks] = React.useState<boolean | undefined>(matchingCompanies.length > 1)
   const mappedRacks                             = selectPremiseRacks?.map((item) => ({ value: item._id || 'error', label: item.name || 'error' }))
@@ -45,7 +43,7 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
   const onCheckAllChange = (e: CheckboxChangeEvent) => {
     if (e.target.checked && safeCheckedList) {
       const newCheckedList = Array.from(new Set([...safeCheckedList, ...selectPremiseRacks?.map(rack => rack._id).filter(id => id !== undefined) || []] as string[]))
-      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => newCheckedList.includes(rack)))
+      const matchingCompanies = companies?.filter(company => company.racks.some(rack => newCheckedList.includes(rack)))
       dispatch(setCheckedList(newCheckedList))
       if(matchingCompanies && matchingCompanies.length > 1){
         setHasMatchingRacks(true)
@@ -55,7 +53,7 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
     } else {
       const currentGroupIds = selectPremiseRacks?.map(rack => rack._id)
       const newCheckedList = safeCheckedList?.filter(id => !currentGroupIds?.includes(id as string))
-      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => newCheckedList?.includes(rack)))
+      const matchingCompanies = companies?.filter(company => company.racks.some(rack => newCheckedList?.includes(rack)))
 
       if(matchingCompanies && matchingCompanies.length > 1){
         setHasMatchingRacks(true)
@@ -66,12 +64,12 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
     }
   }
 
-  const onCheckboxChange = (checkedValues: string[]) => {
+  const onCheckboxChange = (checkedValues: CheckboxValueType[]) => {
     const checkedIds = checkedValues.map(value => value.toString())
     if(safeCheckedList){
       const newCheckedList = [...new Set([...safeCheckedList.filter(id => !selectPremiseRacks?.map(rack => rack._id).includes(id as string)), ...checkedIds])] as string[]
       dispatch(setCheckedList(newCheckedList))
-      const matchingCompanies = companies?.filter(company => company.selectPremiseRacks.some(rack => checkedValues.includes(rack)))
+      const matchingCompanies = companies?.filter(company => company.racks.some(rack => checkedValues.includes(rack)))
       if(matchingCompanies.length > 1){
         setHasMatchingRacks(true)
       }else{
@@ -95,7 +93,7 @@ const RacksCheckboxGroup = ({ premise, visitDataRacks }: RacksCheckboxGroupProps
           disabled={!siteId}
           options={mappedRacks}
           value={checkedList}
-          onChange={(val) => onCheckboxChange(val)}
+          onChange={onCheckboxChange}
         />
       </div>
     </Card>

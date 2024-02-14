@@ -372,8 +372,6 @@ const deleteTableItem = async(url: string, data: any, postData: any, setData: an
     if(data){
       let newTableItems = [...data]
       newTableItems = newTableItems.filter(x => x._id !== id)
-      console.log(data)
-      console.log(id)
       setData(newTableItems)
     }
   }

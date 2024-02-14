@@ -5,19 +5,26 @@ import VisitorAdditionListItem              from './VisitorAdditionListItem'
 import { ActionCreatorWithPayload }         from '@reduxjs/toolkit'
 import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
 import { selectNonVisitingCompanyEmplyees } from '../../../auth/VisitorEmployeeReducer/selectors'
+import { useSearchParams }                  from 'react-router-dom'
 
 type VisitorAdditionListProps = {
-    searchEmployee:           (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    searchEmployeeValue:      string | undefined
     setOpenVisitorAddition?:  ActionCreatorWithPayload<boolean>
 }
 
-const VisitorAdditionList = ({ searchEmployee, searchEmployeeValue, setOpenVisitorAddition }: VisitorAdditionListProps) => {
-  const dispatch          = useAppDispatch()
-  const companyEmployees  = useAppSelector(selectNonVisitingCompanyEmplyees)
+const VisitorAdditionList = ({ setOpenVisitorAddition }: VisitorAdditionListProps) => {
+  const [searchEmployeeValue, setSearchEmployeeValue] = React.useState<string | undefined>()
+  const [searchParams]                                = useSearchParams()
+  const dispatch                                      = useAppDispatch()
+  const companyEmployees                              = useAppSelector(selectNonVisitingCompanyEmplyees)
+  const siteId                                        = searchParams.get('addressId')
+
+  const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearchEmployeeValue(e.target.value.toLowerCase())
+  }
+
   return (
     <>
-      {companyEmployees && companyEmployees?.length > 0 &&
+      {companyEmployees && companyEmployees?.length > 0 && siteId &&
       <Card title={
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div>Įmonės Darbuotojai</div>

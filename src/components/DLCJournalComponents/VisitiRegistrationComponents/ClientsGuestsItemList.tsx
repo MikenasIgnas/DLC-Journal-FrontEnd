@@ -1,12 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                         from 'react'
-import { Button, Card, Input, List } from 'antd'
-import { get, put }                  from '../../../Plugins/helpers'
-import { useCookies }                from 'react-cookie'
-import { Guest, Visitors }           from '../../../types/globalTypes'
-import { useParams }                 from 'react-router'
-import { useAppSelector }            from '../../../store/hooks'
+import React              from 'react'
+import {
+  Button,
+  Card,
+  Input,
+  List,
+}                         from 'antd'
+import { get, put }       from '../../../Plugins/helpers'
+import { useCookies }     from 'react-cookie'
+import { Guest }          from '../../../types/globalTypes'
+import { useParams }      from 'react-router'
+import { useAppSelector } from '../../../store/hooks'
 
 type ItemListProps = {
     url?:               string;
@@ -16,7 +21,6 @@ type ItemListProps = {
     list:               Guest[] | undefined
     setListItems:       React.Dispatch<React.SetStateAction<Guest[] | undefined>>
     companyNameInput?:  React.ReactNode
-    visitors:           Visitors[]
     fetchData?:         () => Promise<void>
 }
 
@@ -38,7 +42,6 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: Item
         fetchData()
       }
     }
-
   }
 
   const onCreate = async() => {

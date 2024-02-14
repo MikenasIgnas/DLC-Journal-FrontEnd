@@ -1,21 +1,35 @@
 /* eslint-disable max-len */
-import { createSlice, PayloadAction }   from '@reduxjs/toolkit'
-import { CompaniesType, EmployeesType, VisitorEmployee, Visitors, VisitsType, Permissions }              from '../../types/globalTypes'
+import {
+  createSlice,
+  PayloadAction,
+}                  from '@reduxjs/toolkit'
+
+import {
+  CompaniesType,
+  EmployeesType,
+  VisitorEmployee,
+  Visitors,
+  VisitsType,
+  Permissions,
+  VisitStatus,
+}                   from '../../types/globalTypes'
 
 interface Visits {
-    visitor:            Visitors[]
-    visit?:             VisitsType
-    companyEmployees:   EmployeesType[]
-    companies:          CompaniesType[]
-    permissions:        Permissions[]
-    companyId?:         string
-    siteId?:            string
+    visitor:          Visitors[]
+    visit?:           VisitsType
+    companyEmployees: EmployeesType[]
+    companies:        CompaniesType[]
+    permissions:      Permissions[]
+    companyId?:       string
+    siteId?:          string
+    visitStatus:      VisitStatus[]
   }
 const initialState: Visits = {
   visitor:          [],
   companyEmployees: [],
   companies:        [],
   permissions:      [],
+  visitStatus:      [],
 }
 
 const visitReducerSlice = createSlice({
@@ -49,6 +63,9 @@ const visitReducerSlice = createSlice({
     setPermissions(state, { payload }: PayloadAction<Permissions[]>){
       state.permissions = payload
     },
+    setVisitStatus(state, { payload }: PayloadAction<VisitStatus[]>){
+      state.visitStatus = payload
+    },
     setCompanyId(state, { payload }: PayloadAction<string | undefined>){
       state.companyId = payload
     },
@@ -72,6 +89,7 @@ export const {
   setPermissions,
   setCompanyId,
   setSiteId,
+  setVisitStatus,
   resetVisitReducer,
 } = visitReducerSlice.actions
 

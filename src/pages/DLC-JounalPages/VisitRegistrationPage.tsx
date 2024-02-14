@@ -22,7 +22,7 @@ const VisitRegistrationPage= () => {
   useFetchSites()
   return (
     <div style={contentStyle}>
-      <Card style={{width: '100% '}}>
+      <Card style={{width: '100%'}}>
         <VisitRegistrationForm/>
       </Card>
     </div>

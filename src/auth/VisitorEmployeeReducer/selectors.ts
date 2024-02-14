@@ -66,7 +66,6 @@ export const selectVisitorsPermissions = createSelector(
 
 const filterAllSelectedVisitorsPermissions = (permission: Permissions[], companyEmployess: VisitorEmployee[]) => {
   const allEmployeePermissions: string[] = []
-
   for (let index = 0; index < companyEmployess?.length; index++) {
     const element = companyEmployess?.[index].employee.permissions
     element.map((el) => {
@@ -99,7 +98,7 @@ const findSingleCompany = (allCompanies: CompaniesType[], companyId: string | un
   return company
 }
 
-export const selectCompany= createSelector([
-  selectAllCompnies, companyId],
-findSingleCompany
+export const selectCompany= createSelector(
+  [selectAllCompnies, companyId],
+  findSingleCompany
 )

@@ -31,6 +31,9 @@ const siteSlice = createSlice({
     setRacks(state, { payload }: PayloadAction<Racks[] | null>) {
       state.racks = payload
     },
+    resetFullSiteData (){
+      return initialState
+    },
   },
 })
 
@@ -39,6 +42,7 @@ export const {
   setSite,
   setPremise,
   setRacks,
+  resetFullSiteData,
 } = siteSlice.actions
 
 export default siteSlice.reducer

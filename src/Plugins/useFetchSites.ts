@@ -8,6 +8,7 @@ import {
 import { useSearchParams } from 'react-router-dom'
 import { useAppDispatch }  from '../store/hooks'
 import {
+  resetFullSiteData,
   setFullSiteData,
 }                          from '../auth/SitesReducer/SitesReducer'
 
@@ -25,6 +26,9 @@ const useFetchSites = () => {
     }
 
     fetchData()
+    return () => {
+      dispatch(resetFullSiteData())
+    }
   },[addressId, companyId, cookies.access_token, dispatch])
 
 }
