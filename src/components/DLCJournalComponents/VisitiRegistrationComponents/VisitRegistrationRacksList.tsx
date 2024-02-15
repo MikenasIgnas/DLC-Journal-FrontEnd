@@ -1,12 +1,11 @@
 /* eslint-disable max-len */
 import { Card }                           from 'antd'
-// import RacksCheckboxGroup                 from './RacksCheckboxGroup'
 import { useAppSelector }                 from '../../../store/hooks'
 import { selectPremises }                 from '../../../auth/SitesReducer/selectors'
 import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
-import VisitRegistraTionRacksCheckboxGroup from './VisitRegistraTionRacksCheckboxGroup'
+import VisitRegistrationRacks             from './VisitRegistrationRacksCheckboxGroup'
 
-const VisitRegistrationCollocationList = () => {
+const VisitRegistrationRacksList = () => {
   const companyPremise    = useAppSelector(selectPremises)
   const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
   return (
@@ -14,9 +13,7 @@ const VisitRegistrationCollocationList = () => {
       { visitingEmployees.length > 0 &&
       <Card title='Kolokacijos' className='CollocationsListCard'>
         {companyPremise?.map((el) =>
-
-          <VisitRegistraTionRacksCheckboxGroup premise={el} key={el._id}/>
-          // <RacksCheckboxGroup key={el._id} premise={el}/>
+          <VisitRegistrationRacks premise={el} key={el._id}/>
         )}
       </Card>
       }
@@ -24,4 +21,4 @@ const VisitRegistrationCollocationList = () => {
   )
 }
 
-export default VisitRegistrationCollocationList
+export default VisitRegistrationRacksList

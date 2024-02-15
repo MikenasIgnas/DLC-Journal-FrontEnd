@@ -34,6 +34,7 @@ const VisitSitesSelectors = () => {
   const companies                       = useAppSelector((state) => state.visit.companies)
   const sites                           = useAppSelector((state) => state.sites.fullSiteData)
   const seletedSite                     = useAppSelector(selectSite)
+  const visitStatus                     = useAppSelector((state) => state.visit.visitStatus).filter((el) => el.name === 'Paruošti')
   const form                            = Form.useFormInstance<VisitsType>()
   const companyNames                    = companies?.map((el) => ({
     value: el._id,
@@ -59,7 +60,7 @@ const VisitSitesSelectors = () => {
           racks:        [],
           visitPurpose: [],
           siteId:       data.value,
-          statusId:     '123131313131',
+          statusId:     visitStatus?.[0]?._id,
         }, cookies .access_token)
       setSearchParams(`companyId=${companyId}&siteId=${data.value}&id=${res._id}`)
       dispatch(setSiteId(data.value))

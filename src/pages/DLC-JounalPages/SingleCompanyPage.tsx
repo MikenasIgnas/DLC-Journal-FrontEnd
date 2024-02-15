@@ -27,6 +27,7 @@ import SingleCompanyTitle                 from '../../components/DLCJournalCompo
 import { useAppSelector } from '../../store/hooks'
 import ClientsDocumentsTab                from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
 import { CheckboxValueType }              from 'antd/es/checkbox/Group'
+import useFetchSites from '../../Plugins/useFetchSites'
 
 type CompanyFormType = {
   id: string | undefined
@@ -58,7 +59,7 @@ const SingleCompanyPage = () => {
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const [uploading, setUploading]                     = React.useState(false)
   const [checkedLists, setCheckedLists]               = React.useState<CheckboxValueType[]>([])
-
+  useFetchSites()
   React.useEffect(() => {
     (async () => {
       try{

@@ -1,14 +1,40 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import Box                              from '@mui/joy/Box'
-import { Button, Tag, Typography }      from 'antd'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import HighlightText                    from '../../UniversalComponents/HighlightText'
-import { CompaniesType, EmployeesType, Sites, UserType, VisitPurpose, VisitStatus, Visitors, VisitsType }    from '../../../types/globalTypes'
-import { calculateTimeDifference, convertUTCtoLocalDate, convertUTCtoLocalTime, get } from '../../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
+import React                  from 'react'
+import Box                    from '@mui/joy/Box'
+import HighlightText          from '../../UniversalComponents/HighlightText'
 
-type StatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+import {
+  Button,
+  Tag,
+  Typography,
+}                             from 'antd'
+
+import {
+  useNavigate,
+  useSearchParams,
+}                             from 'react-router-dom'
+
+import {
+  CompaniesType,
+  EmployeesType,
+  Sites,
+  UserType,
+  VisitPurpose,
+  VisitStatus,
+  Visitors,
+  VisitsType,
+}                             from '../../../types/globalTypes'
+
+import {
+  calculateTimeDifference,
+  convertUTCtoLocalDate,
+  convertUTCtoLocalTime,
+  get,
+}                             from '../../../Plugins/helpers'
+
+import { useCookies }         from 'react-cookie'
+import statusMap              from './visitStatusMap'
+
 type VisitsTableRowsProps = {
     rowMenu?: React.ReactNode
     visit:    VisitsType
@@ -29,16 +55,16 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      const visitorsRes: Visitors[]         = await get(`visit/visitor?visitId=${visit._id}&page=1&limit=10`, cookies.access_token)
-      const visitorsEmployeeIds             = visitorsRes.map((el) => el.employeeId)
+      const visitorsRes: Visitors[]             = await get(`visit/visitor?visitId=${visit._id}&page=1&limit=10`, cookies.access_token)
+      const visitorsEmployeeIds                 = visitorsRes.map((el) => el.employeeId)
       const companyEmployeesRes:EmployeesType[] = await get('company/CompanyEmployee', cookies.access_token)
-      const visitsVisitors                  = companyEmployeesRes.filter((el) => visitorsEmployeeIds.includes(el._id))
-      const dlcEmployeeRes                  = await get(`user?id=${visit.dlcEmlpyee}`, cookies.access_token)
-      const companiesRes: CompaniesType     = await get(`company/company?id=${visit.companyId}`, cookies.access_token)
-      const visitPuposeRes: VisitPurpose[]  = await get('company/permission', cookies.access_token)
-      const purposes                        = visitPuposeRes.filter((el) => visit.permissions.includes(el._id))
-      const visitStatusRes                  = await get(`visit/visitStatus?id=${visit.statusId}`, cookies.access_token)
-      const siteRes                         = await get(`site/site?id=${visit.siteId}`, cookies.access_token)
+      const visitsVisitors                      = companyEmployeesRes.filter((el) => visitorsEmployeeIds.includes(el._id))
+      const dlcEmployeeRes                      = await get(`user?id=${visit.dlcEmlpyee}`, cookies.access_token)
+      const companiesRes: CompaniesType         = await get(`company/company?id=${visit.companyId}`, cookies.access_token)
+      const visitPuposeRes: VisitPurpose[]      = await get('company/permission', cookies.access_token)
+      const purposes                            = visitPuposeRes.filter((el) => visit.visitPurpose.includes(el._id))
+      const visitStatusRes                      = await get(`visit/visitStatus?id=${visit.statusId}`, cookies.access_token)
+      const siteRes                             = await get(`site/site?id=${visit.siteId}`, cookies.access_token)
       setDlcEmployee(dlcEmployeeRes)
       setVisitStatus(visitStatusRes)
       setSite(siteRes)
@@ -49,17 +75,11 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
     setFetchedData()
   }, [])
 
-  const visitDate = convertUTCtoLocalDate(visit.startDate)
-  const visitEndDate = convertUTCtoLocalDate(visit.endDate)
-  const visitStartTime = convertUTCtoLocalTime(visit.startDate)
-  const visitEndTime = convertUTCtoLocalTime(visit.endDate)
-
-  const statusMap: { [key: string]: StatusType } = {
-    Pradėti:  'success',
-    Paruošti: 'processing',
-    Baigti:   'error',
-  }
-  const status = visitStatus && statusMap[visitStatus.name]
+  const visitDate       = convertUTCtoLocalDate(visit.startDate)
+  const visitEndDate    = convertUTCtoLocalDate(visit.endDate)
+  const visitStartTime  = convertUTCtoLocalTime(visit.startDate)
+  const visitEndTime    = convertUTCtoLocalTime(visit.endDate)
+  const status          = visitStatus && statusMap[visitStatus.name]
 
   return (
     <tr key={visit._id}>
@@ -78,7 +98,7 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
         )}
       </td>
       <td>
-        {visitPurposes?.map((el, i) => <Typography key={i}>{HighlightText(filter, el.name)}</Typography>)}
+        {visitPurposes?.map((el, i) => <Tag key={i}>{HighlightText(filter, el.name)}</Tag>)}
       </td>
       <td>
         <Typography>{ HighlightText(filter, site?.name) }</Typography>
@@ -102,7 +122,12 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
         <Typography>{HighlightText(filter, dlcEmployee?.name)}</Typography>
       </td>
       <td>
-        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${visit._id}?siteId=${visit.siteId}`)}>Peržiūrėti</Button>
+        <Button
+          type='link'
+          style={{border: '1px solid #1677ff'}}
+          onClick={() => navigate(`${visit._id}?siteId=${visit.siteId}&companyId=${visit.companyId}&id=${visit._id}`)}>
+          Peržiūrėti
+        </Button>
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>

@@ -24,7 +24,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => 
   const [carPlatesInput, setCarPlatesInput]   = React.useState<string>('')
   const selectedSite                          = useAppSelector(selectSite)
   const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
-
+  const visitData = useAppSelector((state) => state.visit.visit)
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
     setList(filtered)
@@ -37,8 +37,8 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => 
     if(value !== '' && list){
       setList([...list, value])
       setCarPlatesInput('')
-      if(url){
-        await put(url, {id: id, carPlates: value}, cookies.access_token)
+      if(url && visitData?.carPlates){
+        await put(url, {id: id, carPlates: [...visitData.carPlates, value]}, cookies.access_token)
       }
     }
   }

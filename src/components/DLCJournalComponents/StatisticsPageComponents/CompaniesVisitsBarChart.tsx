@@ -20,7 +20,6 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
     const dailyVisits = visits?.filter((visit) => formatDateString(visit?.endDate) === dateString) || []
     dailyVisits.forEach((visit) => {
       const companyName = visit?.companyId || 'Unknown Company'
-      // TODO fetch companyByID
       if (!companyData[dateString]) {
         companyData[dateString] = {}
       }

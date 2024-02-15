@@ -12,6 +12,7 @@ import {
   VisitsType,
   Permissions,
   VisitStatus,
+  VisitorsIdTypes,
 }                   from '../../types/globalTypes'
 
 interface Visits {
@@ -23,6 +24,7 @@ interface Visits {
     companyId?:       string
     siteId?:          string
     visitStatus:      VisitStatus[]
+    visitorIdTypes:   VisitorsIdTypes[]
   }
 const initialState: Visits = {
   visitor:          [],
@@ -30,6 +32,7 @@ const initialState: Visits = {
   companies:        [],
   permissions:      [],
   visitStatus:      [],
+  visitorIdTypes:   [],
 }
 
 const visitReducerSlice = createSlice({
@@ -49,9 +52,11 @@ const visitReducerSlice = createSlice({
     setVisitors(state, { payload }: PayloadAction<Visitors[]>){
       state.visitor = payload
     },
-
     addVisitor(state, { payload }: PayloadAction<Visitors>){
       state.visitor.push(payload)
+    },
+    setVisitorIdTypes(state, { payload }: PayloadAction<VisitorsIdTypes[]>){
+      state.visitorIdTypes = payload
     },
     setCompanies(state, { payload }: PayloadAction<CompaniesType[]>){
       state.companies = payload
@@ -90,6 +95,7 @@ export const {
   setCompanyId,
   setSiteId,
   setVisitStatus,
+  setVisitorIdTypes,
   resetVisitReducer,
 } = visitReducerSlice.actions
 

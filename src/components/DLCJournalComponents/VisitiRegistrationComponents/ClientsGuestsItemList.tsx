@@ -22,13 +22,13 @@ type ItemListProps = {
     fetchData?:         () => Promise<void>
 }
 
-const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: ItemListProps) => {
+const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: ItemListProps) => {
   const [cookies]                                                 = useCookies(['access_token'])
   const { id }                                                    = useParams()
   const [clientsGuestNamesInput, setClientsGuestsNamesInput]      = React.useState<string>('')
   const [clientsGuestCompanyInput, setClientsGuestCompanyInput]   = React.useState<string>('')
   const visitorsCount                                             = useAppSelector((state) => state.visit.visitor.length)
-
+  const visitData = useAppSelector((state) => state.visit.visit)
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
     if(filtered){
@@ -47,8 +47,8 @@ const ClientsGuestsItemList = ({ removeUrl,list, setListItems, fetchData }: Item
       name:    clientsGuestNamesInput,
       company: clientsGuestCompanyInput,
     }
-    if(id){
-      await put('visit/visit', {id: id, guests}, cookies.access_token)
+    if(id && visitData?.guests){
+      await put('visit/visit', {id: id, guests: [...visitData.guests, guests]}, cookies.access_token)
     }
     if(clientsGuestNamesInput !== ''){
       setListItems((prev) => prev && [...prev, guests])

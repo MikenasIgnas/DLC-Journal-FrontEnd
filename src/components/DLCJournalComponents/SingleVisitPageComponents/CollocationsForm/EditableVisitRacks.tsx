@@ -1,39 +1,41 @@
 /* eslint-disable max-len */
-import {
-  Card,
-  Checkbox,
-}                               from 'antd'
-
+import { Card, Checkbox }       from 'antd'
+import { Premises }             from '../../../../types/globalTypes'
 import {
   useAppDispatch,
   useAppSelector,
-}                               from '../../../store/hooks'
-
-import { selectRacks }          from '../../../auth/SitesReducer/selectors'
-import { Premises }             from '../../../types/globalTypes'
-import { CheckboxChangeEvent }  from 'antd/es/checkbox'
-
+}                               from '../../../../store/hooks'
+import { selectRacks }          from '../../../../auth/SitesReducer/selectors'
 import {
   addToChecklist,
   removeFromChecklist,
-}                               from '../../../auth/RacksReducer/RacksReducer'
-
-import CollocationCardTitle     from './CollocationCardTitle'
+  setCheckedList,
+}                               from '../../../../auth/RacksReducer/RacksReducer'
+import { CheckboxChangeEvent }  from 'antd/es/checkbox'
+import React                    from 'react'
+import CollocationCardTitle     from '../../VisitiRegistrationComponents/CollocationCardTitle'
 
 type VisitRegistraTionRacksCheckboxGroupProps = {
     premise: Premises
 }
 
-const VisitRegistraTionRacksCheckboxGroup = ({ premise }: VisitRegistraTionRacksCheckboxGroupProps) => {
+const EditableVisitRacks = ({ premise }: VisitRegistraTionRacksCheckboxGroupProps) => {
+  const dispatch            = useAppDispatch()
+  const companies           = useAppSelector((state) => state.visit.companies)
+  const visitData           = useAppSelector((state)=> state.visit.visit)
   const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
   const racksIds            = selectPremiseRacks.map((el) => el._id)
   const checkboxOptions     =  selectPremiseRacks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
-  const dispatch            = useAppDispatch()
   const checkedList         = useAppSelector((state) => state.racks.checkedList).filter((el) => racksIds.includes(el))
-  const companies           = useAppSelector((state) => state.visit.companies)
-  const hasMatchingRacks    = companies.filter(company => company.racks.some(rack => checkedList.includes(rack))).length > 1
   const checkAll            = racksIds.every((el) => checkedList.includes(el))
   const indeterminate       = checkedList?.length > 0 && checkedList.length < selectPremiseRacks.length
+  const hasMatchingRacks    = companies.filter(company => company.racks.some(rack => checkedList.includes(rack))).length > 1
+
+  React.useEffect(() => {
+    if(visitData?.racks){
+      dispatch(setCheckedList(visitData.racks))
+    }
+  },[])
 
   const onChange = (list: string[]) => {
     const filterCheckedRacks = selectPremiseRacks.filter((el) => !list.includes(el._id)).map((val) => val._id)
@@ -48,6 +50,7 @@ const VisitRegistraTionRacksCheckboxGroup = ({ premise }: VisitRegistraTionRacks
       dispatch(removeFromChecklist(racksIds))
     }
   }
+
   return (
     <Card
       className='CollocationItemCard'
@@ -72,4 +75,4 @@ const VisitRegistraTionRacksCheckboxGroup = ({ premise }: VisitRegistraTionRacks
   )
 }
 
-export default VisitRegistraTionRacksCheckboxGroup
+export default EditableVisitRacks

@@ -1,34 +1,34 @@
 /* eslint-disable max-len */
-import React                            from 'react'
-import { put }                         from '../../../Plugins/helpers'
-import { useCookies }                   from 'react-cookie'
+import React                      from 'react'
+import { put }                    from '../../../Plugins/helpers'
+import { useCookies }             from 'react-cookie'
 import {
   Button,
   Empty,
   Form,
   message,
-}                                       from 'antd'
+}                                 from 'antd'
 import {
   VisitsType,
   Guest,
-}                                       from '../../../types/globalTypes'
-import VisitorsList                     from './VisitorsList'
-import VisitPurposeList                 from './VisitPurposeList'
-import VisitorAdditionList              from './VisitorAdditionList'
-import VisitRegistrationCollocationList from './VisitRegistrationCollocationList'
-import CarPlatesItemList                from './CarPlatesItemList'
-import ClientsGuestsItemList            from './ClientsGuestsItemList'
-import { useNavigate }                  from 'react-router'
-import SuccessMessage                   from '../../UniversalComponents/SuccessMessage'
+}                                 from '../../../types/globalTypes'
+import VisitorsList               from './VisitorsList'
+import VisitPurposeList           from './VisitPurposeList'
+import VisitorAdditionList        from './VisitorAdditionList'
+import CarPlatesItemList          from './CarPlatesItemList'
+import ClientsGuestsItemList      from './ClientsGuestsItemList'
+import { useNavigate }            from 'react-router'
+import SuccessMessage             from '../../UniversalComponents/SuccessMessage'
 
 import {
   useAppDispatch,
   useAppSelector,
-}                                       from '../../../store/hooks'
+}                                 from '../../../store/hooks'
 
-import { setCompanyEmployees}           from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { useSearchParams }              from 'react-router-dom'
-import VisitSitesSelectors              from './VisitSitesSelectors'
+import { setCompanyEmployees}     from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useSearchParams }        from 'react-router-dom'
+import VisitSitesSelectors        from './VisitSitesSelectors'
+import VisitRegistrationRacksList from './VisitRegistrationRacksList'
 
 const VisitRegistrationForm = () => {
   const [cookies]                         = useCookies(['access_token'])
@@ -46,16 +46,9 @@ const VisitRegistrationForm = () => {
   const visitId                           = searchParams.get('id')
   const checkedList                       = useAppSelector((state) => state.racks.checkedList)
 
-
   React.useEffect(() => {
-
-
-
-    return () => {
-      form.resetFields()
-    }
+    form.resetFields()
   },[])
-
 
   const registerVisit = async(values: VisitsType) => {
     const visitPurpose    = localStorage.getItem('visitPurpose')
@@ -107,7 +100,7 @@ const VisitRegistrationForm = () => {
           {companyEmployees && companyEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           <VisitorsList/>
           <VisitPurposeList/>
-          <VisitRegistrationCollocationList/>
+          <VisitRegistrationRacksList/>
         </div>
         <ClientsGuestsItemList list={clientsGuests} setListItems={setClientsGuests}/>
         <CarPlatesItemList list={carPlates} setList={setCarPlates}/>

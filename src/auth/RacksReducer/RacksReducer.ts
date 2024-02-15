@@ -37,6 +37,9 @@ const racksSlice = createSlice({
     setPermise(state, { payload }: PayloadAction<Premises[]> ) {
       state.premise = payload
     },
+    resetRacksReducer(){
+      return initialState
+    },
   },
 })
 
@@ -46,6 +49,7 @@ export const {
   removeFromChecklist,
   setCheckedList,
   setPermise,
+  resetRacksReducer,
 } = racksSlice.actions
 
 export default racksSlice.reducer

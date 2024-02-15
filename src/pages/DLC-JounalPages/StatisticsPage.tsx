@@ -16,7 +16,7 @@ const StatisticsPage = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const allVisits = await get('getVisits', cookies.access_token)
+        const allVisits = await get('visit/visit', cookies.access_token)
         setVisits(allVisits.data)
       } catch (err) {
         console.error(err)

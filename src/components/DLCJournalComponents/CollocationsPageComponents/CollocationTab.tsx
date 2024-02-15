@@ -51,9 +51,8 @@ const CollocationTab = () => {
     const newActiveKey = `newTab${newTabIndex.current++}`
     const newPanes = [...sites]
     newPanes.push({
-      label: siteNameInputValue, key:   newActiveKey,
-      name:  '',
-      _id:   '',
+      name: '',
+      _id:  '',
     })
     setSites(newPanes)
     setActiveKey(newActiveKey)
@@ -66,16 +65,16 @@ const CollocationTab = () => {
     let newActiveKey = activeKey
     let lastIndex = -1
     sites.forEach((item, i) => {
-      if (item.key === targetKey) {
+      if (item._id === targetKey) {
         lastIndex = i - 1
       }
     })
     const newPanes = sites.filter((item) => item._id !== targetKey)
     if (newPanes.length && newActiveKey === targetKey) {
       if (lastIndex >= 0) {
-        newActiveKey = newPanes[lastIndex].key
+        newActiveKey = newPanes[lastIndex]._id
       } else {
-        newActiveKey = newPanes[0].key
+        newActiveKey = newPanes[0]._id
       }
     }
     setSites(newPanes)

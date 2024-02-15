@@ -173,7 +173,7 @@ export type CollocationType = {
   [key:string] : string[]
 }
 
-export type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+export type StatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
 
 export type VisitorsType = {
   idType?:            string | null | undefined;

@@ -1,16 +1,38 @@
 /* eslint-disable max-len */
-import { useAppSelector } from '../../../../store/hooks'
-import VisitCheckBoxGroup from './VisitCheckBoxGroup'
+import { Card, Checkbox }   from 'antd'
+import { useAppSelector }   from '../../../../store/hooks'
+import { selectRacks }      from '../../../../auth/SitesReducer/selectors'
+import { Premises }         from '../../../../types/globalTypes'
+import CollocationCardTitle from '../../VisitiRegistrationComponents/CollocationCardTitle'
 
 type VisitRacksProps = {
-    premiseId: string;
-    companyRacks: string[] | undefined
+  premise: Premises
 }
 
-const VisitRacks = ({ companyRacks } : VisitRacksProps) => {
-  const racks = useAppSelector((state) => state.sites.racks)?.filter((el) => el._id && companyRacks?.includes(el._id))
+const VisitRacks = ({ premise } : VisitRacksProps) => {
+  const companies = useAppSelector((state) => state.visit.companies)
+  const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
+  const visitingRacks       = useAppSelector((state) => state.visit.visit)?.racks
+  const editCollocations    = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const filledRacks         = selectPremiseRacks.filter((el) => visitingRacks?.includes(el._id))
+  const checkboxOptions     =  filledRacks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
+  const hasMatchingRacks    = companies.filter(company => company.racks.some(rack => visitingRacks?.includes(rack))).length > 1
+
   return (
-    <div>{racks?.map((rack) => <VisitCheckBoxGroup key={rack._id} rack={rack}/>)}</div>
+    <>
+      {
+        filledRacks.length > 0 &&
+        <Card className='CollocationItemCard' key={premise._id} title={<CollocationCardTitle hasMatchingRacks={hasMatchingRacks} premise={premise.name}/>}>
+          <div>
+            <Checkbox.Group
+              disabled={!editCollocations}
+              value={visitingRacks}
+              options={checkboxOptions}
+            />
+          </div>
+        </Card>
+      }
+    </>
   )
 }
 
