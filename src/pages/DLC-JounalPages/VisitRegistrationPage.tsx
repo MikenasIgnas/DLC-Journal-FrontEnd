@@ -20,6 +20,7 @@ const VisitRegistrationPage= () => {
 
   useFetchVisitData()
   useFetchSites()
+
   return (
     <div style={contentStyle}>
       <Card style={{width: '100%'}}>

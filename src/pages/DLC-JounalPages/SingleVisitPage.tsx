@@ -15,7 +15,7 @@ import VisitStatusButton      from '../../components/DLCJournalComponents/Single
 const SingleVisitPage = () => {
   useFetchVisitData()
   useFetchSites()
-  const visitData = useAppSelector((state) => state.visit.visit)
+  const visitData                         = useAppSelector((state) => state.visit.visit)
   const [clientsGuests, setClientsGuests] = React.useState<Guest[] | undefined>([])
   const [carPlates, setCarPlates]         = React.useState<string[] | undefined>([])
 

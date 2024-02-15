@@ -5,11 +5,14 @@ import {
   VisitStatus,
   Visitors,
 }                                         from '../../../types/globalTypes'
-import { useAppDispatch, useAppSelector }                 from '../../../store/hooks'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                         from '../../../store/hooks'
 import { useParams }                      from 'react-router'
 import { useCookies }                     from 'react-cookie'
 import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
-import { setVisit } from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { setVisit }                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const useVisitValidation = () => {
   const [cookies]                   = useCookies(['access_token'])
@@ -18,10 +21,11 @@ const useVisitValidation = () => {
   const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
   const editCollocations            = useAppSelector((state) => state.visitPageEdits.editCollocations)
   const { id }                      = useParams()
-  const hasValidId                  = (visitors: Visitors[]) => visitors?.every(obj => obj.visitorIdType)
   const visitData                   = useAppSelector((state) => state.visit.visit)
   const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
-  const dispatch = useAppDispatch()
+  const dispatch                    = useAppDispatch()
+  const hasValidId                  = (visitors: Visitors[]) => visitors?.every(obj => obj.visitorIdType)
+
   const validate = async (url: string, successMessage: string, visitStatuses: VisitStatus | undefined) => {
     const visitPurpose = visitData?.visitPurpose
     if (editVisitInformation || editVisitors || editCollocations) {

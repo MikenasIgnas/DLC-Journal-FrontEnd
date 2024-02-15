@@ -8,10 +8,7 @@ import {
   Form,
   message,
 }                                 from 'antd'
-import {
-  VisitsType,
-  Guest,
-}                                 from '../../../types/globalTypes'
+import { Guest}                   from '../../../types/globalTypes'
 import VisitorsList               from './VisitorsList'
 import VisitPurposeList           from './VisitPurposeList'
 import VisitorAdditionList        from './VisitorAdditionList'
@@ -29,6 +26,7 @@ import { setCompanyEmployees}     from '../../../auth/VisitorEmployeeReducer/Vis
 import { useSearchParams }        from 'react-router-dom'
 import VisitSitesSelectors        from './VisitSitesSelectors'
 import VisitRegistrationRacksList from './VisitRegistrationRacksList'
+import { selectVisitingCompanyEmplyees } from '../../../auth/VisitorEmployeeReducer/selectors'
 
 const VisitRegistrationForm = () => {
   const [cookies]                         = useCookies(['access_token'])
@@ -45,35 +43,73 @@ const VisitRegistrationForm = () => {
   const companyId                         = searchParams.get('companyId')
   const visitId                           = searchParams.get('id')
   const checkedList                       = useAppSelector((state) => state.racks.checkedList)
+  const visitingEmployees                 = useAppSelector(selectVisitingCompanyEmplyees)
 
   React.useEffect(() => {
     form.resetFields()
   },[])
 
-  const registerVisit = async(values: VisitsType) => {
-    const visitPurpose    = localStorage.getItem('visitPurpose')
-    const preparedStatus  = visitStatus.filter((el) => el.name === 'Paruošti')
-    if(visitPurpose && visitId){
-      const selectedPermissions = JSON.parse(visitPurpose)
-      values.id = visitId
-      values.companyId = companyId
-      values.racks = checkedList
-      values.carPlates = carPlates
-      values.guests = clientsGuests
-      values.siteId = siteId
-      values.visitPurpose = selectedPermissions
-      values.statusId = preparedStatus?.[0]._id
-      const res = await put('visit/visit', values, cookies.access_token)
-      if(!res.message){
-        localStorage.clear()
-        form.resetFields()
-        navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${values.siteId}&id=${visitId}&companyId=${companyId}`)
-      }else{
+  const registerVisit = async () => {
+    const visitPurpose = localStorage.getItem('visitPurpose')
+    const preparedStatus = visitStatus.find((el) => el.name === 'Paruošti')
+
+    if (!visitId) {
+      return
+    }
+
+    if (visitingEmployees.length < 1) {
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinkti įmonės darbuotojai',
+      })
+      return
+    }
+
+    if (!visitPurpose || JSON.parse(visitPurpose).length < 1) {
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinktas vizito tikslas',
+      })
+      return
+    }
+    if (checkedList.length < 1) {
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinktos spintos',
+      })
+      return
+    }
+
+    const selectedPermissions = JSON.parse(visitPurpose)
+
+    const visitValues = {
+      id:           visitId,
+      companyId,
+      racks:        checkedList,
+      carPlates,
+      guests:       clientsGuests,
+      siteId,
+      visitPurpose: selectedPermissions,
+      statusId:     preparedStatus?._id,
+    }
+
+    try {
+      const res = await put('visit/visit', visitValues, cookies.access_token)
+      if (res.message) {
         messageApi.error({
           type:    'error',
           content: res.message,
         })
+      } else {
+        localStorage.clear()
+        form.resetFields()
+        navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&id=${visitId}&companyId=${companyId}`)
       }
+    } catch (error) {
+      messageApi.error({
+        type:    'error',
+        content: 'Įvyko klaida vykdant vizito registraciją.',
+      })
     }
   }
 
