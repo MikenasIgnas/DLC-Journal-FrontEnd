@@ -46,8 +46,8 @@ const useSetVisitsData = () => {
   React.useEffect(() => {
     (async () => {
       setLoading(true)
-      const documents = await get('visitsCount', cookies.access_token)
-      setCount(documents.data)
+      const documentsCount = await get('visit/count', cookies.access_token)
+      setCount(documentsCount)
       setLoading(false)
     })()
   }, [])

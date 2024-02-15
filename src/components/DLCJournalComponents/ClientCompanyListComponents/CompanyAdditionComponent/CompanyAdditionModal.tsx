@@ -79,7 +79,6 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
       }
     }
   }
-
   return (
     <Modal
       title={additionModalTitle}

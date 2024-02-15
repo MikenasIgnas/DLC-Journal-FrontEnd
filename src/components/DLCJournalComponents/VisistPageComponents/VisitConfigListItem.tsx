@@ -19,7 +19,7 @@ type VisitConfigListItemProps = {
 
 const VisitConfigListItem = ({ item, configItems, setConfigItems, url }: VisitConfigListItemProps) => {
   const [cookies]                    = useCookies(['access_token'])
-  const [inputValue, setInputValue] = React.useState<string >()
+  const [inputValue, setInputValue] = React.useState<string | undefined>(item.name)
   const [edit, setEdit]             = React.useState(false)
 
   const saveChanges = async(id: string) => {
@@ -47,7 +47,7 @@ const VisitConfigListItem = ({ item, configItems, setConfigItems, url }: VisitCo
   return (
     <List.Item>
       <List.Item.Meta
-        title={!edit ? <div>{item.name}</div> : <Input onChange={(e) => setInputValue(e.target.value)}/>}
+        title={!edit ? <div>{item.name}</div> : <Input onChange={(e) => setInputValue(e.target.value !== '' ? e.target.value : item.name )} defaultValue={item.name}/>}
       />
       <div style={{display: 'flex', width: '50px', justifyContent: 'space-between', alignItems: 'center'}}>
         {!edit ? <EditOutlined onClick={() => setEdit(true)} style={{color: 'green'}} /> : <SaveOutlined onClick={() => saveChanges(item._id)}/>}

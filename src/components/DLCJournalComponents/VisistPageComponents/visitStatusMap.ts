@@ -1,9 +1,9 @@
 import { StatusType } from '../../../types/globalTypes'
 
 const statusMap: { [key: string]: StatusType } = {
-  Pradėti:  'success',
-  Paruošti: 'processing',
-  Baigti:   'error',
+  Pradėtas:  'success',
+  Paruoštas: 'processing',
+  Baigtas:   'error',
 }
 
 export default statusMap

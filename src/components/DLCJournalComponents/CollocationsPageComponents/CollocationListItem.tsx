@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React                                                      from 'react'
-import { Collapse }                                               from 'antd'
+import { Collapse, Modal }                                               from 'antd'
 import { Premises }                                               from '../../../types/globalTypes'
 import { AppstoreAddOutlined, DeleteOutlined, FileExcelOutlined } from '@ant-design/icons'
 import { useCookies }                                             from 'react-cookie'
@@ -21,18 +21,27 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
   const [cookies]           = useCookies(['access_token'])
   const [, setSearchParams] = useSearchParams()
   const dispatch            = useAppDispatch()
-
+  const [isModalOpen, setIsModalOpen] = React.useState(false)
   const addRacks = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
     e.stopPropagation()
     dispatch(setOpenRacksAdditionModal(true))
     setSearchParams(`?menuKey=5&tabKey=1&siteId=${siteId}&premiseId=${id}`)
   }
+  const showModal = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+    e.stopPropagation()
+    setIsModalOpen(true)
+  }
 
-  const deletePremise = async(e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+  const handleOk = async(e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+    setIsModalOpen(false)
     e.stopPropagation()
     await deleteItem('site/premise', {id: item._id} ,cookies.access_token)
     const newPremises = premises?.filter((el) => el._id !== id)
     setPremises(newPremises)
+  }
+
+  const handleCancel = () => {
+    setIsModalOpen(false)
   }
 
   const generateSingleCollocationCSV = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
@@ -44,7 +53,7 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
     <div className='SingleCollocationIconContainer'>
       <AppstoreAddOutlined onClick={(e) => addRacks(e, id)}/>
       <FileExcelOutlined style={{color: 'green'}} onClick={(e) => generateSingleCollocationCSV(e, id)}/>
-      <DeleteOutlined style={{color: 'red'}} onClick={(e) => deletePremise(e, id)}/>
+      <DeleteOutlined style={{color: 'red'}} onClick={showModal}/>
     </div>
   )
 
@@ -61,6 +70,9 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
           },
         ]}
       />
+      <Modal title='Pašalinti patalpą' open={isModalOpen} onOk={(e) => handleOk(e, item._id)} onCancel={handleCancel}>
+        <p>Ar tikrai norite pašalinti {item.name} patalpą? </p>
+      </Modal>
     </div>
   )
 }

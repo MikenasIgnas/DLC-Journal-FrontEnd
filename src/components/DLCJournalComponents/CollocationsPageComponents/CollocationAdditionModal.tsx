@@ -1,14 +1,15 @@
 /* eslint-disable max-len */
-import { Button, Form, Input, Modal }         from 'antd'
+import { Button, Form, Input, Modal, message }         from 'antd'
 import React                                  from 'react'
 import { useAppDispatch, useAppSelector }     from '../../../store/hooks'
 import { setOpenCollocationAdditionModal }    from '../../../auth/ModalStateReducer/ModalStateReducer'
 import { useCookies }                         from 'react-cookie'
 import { post }                               from '../../../Plugins/helpers'
 import { useSearchParams }                    from 'react-router-dom'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type FormValuesType = {
-  premise:  string;
+  name:  string;
   siteId:   string | null;
 }
 
@@ -19,13 +20,18 @@ const CollocationAdditionModal = () => {
   const openCollocationAdditionModal  = useAppSelector((state) => state.modals.openCollocationAdditionModal)
   const [searchParams]                = useSearchParams()
   const siteId                        = searchParams.get('siteId')
-
+  const [messageApi, contextHolder]   = message.useMessage()
   const onFinish = async(values: FormValuesType) => {
     values.siteId = siteId
     const res = await post('site/premise', values, cookies.access_token)
-    if(!res.error){
+    if(!res.message){
       form.resetFields()
       dispatch(setOpenCollocationAdditionModal(false))
+    }else{
+      messageApi.error({
+        type:    'error',
+        content: 'Patalpa jau egzituoja',
+      })
     }
   }
 
@@ -41,21 +47,24 @@ const CollocationAdditionModal = () => {
   }
 
   return (
-    <Modal
-      width={1000}
-      title='Pataltpos pridėjimas'
-      open={openCollocationAdditionModal}
-      onOk={() => dispatch(setOpenCollocationAdditionModal(false))}
-      onCancel={onCancel}
-      footer={false}
-    >
-      <Form form={form} onFinish={onFinish} onKeyDown={onkeydown}>
-        <Form.Item name='name' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
-          <Input placeholder='Patalpa'/>
-        </Form.Item>
-        <Button htmlType='submit'>Pridėti</Button>
-      </Form>
-    </Modal>
+    <>
+      <Modal
+        width={1000}
+        title='Pataltpos pridėjimas'
+        open={openCollocationAdditionModal}
+        onOk={() => dispatch(setOpenCollocationAdditionModal(false))}
+        onCancel={onCancel}
+        footer={false}
+      >
+        <Form form={form} onFinish={onFinish} onKeyDown={onkeydown}>
+          <Form.Item name='name' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
+            <Input placeholder='Patalpa'/>
+          </Form.Item>
+          <Button htmlType='submit'>Pridėti</Button>
+          <SuccessMessage contextHolder={contextHolder}/>
+        </Form>
+      </Modal>
+    </>
   )
 }
 
