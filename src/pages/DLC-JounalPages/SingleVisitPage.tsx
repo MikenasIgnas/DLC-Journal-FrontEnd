@@ -10,6 +10,7 @@ import useFetchSites          from '../../Plugins/useFetchSites'
 import useFetchVisitData      from '../../Plugins/useFethcVisitData'
 import { Guest }              from '../../types/globalTypes'
 import { useAppSelector }     from '../../store/hooks'
+import VisitStatusButton      from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
 
 const SingleVisitPage = () => {
   useFetchVisitData()
@@ -39,11 +40,7 @@ const SingleVisitPage = () => {
         list={carPlates}
         setList={setCarPlates}
       />
-      {/* <VisitStatusButton
-        fetchData={fetchData}
-        visitStatuses={visitStatuses}
-        visitors={visitors}
-      /> */}
+      <VisitStatusButton/>
     </>
   )
 }

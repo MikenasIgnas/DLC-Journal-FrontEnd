@@ -1,27 +1,21 @@
-/* eslint-disable max-len */
-import { Button }                 from 'antd'
-import useVisitValidation         from './useVisitValidation'
-import SuccessMessage             from '../../UniversalComponents/SuccessMessage'
-import { VisitStatus, Visitors }  from '../../../types/globalTypes'
-import { useAppSelector }         from '../../../store/hooks'
+import { Button }          from 'antd'
+import useVisitValidation  from './useVisitValidation'
+import SuccessMessage      from '../../UniversalComponents/SuccessMessage'
+import { useAppSelector }  from '../../../store/hooks'
 
-type VisitStatusButtonProps = {
-  visitors:       Visitors[]
-  visitStatuses:  VisitStatus[] | undefined
-  fetchData:      () => Promise<void>
-}
 
-const VisitStatusButton = ({ visitors, visitStatuses, fetchData }: VisitStatusButtonProps) => {
+const VisitStatusButton = () => {
   const { validate, contextHolder } = useVisitValidation()
   const visitData                   = useAppSelector((state) => state.visit.visit)
+  const visitStatuses               = useAppSelector((state) => state.visit.visitStatus)
+
   const startVisit = async() => {
-    validate(visitData, visitors, 'visit/start', 'Vizitas Pradėtas!', visitStatuses?.[0], fetchData)
+    validate('visit/start', 'Vizitas Pradėtas!', visitStatuses?.[0])
   }
 
   const endVisit = async() => {
-    validate(visitData, visitors, 'visit/end', 'Vizitas Baigtas!', visitStatuses?.[2], fetchData)
+    validate('visit/end', 'Vizitas Baigtas!', visitStatuses?.[2])
   }
-
 
   return (
     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
@@ -29,7 +23,7 @@ const VisitStatusButton = ({ visitors, visitStatuses, fetchData }: VisitStatusBu
         {!visitData?.startDate && (
           <Button onClick={startVisit}>Pradėti Vizitą</Button>
         )}
-        {visitData?.startDate && visitData?.endDate && (
+        {visitData?.startDate && !visitData?.endDate && (
           <Button onClick={endVisit}>Baigti Vizitą</Button>
         )}
       </div>

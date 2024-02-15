@@ -1,10 +1,15 @@
 /* eslint-disable max-len */
-import { message }                from 'antd'
-import { post }                   from '../../../Plugins/helpers'
-import { VisitStatus, Visitors, VisitsType }   from '../../../types/globalTypes'
-import { useAppSelector }         from '../../../store/hooks'
-import { useParams }              from 'react-router'
-import { useCookies }             from 'react-cookie'
+import { message }                        from 'antd'
+import { post }                           from '../../../Plugins/helpers'
+import {
+  VisitStatus,
+  Visitors,
+}                                         from '../../../types/globalTypes'
+import { useAppDispatch, useAppSelector }                 from '../../../store/hooks'
+import { useParams }                      from 'react-router'
+import { useCookies }                     from 'react-cookie'
+import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
+import { setVisit } from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const useVisitValidation = () => {
   const [cookies]                   = useCookies(['access_token'])
@@ -14,14 +19,17 @@ const useVisitValidation = () => {
   const editCollocations            = useAppSelector((state) => state.visitPageEdits.editCollocations)
   const { id }                      = useParams()
   const hasValidId                  = (visitors: Visitors[]) => visitors?.every(obj => obj.visitorIdType)
-  const validate = async (visitData: VisitsType | undefined, visitors: Visitors[], url: string, successMessage: string, visitStatuses: VisitStatus | undefined, fetchData: () => Promise<void> ) => {
+  const visitData                   = useAppSelector((state) => state.visit.visit)
+  const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
+  const dispatch = useAppDispatch()
+  const validate = async (url: string, successMessage: string, visitStatuses: VisitStatus | undefined) => {
     const visitPurpose = visitData?.visitPurpose
     if (editVisitInformation || editVisitors || editCollocations) {
       messageApi.error({ type: 'error', content: 'Neišsaugoti duomenys' })
       return
     }
 
-    if (!visitors?.length) {
+    if (!visitingEmployees?.length) {
       messageApi.error({ type: 'error', content: 'Nepasirinkti įmonės darbuotojai' })
       return
     }
@@ -31,7 +39,7 @@ const useVisitValidation = () => {
       return
     }
 
-    if (!hasValidId(visitors)) {
+    if (!hasValidId(visitingEmployees)) {
       messageApi.error({ type: 'error', content: 'Nepasirinktas dokumento tipas' })
       return
     }
@@ -43,7 +51,7 @@ const useVisitValidation = () => {
           type:    'success',
           content: successMessage,
         })
-        await fetchData()
+        dispatch(setVisit(res))
       } else {
         messageApi.error({
           type:    'error',

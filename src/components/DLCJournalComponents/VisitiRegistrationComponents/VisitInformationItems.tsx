@@ -44,7 +44,7 @@ const VisitInformationItems = ( edit: boolean) => {
   const preparedStatus        = visitStatuses.find((el) => el._id === visitData?.statusId)
 
   const changeAddress = async(value:string) => {
-    setSearchParams(`siteId=${value}`)
+    setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&id=${visitData?._id}`)
   }
 
   const status = preparedStatus && statusMap[preparedStatus.name]

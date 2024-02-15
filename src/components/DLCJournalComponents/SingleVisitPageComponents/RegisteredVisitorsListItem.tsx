@@ -28,7 +28,6 @@ type RegisteredVisitorsListItemProps = {
 }
 
 const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) => {
-
   const {id}               = useParams()
   const [cookies]          = useCookies(['access_token'])
   const signatureCanvasRef = React.useRef<any>(null)
