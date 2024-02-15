@@ -42,7 +42,7 @@ const VisitInformationItems = ( edit: boolean) => {
   const selectedVisitPurposes = permissions.filter((el) => visitData?.visitPurpose.includes(el._id)).map((item) => ({value: item._id, label: item.name}))
   const visitStatuses         = useAppSelector((state) => state.visit.visitStatus)
   const preparedStatus        = visitStatuses.find((el) => el._id === visitData?.statusId)
-
+  const dlcEmlpyee            = useAppSelector((state) => state.visit.dlcEmployee)
   const changeAddress = async(value:string) => {
     setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&id=${visitData?._id}`)
   }
@@ -99,7 +99,7 @@ const VisitInformationItems = ( edit: boolean) => {
       key:   '7',
       label: 'Lydintis asmuo',
       children:
-            <div>{visitData?.dlcEmlpyee}</div>,
+            <div>{dlcEmlpyee?.name}</div>,
     },
     {
       key:   '8',

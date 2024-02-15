@@ -25,6 +25,7 @@ interface Visits {
     siteId?:          string
     visitStatus:      VisitStatus[]
     visitorIdTypes:   VisitorsIdTypes[]
+    dlcEmployee?:     EmployeesType;
   }
 const initialState: Visits = {
   visitor:          [],
@@ -74,6 +75,9 @@ const visitReducerSlice = createSlice({
     setCompanyId(state, { payload }: PayloadAction<string | undefined>){
       state.companyId = payload
     },
+    setDlcEmployee(state, { payload }: PayloadAction<EmployeesType>){
+      state.dlcEmployee = payload
+    },
     setSiteId(state, { payload }: PayloadAction<string | undefined>){
       state.siteId = payload
     },
@@ -96,6 +100,7 @@ export const {
   setSiteId,
   setVisitStatus,
   setVisitorIdTypes,
+  setDlcEmployee,
   resetVisitReducer,
 } = visitReducerSlice.actions
 
