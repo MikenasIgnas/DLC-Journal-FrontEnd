@@ -3,6 +3,7 @@ import { TimeRangePickerProps } from 'antd'
 import dayjs                    from 'dayjs'
 import type { Dayjs }           from 'dayjs'
 import React                    from 'react'
+import { convertUTCtoLocalDate } from './helpers'
 
 const useGetChartDates = () => {
   const today                   = new Date()
@@ -12,12 +13,8 @@ const useGetChartDates = () => {
   const [dateFrom, setDateFrom] = React.useState(lastMonth)
 
   const formatDateString = (date: Date) => {
-    const year = date.getFullYear()
-    const month = (date.getMonth() + 1).toString().padStart(2, '0')
-    const day = date.getDate().toString().padStart(2, '0')
-
-    const formattedDate = `${year}-${month}-${day}`
-    return formattedDate
+    const fullDate = convertUTCtoLocalDate(date)
+    return fullDate
   }
 
   const rangePresets: TimeRangePickerProps['presets'] = [

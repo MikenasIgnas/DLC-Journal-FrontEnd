@@ -4,21 +4,20 @@ import React                                from 'react'
 import { Avatar, Form, Input, UploadFile }  from 'antd'
 import PhotoUploader                        from '../../UniversalComponents/PhotoUploader/PhotoUploader'
 import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
-import { CompaniesType }                    from '../../../types/globalTypes'
+import { useAppSelector } from '../../../store/hooks'
 
 type SingleCompaniesTitleProps = {
-    edit:        boolean;
     setFileList: React.Dispatch<React.SetStateAction<UploadFile<any>[]>>
     fileList:    UploadFile<any>[]
-    company:     CompaniesType | undefined
 }
 
-const SingleCompanyTitle = ({company, edit, setFileList, fileList}: SingleCompaniesTitleProps) => {
+const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) => {
   const windowSize = useSetWindowsSize()
-
+  const company = useAppSelector((state) => state.singleCompany.singleCompany)
+  const editCompanyPage = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
   return (
     <div>
-      {!edit ?
+      {!editCompanyPage ?
         <div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
             <div>{company?.code}</div>

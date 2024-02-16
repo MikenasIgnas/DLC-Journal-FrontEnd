@@ -6,33 +6,28 @@ import { useCookies }                     from 'react-cookie'
 import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
 import { useParams, useSearchParams }     from 'react-router-dom'
 import ListItem                           from '../SubClientsTab/ListItem'
-import { useAppDispatch }                 from '../../../../store/hooks'
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }  from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import HighlightText                      from '../../../UniversalComponents/HighlightText'
-import { EmployeesType } from '../../../../types/globalTypes'
+import { setCompaniesEmployees }          from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 
 
-type ClientsEmployeeListProps = {
-  companyName:            string | undefined;
-  list:                   EmployeesType[]
-  employeeRemoved:        (id: string) => void
-  setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
-  editClientsEmployee:    boolean
-  setEmployeesList:       React.Dispatch<React.SetStateAction<EmployeesType[]>>
-}
-
-const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClientsEmployee, editClientsEmployee, setEmployeesList}: ClientsEmployeeListProps) => {
+const ClientsEmployeeList = () => {
   const [cookies]                       = useCookies(['access_token'])
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch                        = useAppDispatch()
   const employeeFilter                  = searchParams.get('employeeFilter')
   const {id}                            = useParams()
-
+  const companiesEmployees = useAppSelector((state) => state.singleCompany.companiesEmployees)
   const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     dispatch(setOpenClientsEmployeesDrawer(true))
   }
-
+  const employeeRemoved = (id: string) => {
+    let newEmployeesList = [...companiesEmployees]
+    newEmployeesList = newEmployeesList.filter(x => x?._id !== id)
+    dispatch(setCompaniesEmployees(newEmployeesList))
+  }
   const deleteEmployee = async(employeeId: string | undefined) => {
     if(employeeId){
       await deleteItem('company/CompanyEmployee', {id: employeeId},cookies.access_token)
@@ -51,12 +46,13 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
   }
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const filtered = list?.filter((el) => `${el.name} ${el.lastname}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
+    const filtered = companiesEmployees?.filter((el) => `${el.name} ${el.lastname}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
     setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
-    setEmployeesList(filtered)
+    dispatch(setCompaniesEmployees(filtered))
+    //todo fix old route
     if(e.target.value === ''){
       const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
-      setEmployeesList(companyEmployees.data)
+      dispatch(setCompaniesEmployees(companyEmployees.data))
     }
   }
 
@@ -67,7 +63,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
       <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
         locale={{emptyText: 'Nėra pridėtų darbuotojų'}}
-        dataSource={list}
+        dataSource={companiesEmployees}
         bordered
         pagination={{
           pageSize: 10,
@@ -84,11 +80,7 @@ const ClientsEmployeeList = ({ list, companyName, employeeRemoved, setEditClient
           />
         )}
       />
-      <ClientsEmployeeDrawer
-        setEditClientsEmployee={setEditClientsEmployee}
-        editClientsEmployee={editClientsEmployee}
-        companyName={companyName}
-      />
+      <ClientsEmployeeDrawer/>
     </div>
   )
 }

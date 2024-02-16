@@ -17,7 +17,7 @@ const StatisticsPage = () => {
     const fetchData = async () => {
       try {
         const allVisits = await get('visit/visit', cookies.access_token)
-        setVisits(allVisits.data)
+        setVisits(allVisits)
       } catch (err) {
         console.error(err)
       }

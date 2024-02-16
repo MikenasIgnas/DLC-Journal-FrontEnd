@@ -24,7 +24,7 @@ type VisitsBarChartProps = {
 };
 
 type ChartDataType = {
-  name: string;
+  name: string | undefined;
   Vizitai: number;
 };
 

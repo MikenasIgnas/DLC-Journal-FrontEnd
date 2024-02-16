@@ -1,19 +1,25 @@
 /* eslint-disable max-len */
 import { createSelector } from '@reduxjs/toolkit'
-import { CompaniesType, FullSiteData, PremiseRacks, Racks, RootState } from '../../types/globalTypes'
-import { selectCompany } from '../VisitorEmployeeReducer/selectors'
 
+import {
+  CompaniesType,
+  FullSiteData,
+  PremiseRacks,
+  Racks,
+  RootState,
+} from '../../types/globalTypes'
 
-const fullSiteData = (state: RootState) => state.sites.fullSiteData
-const selectSiteId       = (state: RootState) => state.visit.siteId
+const fullSiteData  = (state: RootState) => state.singleCompany.fullSiteData
+const selectCompany = (state: RootState) => state.singleCompany.singleCompany
+const siteId        = (state: RootState) => state.singleCompany.siteId
 
-const findSite = (sites: FullSiteData[], siteId: string | undefined) => {
+const findSite      = (sites: FullSiteData[], siteId: string | null | undefined) => {
   const site = sites.find((el) => el._id === siteId)
   return site
 }
 
 export const selectSite =  createSelector(
-  [fullSiteData, selectSiteId],
+  [fullSiteData, siteId],
   findSite
 )
 

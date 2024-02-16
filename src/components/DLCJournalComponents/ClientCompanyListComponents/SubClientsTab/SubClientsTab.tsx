@@ -1,28 +1,28 @@
 /* eslint-disable max-len */
 import React                                                            from 'react'
-import { CollocationsSites, CompaniesType, SubClientsCollocationsType } from '../../../../types/globalTypes'
-import { put }                                                         from '../../../../Plugins/helpers'
+import { CollocationsSites, SubClientsCollocationsType }                from '../../../../types/globalTypes'
+import { put }                                                          from '../../../../Plugins/helpers'
 import { useCookies }                                                   from 'react-cookie'
 import { useAppDispatch, useAppSelector }                               from '../../../../store/hooks'
 import SubClientAdditionModal                                           from '../CompanyAdditionComponent/SubClientAdditionModal'
 import SubClientAddition                                                from './SubClientAddition'
 import SubClients                                                       from './SubClients'
 import { setIsSubClientAdded }                                          from '../../../../auth/AddSubClientReducer/addSubClientReducer'
+import { setParentCompanies }                                           from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import { useParams }                                                    from 'react-router'
 
 type SubClientsTabProps = {
-  parentCompanyId:    string | undefined;
   collocationsSites:  CollocationsSites
-  mainCompanies:      CompaniesType[]
-  setMainCompanies:   React.Dispatch<React.SetStateAction<CompaniesType[]>>
 }
 
-const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setMainCompanies}: SubClientsTabProps) => {
+const SubClientsTab = ({ collocationsSites }: SubClientsTabProps) => {
   const [cookies]                                           = useCookies(['access_token'])
   const [selectedValue, setSelectedValue]                   = React.useState(null)
   const [subClientsCollocations, setSubClientsCollocations] = React.useState<SubClientsCollocationsType>([])
   const openSubClientAdditionModal                          = useAppSelector((state) => state.modals.openSubClientAdditionModal)
   const dispatch                                            = useAppDispatch()
-
+  const parentCompanies                                     = useAppSelector((state) => state.singleCompany.parentCompanies)
+  const { id } = useParams()
   React.useEffect(() => {
     const newSubClientsCollocations = []
     let newIndex = 1
@@ -46,7 +46,7 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
     setSubClientsCollocations(newSubClientsCollocations)
   }, [collocationsSites])
 
-  const mainCompaniesOptions = mainCompanies?.map((el) => {
+  const mainCompaniesOptions = parentCompanies?.map((el) => {
     return{
       value: el._id,
       label: el.name,
@@ -54,10 +54,10 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
   })
 
   const handleChange = async(value: string) => {
-    const selectedMainCompany   = mainCompanies?.filter((el) => el._id === value)
-    if(selectedMainCompany){
-      setMainCompanies(selectedMainCompany)
-      await put('company/company', {id: value, parentId: parentCompanyId}, cookies.access_token)
+    const selectedParentCompanies   = parentCompanies?.filter((el) => el._id === value)
+    if(selectedParentCompanies){
+      dispatch(setParentCompanies(selectedParentCompanies))
+      await put('company/company', {id: value, parentId: id}, cookies.access_token)
       dispatch(setIsSubClientAdded(true))
     }
   }
@@ -70,7 +70,6 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
     <div className='SubClientsTabContainer'>
       {openSubClientAdditionModal &&
         <SubClientAdditionModal
-          parentCompanyId={parentCompanyId}
           collocations={subClientsCollocations}
           additionModalTitle={'Pridėkite sub klientą'}
           postUrl={'company/company'}
@@ -84,7 +83,6 @@ const SubClientsTab = ({ parentCompanyId, collocationsSites, mainCompanies, setM
       />
       <SubClients
         subClientsCollocations={collocationsSites}
-        parentCompanyId={parentCompanyId}
       />
     </div>
   )

@@ -1,15 +1,12 @@
 import React            from 'react'
 import DocumentUploader from '../../UniversalComponents/DocumentUploader/DocumentUploader'
 
-type ClientsDocumentsTabProps = {
-  companyDocuments: string[] | undefined
-}
 
-const ClientsDocumentsTab = ({companyDocuments}: ClientsDocumentsTabProps) => {
+const ClientsDocumentsTab = () => {
   const [, setUploading]          = React.useState(false)
 
   return(
-    <DocumentUploader setUploading={setUploading} companyDocuments={companyDocuments}/>
+    <DocumentUploader setUploading={setUploading}/>
   )
 }
 

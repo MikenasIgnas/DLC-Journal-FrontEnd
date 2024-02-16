@@ -22,11 +22,7 @@ import { useAppDispatch, useAppSelector }  from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }   from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
 import { Permissions }                     from '../../../../types/globalTypes'
-type ClientsEmployeeDrawerProps = {
-    companyName:            string | undefined;
-    setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
-    editClientsEmployee:    boolean
-}
+import { setEditCompanyEmployee } from '../../../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
 
 interface DescriptionItemProps {
     title:   string;
@@ -40,7 +36,7 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
+const ClientsEmployeeDrawer = () => {
   const [form]                      = useForm()
   const [fileList, setFileList]     = React.useState<UploadFile[]>([])
   const [cookies]                   = useCookies(['access_token'])
@@ -54,7 +50,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
   const dipatch                     = useAppDispatch()
   const windowSize                  = useSetWindowsSize()
   const [permissions, setPermissions] = React.useState<Permissions[]>()
-
+  const editCompanyEmployee = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
@@ -75,11 +71,11 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
     return () => {
       isMounted = false
     }
-  }, [employeeId, companyId, id, cookies.access_token, form, editClientsEmployee])
+  }, [employeeId, companyId, id, cookies.access_token, form, editCompanyEmployee])
 
   const editUser = async(values: EmployeesType) => {
-    setEditClientsEmployee(!editClientsEmployee)
-    if(editClientsEmployee) {
+    dipatch(setEditCompanyEmployee(!editCompanyEmployee))
+    if(editCompanyEmployee) {
       values.companyId = employee?.companyId
       values.id = employee?._id
       await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
@@ -90,7 +86,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
   const employeePermissions = permissions?.filter(permission => employee?.permissions.includes(permission._id))
     .map(permission => ({ label: permission.name, value: permission._id }))
   const onClose = () => {
-    setEditClientsEmployee(false)
+    dipatch(setEditCompanyEmployee(false))
     dipatch(setOpenClientsEmployeesDrawer(false))
   }
 
@@ -112,7 +108,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
             <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
                 Darbuotojo Profilis
             </p>
-            <Button htmlType='submit' loading={uploading} style={{display: 'flex', marginLeft: 'auto'}} type='link'>{!editClientsEmployee ? 'Edit' : 'Save' }</Button>
+            <Button htmlType='submit' loading={uploading} style={{display: 'flex', marginLeft: 'auto'}} type='link'>{!editCompanyEmployee ? 'Edit' : 'Save' }</Button>
           </div>
           <p className='site-description-item-profile-p'>Asmeninė informacija</p>
           <div style={{display: 'flex', justifyContent: 'space-between', padding: '15px'}}>
@@ -123,18 +119,18 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
                   src={employee?.photo ? employee?.photo : '../../ClientsEmployeesPhotos/noUserImage.jpeg'}
                   alt='err' />
               </Col>
-              {!editClientsEmployee ? '' : <PhotoUploader setFileList={setFileList} fileList={fileList}/>}
+              {!editCompanyEmployee ? '' : <PhotoUploader setFileList={setFileList} fileList={fileList}/>}
             </div>
             <div>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ?
+                  {!editCompanyEmployee ?
                     <DescriptionItem title='Vardas' content={`${employee?.name}`} /> :
                     <Form.Item label='Vardas' labelAlign='left' name='name' initialValue={employee?.name} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
-                  {!editClientsEmployee ?
+                  {!editCompanyEmployee ?
                     <DescriptionItem title='Pavardė' content={`${employee?.lastname}`} /> :
                     <Form.Item label='Pavardė' labelAlign='left' name='lastname' initialValue={employee?.lastname} style={{width: '270px', padding: '0px'}} >
                       <Input/>
@@ -146,7 +142,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
               </Row>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ?
+                  {!editCompanyEmployee ?
                     <DescriptionItem title='Gimimo data' content={convertUTCtoLocalDate(employee?.birthday)} /> :
                     <Form.Item label='Gimimo data' labelAlign='left' name='birthday' initialValue={convertUTCtoLocalDate(employee?.birthday)} style={{width: '270px', padding: '0px'}} >
                       <Input/>
@@ -156,7 +152,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
               </Row>
               <Row>
                 <Col span={12}>
-                  {!editClientsEmployee ?
+                  {!editCompanyEmployee ?
                     <DescriptionItem title='Pareigos' content={`${employee?.occupation}`} /> :
                     <Form.Item label='Pareigos' labelAlign='left' name='occupation' initialValue={employee?.occupation} style={{width: '270px', padding: '0px'}} >
                       <Input/>
@@ -166,7 +162,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
               </Row>
               <Row>
                 <Col span={24}>
-                  {!editClientsEmployee ?
+                  {!editCompanyEmployee ?
                     <DescriptionItem title='Pastabos' content={`${employee?.note ? employee?.note : '-'}`} /> :
                     <Form.Item label='Pastabos' labelAlign='left' name='note' initialValue={employee?.note} style={{width: '270px', padding: '0px'}} >
                       <Input/>
@@ -181,7 +177,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
           <Row>
             <Col span={12}>
               <Form.Item name='permissions'>
-                <Checkbox.Group options={!editClientsEmployee ? employeePermissions : editablePermissions} disabled={!editClientsEmployee} />
+                <Checkbox.Group options={!editCompanyEmployee ? employeePermissions : editablePermissions} disabled={!editCompanyEmployee} />
               </Form.Item>
             </Col>
           </Row>
@@ -189,7 +185,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
           <p className='site-description-item-profile-p'>Kontaktai</p>
           <Row>
             <Col span={12}>
-              {!editClientsEmployee ?
+              {!editCompanyEmployee ?
                 <DescriptionItem title='El. Paštas' content={`${employee?.email}`} /> :
                 <Form.Item label='El. Paštas' labelAlign='left' name='email' initialValue={employee?.email} style={{width: '270px', padding: '0px'}} >
                   <Input/>
@@ -197,7 +193,7 @@ const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: C
               }
             </Col>
             <Col span={12}>
-              {!editClientsEmployee ?
+              {!editCompanyEmployee ?
                 <DescriptionItem title='Tel. Numeris' content={`${employee?.phone}`} /> :
                 <Form.Item label='Tel. Numeris' labelAlign='left' name='phone' initialValue={employee?.phone} style={{width: '270px', padding: '0px'}} >
                   <Input/>

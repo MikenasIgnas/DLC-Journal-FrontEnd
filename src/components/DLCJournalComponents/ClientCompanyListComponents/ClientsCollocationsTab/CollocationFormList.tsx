@@ -1,32 +1,28 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import React                    from 'react'
-import { useAppSelector }       from '../../../../store/hooks'
-import { CheckboxValueType }    from 'antd/es/checkbox/Group'
-import EditableCollocationList  from './EditableCollocationList'
-
-type CollocationFormListProps = {
-  companyRacks?: string[] | undefined
-  setCheckedLists:  React.Dispatch<React.SetStateAction<CheckboxValueType[]>>
-  checkedLists:     CheckboxValueType[]
-}
+import { useAppSelector }             from '../../../../store/hooks'
+import { Empty, Tabs, TabsProps }     from 'antd'
+import { useParams, useSearchParams } from 'react-router-dom'
+import CompanySite                    from './CompaniesRacks'
 
 
-const EditableCollocationFormList = ({ companyRacks, checkedLists, setCheckedLists }: CollocationFormListProps) => {
-  const sites = useAppSelector((state) => state.sites.fullSiteData)
 
+const EditableCollocationFormList = () => {
+  const sites = useAppSelector((state) => state.singleCompany.fullSiteData)
+  const { id } = useParams()
+  const [,setSearchParams] = useSearchParams()
+  const items: TabsProps['items'] = sites?.map((site) => ({
+    key:      site._id,
+    label:    site.name,
+    children: site.premises.length >= 1
+      ? <CompanySite site={site}/>
+      : <Empty description='Klientas kolokacijų J13 neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+  }))
+  const tabClick = (key: string) => {
+    setSearchParams(`?siteId=${key}&companyId=${id}`)
+  }
   return (
-    <div className='EditableCollocationContainer'>
-      {sites?.map((item, i) =>
-        <EditableCollocationList
-          setCheckedLists={setCheckedLists}
-          checkedLists={checkedLists}
-          companyRacks={companyRacks}
-          key={i}
-          item={item}
-        />
-      )}
-    </div>
+    <Tabs onTabClick={tabClick} defaultActiveKey='1'items={items} />
   )
 }
 

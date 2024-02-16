@@ -4,21 +4,20 @@ import { Button, Divider, List }                      from 'antd'
 import { deleteItem, get, put }                       from '../../../../Plugins/helpers'
 import { ColocationDataType, CompaniesType }          from '../../../../types/globalTypes'
 import { useCookies }                                 from 'react-cookie'
-import { useSearchParams }                            from 'react-router-dom'
+import { useParams, useSearchParams }                            from 'react-router-dom'
 import SubClientsDrawer                               from './SubClientsDrawer'
 import ListItem                                       from './ListItem'
 import { useAppDispatch, useAppSelector }             from '../../../../store/hooks'
 import { resetIsSubClientAdded, setIsSubClientAdded } from '../../../../auth/AddSubClientReducer/addSubClientReducer'
 
 type SubClientsProps = {
-  parentCompanyId:  string | undefined;
   subClientsCollocations :  {
     J13?: ColocationDataType[];
     T72?: ColocationDataType[];
   }
 }
 
-const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps) => {
+const SubClients = ({ subClientsCollocations}: SubClientsProps) => {
   const [open, setOpen]                 = useState(false)
   const [subClients, setSubClients]     = React.useState<CompaniesType[]>()
   const [cookies]                       = useCookies()
@@ -27,11 +26,11 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
   const openSubClientAdditionModal      = useAppSelector((state) => state.modals.openSubClientAdditionModal)
   const dispatch                        = useAppDispatch()
   const addSubClient                    = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
-
+  const { id } = useParams()
   React.useEffect(() => {
     (async () => {
       try{
-        const companiesSubClients = await get(`company/company?parentId=${parentCompanyId}`, cookies.access_token)
+        const companiesSubClients = await get(`company/company?parentId=${id}`, cookies.access_token)
         if(companiesSubClients.length > 0){
           setSubClients(companiesSubClients)
         }

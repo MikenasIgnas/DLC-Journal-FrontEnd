@@ -7,18 +7,18 @@ import type { UploadFile, UploadProps }                     from 'antd/es/upload
 import { deleteItem, downloadFile, postDocument }           from '../../../Plugins/helpers'
 import { useCookies }                                       from 'react-cookie'
 import { useParams }                                        from 'react-router'
+import { useAppSelector } from '../../../store/hooks'
 
 type CompanyPhotoUploaderProps = {
   setUploading:     React.Dispatch<React.SetStateAction<boolean>>
-  companyDocuments: string[] | undefined
 }
 
-const DocumentUploader = ({ setUploading, companyDocuments }: CompanyPhotoUploaderProps) => {
+const DocumentUploader = ({ setUploading }: CompanyPhotoUploaderProps) => {
   const [cookies]       = useCookies(['access_token'])
   const [, setFileList] = React.useState<UploadFile[]>([])
   const {id}            = useParams()
-
-  const defaultFileList: UploadFile<any>[] = companyDocuments?.map((el, i) => ({
+  const company = useAppSelector((state) => state.singleCompany.singleCompany)
+  const defaultFileList: UploadFile<any>[] = company?.document?.map((el, i) => ({
     uid:    String(i),
     name:   el,
     status: 'done',

@@ -8,13 +8,13 @@ import PhotoUploader                              from '../../../UniversalCompon
 import { CollocationsType }                       from '../../../../types/globalTypes'
 import { useAppDispatch }                         from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { useParams } from 'react-router'
 // import useSetCheckedCollocationList               from '../../../../Plugins/useSetCheckedCollocationList'
 
 type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
     collocations:       CollocationsType[] | undefined
-    parentCompanyId:    string | undefined;
 }
 
 // type CompanyFormType = {
@@ -36,7 +36,8 @@ type AdditionModalProps = {
 
 const SubClientAdditionModal = ({additionModalTitle}: AdditionModalProps) => {
   // const [cookies]                 = useCookies(['access_token'])
-  const [form]                    = useForm()
+  const [form]    = useForm()
+  const { id }    = useParams()
   // const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
