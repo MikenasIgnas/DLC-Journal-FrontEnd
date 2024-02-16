@@ -10,7 +10,6 @@ type CollocationListItemsProps = {
 
 const RacksList = ({ premise }: CollocationListItemsProps) => {
   const premiseRacks = useAppSelector((state) => selectRacks(state, premise._id))
-
   return (
     <List
       key={premise._id}

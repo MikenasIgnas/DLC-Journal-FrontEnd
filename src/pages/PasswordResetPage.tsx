@@ -13,7 +13,7 @@ const PasswordResetPage = () => {
 
   return (
     <div className='CreateUserContainer'>
-      <Card headStyle={{textAlign: 'center'}} title='Atnaujinti slaptažodį' bordered={true} className='LoginPage'>
+      <Card styles={{header: {textAlign: 'center'}}} title='Atnaujinti slaptažodį' bordered={true} className='LoginPage'>
         <Form form={form} onFinish={onFinish}>
           <div>
             <Form.Item

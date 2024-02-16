@@ -4,7 +4,7 @@
 import React                  from 'react'
 import { put }                from '../../Plugins/helpers'
 import { useCookies }         from 'react-cookie'
-import { useParams }          from 'react-router-dom'
+import { useParams, useSearchParams }          from 'react-router-dom'
 
 import {
   Button,
@@ -37,14 +37,18 @@ type CompanyFormType = {
 };
 
 const SingleCompanyPage = () => {
-  const [cookies]               = useCookies(['access_token'])
-  const {id}                    = useParams()
-  const [form]                  = useForm()
-  const [fileList, setFileList] = React.useState<UploadFile[]>([])
-  const [, setUploading]        = React.useState(false)
-  const dispatch                = useAppDispatch()
-  const editCompanyPage         = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
-  const checkedList             = useAppSelector((state) => state.racks.checkedList)
+  const [cookies]                       = useCookies(['access_token'])
+  const {id}                            = useParams()
+  const [form]                          = useForm()
+  const [fileList, setFileList]         = React.useState<UploadFile[]>([])
+  const [, setUploading]                = React.useState(false)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const dispatch                        = useAppDispatch()
+  const editCompanyPage                 = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+  const checkedList                     = useAppSelector((state) => state.racks.checkedList)
+  const siteId                          = searchParams.get('siteId')
+  const tabKey                          = searchParams.get('tabKey')
+
   useFetchSingleCompany()
 
   const saveChanges = async(values:CompanyFormType) => {
@@ -80,13 +84,31 @@ const SingleCompanyPage = () => {
     },
   ]
 
+  const changeTab = (key: string) => {
+    if(siteId){
+      setSearchParams(`siteId=${siteId}&tabKey=${key}`)
+    }else{
+      setSearchParams(`tabKey=${key}`)
+    }
+  }
+
   return (
     <Form form={form} onFinish={saveChanges}>
       <Card
-        headStyle={{textAlign: 'center'}}
+        styles={{header: {textAlign: 'center'}}}
         bordered={false}
         title={<SingleCompanyTitle setFileList={setFileList} fileList={fileList}/>}>
-        <Tabs tabBarExtraContent={<Button htmlType='submit' type='link'>{!editCompanyPage ? 'Edit' : 'Save'}</Button>} defaultActiveKey='1' items={items}/>
+        <Tabs
+          activeKey={tabKey ? tabKey : undefined}
+          onTabClick={changeTab}
+          tabBarExtraContent={
+            <Button htmlType='submit' type='link'>
+              {!editCompanyPage ? 'Edit' : 'Save'}
+            </Button>
+          }
+          defaultActiveKey='1'
+          items={items}
+        />
       </Card>
     </Form>
   )

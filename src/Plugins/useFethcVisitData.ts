@@ -43,9 +43,9 @@ const useFetchVisitData = () => {
   React.useEffect(() => {
     const fetchData = async () => {
       const companies                               = await get('company/company', cookies.access_token)
+      const visitStatusRes: VisitStatus[]           = await get('visit/visitStatus', cookies.access_token)
       if(visitId && cookies.access_token){
         const singleVisitRes: VisitsType            = await get(`visit/visit/?id=${visitId}`, cookies.access_token)
-        const visitStatusRes: VisitStatus[]         = await get('visit/visitStatus', cookies.access_token)
         const companyEmployeesRes: EmployeesType[]  = await get(`company/CompanyEmployee?companyId=${companyId}`, cookies.access_token)
         const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
         const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
@@ -62,13 +62,13 @@ const useFetchVisitData = () => {
 
         dispatch(setDlcEmployee(dlcEmployee))
         dispatch(setVisitorIdTypes(visitorsIdTypes))
-        dispatch(setVisitStatus(visitStatusRes))
         dispatch(setPermissions(permissions))
         dispatch(setVisit(singleVisitRes))
         dispatch(setVisitors(visitors))
         dispatch(setCompanyEmployees(companyEmployeesRes))
       }
       dispatch(setCompanies(companies))
+      dispatch(setVisitStatus(visitStatusRes))
     }
 
     fetchData()

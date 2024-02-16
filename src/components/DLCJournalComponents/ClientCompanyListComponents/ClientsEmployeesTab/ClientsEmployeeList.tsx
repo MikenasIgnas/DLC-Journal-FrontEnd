@@ -18,7 +18,7 @@ const ClientsEmployeeList = () => {
   const dispatch                        = useAppDispatch()
   const employeeFilter                  = searchParams.get('employeeFilter')
   const {id}                            = useParams()
-  const companiesEmployees = useAppSelector((state) => state.singleCompany.companiesEmployees)
+  const companiesEmployees              = useAppSelector((state) => state.singleCompany.companiesEmployees)
   const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
     dispatch(setOpenClientsEmployeesDrawer(true))

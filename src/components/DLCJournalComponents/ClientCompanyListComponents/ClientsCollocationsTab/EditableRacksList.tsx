@@ -25,9 +25,12 @@ type ColocationSelectorsProps = {
 };
 
 const EditableRacksList = ({ premise }: ColocationSelectorsProps) => {
-  const checkedList = useAppSelector((state) => state.racks.checkedList)
-  const dispatch = useAppDispatch()
-  const company = useAppSelector((state) => state.singleCompany.singleCompany)
+  const checkedList     = useAppSelector((state) => state.racks.checkedList)
+  const dispatch        = useAppDispatch()
+  const company         = useAppSelector((state) => state.singleCompany.singleCompany)
+  const racksIds        = premise.racks.map((el) => el._id)
+  const checkAll        = racksIds.length > 0 && racksIds.every((el) => checkedList.includes(el))
+  const checkboxOptions = premise.racks.map(rack => ({ value: rack._id, label: rack.name }))
 
   React.useEffect(() => {
     if(company?.racks){
@@ -35,12 +38,8 @@ const EditableRacksList = ({ premise }: ColocationSelectorsProps) => {
     }
   },[])
 
-  const racksIds            = premise.racks.map((el) => el._id)
-  const checkAll            = racksIds.every((el) => checkedList.includes(el))
-  const indeterminate       = checkedList?.length > 0 && checkedList.length < premise.racks.length
-  const checkboxOptions     =  premise.racks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
   const onChange = (list: string[]) => {
-    const filterCheckedRacks = premise.racks.filter((el) => !list.includes(el._id)).map((val) => val._id)
+    const filterCheckedRacks = racksIds.filter(id => !list.includes(id))
     dispatch(addToChecklist(list))
     dispatch(removeFromChecklist(filterCheckedRacks))
   }
@@ -58,7 +57,6 @@ const EditableRacksList = ({ premise }: ColocationSelectorsProps) => {
       <Checkbox
         onChange={onCheckAllChange}
         checked={checkAll}
-        indeterminate={indeterminate}
       >
           Check All
       </Checkbox>

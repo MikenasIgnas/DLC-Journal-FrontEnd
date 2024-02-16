@@ -57,7 +57,7 @@ const useFetchSingleCompany = () => {
     return () => {
       dispatch(resetSingleCompanyReducer())
     }
-  },[siteId, cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, editCompanyPage])
+  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, editCompanyPage])
 
 }
 

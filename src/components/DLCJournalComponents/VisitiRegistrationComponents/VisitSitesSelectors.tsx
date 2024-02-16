@@ -34,13 +34,11 @@ const VisitSitesSelectors = () => {
   const companies                       = useAppSelector((state) => state.visit.companies)
   const sites                           = useAppSelector((state) => state.sites.fullSiteData)
   const seletedSite                     = useAppSelector(selectSite)
-  const visitStatus                     = useAppSelector((state) => state.visit.visitStatus).filter((el) => el.name === 'Paruošti')
+  const visitStatus                     = useAppSelector((state) => state.visit.visitStatus).filter((el) => el.name === 'Paruoštas')
   const form                            = Form.useFormInstance<VisitsType>()
-  const companyNames                    = companies?.map((el) => ({
-    value: el._id,
-    label: el.name,
-  }))
-  const addressesOptions                              = sites?.map((el) => ({value: el._id, label: el.name}))
+  const companyNames                    = companies?.map((el) => ({value: el._id, label: el.name}))
+  const addressesOptions                = sites?.map((el) => ({value: el._id, label: el.name}))
+
   const selectCompany = async(value: string) => {
     setSearchParams(`companyId=${value}`)
     const companiesEmployees = await get(`company/CompanyEmployee?companyId=${value}`, cookies.access_token)
@@ -51,22 +49,22 @@ const VisitSitesSelectors = () => {
     form.setFieldValue('siteId', null)
   }
 
-  const selectAddress = async(_: string, data: {value: string, label: string}) => {
+  const selectAddress = async(siteId: string) => {
     const companyId = searchParams.get('companyId')
-    if(!visitId && data.value && companyId){
+    if(!visitId && siteId && companyId){
       const res = await post('visit/visit',
         { companyId:    companyId,
           permissions:  [],
           racks:        [],
           visitPurpose: [],
-          siteId:       data.value,
+          siteId:       siteId,
           statusId:     visitStatus?.[0]?._id,
         }, cookies .access_token)
-      setSearchParams(`companyId=${companyId}&siteId=${data.value}&id=${res._id}`)
-      dispatch(setSiteId(data.value))
+      setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${res._id}`)
+      dispatch(setSiteId(siteId))
       dispatch(setVisit(res))
     }else{
-      setSearchParams(`companyId=${companyId}&siteId=${data.value}&id=${visitId}`)
+      setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${visitId}`)
     }
   }
 

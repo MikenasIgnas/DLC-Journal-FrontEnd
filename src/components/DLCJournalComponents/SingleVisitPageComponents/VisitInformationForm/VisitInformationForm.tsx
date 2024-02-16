@@ -23,8 +23,9 @@ const VisitInformationForm = () => {
 
   const saveChanges = async (values: any) => {
     dispatch(setEditVisitInformation(!editVisitInformation))
+    console.log(values)
     if(editVisitInformation){
-      await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId}, cookies.access_token)
+      await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId, startDate: values.startDate, endDate: values.endDate}, cookies.access_token)
     }
   }
 

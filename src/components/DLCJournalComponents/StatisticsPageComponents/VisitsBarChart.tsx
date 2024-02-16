@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
-import { ConfigProvider, DatePicker } from 'antd'
+import {
+  ConfigProvider,
+  DatePicker,
+}                      from 'antd'
+
 import {
   Bar,
   BarChart,
@@ -11,10 +15,12 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts'
+}                       from 'recharts'
+
 import { VisitsType }   from '../../../types/globalTypes'
 import useGetChartDates from '../../../Plugins/useGetChartDates'
 import locale           from 'antd/es/locale/lt_LT'
+
 import 'dayjs/locale/lt'
 
 const { RangePicker } = DatePicker

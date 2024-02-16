@@ -10,7 +10,7 @@ import {
   Form,
   Input,
   Row,
-  UploadFile } from 'antd'
+  UploadFile }                             from 'antd'
 
 import { useForm }                         from 'antd/es/form/Form'
 import { EmployeesType }                   from '../../../../types/globalTypes'
@@ -22,7 +22,7 @@ import { useAppDispatch, useAppSelector }  from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }   from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
 import { Permissions }                     from '../../../../types/globalTypes'
-import { setEditCompanyEmployee } from '../../../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+import { setEditCompanyEmployee }          from '../../../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
 
 interface DescriptionItemProps {
     title:   string;
@@ -37,26 +37,27 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
 )
 
 const ClientsEmployeeDrawer = () => {
-  const [form]                      = useForm()
-  const [fileList, setFileList]     = React.useState<UploadFile[]>([])
-  const [cookies]                   = useCookies(['access_token'])
-  const [uploading, setUploading]   = React.useState(false)
-  const [employee, setEmployee]     = React.useState<EmployeesType>()
-  const [searchParams]              = useSearchParams()
-  const employeeId                  = searchParams.get('employeeId')
-  const companyId                   = searchParams.get('companyId')
-  const {id}                        = useParams()
-  const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
-  const dipatch                     = useAppDispatch()
-  const windowSize                  = useSetWindowsSize()
+  const [form]                        = useForm()
+  const [fileList, setFileList]       = React.useState<UploadFile[]>([])
+  const [cookies]                     = useCookies(['access_token'])
+  const [uploading, setUploading]     = React.useState(false)
+  const [employee, setEmployee]       = React.useState<EmployeesType>()
+  const [searchParams]                = useSearchParams()
+  const employeeId                    = searchParams.get('employeeId')
+  const companyId                     = searchParams.get('companyId')
+  const {id}                          = useParams()
+  const openClientsEmployeesDrawer    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
+  const dipatch                       = useAppDispatch()
+  const windowSize                    = useSetWindowsSize()
   const [permissions, setPermissions] = React.useState<Permissions[]>()
-  const editCompanyEmployee = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+  const editCompanyEmployee           = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
         if (employeeId && companyId) {
-          const employeeData = await get(`company/CompanyEmployee?id=${employeeId}`, cookies.access_token)
+          const employeeData    = await get(`company/CompanyEmployee?id=${employeeId}`, cookies.access_token)
           const permissionsData = await get('company/permission', cookies.access_token)
           if (isMounted) {
             setEmployee(employeeData)

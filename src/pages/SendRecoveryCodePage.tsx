@@ -15,7 +15,7 @@ const SendRecoveryCodePage = () => {
 
   return (
     <div className='CreateUserContainer'>
-      <Card headStyle={{textAlign: 'center'}} title='Slaptažodžio atstatymas' bordered={true} className='LoginPage'>
+      <Card styles={{header: {textAlign: 'center'}}} title='Slaptažodžio atstatymas' bordered={true} className='LoginPage'>
         <Form
           form={form}
           name='normal_login'

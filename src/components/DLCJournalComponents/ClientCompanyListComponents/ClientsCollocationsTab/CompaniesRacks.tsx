@@ -1,25 +1,49 @@
-import { Card, Divider }   from 'antd'
-import { FullSiteData }    from '../../../../types/globalTypes'
-import { useAppSelector }  from '../../../../store/hooks'
-import { selectPremises }  from '../../../../auth/SingleCompanyReducer/selector'
-import EditableRacksList   from './EditableRacksList'
+import React                from 'react'
+import {
+  Card,
+  Divider,
+  Empty,
+}                           from 'antd'
+import { FullSiteData }     from '../../../../types/globalTypes'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                           from '../../../../store/hooks'
+
+import { selectPremises }   from '../../../../auth/SingleCompanyReducer/selector'
+import { useSearchParams }  from 'react-router-dom'
+import RacksList            from './RacksList'
+import { setSiteId }        from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 
 type ColocationViewProps = {
   site: FullSiteData
 }
 
 const CompaniesRacks = ({ site }:ColocationViewProps) => {
-  const companyPremise    = useAppSelector(selectPremises)
+  const companyPremise      = useAppSelector(selectPremises)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabKey = searchParams.get('tabKey')
+  const dispatch = useAppDispatch()
+
+  React.useEffect(() => {
+    setSearchParams(`?siteId=${site._id}&tabKey=${tabKey}`)
+    dispatch(setSiteId(site._id))
+  },[])
+
   return (
     <div>
       <Divider>{site.name}</Divider>
-      <Card className='CollocationDisplayCard' >
-        {companyPremise?.map((premise, i) =>
-          <div key={i}>
-            <EditableRacksList premise={premise}/>
-          </div>
-        )}
-      </Card>
+      {companyPremise && companyPremise?.length > 0 ?
+        <Card className='CollocationDisplayCard' >
+          {companyPremise?.map((premise, i) =>
+            <div key={i}>
+              <RacksList premise={premise}/>
+            </div>
+          )}
+        </Card>
+        : <Empty description='Įmonė spintų neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      }
     </div>
   )
 }

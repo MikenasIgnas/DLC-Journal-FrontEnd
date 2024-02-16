@@ -121,7 +121,7 @@ const SingleUserPage = () => {
     <div className='CreateUserPageContainer'>
       <Card
         loading={loading}
-        headStyle={{textAlign: 'center' }}
+        styles={{header: {textAlign: 'center'}}}
         title={logedInUser ? 'Mano Profilis' : `Darbuotojas: ${user?.name}`}
         bordered={true}
         className='CreateUserCard'>

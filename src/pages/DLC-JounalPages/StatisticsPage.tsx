@@ -2,21 +2,24 @@
 import React                    from 'react'
 import { useCookies }           from 'react-cookie'
 import { get }                  from '../../Plugins/helpers'
-import { VisitsType }           from '../../types/globalTypes'
+import { CompaniesType, VisitsType }           from '../../types/globalTypes'
 import VisitsBarChart           from '../../components/DLCJournalComponents/StatisticsPageComponents/VisitsBarChart'
 import CompaniesVIsitsBarChart  from '../../components/DLCJournalComponents/StatisticsPageComponents/CompaniesVisitsBarChart'
 import { Tabs }                 from 'antd'
 import useSetWindowsSize        from '../../Plugins/useSetWindowsSize'
 
 const StatisticsPage = () => {
-  const [cookies]               = useCookies()
-  const [visits, setVisits]     = React.useState<VisitsType[] | undefined>()
-  const windowSize              = useSetWindowsSize()
+  const [cookies]                   = useCookies()
+  const [visits, setVisits]         = React.useState<VisitsType[] | undefined>([])
+  const [companies, setCompanies]   = React.useState<CompaniesType[] | undefined>([])
+  const windowSize                  = useSetWindowsSize()
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
-        const allVisits = await get('visit/visit', cookies.access_token)
+        const allVisits     = await get('visit/visit', cookies.access_token)
+        const allCompanies  = await get('company/company', cookies.access_token)
+        setCompanies(allCompanies)
         setVisits(allVisits)
       } catch (err) {
         console.error(err)
@@ -34,7 +37,7 @@ const StatisticsPage = () => {
     {
       label:    <div style={{marginRight: '10px'}}>Vizitai pagal įmonęs</div>,
       key:      '2',
-      children: <CompaniesVIsitsBarChart visits={visits}/>,
+      children: <CompaniesVIsitsBarChart visits={visits} companies={companies}/>,
     },
   ]
 
