@@ -1,63 +1,42 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                from 'react'
 import { Avatar, List }     from 'antd'
 import SubClientTag         from './SubClientTag'
-import useFetch             from '../../../../customHooks/useFetch'
-import { CompanyInfoType }  from '../../../../types/globalTypes'
 
 type ListItemProps = {
-  listItemId:               number | undefined;
-  photo:                    string | undefined;
-  title:                    string | React.ReactNode;
-  description:              string;
-  wasMainClient?:               boolean
-  removeFormSubClientList?: (subClientId: number | undefined) => void
+  removeFormSubClientList?: (subClientId: string | undefined) => void
   photosFolder:             string;
   altImage:                 string;
-  primaryKey?:              number | undefined
-  listButtons:              (listItemId: number | undefined, primaryKey : number | undefined, wasMainClient?: boolean) => React.JSX.Element[]
+  listButtons:              (listItemId: string | undefined) => JSX.Element[] | undefined
+  item: any
+  title?: JSX.Element
+  id: string
 };
 
-type CompaniesType = {
-  data:{
-    _id: string;
-    id: number;
-    parentCompanyId?: number | undefined;
-    wasMainClient?: boolean | undefined;
-    companyInfo: CompanyInfoType;
-  }
-}
-
 const ListItem = ({
-  listItemId,
-  photo,
-  title,
-  description,
+  id,
+  item,
   photosFolder,
   altImage,
-  primaryKey,
+  title,
   listButtons,
-  wasMainClient,
 }: ListItemProps) => {
-  const buttons       = listButtons(listItemId, primaryKey, wasMainClient)
-  const parentCompany = useFetch<CompaniesType>(`getSingleCompany?companyId=${primaryKey}`)
-  const companyName   = parentCompany?.data?.companyInfo.companyName
-
+  const buttons       = listButtons(id)
   return (
     <List.Item
-      key={listItemId}
+      key={item._id}
       style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}
       actions={buttons}>
       <List.Item.Meta
         avatar={
           <div style={{display: 'flex', alignItems: 'center'}}>
-            <Avatar src={<img style={{objectFit: 'contain'}} src={`../${photosFolder}/${photo ? photo : `${altImage}`}`} alt='err' />}/>
+            <Avatar src={<img style={{objectFit: 'contain'}} src={item.photo ? item.photo : `../${photosFolder}/${altImage}`} alt='err' />}/>
           </div>
         }
         title={title}
-        description={description}
+        description={item.description}
       />
-      {primaryKey && parentCompany?.data && <SubClientTag parentCompanyId={primaryKey} companyName={companyName}/>}
+      {item.parentId && <SubClientTag parentCompanyId={item.parentId}/>}
     </List.Item>
   )
 }

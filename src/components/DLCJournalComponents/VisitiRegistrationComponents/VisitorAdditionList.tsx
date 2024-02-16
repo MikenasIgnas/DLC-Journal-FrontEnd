@@ -1,8 +1,10 @@
 /* eslint-disable max-len */
-import React                         from 'react'
-import { Button, Card, Input, List } from 'antd'
-import { EmployeesType }             from '../../../types/globalTypes'
-import VisitorAdditionListItem       from './VisitorAdditionListItem'
+import React                          from 'react'
+import { Button, Card, Input, List }  from 'antd'
+import { EmployeesType }              from '../../../types/globalTypes'
+import VisitorAdditionListItem        from './VisitorAdditionListItem'
+import { ActionCreatorWithPayload }   from '@reduxjs/toolkit'
+import { useAppDispatch }             from '../../../store/hooks'
 
 type VisitorAdditionListProps = {
     clientsEmployees:         EmployeesType[] | undefined
@@ -10,32 +12,36 @@ type VisitorAdditionListProps = {
     searchEmployeeValue:      string | undefined
     addVisitor:               (id:number) => void
     removeVisitor:            (id:number) => void
-    setOpenVisitorAddition?:  React.Dispatch<React.SetStateAction<boolean>>
+    setOpenVisitorAddition?:  ActionCreatorWithPayload<boolean>
     setClientsEmployees?:     React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
 }
 
 const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
+  const dispatch          = useAppDispatch()
+
   return (
-    <Card title={
-      <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <div>Įmonės Darbuotojai</div>
-        {setOpenVisitorAddition && <Button type='link' onClick={() => setOpenVisitorAddition(false)}>Uždaryti</Button>}
-      </div>
-    } style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-      <Input placeholder='Ieškoti' onChange={searchEmployee}/>
-      <List
-        style={{overflow: 'auto', maxHeight: '450px'}}
-        grid={{
-          gutter: 16,
-          xs:     1,
-          sm:     1,
-          md:     2,
-          lg:     2,
-          xl:     2,
-          xxl:    3,
-        }}
-        dataSource={clientsEmployees}
-        renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
+    <>
+      {clientsEmployees && clientsEmployees?.length > 0 &&
+      <Card title={
+        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+          <div>Įmonės Darbuotojai</div>
+          {setOpenVisitorAddition && <Button type='link' onClick={() => dispatch(setOpenVisitorAddition(false))}>Uždaryti</Button>}
+        </div>
+      } style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
+        <Input placeholder='Ieškoti' onChange={searchEmployee}/>
+        <List
+          style={{overflow: 'auto', maxHeight: '450px'}}
+          grid={{
+            gutter: 16,
+            xs:     1,
+            sm:     1,
+            md:     2,
+            lg:     2,
+            xl:     2,
+            xxl:    4,
+          }}
+          dataSource={clientsEmployees}
+          renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
           <VisitorAdditionListItem
             searchEmployeeValue={searchEmployeeValue}
             item={item}
@@ -44,9 +50,11 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
             photoFolder='../../ClientsEmployeesPhotos/'
             clientsEmployees={clientsEmployees}
             setClientsEmployees={setClientsEmployees} />
-        }>
-      </List>
-    </Card>
+          }>
+        </List>
+      </Card>
+      }
+    </>
   )
 }
 

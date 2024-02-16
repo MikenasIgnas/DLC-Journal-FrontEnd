@@ -1,12 +1,14 @@
 /* eslint-disable max-len */
-import { combineReducers }        from 'redux'
-import authReducer                from '../auth/AuthReducer/reducer'
-import routeReducer               from '../auth/RouteReducer/routeReducer'
-import fetchedDataReducer         from '../auth/FetchedDataReducer/fetchedDataReducer'
-import checklistDataReducer       from '../auth/FetchedDataReducer/ChecklistHistoryDataReducer'
-import ModalStateReducer          from '../auth/ModalStateReducer/ModalStateReducer'
-import addSubClientReducer        from '../auth/AddSubClientReducer/addSubClientReducer'
-import collocationItemReducer     from '../auth/CollocationItemReducer/collocationItemReducer'
+import { combineReducers }          from 'redux'
+import authReducer                  from '../auth/AuthReducer/reducer'
+import routeReducer                 from '../auth/RouteReducer/routeReducer'
+import fetchedDataReducer           from '../auth/FetchedDataReducer/fetchedDataReducer'
+import checklistDataReducer         from '../auth/FetchedDataReducer/ChecklistHistoryDataReducer'
+import ModalStateReducer            from '../auth/ModalStateReducer/ModalStateReducer'
+import addSubClientReducer          from '../auth/AddSubClientReducer/addSubClientReducer'
+import collocationItemReducer       from '../auth/CollocationItemReducer/collocationItemReducer'
+import SitesReducer                 from '../auth/SitesReducer/SitesReducer'
+import singleVisitPageEditsReducer  from '../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 
 export default combineReducers({
   auth:                      authReducer,
@@ -16,4 +18,6 @@ export default combineReducers({
   modals:                    ModalStateReducer,
   isSubClientAdded:          addSubClientReducer,
   collocationItem:           collocationItemReducer,
+  visitPageEdits:            singleVisitPageEditsReducer,
+  sites:                     SitesReducer,
 })

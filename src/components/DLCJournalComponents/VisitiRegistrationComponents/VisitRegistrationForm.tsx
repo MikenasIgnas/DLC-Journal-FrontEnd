@@ -2,74 +2,57 @@
 /* eslint-disable react/jsx-key */
 /* eslint-disable max-len */
 import React                                                         from 'react'
-import { get }                                                       from '../../../Plugins/helpers'
+import {
+  convertUTCtoLocalDateTime,
+  get,
+  getCurrentDate,
+  getCurrentTime,
+  post,
+}                                                                    from '../../../Plugins/helpers'
 import { useCookies }                                                from 'react-cookie'
-import { Button, Empty, Form, FormInstance, Select, Tag }            from 'antd'
-import { useSearchParams }                                           from 'react-router-dom'
-import { CollocationType, CompaniesType, EmployeesType, VisitsType } from '../../../types/globalTypes'
+import { Button, Empty, Form, Input, Select, message }               from 'antd'
+import { CompaniesType, EmployeesType, ClientsGuests, VisitsType }   from '../../../types/globalTypes'
 import VisitRegistrationFormItem                                     from './VisitRegistrationSelect'
 import VisitorsList                                                  from './VisitorsList'
-import ItemList                                                      from './ItemList'
 import VisitPurposeList                                              from './VisitPurposeList'
 import VisitorAdditionList                                           from './VisitorAdditionList'
-import filterPermisions                                              from './filterPermisions'
 import {addresses}                                                   from './StaticSelectOptions'
 import { DatePicker }                                                from 'antd'
 import VisitRegistrationCollocationList                              from './VisitRegistrationCollocationList'
-import useSetUsersData                                               from '../../../Plugins/useSetUsersData'
+import CarPlatesItemList                                             from './CarPlatesItemList'
+import useSetVisitor                                                 from '../../../Plugins/useSetVisitor'
+import ClientsGuestsItemList                                         from './ClientsGuestsItemList'
+import { useNavigate }                                               from 'react-router'
+import SuccessMessage                                                from '../../UniversalComponents/SuccessMessage'
 
-type VisitRegistrationFormProps = {
-  form:             FormInstance<VisitsType>
-  setClientsGuests: React.Dispatch<React.SetStateAction<string[]>>
-  clientsGuests:    string[];
-  setCarPlates:     React.Dispatch<React.SetStateAction<string[]>>
-  carPlates:        string[]
-  setCheckedList:   React.Dispatch<React.SetStateAction<CollocationType>>
-  checkedList:      CollocationType
-}
 
-const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, carPlates, checkedList, setCheckedList }:VisitRegistrationFormProps) => {
-  const [cookies]                                         = useCookies(['access_token'])
-  const [allCompanies, setAllCompanies]                   = React.useState<CompaniesType[]>()
-  const [searchParams, setSearchParams]                   = useSearchParams()
-  const companyId                                         = searchParams.get('companyId')
-  const addressId                                         = searchParams.get('addressId')
-  const [selectedVisitors, setSelectedVisitors]           = React.useState<number[]>([])
-  const [searchEmployeeValue, setSearchEmployeeValue]     = React.useState<string | undefined>()
-  const [clientsEmployees, setClientsEmployees]           = React.useState<EmployeesType[]>()
-  const [isCompanySelected, setIsCompanySelected]         = React.useState(false)
-  const [companiesColocations, setCompaniesCollocations]  = React.useState<CollocationType[]>()
-  const [guestsImput, setGuestsInput]                     = React.useState<string>('')
-  const [carPlatesInput, setCarPlatesInput]               = React.useState<string>('')
-  const form                                              = Form.useFormInstance<VisitsType>()
-  const values                                            = Form.useWatch('visitors', form)
-  const filteredPermisions                                = filterPermisions(values)
-  const canBringCompany                                   = filteredPermisions.includes('Įleisti Trečius asmenis')
-  const {users}                                           = useSetUsersData(false)
+const VisitRegistrationForm = () => {
+  const [cookies]                                      = useCookies(['access_token'])
+  const [searchEmployeeValue, setSearchEmployeeValue]  = React.useState<string | undefined>()
+  const [clientsEmployees, setClientsEmployees]        = React.useState<EmployeesType[]>()
+  const [isCompanySelected, setIsCompanySelected]      = React.useState(false)
+  const [form]                                         = Form.useForm()
+  const visitors                                       = Form.useWatch('visitors', form)
+  const navigate                                       = useNavigate()
+  const [messageApi, contextHolder]                    = message.useMessage()
+  const [clientsGuests, setClientsGuests]              = React.useState<ClientsGuests[]>([])
+  const [carPlates, setCarPlates]                      = React.useState<string[]>([])
+  const [checkedList, setCheckedList]                  = React.useState<{[key: string]: string[] }>({})
 
-  React.useEffect(() => {
-    (async () => {
-      const companies     = await get('getCompanies', cookies.access_token)
-      const singleCompany = await get(`getSingleCompany?companyId=${companyId}`, cookies.access_token)
-      localStorage.removeItem('visitPurpose')
-      if(addressId === 'J13'){
-        setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
-      }else{
-        setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
-      }
-      setAllCompanies(companies.data)
-    })()
-  }, [companyId, addressId, selectedVisitors])
+  const {
+    companyNames,
+    companiesColocations,
+    setSearchParams,
+    setSelectedVisitors,
+    searchParams,
+    selectedVisitors,
+    addressId,
+  } = useSetVisitor()
 
-  const companyNames = allCompanies?.map((el)=> {
-    return { ...el, value: el.companyInfo.companyName, label: el.companyInfo.companyName}
-  })
-  const DLCEmployees = users?.map((el) => {
-    return {...el, value: el.name, label: el.name}
-  })
+  const companyId                         = searchParams.get('companyId')
 
   const selectCompany = async(_: string, option: CompaniesType) => {
-    setSearchParams(`companyId=${option.id}`)
+    setSearchParams(`companyId=${option._id}`)
     const companiesEmployees = await get(`getAllClientsEmployees?companyId=${option.id}`, cookies.access_token)
     setClientsEmployees(companiesEmployees.data)
     setSelectedVisitors([])
@@ -106,21 +89,54 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
     localStorage.removeItem('visitPurpose')
   }
 
+  const registerVisit = async(values: VisitsType) => {
+    const visitPurpose = localStorage.getItem('visitPurpose')
+    if(companyId && (values?.visitors && values?.visitors.length > 0)){
+      values.visitPurpose = visitPurpose ? JSON.parse(visitPurpose) : []
+      values.visitCollocation = checkedList
+      values.visitStatus = 'processing'
+      values.creationDate = getCurrentDate()
+      values.creationTime = getCurrentTime()
+      values.clientsGuests = clientsGuests
+      values.carPlates = carPlates
+      values.scheduledVisitTime = convertUTCtoLocalDateTime(values.scheduledVisitTime)
+      values.companyId = Number(companyId)
+
+      const res = await post('postVisitDetails', values, cookies.access_token )
+      if(!res.error){
+        localStorage.clear()
+        navigate(`/DLC Žurnalas/Vizitai/${res.data}?visitAddress=${values.visitAddress}`)
+      }
+    }else{
+      messageApi.error({
+        type:    'error',
+        content: 'Nepasirinkti įmonės darbuotojai',
+      })
+    }
+  }
+
+  const onkeydown: React.KeyboardEventHandler<HTMLFormElement> = (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault()
+    }
+  }
+
   return (
-    <div>
-      <div className='VisitRegistrationFormContainer'>
-        <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
-          <Select
-            showSearch
-            placeholder='Pasirinkite įmonę'
-            onSelect={selectCompany}
-            allowClear
-            options={companyNames}
-          >
-          </Select>
-        </Form.Item>
-        {isCompanySelected &&
-        <>
+    <>
+      <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown}>
+        <div>
+          <div className='VisitRegistrationFormContainer'>
+            <Form.Item className='VisitRegistrationFormItem' name='visitingClient' rules={[{ required: true, message: 'Būtina pasirinkti įmonę' }]} >
+              <Select
+                showSearch
+                placeholder='Pasirinkite įmonę'
+                onSelect={selectCompany}
+                allowClear
+                options={companyNames}
+              >
+              </Select>
+            </Form.Item>
+            {isCompanySelected &&
           <VisitRegistrationFormItem
             formItemName={'visitAddress'}
             placeholder={'Pasirinkite Adresą'}
@@ -130,77 +146,59 @@ const VisitRegistrationForm = ({ setClientsGuests, clientsGuests, setCarPlates, 
             updateValue={(prevValues, currentValues) => prevValues.visitingClient !== currentValues.visitingClient}
             validationMessage={'Butina pasirinkti adresą'}
           />
-          <VisitRegistrationFormItem
-            formItemName={'dlcEmployees'}
-            placeholder={'Pasirinkite Lydintį'}
-            slectOptions={DLCEmployees}
-            fieldValue={'visitAddress'}
-            updateValue={(prevValues, currentValues) => prevValues.visitAddress !== currentValues.visitAddress}
-            validationMessage={'Būtina pasirinkti lydintyjį'}
+            }
+            {isCompanySelected && addressId === 'T72' &&
+          <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
+            <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
+          </Form.Item>
+            }
+          </div>
+          {clientsEmployees && clientsEmployees?.length > 0 &&
+          <VisitorAdditionList
+            clientsEmployees={clientsEmployees}
+            setClientsEmployees={setClientsEmployees}
+            searchEmployee={searchEmployee}
+            searchEmployeeValue={searchEmployeeValue}
+            addVisitor={addVisitor}
+            removeVisitor={removeVisitor}
           />
-        </>
-        }
-        {isCompanySelected && addressId === 'T72' &&
-        <Form.Item name='scheduledVisitTime' style={{width: '100%'}} rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}>
-          <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
-        </Form.Item>
-        }
-      </div>
-      {clientsEmployees && clientsEmployees?.length > 0 &&
-        <VisitorAdditionList
-          clientsEmployees={clientsEmployees}
-          setClientsEmployees={setClientsEmployees}
-          searchEmployee={searchEmployee}
-          searchEmployeeValue={searchEmployeeValue}
-          addVisitor={addVisitor}
-          removeVisitor={removeVisitor}
-        />
-      }
-      {clientsEmployees && clientsEmployees?.length <= 0 && selectedVisitors && selectedVisitors.length <= 0 &&
-      <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      }
-      {selectedVisitors && selectedVisitors?.length > 0 &&
-      <VisitorsList clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees}/>
-      }
-      {selectedVisitors && selectedVisitors?.length > 0 && <VisitPurposeList/>}
-      {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
-      <VisitRegistrationCollocationList
-        companiesColocations={companiesColocations}
-        setCheckedList={setCheckedList}
-        checkedList={checkedList}
-      />
-      }
-
-      {selectedVisitors && selectedVisitors?.length > 0 && !canBringCompany &&
-      <div style={{ textAlign: 'center', margin: '30px'}}>
-        <Tag color='error'>Klientas negali turėti palydos</Tag>
-      </div>
-      }
-      {selectedVisitors && selectedVisitors?.length > 0 && canBringCompany &&
-        <ItemList
-          cardTitle={'Pridėti palydą'}
-          inputValue={guestsImput}
-          inputPlaceHolder={'Pridėti palydą'}
-          setInputValue={setGuestsInput}
+          }
+          {clientsEmployees && clientsEmployees?.length <= 0 && selectedVisitors && selectedVisitors.length <= 0 &&
+          <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          }
+          {selectedVisitors && selectedVisitors?.length > 0 &&
+          <VisitorsList clientsEmployees={clientsEmployees} removeVisitor={removeVisitor} setClientsEmployees={setClientsEmployees}/>
+          }
+          {selectedVisitors && selectedVisitors?.length > 0 && <VisitPurposeList/>}
+          {selectedVisitors && selectedVisitors?.length > 0 && addressId &&
+          <VisitRegistrationCollocationList
+            companiesColocations={companiesColocations}
+            setCheckedList={setCheckedList}
+            checkedList={checkedList}
+          />
+          }
+        </div>
+        <ClientsGuestsItemList
+          selectedVisitors={selectedVisitors.length}
+          visitors={visitors}
+          inputPlaceHolder={'Pridėti'}
           list={clientsGuests}
           setListItems={setClientsGuests}
+          companyNameInput={<Input placeholder='Imonė'/>}
         />
-      }
-      {selectedVisitors && selectedVisitors?.length > 0 && addressId === 'T72' &&
-        <ItemList
-          cardTitle={'Pridėti automobilį'}
-          inputValue={carPlatesInput}
-          inputPlaceHolder={'Pridėti automobilį'}
-          setInputValue={setCarPlatesInput}
+        <CarPlatesItemList
+          selectedVisitors={selectedVisitors.length}
+          visitAddress={addressId}
           list={carPlates}
-          setListItems={setCarPlates}
+          setList={setCarPlates}
         />
-      }
-      <div className='VisitRegistrationButtonContainer'>
-        <Button htmlType='submit'>Registruoti</Button>
-        <Button style={{marginLeft: '20px'}} onClick={resetForm}> Išvalyti</Button>
-      </div>
-    </div>
+        <div className='VisitRegistrationButtonContainer'>
+          <Button htmlType='submit'>Registruoti</Button>
+          <Button style={{marginLeft: '20px'}} onClick={resetForm}> Išvalyti</Button>
+        </div>
+        <SuccessMessage contextHolder={contextHolder} />
+      </Form>
+    </>
   )
 }
 

@@ -1,16 +1,27 @@
 /* eslint-disable max-len */
-import React                                                                    from 'react'
-import { Button, Checkbox, Col, Divider, Drawer, Form, Input, Row, UploadFile } from 'antd'
-import { useForm }                                                              from 'antd/es/form/Form'
-import { EmployeesType }                                                        from '../../../../types/globalTypes'
-import { convertUTCtoLocalDate, get, post, uploadPhoto }                        from '../../../../Plugins/helpers'
-import { useCookies }                                                           from 'react-cookie'
-import { useParams, useSearchParams }                                           from 'react-router-dom'
-import PhotoUploader                                                            from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch, useAppSelector }                                       from '../../../../store/hooks'
-import { setOpenClientsEmployeesDrawer }                                        from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import useSetWindowsSize                                                        from '../../../../Plugins/useSetWindowsSize'
+import React                              from 'react'
+import {
+  Button,
+  Checkbox,
+  Col,
+  ConfigProvider,
+  Divider,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  UploadFile } from 'antd'
 
+import { useForm }                         from 'antd/es/form/Form'
+import { EmployeesType }                   from '../../../../types/globalTypes'
+import { convertUTCtoLocalDate, get, put } from '../../../../Plugins/helpers'
+import { useCookies }                      from 'react-cookie'
+import { useParams, useSearchParams }      from 'react-router-dom'
+import PhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import { useAppDispatch, useAppSelector }  from '../../../../store/hooks'
+import { setOpenClientsEmployeesDrawer }   from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
+import { Permissions }                     from '../../../../types/globalTypes'
 type ClientsEmployeeDrawerProps = {
     companyName:            string | undefined;
     setEditClientsEmployee: React.Dispatch<React.SetStateAction<boolean>>
@@ -29,9 +40,8 @@ const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
   </div>
 )
 
-const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
+const ClientsEmployeeDrawer = ({ setEditClientsEmployee, editClientsEmployee}: ClientsEmployeeDrawerProps) => {
   const [form]                      = useForm()
-  const options                     = ['Įnešti įrangą', 'Išnešti įrangą', 'Komutavimas', 'Konfiguracija', 'Įleisti Trečius asmenis']
   const [fileList, setFileList]     = React.useState<UploadFile[]>([])
   const [cookies]                   = useCookies(['access_token'])
   const [uploading, setUploading]   = React.useState(false)
@@ -43,16 +53,19 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   const openClientsEmployeesDrawer  = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                     = useAppDispatch()
   const windowSize                  = useSetWindowsSize()
+  const [permissions, setPermissions] = React.useState<Permissions[]>()
 
   React.useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
         if (employeeId && companyId) {
-          const res = await get(`getClientsEmployee?companyId=${id}&employeeId=${employeeId}`, cookies.access_token)
+          const employeeData = await get(`company/CompanyEmployee?id=${employeeId}`, cookies.access_token)
+          const permissionsData = await get('company/permission', cookies.access_token)
           if (isMounted) {
-            setEmployee(res.data)
-            form.setFieldsValue(res.data)
+            setEmployee(employeeData)
+            setPermissions(permissionsData)
+            form.setFieldsValue(employeeData)
           }
         }
       } catch (err) {
@@ -62,19 +75,21 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
     return () => {
       isMounted = false
     }
-  }, [employeeId, companyId, id, cookies.access_token, form])
+  }, [employeeId, companyId, id, cookies.access_token, form, editClientsEmployee])
 
   const editUser = async(values: EmployeesType) => {
     setEditClientsEmployee(!editClientsEmployee)
     if(editClientsEmployee) {
       values.companyId = employee?.companyId
-      values.employeeId = employee?.employeeId
-      await post('updateClientsEmployee', values, cookies.access_token)
-      if(fileList[0]){
-        uploadPhoto(fileList[0], setUploading, setFileList, `updateClientsEmployeesPhoto?companyName=${companyName}&companyId=${employee?.companyId}&employeeId=${employee?.employeeId}`)
-      }
+      values.id = employee?._id
+      values.photo = fileList[0]
+      await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
     }
   }
+  const editablePermissions = permissions?.map((el) => ({label: el.name, value: el._id}))
+
+  const employeePermissions = permissions?.filter(permission => employee?.permissions.includes(permission._id))
+    .map(permission => ({ label: permission.name, value: permission._id }))
   const onClose = () => {
     setEditClientsEmployee(false)
     dipatch(setOpenClientsEmployeesDrawer(false))
@@ -83,6 +98,16 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
   return (
     <Drawer width={windowSize > 600 ? 640 : 300} placement='right' closable={false} onClose={onClose} open={openClientsEmployeesDrawer}>
       { employee &&
+      <ConfigProvider
+        theme={{
+          components: {
+            Form: {
+              labelColonMarginInlineEnd: 40,
+            },
+          },
+        }}
+      >
+
         <Form form={form} onFinish={editUser}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
@@ -96,7 +121,7 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
               <Col span={12}>
                 <img
                   style={{width: '100%'}}
-                  src={`../../ClientsEmployeesPhotos/${employee?.employeePhoto ? employee?.employeePhoto : 'noUserImage.jpeg'}`}
+                  src={employee?.photo ? employee?.photo : '../../ClientsEmployeesPhotos/noUserImage.jpeg'}
                   alt='err' />
               </Col>
               {!editClientsEmployee ? '' : <PhotoUploader setFileList={setFileList} fileList={fileList}/>}
@@ -111,8 +136,8 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
                     </Form.Item>
                   }
                   {!editClientsEmployee ?
-                    <DescriptionItem title='Pavardė' content={`${employee?.lastName}`} /> :
-                    <Form.Item label='Pavardė' labelAlign='left' name='lastName' initialValue={employee?.lastName} style={{width: '270px', padding: '0px'}} >
+                    <DescriptionItem title='Pavardė' content={`${employee?.lastname}`} /> :
+                    <Form.Item label='Pavardė' labelAlign='left' name='lastname' initialValue={employee?.lastname} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -143,8 +168,8 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
               <Row>
                 <Col span={24}>
                   {!editClientsEmployee ?
-                    <DescriptionItem title='Pastabos' content={`${employee?.notes ? employee?.notes : '-'}`} /> :
-                    <Form.Item label='Pastabos' labelAlign='left' name='notes' initialValue={employee?.notes} style={{width: '270px', padding: '0px'}} >
+                    <DescriptionItem title='Pastabos' content={`${employee?.note ? employee?.note : '-'}`} /> :
+                    <Form.Item label='Pastabos' labelAlign='left' name='note' initialValue={employee?.note} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }
@@ -156,8 +181,8 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
           <p className='site-description-item-profile-p'>Įgaliojimai</p>
           <Row>
             <Col span={12}>
-              <Form.Item name='permissions' initialValue={employee?.permissions}>
-                <Checkbox.Group options={options} disabled={!editClientsEmployee} />
+              <Form.Item name='permissions'>
+                <Checkbox.Group options={!editClientsEmployee ? employeePermissions : editablePermissions} disabled={!editClientsEmployee} />
               </Form.Item>
             </Col>
           </Row>
@@ -174,14 +199,15 @@ const ClientsEmployeeDrawer = ({ companyName, setEditClientsEmployee, editClient
             </Col>
             <Col span={12}>
               {!editClientsEmployee ?
-                <DescriptionItem title='Tel. Numeris' content={`${employee?.phoneNr}`} /> :
-                <Form.Item label='Tel. Numeris' labelAlign='left' name='phoneNr' initialValue={employee?.phoneNr} style={{width: '270px', padding: '0px'}} >
+                <DescriptionItem title='Tel. Numeris' content={`${employee?.phone}`} /> :
+                <Form.Item label='Tel. Numeris' labelAlign='left' name='phone' initialValue={employee?.phone} style={{width: '270px', padding: '0px'}} >
                   <Input/>
                 </Form.Item>
               }
             </Col>
           </Row>
         </Form>
+      </ConfigProvider>
       }
     </Drawer>
   )

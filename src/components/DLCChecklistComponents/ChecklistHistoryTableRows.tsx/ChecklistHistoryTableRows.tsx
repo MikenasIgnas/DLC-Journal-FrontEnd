@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import React                        from 'react'
-import { Tag, Typography }          from 'antd'
-import Box                          from '@mui/joy/Box'
-import HighlightText                from '../../UniversalComponents/HighlightText'
-import { useSearchParams }          from 'react-router-dom'
-import { calculateTimeDifference }  from '../../../Plugins/helpers'
+import React                            from 'react'
+import { Button, Tag, Typography }      from 'antd'
+import Box                              from '@mui/joy/Box'
+import HighlightText                    from '../../UniversalComponents/HighlightText'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { calculateTimeDifference }      from '../../../Plugins/helpers'
 
 type UersTableProps = {
   id:         number;
@@ -32,7 +32,7 @@ const ChecklistHistoryTableRows = ({
   const fullStartTime   = `${startDate} ${startTime}`
   const fullEndTime     = `${endDate} ${endTime}`
   const timeDifferencer = calculateTimeDifference(startDate, startTime, endDate, endTime)
-
+  const navigate        = useNavigate()
   return (
     <tr key={id}>
       <td style={{ padding: '12px' }}>
@@ -52,6 +52,9 @@ const ChecklistHistoryTableRows = ({
       </td>
       <td>
         <Tag color={problems > 0 ? 'error' : 'success'}>{HighlightText(filter, String(problems))}</Tag>
+      </td>
+      <td>
+        <Button type='link' style={{border: '1px solid #1677ff'}} onClick={() => navigate(`${id}`)}>Peržiūrėti</Button>
       </td>
       <td>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>{rowMenu}</Box>

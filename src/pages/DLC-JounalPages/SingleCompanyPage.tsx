@@ -1,34 +1,41 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import React                                                   from 'react'
-import { get, post, uploadPhoto }                              from '../../Plugins/helpers'
-import { useCookies }                                          from 'react-cookie'
-import { useParams }                                           from 'react-router-dom'
-import { Button, Card, Form, Tabs, TabsProps, UploadFile }     from 'antd'
-import { CollocationsSites, CollocationsType, CompaniesType }  from '../../types/globalTypes'
-import { useForm }                                             from 'antd/es/form/Form'
-import ClientsCollocationsTab                                  from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
-import ClientsEmployeesTab                                     from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
-import SubClientsTab                                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
-import SingleCompanyTitle                                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
-import { useAppSelector }                                      from '../../store/hooks'
-import useSetCheckedCollocationList                            from '../../Plugins/useSetCheckedCollocationList'
+import React                              from 'react'
+import { get, put }                       from '../../Plugins/helpers'
+import { useCookies }                     from 'react-cookie'
+import { useParams }                      from 'react-router-dom'
 
-type EmployeesType = {
-  _id:            string;
-  companyId:      number;
-  name:           string;
-  lastName:       string;
-  occupation:     string;
-  employeeId:     number;
-  permissions:    string[];
-  employeePhoto:  string
-}
+import {
+  Button,
+  Card,
+  Form,
+  Tabs,
+  TabsProps,
+  UploadFile }                            from 'antd'
+
+import {
+  CompaniesType,
+  EmployeesType,
+}                                         from '../../types/globalTypes'
+
+import { useForm }                        from 'antd/es/form/Form'
+import ClientsCollocationsTab             from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
+import ClientsEmployeesTab                from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
+import SubClientsTab                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
+import SingleCompanyTitle                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import ClientsDocumentsTab                from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
+import { setPremise, setRacks, setSite }  from '../../auth/SitesReducer/SitesReducer'
+import { CheckboxValueType }              from 'antd/es/checkbox/Group'
 
 type CompanyFormType = {
-  companyName?:        string,
-  companyDescription?: string,
-  companyPhoto?:       string,
+  id: string | undefined
+  name?:        string,
+  description?: string,
+  code:         string;
+  racks:        string[]
+  photo?:       any,
   J13?: {
     [key: string]:     string[];
   }[];
@@ -43,7 +50,6 @@ const SingleCompanyPage = () => {
   const [company, setCompany]                         = React.useState<CompaniesType>()
   const [employeesList, setEmployeesList]             = React.useState<EmployeesType[]>([])
   const [form]                                        = useForm()
-  const [collocations, setCollocations]               = React.useState<CollocationsType[]>()
   const [fileList, setFileList]                       = React.useState<UploadFile[]>([])
   const [mainCompanies, setMainCompanies]             = React.useState<CompaniesType[]>([])
   const [editClientsEmployee, setEditClientsEmployee] = React.useState(false)
@@ -52,49 +58,45 @@ const SingleCompanyPage = () => {
   const setSubClientAdded                             = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const openClientsEmployeesDrawer                    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const [uploading, setUploading]                     = React.useState(false)
-  const {
-    filteredResult,
-    setCheckboxList,
-    checkedList,
-    checkAllStates,
-    onCheckAllChange,
-    onCheckboxChange,
-  }                                                   = useSetCheckedCollocationList()
+  const dispatch                                      = useAppDispatch()
+  const [checkedLists, setCheckedLists]               = React.useState<CheckboxValueType[]>([])
 
   React.useEffect(() => {
     (async () => {
       try{
-        const singleCompany     = await get(`getSingleCompany?companyId=${id}`, cookies.access_token)
-        const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
-        const allCollocations   = await get('getCollocations', cookies.access_token)
-        const allMainCompanies  = await get(`getAllMainCompanies?companyId=${id}`, cookies.access_token)
-        setCollocations(allCollocations.data[0].colocations)
-        setCompany(singleCompany.data)
-        setEmployeesList(companyEmployees.data)
-        setMainCompanies(allMainCompanies.data)
+        const singleCompany         = await get(`company/company?id=${id}`, cookies.access_token)
+        const companyEmployees      = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
+        const allMainCompanies      = await get('company/company', cookies.access_token)
+        const filteredMainCompanies = allMainCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
+        const siteRes               = await get('site/site', cookies.access_token)
+        const premiseRes            = await get('site/premise', cookies.access_token)
+        const racksRes              = await get('site/rack', cookies.access_token)
+        dispatch(setSite(siteRes))
+        dispatch(setPremise(premiseRes))
+        dispatch(setRacks(racksRes))
+        setCompany(singleCompany)
+        setEmployeesList(companyEmployees)
+        setMainCompanies(filteredMainCompanies)
       }catch(err){
         console.log(err)
       }
     })()
   },[edit, uploading, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, cookies.access_token])
 
-  const J13 = company?.companyInfo?.J13
-  const T72 = company?.companyInfo?.T72
-  const collocationsSites = {J13, T72} as CollocationsSites
-  const employeeRemoved = (id: number) => {
+
+  const employeeRemoved = (id: string) => {
     let newEmployeesList = [...employeesList]
-    newEmployeesList = newEmployeesList.filter(x => x?.employeeId !== id)
+    newEmployeesList = newEmployeesList.filter(x => x?._id !== id)
     setEmployeesList(newEmployeesList)
   }
 
   const saveChanges = async(values:CompanyFormType) => {
     setEdit(!edit)
     if(edit){
-      filteredResult.companyName = values.companyName
-      await post(`updateCompaniesData?companyId=${id}`, filteredResult, cookies.access_token)
-      if(fileList[0]){
-        uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}&companyId=${id}`)
-      }
+      values.id = id
+      values.photo = fileList[0]
+      values.racks = checkedLists as string[]
+      await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
     }
   }
 
@@ -105,7 +107,7 @@ const SingleCompanyPage = () => {
       children: <ClientsEmployeesTab
         setEditClientsEmployee={setEditClientsEmployee}
         editClientsEmployee={editClientsEmployee}
-        companyName={company?.companyInfo?.companyName}
+        companyName={company?.name}
         list={employeesList}
         setEmployeesList={setEmployeesList}
         employeeRemoved={employeeRemoved}
@@ -116,28 +118,24 @@ const SingleCompanyPage = () => {
       label:    'Sub klientai',
       children: <SubClientsTab
         parentCompanyId={id}
-        collocationsSites={collocationsSites}
         mainCompanies={mainCompanies}
-        setMainCompanies={setMainCompanies}
+        setMainCompanies={setMainCompanies} collocationsSites={{}}
       />,
     },
     {
       key:      '3',
       label:    'Kliento Kolokacijos',
       children: <ClientsCollocationsTab
-        checkedList={checkedList}
-        checkAllStates={checkAllStates}
-        onCheckAllChange={onCheckAllChange}
-        onCheckboxChange={onCheckboxChange}
         edit={edit}
-        J13locationName={'J13'}
-        T72locationName={'T72'}
-        J13locationData={J13}
-        T72locationData={T72}
-        collocations={collocations}
-        collocationsSites={collocationsSites}
-        setCheckedList={setCheckboxList}
+        companyRacks={company?.racks}
+        checkedLists={checkedLists}
+        setCheckedLists={setCheckedLists}
       />,
+    },
+    {
+      key:      '4',
+      label:    'Dokumentai',
+      children: <ClientsDocumentsTab companyDocuments={company?.document}/>,
     },
   ]
 
@@ -148,11 +146,9 @@ const SingleCompanyPage = () => {
         bordered={false}
         title={
           <SingleCompanyTitle
+            company={company}
             setFileList={setFileList}
             fileList={fileList}
-            companyLogo ={company?.companyInfo?.companyPhoto}
-            companyTitle={company?.companyInfo?.companyName}
-            companyDescription={company?.companyInfo.companyDescription}
             edit={edit}
           />}
       >

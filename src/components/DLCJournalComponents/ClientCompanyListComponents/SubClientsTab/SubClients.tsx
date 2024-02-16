@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, { useState }                            from 'react'
-import { Button, Divider, List }                              from 'antd'
-import { get }                                        from '../../../../Plugins/helpers'
+import { Button, Divider, List }                      from 'antd'
+import { deleteItem, get, put }                       from '../../../../Plugins/helpers'
 import { ColocationDataType, CompaniesType }          from '../../../../types/globalTypes'
 import { useCookies }                                 from 'react-cookie'
 import { useSearchParams }                            from 'react-router-dom'
@@ -31,9 +31,9 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
   React.useEffect(() => {
     (async () => {
       try{
-        const companiesSubClients = await get(`getSubClients?parentCompanyId=${parentCompanyId}`, cookies.access_token)
-        if(companiesSubClients.data.length > 0){
-          setSubClients(companiesSubClients.data)
+        const companiesSubClients = await get(`company/company?parentId=${parentCompanyId}`, cookies.access_token)
+        if(companiesSubClients.length > 0){
+          setSubClients(companiesSubClients)
         }
       }catch(err){
         console.log(err)
@@ -44,28 +44,29 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     }
   },[openSubClientAdditionModal, addSubClient, open])
 
-  const showDrawer = (subClient: number | undefined) => {
+  const showDrawer = (subClient: string | undefined) => {
     setSearchParams(`&subClientId=${subClient}`, { replace: true })
     setOpen(true)
   }
-  const subClientCompanyRemoved = (id:number) => {
+
+  const subClientCompanyRemoved = (id:string) => {
     if(subClients){
       let newCompaniesList = [...subClients]
-      newCompaniesList = newCompaniesList.filter(x => x?.id !== id)
+      newCompaniesList = newCompaniesList.filter(x => x?._id !== id)
       setSubClients(newCompaniesList)
     }
   }
 
-  const deletSubClient = async (subClientId: number | undefined) => {
+  const deletSubClient = async (subClientId: string | undefined) => {
     if(subClientId ){
-      await get(`deleteCompany?companyId=${subClientId}`, cookies.access_token)
+      await deleteItem('company/company', {id: subClientId} ,cookies.access_token)
       subClientCompanyRemoved(subClientId)
     }
   }
 
-  const removeFormSubClientList = async(companyId: number | undefined) => {
+  const removeFormSubClientList = async(companyId: string | undefined) => {
     if(companyId){
-      await get(`changeSubClientToMainClient?companyId=${companyId}`, cookies.access_token)
+      await put('company/company', {id: companyId, parentId: 'null'} ,cookies.access_token)
       dispatch(setIsSubClientAdded(true))
       subClientCompanyRemoved(companyId)
     }
@@ -75,22 +76,14 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
     setOpen(false)
   }
 
-  const listButtons = (listItemId: number | undefined, _primaryKey: number | undefined, wasMainClient?: boolean) => {
-    if(wasMainClient){
-      const buttons = [
-        <Button type='link' onClick={() => showDrawer(listItemId)} key={listItemId}> Peržiūrėti </Button>,
-        <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={listItemId}> Perkelti </Button>,
-        <Button type='link' onClick={() => deletSubClient(listItemId)} key={listItemId}>Ištrinti</Button>,
-      ]
-      return buttons
-    }else{
-      const buttons = [
-        <Button type='link' onClick={() => showDrawer(listItemId)} key={listItemId}>Peržiūrėti</Button>,
-        <Button type='link' onClick={() => deletSubClient(listItemId)} key={listItemId}>Ištrinti</Button>,
-      ]
-      return buttons
-    }
+  const listButtons = (listItemId: string | undefined) => {
+    return [
+      <Button type='link' onClick={() => showDrawer(listItemId)} key={`${listItemId}`}>Peržiūrėti</Button>,
+      <Button type='link' onClick={() => removeFormSubClientList && removeFormSubClientList(listItemId)} key={`${listItemId}`}>Perkelti</Button>,
+      <Button type='link' onClick={() => deletSubClient(listItemId)} key={`${listItemId}`}>Ištrinti</Button>,
+    ]
   }
+
   return (
     <div className='SubClientsContainer'>
       <Divider>Sub Klientai</Divider>
@@ -98,25 +91,22 @@ const SubClients = ({ parentCompanyId, subClientsCollocations}: SubClientsProps)
         locale={{emptyText: 'Nėra pridėtų sub klientų'}}
         dataSource={subClients}
         bordered
-        renderItem={(item) => {
+        renderItem={(item:  CompaniesType) => {
           return(
             <ListItem
-              listItemId={item?.id}
-              primaryKey={item.parentCompanyId}
-              photo={item?.companyInfo?.companyPhoto}
-              title={item?.companyInfo?.companyName}
-              description={item?.companyInfo?.companyDescription}
-              wasMainClient={item?.wasMainClient}
+              id={item._id}
+              item={item}
               removeFormSubClientList={removeFormSubClientList}
               photosFolder={'../CompanyLogos'}
               altImage={'noImage.jpg'}
-              listButtons={listButtons} />
+              listButtons={listButtons}
+            />
           )
         }}/>
       { open &&
       <SubClientsDrawer
         subClientsCollocations={subClientsCollocations}
-        subClientId={Number(subClientId)}
+        subClientId={subClientId}
         onClose={onClose}
         open={open}/>
       }

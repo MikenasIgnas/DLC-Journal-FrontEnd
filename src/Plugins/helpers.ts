@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 
@@ -23,50 +24,140 @@ const get = async (url: string, token: TokenType) => {
   }
 }
 
-const post = async (url: string, data: any, token: string) => {
-  const options = {
-    method:  'POST',
-    headers: {
-      'content-type': 'application/json',
-      'token':        `${token}`,
-    },
-    body: JSON.stringify(data),
-  }
+const put = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
+  if(fileList && setUploading && setFileList){
 
-  const response = await fetch(`http://localhost:4002/${url}`, options)
-  return response.json()
-}
-const put = async (url: string, data: any, token: string) => {
-  const options = {
-    method:  'PUT',
-    headers: {
-      'content-type': 'application/json',
-      'token':        `${token}`,
-    },
-    body: JSON.stringify(data),
-  }
+    const formData = new FormData()
 
-  const response = await fetch(`http://localhost:4002/${url}`, options)
-  return response.json()
-}
-const deleteItem = async (url: string, token: TokenType) => {
-  try {
-    const response = await fetch(`http://localhost:4002/${url}`, {
-      method:  'DELETE',
+    if (fileList && fileList.length > 0) {
+      formData.append('photo', fileList)
+    }
+
+    for (const key in values) {
+      if (values.hasOwnProperty(key)) {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item: any) => {
+            formData.append(`${key}[]`, item)
+          })
+        } else {
+          formData.append(key, values[key])
+        }
+      }
+    }
+
+    setUploading(true)
+
+    try {
+      const response = await fetch(`http://localhost:4002/${url}`, {
+        method:  'PUT',
+        headers: {
+          'token': token,
+        },
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return { error: data.error || 'Unknown error', data: null }
+      }
+
+      setFileList(data)
+
+      return { error: null, data: data }
+    } catch (error) {
+
+      if (error instanceof Error) {
+        return { error: error.message, data: null }
+      } else {
+        return { error: 'An unknown error occurred', data: null }
+      }
+    } finally {
+      setUploading(false)
+    }
+  }else{
+    const options = {
+      method:  'PUT',
       headers: {
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
         'token':        `${token}`,
       },
-    })
-    if (response.status === 401) {
-      console.error('Unauthorized request')
-      return
+      body: JSON.stringify(values),
     }
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
+
+    const response = await fetch(`http://localhost:4002/${url}`, options)
+    return response.json()
   }
+}
+
+const post = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
+  if(fileList && setUploading && setFileList){
+
+    const formData = new FormData()
+
+    if (fileList && fileList.length > 0) {
+      formData.append('file', fileList)
+    }
+
+    for (const key in values) {
+      if (values.hasOwnProperty(key)) {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item: any) => {
+            formData.append(`${key}[]`, item)
+          })
+        } else {
+          formData.append(key, values[key])
+        }
+      }
+    }
+
+    setUploading(true)
+
+    try {
+      const response = await fetch(`http://localhost:4002/${url}`, {
+        method:  'POST',
+        headers: {
+          'token': token,
+        },
+        body: formData,
+      })
+
+      const data = await response.json()
+      setFileList(fileList[0])
+      return data
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setUploading(false)
+    }
+  }else{
+    const options = {
+      method:  'POST',
+      headers: {
+        'content-type': 'application/json',
+        'token':        `${token}`,
+      },
+      body: JSON.stringify(values),
+    }
+
+    const response = await fetch(`http://localhost:4002/${url}`, options)
+    return response.json()
+  }
+}
+
+const deleteItem = async (url: string, data: any, token: string) => {
+  const options = {
+    method:  'DELETE',
+    headers: {
+      'content-type': 'application/json',
+      'token':        `${token}`,
+    },
+    body: JSON.stringify(data),
+  }
+
+  const response = await fetch(`http://localhost:4002/${url}`, options)
+  return response.json()
 }
 
 const getPdfFile = async (url: string, token: TokenType) => {
@@ -91,6 +182,47 @@ const getPdfFile = async (url: string, token: TokenType) => {
     return null
   }
 }
+
+
+const getFile = async (url: string, token: TokenType) => {
+  try {
+    const response = await fetch(`http://localhost:4002/${url}`, {
+      method:  'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'token':        `${token}`,
+      },
+    })
+
+    if (response.status === 401) {
+      console.error('Unauthorized request')
+      return null
+    }
+
+    const data = await response.blob()
+    return data
+  } catch (error) {
+    console.error(error)
+    return null
+  }
+}
+
+const downloadFile = async (url: string, token: TokenType) => {
+  const blob = await getFile(url, token)
+  if (blob) {
+    const blobUrl = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = 'filename.csv'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(blobUrl)
+  } else {
+    console.error('Failed to download file')
+  }
+}
+
 const getCsvFile = async (url: string, data: any, token: TokenType) => {
   const options = {
     method:  'POST',
@@ -105,6 +237,7 @@ const getCsvFile = async (url: string, data: any, token: TokenType) => {
   const doc = await response.blob()
   return doc
 }
+
 const generateCsv = async (url: string, data: any, cookie: TokenType) => {
   try {
     const response = await getCsvFile(url, data, cookie)
@@ -169,22 +302,7 @@ const clearFilleChecklistdData = (totalAreasCount: number) => {
   }
 }
 
-const uploadPhoto = async(fileList: any, setUploading: any, setFileList: any, url: string) => {
-  const formData = new FormData()
-  formData.append('file', fileList )
-  setUploading(true)
-  fetch(`http://localhost:4002/${url}`, {
-    method: 'POST',
-    body:   formData,
-  })
-    .then((res) => res.json())
-    .then(() => {
-      setFileList(fileList)
-    })
-    .finally(() => {
-      setUploading(false)
-    })
-}
+
 
 const deleteTableItem = async(url: string, data: any, setData: any, id: string | number, cookie: TokenType) => {
   const tableItemRemoved = (id: string | number) => {
@@ -296,7 +414,6 @@ export {
   clearFilleChecklistdData,
   validateUser,
   postImage,
-  uploadPhoto,
   deleteTableItem,
   calculateTimeDifference,
   convertUTCtoLocalTime,
@@ -309,5 +426,7 @@ export {
   generateCsv,
   put,
   deleteItem,
+  getFile,
+  downloadFile,
 }
 

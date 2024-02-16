@@ -111,7 +111,8 @@ const CreateUserPage = () => {
             <Checkbox>Admin</Checkbox>
           </Form.Item>
           <Form.Item
-            label='Rolė'
+            colon={false}
+            label=' '
             labelAlign='left'
             initialValue={false}
             name='isSecurity'

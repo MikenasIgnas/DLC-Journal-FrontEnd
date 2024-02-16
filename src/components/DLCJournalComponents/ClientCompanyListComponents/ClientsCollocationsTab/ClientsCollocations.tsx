@@ -1,33 +1,26 @@
 /* eslint-disable max-len */
-import ColocationDisplay      from './ColocationDisplay'
-import { ColocationDataType } from '../../../../types/globalTypes'
+import { useAppSelector }         from '../../../../store/hooks'
+import ColocationDisplay          from './ColocationDisplay'
 import { Empty, Tabs, TabsProps } from 'antd'
 
-type ClientsCollocationsProps = {
-    J13locationName:  string | undefined
-    T72locationName:  string | undefined
-    J13locationData:  ColocationDataType[] | undefined
-    T72locationData:  ColocationDataType[] | undefined
+type ClientsCollocations = {
+  companyRacks: string[] | undefined
 }
 
-const ClientsCollocations = ({J13locationData, J13locationName, T72locationData, T72locationName}:ClientsCollocationsProps) => {
+const ClientsCollocations = ({ companyRacks }: ClientsCollocations) => {
+  const sites = useAppSelector((state) => state.sites.site)
 
-  const items: TabsProps['items'] = [
-    {
-      key:      '1',
-      label:    'J13',
-      children: J13locationData && J13locationData?.length >= 1 ? <ColocationDisplay locationName={J13locationName} locationData={J13locationData}/> : <Empty description='Klientas kolokacijų J13 neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />,
-    },
-    {
-      key:      '2',
-      label:    'T72',
-      children: T72locationData && T72locationData?.length >= 1 ? <ColocationDisplay locationName={T72locationName} locationData={T72locationData}/> : <Empty description='Klientas kolokacijų T72 neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />,
-    },
+  const items: TabsProps['items'] = sites?.map((site) => ({
+    key:      site._id,
+    label:    site.name,
+    children: companyRacks && companyRacks.length >= 1
+      ? <ColocationDisplay companyRacks={companyRacks} site={site}/>
+      : <Empty description='Klientas kolokacijų J13 neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />,
+  }))
 
-  ]
   return(
     <>
-      { J13locationData && J13locationData?.length >= 1 || T72locationData && T72locationData?.length >= 1 ?
+      { companyRacks && companyRacks?.length >= 1 || companyRacks && companyRacks?.length >= 1 ?
         <Tabs defaultActiveKey='1' items={items} />
         : <Empty description='Klientui nėra priskirtų kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }

@@ -1,49 +1,29 @@
 /* eslint-disable max-len */
-import { Card, Divider, List }  from 'antd'
-import { ColocationDataType }   from '../../../../types/globalTypes'
+import { Card, Divider }    from 'antd'
+import { Sites }            from '../../../../types/globalTypes'
+import { useAppSelector }   from '../../../../store/hooks'
+import CollocationListItems from './CollocationListItems'
 
 type ColocationViewProps = {
-    locationName: string | undefined;
-    locationData: ColocationDataType[] | undefined;
+  site: Sites
+  companyRacks: string[] | undefined
 }
 
-const ColocationDisplay = ({locationName, locationData}:ColocationViewProps) => {
-  const collocations = locationData?.map(obj => {
-    const key     = Object.keys(obj)[0]
-    const values  = obj[key]
-    return { key, values }
-  })
-
-  const totalItemCount = locationData?.reduce((count, obj) => count + Object.values(obj)[0].length, 0)
-
+const ColocationDisplay = ({ site, companyRacks }:ColocationViewProps) => {
+  const premises = useAppSelector((state) => state.sites.premise)?.filter((el) => el.siteId === site._id )
   return (
     <div>
-      {locationData && <Divider>{locationName}</Divider>}
+      {site && <Divider>{site.name}</Divider>}
       <Card className='CollocationDisplayCard' >
-        {collocations?.map((el, i) =>
+        {premises?.map((premise, i) =>
           <div key={i}>
-            {<List
-              key={i}
-              size='small'
-              header={<strong>{el.key}</strong>}
-              footer={
-                <div className='CollocationDisplayFooter'>
-                  <strong>{`Spintos: ${el.values.length}`}</strong>
-                </div>
-              }
-              bordered
-              dataSource={el.values}
-              renderItem={(item) =>
-                <List.Item>
-                  {item}
-                </List.Item>
-              }/>}
+            <CollocationListItems companyRacks={companyRacks} premise={premise}/>
           </div>
         )}
-        <div className='CollocationDisplayCounter'>
+        {/* <div className='CollocationDisplayCounter'>
           <strong>{`Kolokacijos ${locationName}: ${locationData?.length}`}</strong>
           <strong>{`Spintos: ${totalItemCount}`}</strong>
-        </div>
+        </div> */}
       </Card>
     </div>
   )

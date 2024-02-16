@@ -1,27 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                                                from 'react'
 import { Modal, Form, Button, Input, UploadFile, message }  from 'antd'
 import { useForm }                                          from 'antd/es/form/Form'
-import { post, uploadPhoto }                                from '../../../../Plugins/helpers'
-import { useCookies }                                       from 'react-cookie'
 import PhotoUploader                                        from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import ColocationSelectors                                  from '../ClientsCollocationsTab/CollocationSelectors'
-import { CollocationsType }                                 from '../../../../types/globalTypes'
 import { useAppDispatch, useAppSelector }                   from '../../../../store/hooks'
 import { setOpenCompaniesAdditionModal }                    from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import SuccessMessage                                       from '../../../UniversalComponents/SuccessMessage'
-import useSetCheckedCollocationList from '../../../../Plugins/useSetCheckedCollocationList'
+import useSetCheckedCollocationList                         from '../../../../Plugins/useSetCheckedCollocationList'
+import { post } from '../../../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
 
 type AdditionModalProps = {
     postUrl:            string;
     additionModalTitle: string;
-    collocations:       CollocationsType[] | undefined
 }
 
 type CompanyFormType = {
-  companyName?:           string,
-  companyDescription?:    string,
-  companyPhoto?:          string,
+  name?:           string,
+  description?:    string,
+  racks:           string[]
+  photo?:          any,
   subClient?: {
     subClientId:          string;
     subClientCompanyName: string
@@ -34,44 +34,49 @@ type CompanyFormType = {
   }[];
 };
 
-const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: AdditionModalProps) => {
-  const [cookies]                                                           = useCookies(['access_token'])
-  const [form]                                                              = useForm()
-  const [uploading, setUploading]                                           = React.useState(false)
-  const [fileList, setFileList]                                             = React.useState<UploadFile[]>([])
-  const dispatch                                                            = useAppDispatch()
-  const openCompaniesAdditionModal                                          = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
-  const [messageApi, contextHolder]                                         = message.useMessage()
+const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps) => {
+  const [form]                      = useForm()
+  const [uploading, setUploading]   = React.useState(false)
+  const [cookies]                   = useCookies(['access_token'])
+  const [fileList, setFileList]     = React.useState<UploadFile[]>([])
+  const dispatch                    = useAppDispatch()
+  const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
+  const [messageApi, contextHolder] = message.useMessage()
+  const sites                       = useAppSelector((state) => state.sites.site)
   const {
-    filteredResult,
-    checkedList,
-    checkAllStates,
-    onCheckAllChange,
-    onCheckboxChange,
+    checkboxList, checkAllStates, onCheckAllChange, onCheckboxChange, setCheckboxList,
   } = useSetCheckedCollocationList()
 
   const addCompany = async(values: CompanyFormType) => {
-    filteredResult.companyName = values.companyName
-    filteredResult.companyDescription = values.companyDescription
-    filteredResult.companyPhoto = ''
-    const res = await post(postUrl, filteredResult, cookies.access_token)
-    if(fileList[0]){
-      uploadPhoto(fileList[0],setUploading, setFileList, `uploadCompanysPhoto?companyName=${values.companyName}`)
-    }
-    if(!res.error){
-      form.resetFields()
-      dispatch(setOpenCompaniesAdditionModal(false))
-      messageApi.success({
-        type:    'success',
-        content: 'Įmonė pridėta',
-      })
-    }else{
-      form.resetFields()
-      dispatch(setOpenCompaniesAdditionModal(false))
+    values.racks = checkboxList.checkedList
+    if(checkboxList.checkedList.length <= 0 || checkboxList.checkedList && checkboxList.checkedList.length <= 0 ){
       messageApi.error({
         type:    'error',
-        content: 'Pridėti nepavyko',
+        content: 'Privaloma pasirinkti kolokaciją',
       })
+    }else{
+      if (fileList && fileList.length > 0) {
+        values.photo = fileList[0]
+      }
+
+      const res = await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
+      if(!res.error){
+        form.resetFields()
+        dispatch(setOpenCompaniesAdditionModal(false))
+        setCheckboxList({checkedList: [],checkAllStates: {}})
+        messageApi.success({
+          type:    'success',
+          content: 'Įmonė pridėta',
+        })
+      }else{
+        form.resetFields()
+        dispatch(setOpenCompaniesAdditionModal(false))
+        setCheckboxList({checkedList: [],checkAllStates: {}})
+        messageApi.error({
+          type:    'error',
+          content: 'Pridėti nepavyko',
+        })
+      }
     }
   }
 
@@ -86,26 +91,26 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle, collocations}: Addit
     >
       <Form form={form} onFinish={addCompany} style={{textAlign: 'center', width: '100%'}}>
         <div>
-          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
+          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='name'>
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
-          <Form.Item name='companyDescription'>
+          {/* <Form.Item rules={[{ required: true, message: 'Įveskite įmonės kodą'}]} name='companyCode'>
+            <Input placeholder='Įmonės kodas'/>
+          </Form.Item> */}
+          <Form.Item name='description'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly', width: '100%'}}>
-            {collocations?.map((colocation, i) =>
-              colocation.premises ?
-                <ColocationSelectors
-                  checkedList={checkedList}
-                  checkAllStates={checkAllStates}
-                  onCheckAllChange={onCheckAllChange}
-                  onCheckboxChange={onCheckboxChange}
-                  key={i}
-                  collocationSite={colocation.site}
-                  colocationPremises={colocation.premises}
-                  colocationId={colocation.id}/>
-                : null
+            {sites?.map((item, i) =>
+              <ColocationSelectors
+                checkboxList={checkboxList.checkedList}
+                onCheckboxChange={onCheckboxChange}
+                checkAllStates={checkAllStates}
+                onCheckAllChange={onCheckAllChange}
+                key={i}
+                item={item}
+              />
             )}
           </div>
         </div>

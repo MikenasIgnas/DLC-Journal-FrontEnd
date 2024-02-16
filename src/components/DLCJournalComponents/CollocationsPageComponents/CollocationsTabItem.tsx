@@ -1,36 +1,27 @@
 /* eslint-disable max-len */
-import CollocationListItem  from './CollocationListItem'
-import { Card, List }       from 'antd'
+// import CollocationListItem  from './CollocationListItem'
+import { Card }       from 'antd'
 
-type MatchingCompaniesType = {
-  companyName:  string;
-  premiseName:  string;
-  racks:        string[]
-}
 
 type CollocationsTabItemType = {
-    site:       string,
-    tabItemId:  number
-    premises:   {
-        premiseName: string;
-        racks: string[];
-    }[];
-    companyCollocation: MatchingCompaniesType[] | undefined
+  name:   string
+  id:     string
+  key:    string
 }
 
-const CollocationsTabItem = ({site, tabItemId, premises, companyCollocation}: CollocationsTabItemType) => {
+const CollocationsTabItem = ({name, id}: CollocationsTabItemType) => {
   const item = {
-    label: site,
-    key:   String(tabItemId),
+    label: name,
+    key:   id,
     children:
       <Card
-        key={tabItemId}
+        key={name}
         title={
           <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-            <div>{site}</div>
+            <div>{name}</div>
           </div>}
       >
-        <List
+        {/* <List
           grid={{
             gutter: 1,
             column: 5,
@@ -44,9 +35,9 @@ const CollocationsTabItem = ({site, tabItemId, premises, companyCollocation}: Co
           bordered
           dataSource={premises}
           renderItem={(item, i) => (
-            <CollocationListItem item={item} index={i} companyCollocation={companyCollocation}/>
+            <CollocationListItem item={item} index={i}/>
           )}
-        />
+        /> */}
       </Card>,
   }
   return item

@@ -13,7 +13,7 @@ type SelectedCollocationListProps = {
 
 const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocationListProps) => {
   return (
-    <Card title={'Kolokacijos'} className='SelectedCollocationListContainer' >
+    <>
       {
         selectedCollocations && selectedCollocations?.length > 0 ?
           <div className='SelectedCollocationListBody'>
@@ -38,7 +38,7 @@ const SelectedCollocationList = ({selectedCollocations, edit}: SelectedCollocati
           </div>
           :<Empty description='Klientui nėra priskirtų kolokacijų' image={Empty.PRESENTED_IMAGE_SIMPLE} />
       }
-    </Card>
+    </>
   )
 }
 

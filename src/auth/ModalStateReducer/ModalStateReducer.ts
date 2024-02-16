@@ -7,6 +7,7 @@ interface ModalStateReducer {
     openClientsEmployeesDrawer:   boolean;
     openCollocationAdditionModal: boolean;
     openCollocationRemovalModal:  boolean;
+    openRacksAdditionModal:       boolean;
 }
 
 const initialState: ModalStateReducer = {
@@ -16,6 +17,7 @@ const initialState: ModalStateReducer = {
   openClientsEmployeesDrawer:   false,
   openCollocationAdditionModal: false,
   openCollocationRemovalModal:  false,
+  openRacksAdditionModal:       false,
 }
 
 const modalSlice = createSlice({
@@ -40,6 +42,9 @@ const modalSlice = createSlice({
     setOpenCollocationRemovalModal(state, { payload }: PayloadAction<boolean>) {
       state.openCollocationRemovalModal = payload
     },
+    setOpenRacksAdditionModal(state, { payload }: PayloadAction<boolean>){
+      state.openRacksAdditionModal = payload
+    },
   },
 })
 
@@ -50,6 +55,7 @@ export const {
   setOpenCollocationAdditionModal,
   setOpenCollocationRemovalModal,
   setOpenClientsEmployeesDrawer,
+  setOpenRacksAdditionModal,
 } = modalSlice.actions
 
 export default modalSlice.reducer

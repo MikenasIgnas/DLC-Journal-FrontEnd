@@ -1,15 +1,25 @@
 /* eslint-disable max-len */
 import { Tag }  from 'antd'
 import { Link } from 'react-router-dom'
+import { CompaniesType } from '../../../../types/globalTypes'
+import useFetch from '../../../../customHooks/useFetch'
 
 type SubClientTagProps = {
-    parentCompanyId:  number;
-    companyName:      string | undefined;
+    parentCompanyId:  string;
 }
 
-const SubClientTag = ({parentCompanyId, companyName}:SubClientTagProps ) => {
+const SubClientTag = ({parentCompanyId}:SubClientTagProps ) => {
+  const parentCompany = useFetch<CompaniesType>(`company/company?id=${parentCompanyId}`)
   return(
-    <Tag color='green'><Link to={`/getSingleCompany?companyId=${parentCompanyId}`}>Pagrindinis Klientas: {companyName}</Link></Tag>
+    <>
+      {parentCompany &&
+      <Tag color='green'>
+        <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${parentCompanyId}`}>Pagrindinis Klientas:
+          {parentCompany?.name}
+        </Link>
+      </Tag>
+      }
+    </>
   )
 }
 

@@ -5,9 +5,9 @@ import { setOpenSubClientAdditionModal }  from '../../../../auth/ModalStateReduc
 
 type SubClientAdditionProps = {
     selectedValue:    null;
-    handleChange:     (value: number) => Promise<void>;
+    handleChange:     (value: string) => Promise<void>;
     mainCompaniesOptions:  {
-        value: number;
+        value: string;
         label: string;
     }[],
     handleSelect:     () => void
