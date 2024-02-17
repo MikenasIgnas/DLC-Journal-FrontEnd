@@ -70,7 +70,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <span>{item.name}</span>
+                <p>{item.name}</p>
                 <div style={{display: 'flex'}}>
                   <EditOutlined onClick={editRack} style={{ marginRight: 8 }} />
                   <DeleteOutlined onClick={() => deleteRack(item._id)} />

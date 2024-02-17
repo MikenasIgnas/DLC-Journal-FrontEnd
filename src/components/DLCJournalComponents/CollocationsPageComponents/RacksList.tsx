@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React               from 'react'
-import { CompaniesType, Racks }           from '../../../types/globalTypes'
+import {
+  CompaniesType,
+  Racks,
+}                          from '../../../types/globalTypes'
 import { useCookies }      from 'react-cookie'
 import { useAppSelector }  from '../../../store/hooks'
 import { get }             from '../../../Plugins/helpers'
 import { List }            from 'antd'
-import RacksAdditionModal  from './RacksAdditionModal'
 import RacksListItem       from './RacksListItem'
 
 type RacksListItemProps = {
@@ -14,9 +16,9 @@ type RacksListItemProps = {
 }
 
 const RacksList = ({ premiseId }: RacksListItemProps) => {
-  const [cookies]               = useCookies(['access_token'])
-  const openRacksAdditionModal  = useAppSelector((state) => state.modals.openRacksAdditionModal)
-  const [racks, setRacks]       = React.useState<Racks[]>([])
+  const [cookies]                 = useCookies(['access_token'])
+  const openRacksAdditionModal    = useAppSelector((state) => state.modals.openRacksAdditionModal)
+  const [racks, setRacks]         = React.useState<Racks[]>([])
   const [companies, setCompanies] = React.useState<CompaniesType[]>()
 
   React.useEffect(() => {
@@ -51,7 +53,7 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
           updateRacksList={updateRacksList}
         />
       }/>
-      <RacksAdditionModal/>
+
     </div>
   )
 }

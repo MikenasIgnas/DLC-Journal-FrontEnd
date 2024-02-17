@@ -52,7 +52,6 @@ const useFetchVisitData = () => {
         const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
         const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
         const visitorsIdTypes: VisitorsIdTypes[]    = await get('visit/visitorIdType', cookies.access_token)
-        const dlcEmployee: EmployeesType            = await get(`user?id=${singleVisitRes.dlcEmlpyee}`, cookies.access_token)
 
         if(companyId){
           dispatch(setCompanyId(companyId))
@@ -62,7 +61,11 @@ const useFetchVisitData = () => {
           dispatch(setSiteId(siteId))
         }
 
-        dispatch(setDlcEmployee(dlcEmployee))
+        if(singleVisitRes.dlcEmlpyee){
+          const dlcEmployee: EmployeesType            = await get(`user?id=${singleVisitRes.dlcEmlpyee}`, cookies.access_token)
+          dispatch(setDlcEmployee(dlcEmployee))
+        }
+
         dispatch(setVisitorIdTypes(visitorsIdTypes))
         dispatch(setPermissions(permissions))
         dispatch(setVisit(singleVisitRes))

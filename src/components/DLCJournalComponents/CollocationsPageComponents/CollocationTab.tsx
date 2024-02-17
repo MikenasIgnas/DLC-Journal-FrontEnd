@@ -16,11 +16,16 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const CollocationTab = () => {
   const [activeKey, setActiveKey]                               = useState<string>()
   const [isSiteAdditionModalOpen, setIsSiteAdditionModalOpen]   = React.useState(false)
+  const [isSiteRemovalModalOpen, setIsSiteRemovalModalOpen]     = React.useState(false)
   const [siteNameInputValue, setSiteNameInputValue]             = React.useState<string>('')
   const [sites, setSites]                                       = React.useState<Sites[]>([])
   const newTabIndex                                             = useRef(0)
   const [cookies]                                               = useCookies(['access_token'])
-  const [, setSearchParamas]                                    = useSearchParams()
+  const [searchParams, setSearchParamas]                        = useSearchParams()
+  const menuKey = searchParams.get('menuKey')
+  const tabKey = searchParams.get('tabKey')
+  const siteId = searchParams.get('siteId')
+
 
   React.useEffect(() => {
     (async () => {
@@ -36,6 +41,9 @@ const CollocationTab = () => {
 
   const handleCancel = () => {
     setIsSiteAdditionModalOpen(false)
+  }
+  const cancelSiteRemove = () => {
+    setIsSiteRemovalModalOpen(false)
   }
 
   const onChange = (newActiveKey: string) => {
@@ -61,16 +69,21 @@ const CollocationTab = () => {
     setIsSiteAdditionModalOpen(false)
   }
 
-  const remove = async(targetKey: TargetKey) => {
+  const openSiteRemoveModal = async(targetKey: TargetKey) => {
+    setSearchParamas(`menuKey=${menuKey}&tabKey=${tabKey}&siteId=${targetKey}`)
+    setIsSiteRemovalModalOpen(true)
+  }
+
+  const onRemoveSite = async() => {
     let newActiveKey = activeKey
     let lastIndex = -1
     sites.forEach((item, i) => {
-      if (item._id === targetKey) {
+      if (item._id === siteId) {
         lastIndex = i - 1
       }
     })
-    const newPanes = sites.filter((item) => item._id !== targetKey)
-    if (newPanes.length && newActiveKey === targetKey) {
+    const newPanes = sites.filter((item) => item._id !== siteId)
+    if (newPanes.length && newActiveKey === siteId) {
       if (lastIndex >= 0) {
         newActiveKey = newPanes[lastIndex]._id
       } else {
@@ -79,8 +92,10 @@ const CollocationTab = () => {
     }
     setSites(newPanes)
     setActiveKey(newActiveKey)
-    await deleteItem('site/site', {id: targetKey} ,cookies.access_token)
+    await deleteItem('site/site', {id: siteId} ,cookies.access_token)
+    setIsSiteRemovalModalOpen(false)
   }
+
 
   const onEdit = (
     targetKey: React.MouseEvent | React.KeyboardEvent | string,
@@ -89,7 +104,7 @@ const CollocationTab = () => {
     if (action === 'add') {
       add()
     } else {
-      remove(targetKey)
+      openSiteRemoveModal(targetKey)
     }
   }
   return (
@@ -108,6 +123,9 @@ const CollocationTab = () => {
       />
       <Modal title='Pridėti adresą' open={isSiteAdditionModalOpen} onOk={onOk} onCancel={handleCancel}>
         <Input value={siteNameInputValue} onChange={(e) => setSiteNameInputValue(e.target.value)}/>
+      </Modal>
+      <Modal title='Pašalinti adresą' open={isSiteRemovalModalOpen} onOk={onRemoveSite} onCancel={cancelSiteRemove}>
+        <p>Ar tikrai norite pašalintį adresą?</p>
       </Modal>
     </>
   )

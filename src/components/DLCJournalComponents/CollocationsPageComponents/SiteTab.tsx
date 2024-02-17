@@ -11,6 +11,7 @@ import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReduce
 import CollocationListItem                  from './CollocationListItem'
 import { Premises }                         from '../../../types/globalTypes'
 import { useSearchParams }                  from 'react-router-dom'
+import RacksAdditionModal from './RacksAdditionModal'
 
 type SiteTabProps = {
     name:   string | undefined
@@ -37,7 +38,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
     })()
   }, [siteId, openCollocationAdditionModal])
 
-  const onPrmeiseAddition = () => {
+  const onPremiseAddition = () => {
     setSearchParamas(`?menuKey=5&tabKey=1&siteId=${siteId}`)
     dispatch(setOpenCollocationAdditionModal(true))
   }
@@ -50,7 +51,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
           <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <div>{name}</div>
             <div>
-              <Button type='link' onClick={onPrmeiseAddition}>Pridėti Patalpą</Button>
+              <Button type='link' onClick={onPremiseAddition}>Pridėti Patalpą</Button>
               <Button
                 type='link'
                 icon={<FileExcelOutlined />}
@@ -73,13 +74,12 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
           }}
           bordered
           dataSource={premises}
-          renderItem={(item) => (
-            <CollocationListItem siteId={siteId} item={item} premises={premises} setPremises={setPremises}/>
-          )}
+          renderItem={(item) => (<CollocationListItem siteId={siteId} item={item} premises={premises} setPremises={setPremises}/>)}
         />
       </Card>
       <CollocationAdditionModal/>
       <CollocationRemovalModal/>
+      <RacksAdditionModal/>
     </div>
   )
 }

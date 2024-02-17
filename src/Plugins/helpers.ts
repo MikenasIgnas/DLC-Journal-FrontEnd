@@ -166,7 +166,7 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
       return response.json()
     }else{
       const responseJson = await response.json()
-      throw new Error(responseJson)
+      throw new Error(responseJson.messsage)
     }
   }
 }

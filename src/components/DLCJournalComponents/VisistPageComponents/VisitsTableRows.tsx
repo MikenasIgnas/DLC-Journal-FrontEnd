@@ -59,18 +59,21 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
       const visitorsEmployeeIds                 = visitorsRes.map((el) => el.employeeId)
       const companyEmployeesRes:EmployeesType[] = await get('company/CompanyEmployee', cookies.access_token)
       const visitsVisitors                      = companyEmployeesRes.filter((el) => visitorsEmployeeIds.includes(el._id))
-      const dlcEmployeeRes                      = await get(`user?id=${visit.dlcEmlpyee}`, cookies.access_token)
       const companiesRes: CompaniesType         = await get(`company/company?id=${visit.companyId}`, cookies.access_token)
       const visitPuposeRes: VisitPurpose[]      = await get('company/permission', cookies.access_token)
       const purposes                            = visitPuposeRes.filter((el) => visit.visitPurpose.includes(el._id))
       const visitStatusRes                      = await get(`visit/visitStatus?id=${visit.statusId}`, cookies.access_token)
       const siteRes                             = await get(`site/site?id=${visit.siteId}`, cookies.access_token)
-      setDlcEmployee(dlcEmployeeRes)
       setVisitStatus(visitStatusRes)
       setSite(siteRes)
       setVisitPurposes(purposes)
       setCompanies(companiesRes)
       setVisitors(visitsVisitors)
+
+      if(visit?.dlcEmlpyee){
+        const dlcEmployeeRes                      = await get(`user?id=${visit?.dlcEmlpyee}`, cookies.access_token)
+        setDlcEmployee(dlcEmployeeRes)
+      }
     }
     setFetchedData()
   }, [])

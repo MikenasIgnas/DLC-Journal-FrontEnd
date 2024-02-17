@@ -108,7 +108,7 @@ const VisitInformationItems = ( edit: boolean) => {
       children:
       <div>
         {!edit ?
-          <div>{selectedVisitPurposes?.map((el, i) => <Tag key={i}>{el.label}</Tag>)}</div> :
+          <div>{selectedVisitPurposes?.map((el) => <Tag key={el.value}>{el.label}</Tag>)}</div> :
           <Form.Item name='visitPurpose' initialValue={visitData?.visitPurpose}>
             <Select
               mode='multiple'
