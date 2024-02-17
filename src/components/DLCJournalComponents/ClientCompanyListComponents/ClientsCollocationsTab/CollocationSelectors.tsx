@@ -4,73 +4,78 @@ import {
   Checkbox,
   Collapse,
   CollapseProps,
-  Form,
-}                               from 'antd'
+}                             from 'antd'
 
-import { FullSiteData, Racks }  from '../../../../types/globalTypes'
-import { CheckboxChangeEvent }  from 'antd/es/checkbox'
-import { CheckboxValueType }    from 'antd/es/checkbox/Group'
+import { FullSiteData }       from '../../../../types/globalTypes'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                             from '../../../../store/hooks'
+
+import {
+  addToChecklist,
+  removeFromChecklist,
+}                              from '../../../../auth/RacksReducer/RacksReducer'
+
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
 
 type ColocationSelectorsProps = {
   item: FullSiteData
-  checkboxList: string[];
-  onCheckAllChange: (e: CheckboxChangeEvent, racks: Racks[], premiseName: string, site: string) => void;
-  onCheckboxChange: (selectedRacks: CheckboxValueType[], premiseName: string, site: string, racks: Racks[]) => void;
-  checkAllStates: {
-    [key: string]: boolean;
-  };
-  companyRacks?: string[];
 };
 
-const ColocationSelectors = ({
-  item,
-  checkboxList,
-  onCheckAllChange,
-  onCheckboxChange,
-  checkAllStates,
-}: ColocationSelectorsProps) => {
+const ColocationSelectors = ({item}: ColocationSelectorsProps) => {
+  const checkedList = useAppSelector((state) => state.racks.checkedList)
+  const dispatch  = useAppDispatch()
 
-  const nestedItems = item.premises?.map((premise) => {
-    const filteredRacks = premise.racks?.filter((el) => el.premiseId === premise._id) || []
-    const premiseKey = `${item.name}_${premise.name}`
-    const checkedRacks = filteredRacks.filter(rack => checkboxList.includes(rack._id!)).map(rack => rack._id!)
+  const nestedItems = item.premises.map((premise) => {
+
+    const checkboxOptions = premise.racks.map(rack => ({ value: rack._id, label: rack.name }))
+    const racksIds        = premise.racks.map((el) => el._id)
+    const checkAll        = racksIds.length > 0 && racksIds.every((el) => checkedList.includes(el))
+
+    const onChecboxChange = (list: string[]) => {
+      const filterCheckedRacks = racksIds.filter(id => !list.includes(id))
+      dispatch(addToChecklist(list))
+      dispatch(removeFromChecklist(filterCheckedRacks))
+    }
+
+    const onCheckAllChange = (e: CheckboxChangeEvent) => {
+      if(e.target.checked){
+        dispatch(addToChecklist(racksIds))
+      }else{
+        dispatch(removeFromChecklist(racksIds))
+      }
+    }
+
     return {
       key:      premise._id,
       label:    premise.name,
       children: (
         <>
           <Checkbox
-            onChange={(e) => onCheckAllChange(e, filteredRacks, premise.name, item.name)}
-            checked={checkAllStates[premiseKey]}
+            onChange={onCheckAllChange}
+            checked={checkAll}
           >
-            {checkAllStates[premiseKey] ? 'Uncheck All' : 'Check All'}
+          Check All
           </Checkbox>
           <Checkbox.Group
-            options={filteredRacks.map((rack) => ({
-              label: rack.name || 'Unnamed Rack',
-              value: rack._id || 'undefined-id',
-            })).filter((rack) => rack.value !== 'undefined-id')}
-            value={checkedRacks}
-            onChange={(selectedValues) => onCheckboxChange(selectedValues, premise.name, item.name, filteredRacks)}
+            value={checkedList}
+            onChange={(val) => onChecboxChange(val as string[])}
+            options={checkboxOptions}
           />
         </>
       ),
     }
   })
 
-  const formList = (
-    <Form.List name={item.name}>
-      {() => (
-        <Collapse items={nestedItems} />
-      )}
-    </Form.List>
-  )
+
 
   const items: CollapseProps['items'] = [
     {
       key:      '1',
       label:    item.name,
-      children: formList,
+      children: <Collapse items={nestedItems} />,
     },
   ]
 

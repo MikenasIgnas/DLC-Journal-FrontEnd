@@ -34,13 +34,6 @@ const SubClientAdditionModal = () => {
   // const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
-  // const {
-  //   filteredResult,
-  //   checkedList,
-  //   checkAllStates,
-  //   onCheckAllChange,
-  //   onCheckboxChange,
-  // }                               = useSetCheckedCollocationList()
 
   const addCompany = async() => {
     // filteredResult.name = values.companyName
