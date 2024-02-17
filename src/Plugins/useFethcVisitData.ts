@@ -26,6 +26,8 @@ import {
   setVisitStatus,
   setVisitorIdTypes,
   setDlcEmployee,
+  setClientsGuests,
+  setCarPlates,
 }                          from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 import { useSearchParams } from 'react-router-dom'
 import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
@@ -65,6 +67,8 @@ const useFetchVisitData = () => {
         dispatch(setPermissions(permissions))
         dispatch(setVisit(singleVisitRes))
         dispatch(setVisitors(visitors))
+        dispatch(setClientsGuests(singleVisitRes.guests))
+        dispatch(setCarPlates(singleVisitRes.carPlates))
         dispatch(setCompanyEmployees(companyEmployeesRes))
       }
       dispatch(setCompanies(companies))

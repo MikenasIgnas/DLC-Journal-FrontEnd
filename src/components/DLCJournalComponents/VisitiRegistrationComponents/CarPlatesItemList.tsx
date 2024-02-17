@@ -1,46 +1,74 @@
 /* eslint-disable max-len */
-import { Button, Card, Input, List } from 'antd'
-import React                         from 'react'
-import { patch, put }                  from '../../../Plugins/helpers'
-import { useParams }                 from 'react-router'
-import { useCookies }                from 'react-cookie'
-import { SearchProps }               from 'antd/es/input'
-import { useAppSelector }            from '../../../store/hooks'
-import { selectSite }                from '../../../auth/SitesReducer/selectors'
+import React            from 'react'
+
+import {
+  Button,
+  Card,
+  Input,
+  List,
+}                       from 'antd'
+
+import {
+  patch,
+  put,
+}                       from '../../../Plugins/helpers'
+
+import { useParams }    from 'react-router'
+import { useCookies }   from 'react-cookie'
+import { SearchProps }  from 'antd/es/input'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                       from '../../../store/hooks'
+
+import { selectSite }   from '../../../auth/SitesReducer/selectors'
+
+import {
+  addCarPlates,
+  removeCarPlates,
+}                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 type ItemListProps = {
     url?:               string;
     removeUrl?:         string;
-    list:               string[] | undefined
+    list?:              string[] | undefined
     companyNameInput?:  React.ReactNode
-    setList:            React.Dispatch<React.SetStateAction<string[] | undefined>>
+    setList?:           React.Dispatch<React.SetStateAction<string[] | undefined>>
 }
 
 const {Search} = Input
 
-const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => {
+const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
   const {id}                                  = useParams()
   const [cookies]                             = useCookies(['access_token'])
   const [carPlatesInput, setCarPlatesInput]   = React.useState<string>('')
   const selectedSite                          = useAppSelector(selectSite)
   const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
-  const visitData                             = useAppSelector((state) => state.visit.visit)
+  const carPlates                             = useAppSelector((state) => state.visit.carPlates)
+  const dispatch                              = useAppDispatch()
 
   const removeListItem = async(item: string, index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
-    setList(filtered)
-    if(removeUrl){
-      await patch(removeUrl, {visitId: id, carPlate: item}, cookies.access_token)
+    if (setList && list) {
+      setList(filtered)
+    } else {
+      dispatch(removeCarPlates(index))
+      await patch('visit/carplate', {visitId: id, carPlate: item}, cookies.access_token)
     }
   }
 
   const onListItemAddition: SearchProps['onSearch'] = async(value) => {
-    if(value !== '' && list){
-      setList([...list, value])
-      setCarPlatesInput('')
-      if(url && visitData?.carPlates){
-        await put(url, {id: id, carPlates: [...visitData.carPlates, value]}, cookies.access_token)
+    if (value !== '') {
+      if (setList && list) {
+        setList([...list, value])
+      } else {
+        dispatch(addCarPlates(value))
+        if (carPlates) {
+          await put('visit/visit', {id: id, carPlates: [...carPlates, value]}, cookies.access_token)
+        }
       }
+      setCarPlatesInput('')
     }
   }
 
@@ -55,18 +83,15 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => 
             onSearch={onListItemAddition}
             enterButton={<div>Pridėti</div>}
           />
-          {
-            list && list?.length > 0 &&
-        <List
-          style={{marginTop: '50px'}}
-          dataSource={list}
-          renderItem={(item, index) =>
-            <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(item, index)}>Ištrinti</Button>]}>
-              <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
-            </List.Item>
-          }
-        />
-          }
+          <List
+            style={{marginTop: '50px'}}
+            dataSource={list ? list : carPlates}
+            renderItem={(item, index) =>
+              <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(item, index)}>Ištrinti</Button>]}>
+                <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
+              </List.Item>
+            }
+          />
         </Card>
         : null
       }

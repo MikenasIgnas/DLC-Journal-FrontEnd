@@ -4,7 +4,11 @@
 import React                  from 'react'
 import { put }                from '../../Plugins/helpers'
 import { useCookies }         from 'react-cookie'
-import { useParams, useSearchParams }          from 'react-router-dom'
+
+import {
+  useParams,
+  useSearchParams,
+}                            from 'react-router-dom'
 
 import {
   Button,
@@ -12,20 +16,24 @@ import {
   Form,
   Tabs,
   TabsProps,
-  UploadFile }                from 'antd'
+  UploadFile,
+}                             from 'antd'
 
 import { useForm }            from 'antd/es/form/Form'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                             from '../../store/hooks'
+
+import { setEditCompanyPage } from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+
 import ClientsCollocationsTab from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
 import ClientsEmployeesTab    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab          from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
 import SingleCompanyTitle     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import ClientsDocumentsTab    from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
 import useFetchSingleCompany  from '../../Plugins/useFetchSingleCompany'
-import {
-  useAppDispatch,
-  useAppSelector,
-}                             from '../../store/hooks'
-import { setEditCompanyPage } from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+
 
 type CompanyFormType = {
   id:           string | undefined
