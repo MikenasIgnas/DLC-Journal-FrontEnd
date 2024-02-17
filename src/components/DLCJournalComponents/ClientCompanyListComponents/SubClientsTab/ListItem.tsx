@@ -10,7 +10,7 @@ type ListItemProps = {
   listButtons:              (listItemId: string | undefined) => JSX.Element[] | undefined
   item: any
   title?: JSX.Element
-  id: string
+  id: string | undefined
 };
 
 const ListItem = ({
@@ -34,7 +34,7 @@ const ListItem = ({
           </div>
         }
         title={title}
-        description={item.description}
+        description={item?.description}
       />
       {item.parentId && <SubClientTag parentCompanyId={item.parentId}/>}
     </List.Item>

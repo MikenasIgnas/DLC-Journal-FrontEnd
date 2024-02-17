@@ -43,7 +43,7 @@ const LoginPage = () => {
 
   return (
     <div className='CreateUserContainer'>
-      <Card headStyle={{textAlign: 'center'}} title='Log In' bordered={true} className='LoginPage'>
+      <Card styles={{header: {textAlign: 'center'}}} title='Log In' bordered={true} className='LoginPage'>
         <Form
           name='normal_login'
           onFinish={onFinish}

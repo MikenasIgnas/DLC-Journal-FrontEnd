@@ -1,98 +1,83 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                                                      from 'react'
-import { Button, Form, List, Select, Image, Avatar, Modal, Tag }  from 'antd'
-import SignatureCanvas                                            from 'react-signature-canvas'
-import { useCookies }                                             from 'react-cookie'
-import { get, post }                                              from '../../../Plugins/helpers'
-import { useParams }                                              from 'react-router'
-import { identificationOptions }                                  from '../VisitiRegistrationComponents/StaticSelectOptions'
-import useSetWindowsSize                                          from '../../../Plugins/useSetWindowsSize'
-import { DeleteOutlined }                                         from '@ant-design/icons'
-import { useAppSelector } from '../../../store/hooks'
+import React                         from 'react'
+import {
+  Button,
+  Form,
+  List,
+  Avatar,
+  Modal,
+  Select,
+  Tag,
+}                                    from 'antd'
+import SignatureCanvas               from 'react-signature-canvas'
+import { useCookies }                from 'react-cookie'
+import { deleteItem, post }          from '../../../Plugins/helpers'
+import { useParams }                 from 'react-router'
+import useSetWindowsSize             from '../../../Plugins/useSetWindowsSize'
+import { VisitorEmployee }           from '../../../types/globalTypes'
+import { selectVisitorsPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                    from '../../../store/hooks'
+import { removeVisitor }             from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 type RegisteredVisitorsListItemProps = {
-  signature:     string | null | undefined
-  idType:        string | null | undefined;
-  employeeId:    number | undefined;
-  name:          string;
-  lastName:      string;
-  occupation:    string;
-  permissions:   string[]
-  deleteVisitor: (employeeId: number | undefined) => void
-  index:         number
-  employeePhoto: string | undefined;
+  item: VisitorEmployee
 }
 
-const RegisteredVisitorsListItem = ({
-  signature,
-  idType,
-  employeeId,
-  name,
-  lastName,
-  occupation,
-  permissions,
-  deleteVisitor,
-  index,
-  employeePhoto,
-}: RegisteredVisitorsListItemProps) => {
-  const {id}                                = useParams()
-  const [cookies]                           = useCookies(['access_token'])
-  const signatureCanvasRef                  = React.useRef<any>(null)
-  const [open, setOpen]                     = React.useState(false)
-  const [savedSignature, setSavedSignature] = React.useState<string| undefined | null>(signature)
-  const windowSize                          = useSetWindowsSize()
-  const editVisitors                        = useAppSelector((state) => state.visitPageEdits.editVisitors)
+const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) => {
+  const {id}               = useParams()
+  const [cookies]          = useCookies(['access_token'])
+  const signatureCanvasRef = React.useRef<any>(null)
+  const [open, setOpen]    = React.useState(false)
+  const windowSize         = useSetWindowsSize()
+  const editVisitors       = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const dispatch           = useAppDispatch()
+  const visitorIdTypes     = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
 
   const onOk = async() => {
     if(signatureCanvasRef.current){
       const signature = {
         signature: signatureCanvasRef.current.toDataURL(),
       }
-      const res = await post(`addSignature?visitId=${id}&employeeId=${employeeId}`,signature, cookies.access_token)
-      setSavedSignature(signatureCanvasRef.current.toDataURL())
+      const res = await post(`addSignature?visitId=${id}&employeeId=${item._id}`,signature, cookies.access_token)
       if(!res.error){
         setOpen(false)
       }
     }
   }
 
-  const onModalOpen = () => {
-    setOpen(true)
-  }
-
   const onCancel = () => {
     if(signatureCanvasRef.current){
       signatureCanvasRef.current.clear()
     }
-    setSavedSignature(null)
     setOpen(false)
   }
 
-  const deleteSignature = async() => {
-    await get(`deleteSignature?visitId=${id}&employeeId=${employeeId}`, cookies.access_token)
-    if(signatureCanvasRef.current){
-      signatureCanvasRef.current.clear()
+  const permissions = useAppSelector((state) => selectVisitorsPermissions(state, item.employee._id))
+
+  const deleteVisitor = async () => {
+    try{
+      await deleteItem('visit/visitor', {id: item._id}, cookies.access_token)
+      dispatch(removeVisitor(item._id))
+    }catch (error){
+      console.log(error)
     }
-    setSavedSignature(null)
   }
 
   return (
     <List.Item
       className='VisitorsListItemContainer'
       actions={[
-        <div key={employeeId} className='SelectedVisitorsButtonContainer'>
+        <div key={item._id} className='SelectedVisitorsButtonContainer'>
           <div>
-            {savedSignature && <Image width={150} src={savedSignature}/>}
-            {!savedSignature ?
-              <Button style={{ width: '140px'}} disabled={!editVisitors} onClick={onModalOpen}>Pasirašyti</Button> :
-              <DeleteOutlined style={{color: 'red'}} disabled={!editVisitors} onClick={deleteSignature}/>
-            }
           </div>
-          <Form.Item name={['visitors', index, 'idType']} className='RegisteredVisitorsSelect' initialValue={idType}>
-            <Select style={{width: '100%'}} disabled={!editVisitors} options={identificationOptions}/>
+          <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={item.visitorIdType}>
+            <Select style={{width: '100%'}} disabled={!editVisitors} options={visitorIdTypes} />
           </Form.Item>
-          <Button onClick={() => deleteVisitor(employeeId)}>Pašalinti lankytoją</Button>,
+          <Button onClick={deleteVisitor}>Pašalinti lankytoją</Button>,
         </div>,
       ]}
     >
@@ -101,18 +86,18 @@ const RegisteredVisitorsListItem = ({
         avatar={
           <Avatar
             shape='square' size={windowSize > 600 ? 90 : 40}
-            src={employeePhoto ? `../../ClientsEmployeesPhotos/${employeePhoto}` : '../../ClientsEmployeesPhotos/noUserImage.jpeg'}
+            src={item?.employee.photo ? item?.employee.photo : '../../ClientsEmployeesPhotos/noUserImage.jpeg'}
           />}
-        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{name} {lastName}</p>}
-        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{occupation}</p>}
+        title={<p style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{item?.employee?.name} {item?.employee?.lastname}</p>}
+        description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item?.employee?.occupation}</p>}
       />
-      <div className='PermissionTags'>{permissions.map((el: string, i: number) => <div key={i}><Tag key={i}>{el}</Tag></div>)}</div>
+      <div className='PermissionTags'>{permissions.map((el, i: number) => <div key={i}><Tag key={i}>{el.name}</Tag></div>)}</div>
       <Modal
         open={open}
         onCancel={onCancel}
         onOk={onOk}
       >
-        <Form.Item name={[name, 'signature']}>
+        <Form.Item name={[item._id, 'signature']}>
           <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
         </Form.Item>
       </Modal>

@@ -1,51 +1,45 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAppDispatch, useAppSelector }   from '../../../../store/hooks'
-import SelectedCollocationList              from '../SelectedCollocationList'
-import CollocationsList                     from '../CollocationsList'
-import useSetSingleVisitData                from '../../../../Plugins/useSetSingleVisitData'
 import { Card, Form }                       from 'antd'
+import { selectVisitingCompanyEmplyees }    from '../../../../auth/VisitorEmployeeReducer/selectors'
+import { selectPremises }                   from '../../../../auth/SitesReducer/selectors'
 import CardTitle                            from '../CardTitle'
-import { post }                             from '../../../../Plugins/helpers'
-import { setEditCollocations }              from '../../../../auth/SingleVisitPageEditsReducer/SingleVisitPageEditsReducer'
-
+import { useForm }                          from 'antd/es/form/Form'
+import { put }                              from '../../../../Plugins/helpers'
+import { setEditCollocations }              from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
+import { useSearchParams }                  from 'react-router-dom'
+import { useCookies }                       from 'react-cookie'
+import VisitRacks                           from './VisitRacks'
+import EditableVisitRacks                   from './EditableVisitRacks'
 
 const CollocationsForm = () => {
-  const [form]              = Form.useForm()
-  const dispatch            = useAppDispatch()
-  const editCollocations    = useAppSelector((state) => state.visitPageEdits.editCollocations)
-  const {
-    updatedTransformedArray,
-    companiesColocations,
-    fetchData,
-    id,
-    cookies,
-  }                         = useSetSingleVisitData()
+  const companyPremise    = useAppSelector(selectPremises)
+  const [form]            = useForm()
+  const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
+  const editCollocations  = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const dispatch          = useAppDispatch()
+  const [searchParams]    = useSearchParams()
+  const visitId           = searchParams.get('id')
+  const [cookies]         = useCookies()
+  const checkedList       = useAppSelector((state) => state.racks.checkedList)
 
-  const filteredArray = updatedTransformedArray?.filter(obj => {
-    return Object.values(obj).some(value => Array.isArray(value) && value.length > 0)
-  })
-
-  const saveChanges = async(values: any) => {
+  const saveChanges = async() => {
     dispatch(setEditCollocations(!editCollocations))
     if(editCollocations){
-      await post(`updateVisitInformation?visitId=${id}`, values, cookies.access_token)
-      await fetchData()
+      await put('visit/visit', {id: visitId, racks: checkedList}, cookies.access_token)
     }
   }
 
   return (
     <Form form={form} onFinish={saveChanges}>
-      <Card title={<CardTitle/>} className='SelectedCollocationListContainer' >
-        {!editCollocations ?
-          <SelectedCollocationList
-            selectedCollocations={filteredArray}
-            edit={editCollocations}
-          /> :
-          <CollocationsList companiesColocations={companiesColocations}
-          />
-        }
-      </Card>
+      {visitingEmployees.length > 0 && (
+        <Card title={<CardTitle />} className='CollocationsListCard'>
+          {companyPremise?.map((el) => (
+            !editCollocations ? <VisitRacks premise={el} key={el._id} /> : <EditableVisitRacks key={el._id} premise={el} />
+          ))}
+        </Card>
+      )}
     </Form>
   )
 }

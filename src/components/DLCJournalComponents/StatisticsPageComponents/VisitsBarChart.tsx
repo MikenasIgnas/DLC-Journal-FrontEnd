@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
-import { ConfigProvider, DatePicker } from 'antd'
+import {
+  ConfigProvider,
+  DatePicker,
+}                      from 'antd'
+
 import {
   Bar,
   BarChart,
@@ -11,10 +15,12 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts'
+}                       from 'recharts'
+
 import { VisitsType }   from '../../../types/globalTypes'
 import useGetChartDates from '../../../Plugins/useGetChartDates'
 import locale           from 'antd/es/locale/lt_LT'
+
 import 'dayjs/locale/lt'
 
 const { RangePicker } = DatePicker
@@ -24,7 +30,7 @@ type VisitsBarChartProps = {
 };
 
 type ChartDataType = {
-  name: string;
+  name: string | undefined;
   Vizitai: number;
 };
 
@@ -33,7 +39,7 @@ const VisitsBarChart = ({ visits }: VisitsBarChartProps) => {
 
   const data: ChartDataType[] = []
   for (let i = 0; i < allDates.length; i++) {
-    const visitCounter = visits?.filter((visit) => visit.endDate === formatDateString(allDates[i])).length || 0
+    const visitCounter = visits?.filter((visit) => formatDateString(visit.endDate) === formatDateString(allDates[i])).length || 0
     data.push({ name: formatDateString(allDates[i]), Vizitai: visitCounter })
   }
 

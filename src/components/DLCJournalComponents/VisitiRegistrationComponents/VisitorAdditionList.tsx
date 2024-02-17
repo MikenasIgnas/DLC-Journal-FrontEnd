@@ -1,27 +1,30 @@
 /* eslint-disable max-len */
-import React                          from 'react'
-import { Button, Card, Input, List }  from 'antd'
-import { EmployeesType }              from '../../../types/globalTypes'
-import VisitorAdditionListItem        from './VisitorAdditionListItem'
-import { ActionCreatorWithPayload }   from '@reduxjs/toolkit'
-import { useAppDispatch }             from '../../../store/hooks'
+import React                                from 'react'
+import { Button, Card, Input, List }        from 'antd'
+import VisitorAdditionListItem              from './VisitorAdditionListItem'
+import { ActionCreatorWithPayload }         from '@reduxjs/toolkit'
+import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
+import { selectNonVisitingCompanyEmplyees } from '../../../auth/VisitorEmployeeReducer/selectors'
+import { useSearchParams }                  from 'react-router-dom'
 
 type VisitorAdditionListProps = {
-    clientsEmployees:         EmployeesType[] | undefined
-    searchEmployee:           (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-    searchEmployeeValue:      string | undefined
-    addVisitor:               (id:number) => void
-    removeVisitor:            (id:number) => void
     setOpenVisitorAddition?:  ActionCreatorWithPayload<boolean>
-    setClientsEmployees?:     React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
 }
 
-const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmployee, searchEmployeeValue, addVisitor, removeVisitor, setOpenVisitorAddition }: VisitorAdditionListProps) => {
-  const dispatch          = useAppDispatch()
+const VisitorAdditionList = ({ setOpenVisitorAddition }: VisitorAdditionListProps) => {
+  const [searchEmployeeValue, setSearchEmployeeValue] = React.useState<string | undefined>()
+  const [searchParams]                                = useSearchParams()
+  const dispatch                                      = useAppDispatch()
+  const companyEmployees                              = useAppSelector(selectNonVisitingCompanyEmplyees)
+  const siteId                                        = searchParams.get('siteId')
+
+  const searchEmployee = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearchEmployeeValue(e.target.value.toLowerCase())
+  }
 
   return (
     <>
-      {clientsEmployees && clientsEmployees?.length > 0 &&
+      {companyEmployees && companyEmployees?.length > 0 && siteId &&
       <Card title={
         <div style={{display: 'flex', justifyContent: 'space-between'}}>
           <div>Įmonės Darbuotojai</div>
@@ -40,16 +43,13 @@ const VisitorAdditionList = ({setClientsEmployees, clientsEmployees, searchEmplo
             xl:     2,
             xxl:    4,
           }}
-          dataSource={clientsEmployees}
-          renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastName}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
+          dataSource={companyEmployees}
+          renderItem={(item) => (!searchEmployeeValue || `${item.name} ${item.lastname}`.toLowerCase().includes(searchEmployeeValue.toLocaleLowerCase())) &&
           <VisitorAdditionListItem
             searchEmployeeValue={searchEmployeeValue}
             item={item}
-            addVisitor={addVisitor}
-            removeVisitor={removeVisitor}
             photoFolder='../../ClientsEmployeesPhotos/'
-            clientsEmployees={clientsEmployees}
-            setClientsEmployees={setClientsEmployees} />
+          />
           }>
         </List>
       </Card>

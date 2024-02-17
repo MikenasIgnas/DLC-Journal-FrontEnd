@@ -4,12 +4,10 @@
 import { Drawer, Row, Col, Divider, Form, List }            from 'antd'
 import React                                                from 'react'
 import { get }                                              from '../../../../Plugins/helpers'
-import { useParams }                                        from 'react-router-dom'
 import { useCookies }                                       from 'react-cookie'
 import { ColocationDataType, CompaniesType, EmployeesType } from '../../../../types/globalTypes'
 import { useForm }                                          from 'antd/es/form/Form'
 import ListItem                                             from './ListItem'
-import ClientsCollocations                                  from '../ClientsCollocationsTab/ClientsCollocations'
 
 type SubClientsDrawerProps = {
     onClose:                () => void;
@@ -27,8 +25,7 @@ interface DescriptionItemProps {
     initialValue: string | undefined;
 }
 
-const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:SubClientsDrawerProps) => {
-  const {id}                                        = useParams()
+const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) => {
   const [subClient, setSubClient]                   = React.useState<CompaniesType>()
   const [cookies]                                   = useCookies()
   const [subClientEmployees, setSubClientEmployees] = React.useState<EmployeesType[]>()
@@ -96,12 +93,6 @@ const SubClientsDrawer = ({open, subClientId, subClientsCollocations, onClose}:S
           </div>
         </div>
         <Divider >Kolokacijos</Divider>
-        <ClientsCollocations
-          J13locationName={'J13'}
-          J13locationData={subClientsCollocations?.J13}
-          T72locationName={'T72'}
-          T72locationData={subClientsCollocations?.T72}
-        />
       </Form>
       <Divider >Darbuotojai</Divider>
       <List

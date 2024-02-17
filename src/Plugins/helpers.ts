@@ -96,6 +96,69 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
     const formData = new FormData()
 
     if (fileList && fileList.length > 0) {
+      formData.append('photo', fileList)
+    }
+
+    for (const key in values) {
+      if (values.hasOwnProperty(key)) {
+        if (Array.isArray(values[key])) {
+          values[key].forEach((item: any) => {
+            formData.append(`${key}[]`, item)
+          })
+        } else {
+          formData.append(key, values[key])
+        }
+      }
+    }
+
+    setUploading(true)
+
+    try {
+      const response = await fetch(`http://localhost:4002/${url}`, {
+        method:  'POST',
+        headers: {
+          'token': token,
+        },
+        body: formData,
+      })
+
+      const data = await response.json()
+      setFileList(fileList[0])
+      return data
+
+    } catch (error) {
+      console.log(error)
+      throw error
+    } finally {
+      setUploading(false)
+    }
+  }else{
+
+    const options = {
+      method:  'POST',
+      headers: {
+        'content-type': 'application/json',
+        'token':        `${token}`,
+      },
+      body: JSON.stringify(values),
+    }
+
+    const response = await fetch(`http://localhost:4002/${url}`, options)
+    if(response.ok){
+      return response.json()
+    }else{
+      const responseJson = await response.json()
+      throw new Error(responseJson)
+    }
+  }
+}
+
+const postDocument = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
+  if(fileList && setUploading && setFileList){
+
+    const formData = new FormData()
+
+    if (fileList && fileList.length > 0) {
       formData.append('file', fileList)
     }
 
@@ -304,25 +367,25 @@ const clearFilleChecklistdData = (totalAreasCount: number) => {
 
 
 
-const deleteTableItem = async(url: string, data: any, setData: any, id: string | number, cookie: TokenType) => {
-  const tableItemRemoved = (id: string | number) => {
+const deleteTableItem = async(url: string, data: any, postData: any, setData: any, cookie: string) => {
+  const tableItemRemoved = (id: string) => {
     if(data){
       let newTableItems = [...data]
-      newTableItems = newTableItems.filter(x => x.id !== id)
+      newTableItems = newTableItems.filter(x => x._id !== id)
       setData(newTableItems)
     }
   }
 
   if(tableItemRemoved){
-    await get(`${url}?id=${id}`, cookie)
-    tableItemRemoved(id)
+    await deleteItem(`${url}`, postData, cookie)
+    tableItemRemoved(postData.id)
   }
 }
 
-const calculateTimeDifference = (startDate: string | undefined, startTime: string | undefined, endDate: string | undefined, endTime: string | undefined) => {
-  if(startDate && startTime && endDate && endTime){
-    const startDateTime   = new Date(`${startDate} ${startTime}`)
-    const endDateTime     = new Date(`${endDate} ${endTime}`)
+const calculateTimeDifference = (startDate: Date | undefined, endDate: Date | undefined) => {
+  if(startDate && endDate){
+    const startDateTime   = new Date(`${startDate}`)
+    const endDateTime     = new Date(`${endDate}`)
     const timeDifference  = Number(endDateTime) - Number(startDateTime)
     const hours           = Math.floor(timeDifference / (1000 * 60 * 60))
     const minutes         = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))
@@ -333,20 +396,18 @@ const calculateTimeDifference = (startDate: string | undefined, startTime: strin
   }
 }
 
-const convertUTCtoLocalTime = (utcTimestamp: Date) => {
+const convertUTCtoLocalTime = (utcTimestamp: Date | undefined) => {
   if(utcTimestamp){
-    const dateObject = new Date(utcTimestamp)
-    const localTimeString = dateObject.toLocaleString('en-US', {
-      timeZone: 'Europe/Vilnius',
-      hour:     'numeric',
-      minute:   'numeric',
-      hour12:   false,
-    })
-    return localTimeString
+    const date      = new Date(utcTimestamp)
+    const hours     = date.getHours()
+    const minutes   = date.getMinutes()
+
+    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+    return timeString
   }
 }
 
-const convertUTCtoLocalDate = (utcTimestamp: string | undefined) => {
+const convertUTCtoLocalDate = (utcTimestamp: Date | undefined) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })
@@ -357,15 +418,12 @@ const convertUTCtoLocalDate = (utcTimestamp: string | undefined) => {
   }
 }
 
-const convertUTCtoLocalDateTime = (utcTimestamp: string | undefined) => {
+const convertUTCtoLocalDateTime = (utcTimestamp: Date | undefined) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
-    const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })
-    const month               = dateObject.toLocaleString('en-US', { month: '2-digit' })
-    const year                = dateObject.toLocaleString('en-US', { year: 'numeric' })
     const hour                = dateObject.toLocaleString('en-US', { hour: '2-digit', hour12: false })
     const minute              = dateObject.toLocaleString('en-US', { minute: 'numeric' })
-    const localDateTimeString = `${year}-${month}-${day}, ${hour}:${minute}`
+    const localDateTimeString = `${hour}:${minute}`
     return localDateTimeString
   }
 }
@@ -428,5 +486,6 @@ export {
   deleteItem,
   getFile,
   downloadFile,
+  postDocument,
 }
 

@@ -1,49 +1,77 @@
 /* eslint-disable max-len */
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, Brush, ResponsiveContainer } from 'recharts'
-import { VisitsType }                                                                                     from '../../../types/globalTypes'
-import useGetChartDates                                                                                   from '../../../Plugins/useGetChartDates'
-import { ConfigProvider, DatePicker }                                                                     from 'antd'
-import locale                                           from 'antd/es/locale/lt_LT'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ReferenceLine,
+  Brush,
+  ResponsiveContainer,
+}                       from 'recharts'
+
+import {
+  CompaniesType,
+  VisitsType,
+}                       from '../../../types/globalTypes'
+
+import useGetChartDates from '../../../Plugins/useGetChartDates'
+
+import {
+  ConfigProvider,
+  DatePicker,
+}                       from 'antd'
+
+import locale           from 'antd/es/locale/lt_LT'
 import 'dayjs/locale/lt'
+
 const { RangePicker } = DatePicker
 
 type CompaniesVisitsBarChartProps = {
-  visits: VisitsType[] | undefined;
+  visits:     VisitsType[] | undefined;
+  companies:  CompaniesType[] | undefined
 };
 
-const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
+const CompaniesVisitsBarChart = ({ visits, companies }: CompaniesVisitsBarChartProps) => {
   const { allDates, formatDateString, onRangeChange, rangePresets } = useGetChartDates()
   const companyData: { [date: string]: { [companyName: string]: number } } = {}
 
   allDates.forEach((date) => {
     const dateString = formatDateString(date)
-    const dailyVisits = visits?.filter((visit) => visit?.endDate === dateString) || []
+    const dailyVisits = visits?.filter((visit) => formatDateString(visit?.endDate) === dateString) || []
     dailyVisits.forEach((visit) => {
-      const companyName = visit?.visitingClient || 'Unknown Company'
-      if (!companyData[dateString]) {
-        companyData[dateString] = {}
-      }
-      if (companyData[dateString][companyName]) {
-        companyData[dateString][companyName]++
-      } else {
-        companyData[dateString][companyName] = 1
+      const company = companies?.find(company => company._id === visit?.companyId)
+      const companyName = company ? company.name : 'Unknown Company'
+      if (dateString) {
+        if (!companyData[dateString]) {
+          companyData[dateString] = {}
+        }
+        if (companyData[dateString][companyName]) {
+          companyData[dateString][companyName]++
+        } else {
+          companyData[dateString][companyName] = 1
+        }
       }
     })
   })
 
   const data = allDates.map((date) => {
     const dateString = formatDateString(date)
-    const companies = companyData[dateString] || {}
-    return {
-      name: dateString,
-      ...companies,
+    if (dateString) {
+      const companies = companyData[dateString] || {}
+      return {
+        name: dateString,
+        ...companies,
+      }
     }
-  })
+    return null
+  }).filter(entry => entry)
 
   const colorPalette = ['#8884d8', '#82ca9d', '#ffc658', '#ff7f50', '#bada55']
 
   const uniqueCompanies = Array.from(
-    new Set(data.flatMap((entry) => Object.keys(entry).filter((key) => key !== 'name')))
+    new Set(data.flatMap((entry) => entry && Object.keys(entry).filter((key) => key !== 'name')))
   )
 
   return (
@@ -67,10 +95,10 @@ const CompaniesVisitsBarChart = ({ visits }: CompaniesVisitsBarChartProps) => {
           <Tooltip />
           <ReferenceLine y={0} stroke='#000' />
           <Brush dataKey='name' height={30} stroke='#8884d8' />
-          {uniqueCompanies.map((companyName, index) => (
+          {uniqueCompanies?.map((companyName, index) => (
             <Bar
               key={companyName}
-              dataKey={companyName}
+              dataKey={companyName as string}
               stackId='a'
               fill={colorPalette[index % colorPalette.length]}
             />

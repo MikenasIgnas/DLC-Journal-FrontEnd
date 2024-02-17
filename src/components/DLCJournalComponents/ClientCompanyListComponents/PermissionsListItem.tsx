@@ -13,7 +13,7 @@ type PermissionsListItemProps = {
     permissions: Permissions[]
 }
 
-const PermissionsListItem = ({item, deletePermission, permissions, setPermissions}: PermissionsListItemProps) => {
+const PermissionsListItem = ({item, deletePermission}: PermissionsListItemProps) => {
   const [cookie]                    = useCookies(['access_token'])
   const [inputValue, setInputValue] = React.useState<string >()
   const [edit, setEdit]             = React.useState(false)
@@ -24,12 +24,11 @@ const PermissionsListItem = ({item, deletePermission, permissions, setPermission
       name: inputValue,
     }
     await put('company/permission', data, cookie.access_token)
-    const updatedPermissions = permissions.map(perm =>
-      perm._id === id ? { ...perm, name: inputValue } : perm
-    )
+    // const updatedPermissions = permissions.map(perm =>
+    //   perm._id === id ? { ...perm, name: inputValue } : perm
+    // )
 
-    // Update the state in the parent component
-    setPermissions(updatedPermissions)
+    // setPermissions(updatedPermissions)
     setEdit(false)
   }
 

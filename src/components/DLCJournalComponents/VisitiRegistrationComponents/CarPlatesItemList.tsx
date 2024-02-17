@@ -1,31 +1,32 @@
 /* eslint-disable max-len */
 import { Button, Card, Input, List } from 'antd'
 import React                         from 'react'
-import { get, post }                 from '../../../Plugins/helpers'
+import { get, put }                  from '../../../Plugins/helpers'
 import { useParams }                 from 'react-router'
 import { useCookies }                from 'react-cookie'
 import { SearchProps }               from 'antd/es/input'
+import { useAppSelector }            from '../../../store/hooks'
+import { selectSite }                from '../../../auth/SitesReducer/selectors'
 
 type ItemListProps = {
     url?:               string;
     removeUrl?:         string;
-    list:               string[]
+    list:               string[] | undefined
     companyNameInput?:  React.ReactNode
-    setList:            React.Dispatch<React.SetStateAction<string[]>>
-    visitAddress:       string | null
-    selectedVisitors:   number | undefined
+    setList:            React.Dispatch<React.SetStateAction<string[] | undefined>>
 }
 
 const {Search} = Input
 
-const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, visitAddress }: ItemListProps) => {
+const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => {
   const {id}                                  = useParams()
   const [cookies]                             = useCookies(['access_token'])
   const [carPlatesInput, setCarPlatesInput]   = React.useState<string>('')
-
-
+  const selectedSite                          = useAppSelector(selectSite)
+  const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
+  const visitData = useAppSelector((state) => state.visit.visit)
   const removeListItem = async(index: number) => {
-    const filtered = list.filter((_el, i) => index !== i)
+    const filtered = list?.filter((_el, i) => index !== i)
     setList(filtered)
     if(removeUrl){
       await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
@@ -33,21 +34,18 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, vi
   }
 
   const onListItemAddition: SearchProps['onSearch'] = async(value) => {
-    if(value !== ''){
+    if(value !== '' && list){
       setList([...list, value])
       setCarPlatesInput('')
-      if(url){
-        const updateValue = {
-          value,
-        }
-        await post(`${url}?visitId=${id}`, updateValue, cookies.access_token)
+      if(url && visitData?.carPlates){
+        await put(url, {id: id, carPlates: [...visitData.carPlates, value]}, cookies.access_token)
       }
     }
   }
 
   return (
     <>
-      {selectedVisitors && selectedVisitors > 0 && visitAddress === 'T72' ?
+      {visitorCount && visitorCount > 0 && selectedSite?.name === 'T72' ?
         <Card title='Pridėti automobilį' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
           <Search
             value={carPlatesInput}
@@ -57,7 +55,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList, selectedVisitors, vi
             enterButton={<div>Pridėti</div>}
           />
           {
-            list.length > 0 &&
+            list && list?.length > 0 &&
         <List
           style={{marginTop: '50px'}}
           dataSource={list}

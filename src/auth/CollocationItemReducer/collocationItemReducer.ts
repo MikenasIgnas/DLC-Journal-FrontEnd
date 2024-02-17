@@ -4,12 +4,12 @@ interface CollocationReducer {
     collocationItem: {
         premiseName:  string;
         racks:        string[];
-        addressId?:   string | null
+        siteId?:      string | null
       }
 }
 
 const initialState: CollocationReducer = {
-  collocationItem: {premiseName: '', racks: [], addressId: null},
+  collocationItem: {premiseName: '', racks: [], siteId: null},
 }
 
 const collocationSlice = createSlice({
@@ -19,7 +19,7 @@ const collocationSlice = createSlice({
     setCollocationItem(state, { payload }: PayloadAction<{
         premiseName:  string;
         racks:        string[];
-        addressId?:   string | null
+        siteId?:      string | null
       }>) {
       state.collocationItem = payload
     },

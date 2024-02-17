@@ -13,14 +13,14 @@ const CollocationsSelect = () => {
   const [cookies] =                                         useCookies(['access_token'])
   const [searchParams] =                                    useSearchParams()
   const companyId =                                         searchParams.get('companyId')
-  const addressId =                                         searchParams.get('addressId')
+  const siteId =                                         searchParams.get('siteId')
   const [companiesColocations, setCompaniesCollocations] =  React.useState<CollocationsType[]>()
 
   React.useEffect(() => {
     (async () => {
       try{
         const singleCompany =     await get(`SingleCompanyPage/${companyId}`, cookies.access_token)
-        if(addressId === 'J13'){
+        if(siteId === 'J13'){
           setCompaniesCollocations(singleCompany?.data?.companyInfo?.J13)
         }else{
           setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
@@ -29,7 +29,7 @@ const CollocationsSelect = () => {
         console.log(err)
       }
     })()
-  },[addressId])
+  },[siteId])
 
   return (
     <div style={{display: 'flex', justifyContent: 'space-around', height: '100%'}}>

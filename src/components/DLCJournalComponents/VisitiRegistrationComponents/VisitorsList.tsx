@@ -1,27 +1,25 @@
 /* eslint-disable max-len */
-import React                    from 'react'
-import { Card, Form, List }     from 'antd'
-import VisitorsListItem         from './VisitorsListItem'
-import { EmployeesType }        from '../../../types/globalTypes'
+import { Card, List }                     from 'antd'
+import VisitorsListItem                   from './VisitorsListItem'
+import { useAppSelector }                 from '../../../store/hooks'
+import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
 
-type VisitorsListProps = {
-  setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
-  clientsEmployees?:    EmployeesType[] | undefined
-  removeVisitor:        (id: number) => void
-}
 
-const VisitorsList = ({setClientsEmployees, clientsEmployees, removeVisitor}: VisitorsListProps) => {
+
+const VisitorsList = () => {
+  const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
   return (
-    <Card title='Lankytojai' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-      <Form.List name='visitors'>
-        {(fields) => (
+    <>
+      {
+        visitingEmployees.length > 0 &&
+        <Card title='Lankytojai' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
           <List
-            dataSource={fields}
-            renderItem={(item) => <VisitorsListItem removeVisitor={removeVisitor} clientsEmployees={clientsEmployees} setClientsEmployees={setClientsEmployees} key={item.key} item={item}/>}
+            dataSource={visitingEmployees}
+            renderItem={(item) => <VisitorsListItem item={item}/>}
           />
-        )}
-      </Form.List>
-    </Card>
+        </Card>
+      }
+    </>
   )
 }
 

@@ -10,9 +10,10 @@ import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
 import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReducer/ModalStateReducer'
 import CollocationListItem                  from './CollocationListItem'
 import { Premises }                         from '../../../types/globalTypes'
+import { useSearchParams }                  from 'react-router-dom'
 
 type SiteTabProps = {
-    name: string | undefined
+    name:   string | undefined
     siteId: string | undefined
 }
 
@@ -21,6 +22,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
   const dispatch                        = useAppDispatch()
   const [premises, setPremises]         = React.useState<Premises[]>()
   const openCollocationAdditionModal    = useAppSelector((state) => state.modals.openCollocationAdditionModal)
+  const [,setSearchParamas]             = useSearchParams()
 
   React.useEffect(() => {
     (async () => {
@@ -35,6 +37,10 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
     })()
   }, [siteId, openCollocationAdditionModal])
 
+  const onPrmeiseAddition = () => {
+    setSearchParamas(`?menuKey=5&tabKey=1&siteId=${siteId}`)
+    dispatch(setOpenCollocationAdditionModal(true))
+  }
 
   return (
     <div>
@@ -44,8 +50,13 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
           <div style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
             <div>{name}</div>
             <div>
-              <Button type='link' onClick={() => dispatch(setOpenCollocationAdditionModal(true))}>Pridėti Patalpą</Button>
-              <Button type='link' icon={<FileExcelOutlined />} onClick={() => generateCsv('generateAllCollocationsCSV', {siteId: siteId}, cookies.access_token)}>Generuoti csv</Button>
+              <Button type='link' onClick={onPrmeiseAddition}>Pridėti Patalpą</Button>
+              <Button
+                type='link'
+                icon={<FileExcelOutlined />}
+                onClick={() => generateCsv('generateAllCollocationsCSV', {siteId: siteId}, cookies.access_token)}>
+                Generuoti csv
+              </Button>
             </div>
           </div>}
       >

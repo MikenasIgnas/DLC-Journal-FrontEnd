@@ -1,13 +1,18 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable max-len */
-import { Checkbox, Collapse, CollapseProps, Form } from 'antd'
-import { useAppSelector } from '../../../../store/hooks'
-import { Racks, Sites } from '../../../../types/globalTypes'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { CheckboxValueType } from 'antd/es/checkbox/Group'
+import {
+  Checkbox,
+  Collapse,
+  CollapseProps,
+  Form,
+}                               from 'antd'
+
+import { FullSiteData, Racks }  from '../../../../types/globalTypes'
+import { CheckboxChangeEvent }  from 'antd/es/checkbox'
+import { CheckboxValueType }    from 'antd/es/checkbox/Group'
 
 type ColocationSelectorsProps = {
-  item: Sites;
+  item: FullSiteData
   checkboxList: string[];
   onCheckAllChange: (e: CheckboxChangeEvent, racks: Racks[], premiseName: string, site: string) => void;
   onCheckboxChange: (selectedRacks: CheckboxValueType[], premiseName: string, site: string, racks: Racks[]) => void;
@@ -24,11 +29,9 @@ const ColocationSelectors = ({
   onCheckboxChange,
   checkAllStates,
 }: ColocationSelectorsProps) => {
-  const premises = useAppSelector((state) => state.sites.premise)?.filter((el) => el.siteId === item._id)
-  const racks = useAppSelector((state) => state.sites.racks)
 
-  const nestedItems = premises?.map((premise) => {
-    const filteredRacks = racks?.filter((el) => el.premiseId === premise._id) || []
+  const nestedItems = item.premises?.map((premise) => {
+    const filteredRacks = premise.racks?.filter((el) => el.premiseId === premise._id) || []
     const premiseKey = `${item.name}_${premise.name}`
     const checkedRacks = filteredRacks.filter(rack => checkboxList.includes(rack._id!)).map(rack => rack._id!)
     return {

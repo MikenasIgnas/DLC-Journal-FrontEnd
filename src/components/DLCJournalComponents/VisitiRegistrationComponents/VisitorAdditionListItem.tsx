@@ -1,48 +1,35 @@
 /* eslint-disable max-len */
-import React                          from 'react'
-import { Avatar, Card, Form, List }   from 'antd'
-import { EmployeesType, VisitsType }  from '../../../types/globalTypes'
-import { useCookies }                 from 'react-cookie'
-import { useParams }                  from 'react-router'
-import Meta                           from 'antd/es/card/Meta'
-import { post }                       from '../../../Plugins/helpers'
-import useSetWindowsSize              from '../../../Plugins/useSetWindowsSize'
-import HighlightText                  from '../../UniversalComponents/HighlightText'
+import { Avatar, Card, List } from 'antd'
+import { EmployeesType }      from '../../../types/globalTypes'
+import { useCookies }         from 'react-cookie'
+import Meta                   from 'antd/es/card/Meta'
+import { post }               from '../../../Plugins/helpers'
+import useSetWindowsSize      from '../../../Plugins/useSetWindowsSize'
+import HighlightText          from '../../UniversalComponents/HighlightText'
+import { useAppDispatch }     from '../../../store/hooks'
+import { addVisitor}          from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useSearchParams }    from 'react-router-dom'
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
-    addVisitor:           (id:number) => void
-    removeVisitor:        (id:number) => void
     photoFolder:          string;
-    clientsEmployees?:    EmployeesType[] | undefined
-    setClientsEmployees?: React.Dispatch<React.SetStateAction<EmployeesType[] | undefined>>
     searchEmployeeValue:  string | undefined
 }
 
-const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployees, setClientsEmployees, searchEmployeeValue}: VisitorAdditionListItemProps) => {
-  const [cookies]   = useCookies(['access_token'])
-  const {id}        = useParams()
-  const form        = Form.useFormInstance<VisitsType>()
-  const visitor     = Form.useWatch('visitors', form)
-  const windowSize  = useSetWindowsSize()
+const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: VisitorAdditionListItemProps) => {
+  const [cookies]         = useCookies(['access_token'])
+  const windowSize        = useSetWindowsSize()
+  const dispatch          = useAppDispatch()
+  const [searchParams]    = useSearchParams()
+  const visitId           = searchParams.get('id')
 
   const addVisitingClient = async() => {
-    const updatedVisitors = [...(visitor || []), { idType: undefined, selectedVisitor: item }]
-    addVisitor(Number(item.employeeId))
-    form.setFieldsValue({
-      visitors: updatedVisitors,
-    })
-
-    const filter = clientsEmployees?.filter((el) => el.employeeId !== item.employeeId)
-
-    if(setClientsEmployees){
-      setClientsEmployees(filter)
+    try{
+      const res = await post('visit/visitor', {visitId: visitId, employeeId: item._id}, cookies.access_token)
+      dispatch(addVisitor(res))
+    }catch(err){
+      console.log(err)
     }
-
-    if (id) {
-      await post(`updateVisitorList?visitId=${id}`, item, cookies.access_token)
-    }
-
   }
 
   return (
@@ -53,8 +40,8 @@ const VisitorAdditionListItem = ({item, addVisitor, photoFolder, clientsEmployee
         style={{ margin: '10px', width: windowSize > 600 ? 300 : 220, cursor: 'pointer' }}
       >
         <Meta
-          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item.employeePhoto ? `${photoFolder}${item.employeePhoto}` : `${photoFolder}noUserImage.jpeg`} />}
-          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item.lastName)}</div>}
+          avatar={<Avatar shape='square' size={windowSize > 600 ? 90 : 40} src={ item?.photo ? item?.photo : `${photoFolder}noUserImage.jpeg`} />}
+          title={<div style={{fontSize: windowSize > 600 ? '15px' : '12px'}}>{HighlightText(searchEmployeeValue, item.name)} {HighlightText(searchEmployeeValue, item?.lastname)}</div>}
           description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item.occupation}</p>}
         />
       </Card>

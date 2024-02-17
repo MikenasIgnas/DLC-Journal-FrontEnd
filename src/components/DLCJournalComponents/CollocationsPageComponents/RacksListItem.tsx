@@ -1,10 +1,14 @@
 /* eslint-disable max-len */
-import React                                            from 'react'
-import { DeleteOutlined, EditOutlined, SaveOutlined }   from '@ant-design/icons'
-import { Button, Form, Input, List, Tag }                    from 'antd'
-import { CompaniesType, Racks }                                        from '../../../types/globalTypes'
-import { deleteItem, put }                              from '../../../Plugins/helpers'
-import { useCookies }                                   from 'react-cookie'
+import React                    from 'react'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+}                               from '@ant-design/icons'
+import { Input, List, Tag }     from 'antd'
+import { CompaniesType, Racks } from '../../../types/globalTypes'
+import { deleteItem, put }      from '../../../Plugins/helpers'
+import { useCookies }           from 'react-cookie'
 
 type RacksListItem = {
     item:            Racks
@@ -17,8 +21,8 @@ type RacksListItem = {
 
 const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, companies}: RacksListItem) => {
   const [cookies]       = useCookies(['access_token'])
-  const [form]          = Form.useForm()
   const [edit, setEdit] = React.useState(false)
+  const [rackNameInput, setRackNameInput] = React.useState<string | undefined>(item.name)
 
   const deleteRack = async(id: string | undefined) => {
     await deleteItem('site/rack', {id: id}, cookies.access_token)
@@ -30,35 +34,57 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
     setEdit(true)
   }
 
-  const saveChanges = async(values:Racks, id: string | undefined) => {
-    values.premiseId = premiseId
-    values.id = id
+  const saveChanges = async(id: string | undefined) => {
+
+    const values = {
+      name: rackNameInput,
+      premiseId,
+      id,
+    }
+
     const res = await put('site/rack', values ,cookies.access_token)
     setEdit(false)
     updateRacksList(res)
   }
 
-  function findMatchingCompanies(companies: CompaniesType[] | undefined, itemId: string | undefined) {
-    const matchingCompanies = companies?.filter(item => item.racks.includes(itemId)).map(item => item.name)
+  const findMatchingCompanies = (companies: CompaniesType[] | undefined, itemId: string | undefined) => {
+    const matchingCompanies = companies?.filter(item => itemId && item.racks.includes(itemId)).map(item => item.name)
     if(matchingCompanies){
       return { matchFound: true, companyNames: matchingCompanies }
     }
   }
 
   const matchingCompanies = findMatchingCompanies(companies, item._id)
-
   return (
-    <List.Item actions={[!edit && <EditOutlined key={item._id} onClick={editRack}/>, <DeleteOutlined onClick={() => deleteRack(item._id)} key={item._id}/>]}>
-      {edit ?
-        <Form onFinish={(values) => saveChanges(values, item._id)} form={form} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-          <Form.Item name='name' initialValue={item.name}>
-            <Input/>
-          </Form.Item>
-          <Button htmlType='submit' icon={<SaveOutlined/>} key={item._id}/>
-        </Form>
-        : <>{item.name}</>
-      }
-      {matchingCompanies?.matchFound ? matchingCompanies?.companyNames.map((el) => <Tag color='blue' key={el}>{el}</Tag>) : null}
+    <List.Item>
+      <List.Item.Meta
+        title={
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+            {edit ? (
+              <React.Fragment>
+                <Input onChange={(e) => setRackNameInput(e.target.value)} value={rackNameInput} />
+                <div style={{display: 'flex'}}>
+                  <SaveOutlined onClick={() => saveChanges(item._id)} style={{ marginRight: 8 }} />
+                  <DeleteOutlined onClick={() => deleteRack(item._id)} />
+                </div>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <span>{item.name}</span>
+                <div style={{display: 'flex'}}>
+                  <EditOutlined onClick={editRack} style={{ marginRight: 8 }} />
+                  <DeleteOutlined onClick={() => deleteRack(item._id)} />
+                </div>
+              </React.Fragment>
+            )}
+          </div>
+        }
+        description={
+          <div>
+            {matchingCompanies?.matchFound ? matchingCompanies?.companyNames.map((el) => <Tag color='blue' key={el}>{el}</Tag>) : null}
+          </div>
+        }
+      ></List.Item.Meta>
     </List.Item>
   )
 }

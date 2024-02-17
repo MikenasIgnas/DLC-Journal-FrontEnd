@@ -18,7 +18,7 @@ const useSetVisitsData = () => {
 
   React.useEffect(() => {
     const setFetchedData = async () => {
-      let fetchUrl        = `visitsData?page=${page}&limit=${limit}`
+      let fetchUrl        = `visit/visit?page=${page}&limit=${limit}`
 
       if (searchFilter) {
         fetchUrl += `&search=${searchFilter}`
@@ -46,8 +46,8 @@ const useSetVisitsData = () => {
   React.useEffect(() => {
     (async () => {
       setLoading(true)
-      const documents = await get('visitsCount', cookies.access_token)
-      setCount(documents.data)
+      const documentsCount = await get('visit/count', cookies.access_token)
+      setCount(documentsCount)
       setLoading(false)
     })()
   }, [])

@@ -1,63 +1,46 @@
 /* eslint-disable max-len */
-import { Input }                from 'antd'
-import ClientsGuestsItemList    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ClientsGuestsItemList'
-import CarPlatesItemList        from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
-import SelectedVisitorsForm     from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedVisitorsForm/SelectedVisitorsForm'
-import CollocationsForm         from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsForm/CollocationsForm'
-import VisitInformationForm     from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitInformationForm/VisitInformationForm'
-import VisitStatusButton        from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
-import useSetSingleVisitData    from '../../Plugins/useSetSingleVisitData'
+// import ClientsGuestsItemList    from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ClientsGuestsItemList'
+import React                  from 'react'
+import CollocationsForm       from '../../components/DLCJournalComponents/SingleVisitPageComponents/CollocationsForm/CollocationsForm'
+import SelectedVisitorsForm   from '../../components/DLCJournalComponents/SingleVisitPageComponents/SelectedVisitorsForm/SelectedVisitorsForm'
+import VisitInformationForm   from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitInformationForm/VisitInformationForm'
+import CarPlatesItemList      from '../../components/DLCJournalComponents/VisitiRegistrationComponents/CarPlatesItemList'
+import ClientsGuestsItemList  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/ClientsGuestsItemList'
+import useFetchSites          from '../../Plugins/useFetchSites'
+import useFetchVisitData      from '../../Plugins/useFethcVisitData'
+import { Guest }              from '../../types/globalTypes'
+import { useAppSelector }     from '../../store/hooks'
+import VisitStatusButton      from '../../components/DLCJournalComponents/SingleVisitPageComponents/VisitStatusButtons'
 
 const SingleVisitPage = () => {
-  const {
-    visitData,
-    fetchData,
-    setVisitData,
-    setSelectedVisitors,
-    clientsEmployees,
-    setClientsGuests,
-    carPlates,
-    setCarPlates,
-    clientsGuests,
-  } = useSetSingleVisitData()
+  useFetchVisitData()
+  useFetchSites()
+  const visitData                         = useAppSelector((state) => state.visit.visit)
+  const [clientsGuests, setClientsGuests] = React.useState<Guest[] | undefined>([])
+  const [carPlates, setCarPlates]         = React.useState<string[] | undefined>([])
+
+  React.useEffect(() => {
+    setClientsGuests(visitData?.guests)
+    setCarPlates(visitData?.carPlates)
+  }, [visitData])
 
   return (
     <>
-      <VisitInformationForm
-        visitData={visitData}
-        fetchData={fetchData}
-      />
-      <SelectedVisitorsForm
-        visitData={visitData}
-        setVisitData={setVisitData}
-        setSelectedVisitors={setSelectedVisitors}
-        fetchData={fetchData}
-        clientsEmployees={clientsEmployees}
-      />
+      <VisitInformationForm/>
+      <SelectedVisitorsForm/>
       <CollocationsForm/>
       <ClientsGuestsItemList
-        selectedVisitors={visitData?.[0].visitors.length}
-        visitors={visitData?.[0].visitors}
         list={clientsGuests}
-        fetchData={fetchData}
         setListItems={setClientsGuests}
         removeUrl={'removeClientsGuest'}
-        url={'updateClientsGests'}
-        companyNameInput={<Input placeholder='Imonė'/>}
+        url={'visit/visit'}
       />
       <CarPlatesItemList
-        selectedVisitors={visitData?.[0].visitors.length}
-        visitAddress={visitData?.[0]?.visitAddress as string | null}
-        url={'updateCarPlates'}
-        removeUrl={'removeCarPlates'}
+        url={'visit/visit'}
         list={carPlates}
         setList={setCarPlates}
       />
-      <VisitStatusButton
-        visitData={visitData}
-        fetchData={fetchData}
-        setVisitData={setVisitData}
-      />
+      <VisitStatusButton/>
     </>
   )
 }

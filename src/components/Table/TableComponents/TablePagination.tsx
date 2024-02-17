@@ -1,6 +1,9 @@
-/* eslint-disable max-len */
-import { SetURLSearchParams, useSearchParams }  from 'react-router-dom'
-import { Pagination }                           from 'antd'
+import {
+  SetURLSearchParams,
+  useSearchParams,
+}                     from 'react-router-dom'
+
+import { Pagination } from 'antd'
 
 type TablePaginationProps = {
   setSearchParams:  SetURLSearchParams;
@@ -10,9 +13,9 @@ type TablePaginationProps = {
 
 const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => {
   const [searchParams, setSearchParams] =  useSearchParams()
-  const selectFilter  = searchParams.get('selectFilter')
-  const searchFilter  = searchParams.get('filter')
-  const tableSorter   = searchParams.get('tableSorter')
+  const selectFilter                    = searchParams.get('selectFilter')
+  const searchFilter                    = searchParams.get('filter')
+  const tableSorter                     = searchParams.get('tableSorter')
 
   const changePage = async(page: number, limit: number) => {
     if(searchFilter){

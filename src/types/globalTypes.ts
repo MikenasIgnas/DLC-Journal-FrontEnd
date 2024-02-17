@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import store from '../store/store'
+
 /* eslint-disable max-len */
 export type RouteType = {
   routeNumber:        number;
@@ -8,8 +10,8 @@ export type RouteType = {
   title:              string;
   description?:       string;
   userName:           string;
-  endDate:            string;
-  startDate:          string;
+  endDate:            Date;
+  startDate:          Date;
   startTime:          string;
   endTime:            string;
   problemCount:       number;
@@ -76,8 +78,8 @@ export type UserType = {
   isSecurity:     boolean;
   name:           string;
   username:       string;
-  created:        string;
-  disabledDate:   string;
+  created:        Date;
+  disabledDate:   Date;
   isDisabled:     boolean;
   _id:            string;
 };
@@ -104,7 +106,7 @@ export type CompaniesType = {
   id:               number;
   parentId?: string;
   name:             string;
-  racks:            any[]
+  racks:            string[]
   code:             string | undefined;
   description:      string;
   photo:            string;
@@ -157,21 +159,21 @@ export type EmployeesType = {
   name:           string;
   lastname:       string;
   occupation:     string;
-  employeeId:     number | undefined;
   permissions:    string[];
   photo?:         string | undefined;
   email?:         string;
   phone?:         string;
-  birthday?:      string;
+  birthday?:      Date;
   note?:          string;
   isDisabled:     boolean
+  visitorIdType:  string;
 }
 
 export type CollocationType = {
   [key:string] : string[]
 }
 
-export type VisitStatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
+export type StatusType = 'success' | 'processing' | 'error' | 'default' | 'warning' | undefined;
 
 export type VisitorsType = {
   idType?:            string | null | undefined;
@@ -179,32 +181,35 @@ export type VisitorsType = {
   selectedVisitor:    EmployeesType;
 };
 
+export type Visitors = {
+  _id:            string;
+  employeeId:     string;
+  visitId:        string;
+  visitorIdType: string;
+}
 export type ClientsGuests = {
   guestName: string;
   companyName?: string;
 }
-
+export interface Guest {
+  name:     string
+  company: string
+}
 export type VisitsType = {
-  id:                 number;
-  visitPurpose:       string[];
-  visitStatus:        VisitStatusType;
-  visitors:           VisitorsType[];
-  dlcEmployees:       string;
-  visitAddress:       string
-  visitingClient:     string;
-  clientsGuests:      ClientsGuests[];
-  carPlates:          string[];
-  signature:          string;
-  visitCollocation:   CollocationType
-  visitorsIdType:     string;
-  creationDate:       string;
-  creationTime:       string;
-  startDate:          string;
-  startTime:          string;
-  endDate:            string;
-  endTime:            string;
-  companyId:          number;
-  scheduledVisitTime: string | undefined;
+    id:           string;
+    _id:          string;
+    companyId:    string | null;
+    guests:       Guest[] | undefined;
+    carPlates:    string[] | undefined
+    racks:        string[] | undefined
+    permissions:  string[]
+    siteId:       string | null;
+    visitPurpose: string[]
+    date:         Date
+    startDate:    Date
+    endDate:      Date
+    dlcEmlpyee:   string;
+    statusId:     string;
 }
 
 export type CollocationsType = {
@@ -266,7 +271,7 @@ export interface State {
 
 export interface Permissions {
   _id:  string
-  name: string | undefined
+  name: string
 }
 
 export type Premises = {
@@ -278,14 +283,39 @@ export type Premises = {
 export type Racks = {
   id:         string | undefined;
   name:       string | undefined;
-  _id:        string | undefined
-  premiseId:  string | undefined;
+  _id:        string
+  premiseId:  string
 }
 
 export type Sites = {
   name:       string;
   _id:         string;
-  label:       React.ReactNode;
-  children?:  React.ReactNode;
-  key:        string
+}
+
+export type VisitPurpose = {
+  name:   string | undefined;
+  _id:    string;
+}
+
+export type VisitorsIdTypes = {
+  _id:  string;
+  name: string;
+}
+
+export type VisitStatus = {
+  _id:  string;
+  name: string;
+}
+export interface VisitorEmployee extends Visitors {
+  employee: EmployeesType
+}
+
+export type RootState = ReturnType<typeof store.getState>
+
+
+export interface PremiseRacks extends Premises {
+  racks: Racks[]
+}
+export interface FullSiteData extends Sites {
+  premises: PremiseRacks[]
 }

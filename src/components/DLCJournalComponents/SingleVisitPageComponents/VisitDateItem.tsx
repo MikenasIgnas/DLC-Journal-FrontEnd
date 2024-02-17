@@ -1,33 +1,43 @@
 /* eslint-disable max-len */
-import { DatePicker, Form, TimePicker } from 'antd'
-import dayjs                            from 'dayjs'
+import dayjs              from 'dayjs'
+import locale             from 'antd/es/locale/lt_LT'
 
+import {
+  ConfigProvider,
+  DatePicker,
+  Form,
+}                         from 'antd'
+
+import {
+  convertUTCtoLocalDate,
+  convertUTCtoLocalTime,
+}                         from '../../../Plugins/helpers'
+
+import 'dayjs/locale/lt'
 
 type VisitDateItemProps = {
   edit:             boolean
-  date:             string | undefined;
-  time:             string | undefined;
+  date:             Date | undefined;
   dateFormItemName: string;
-  timeFormItemName: string;
 }
 
-const VisitDateItem = ({edit, date, time, dateFormItemName, timeFormItemName}:VisitDateItemProps) => {
+const VisitDateItem = ({edit, date, dateFormItemName}:VisitDateItemProps) => {
+
   return (
     <div className='VisitDateItemContainer'>
       {!edit ?
         <div className='DisplayFlex' style={{width: '110px', justifyContent: 'space-between'}}>
-          <div>{date}</div>
-          <div>{time}</div>
+          <div>{convertUTCtoLocalDate(date)}</div>
+          <div>{convertUTCtoLocalTime(date)}</div>
         </div> :
         (
-          date && time &&
+          date &&
           <div className='DatePickerContainer'>
-            <Form.Item name={dateFormItemName} initialValue={dayjs(date)}>
-              <DatePicker/>
-            </Form.Item>
-            <Form.Item name={timeFormItemName} initialValue={dayjs(time, 'HH:mm')}>
-              <TimePicker format={'HH:mm'}/>
-            </Form.Item>
+            <ConfigProvider locale={locale}>
+              <Form.Item name={dateFormItemName} initialValue={dayjs(date)}>
+                <DatePicker showTime={{ format: 'HH:mm' }} format='YYYY-MM-DD HH:mm'/>
+              </Form.Item>
+            </ConfigProvider>
           </div>
         )
       }

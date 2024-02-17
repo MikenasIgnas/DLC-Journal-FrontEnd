@@ -4,6 +4,7 @@ import { Button}                            from 'antd'
 import CompanyAdditionModal                 from './CompanyAdditionModal'
 import { useAppDispatch }                   from '../../../../store/hooks'
 import { setOpenCompaniesAdditionModal }    from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import useFetchSites                        from '../../../../Plugins/useFetchSites'
 
 type CompanyAdditionProps = {
   postUrl:            string;
@@ -11,7 +12,7 @@ type CompanyAdditionProps = {
 }
 const CompanyAddition = ({postUrl, additionModalTitle}:CompanyAdditionProps) => {
   const dispatch = useAppDispatch()
-
+  useFetchSites()
   return (
     <div>
       <Button

@@ -15,7 +15,7 @@ const RecoveryCodeConfirmationPage = () => {
 
   return (
     <div className='CreateUserContainer'>
-      <Card headStyle={{ textAlign: 'center' }} title='Kodo patvirtinimas' bordered={true} className='LoginPage'>
+      <Card styles={{header: {textAlign: 'center'}}} title='Kodo patvirtinimas' bordered={true} className='LoginPage'>
         <Form form={form} onFinish={onFinish}>
           <div style={{ display: 'flex' }}>
             <Form.Item name='imputOne'>

@@ -27,8 +27,8 @@ import { jwtDecode }                    from 'jwt-decode'
 import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
 import CollocationsPage                 from './pages/DLC-JounalPages/CollocationsPage'
 import SendRecoveryCodePage             from './pages/SendRecoveryCodePage'
-import RecoveryCodeConfirmationPage    from './pages/RecoveryCodeConfirmationPage'
-import PasswordResetPage from './pages/PasswordResetPage'
+import RecoveryCodeConfirmationPage     from './pages/RecoveryCodeConfirmationPage'
+import PasswordResetPage                from './pages/PasswordResetPage'
 
 const Routing = () => {
   const [cookies, , removeCookie] = useCookies(['access_token'])

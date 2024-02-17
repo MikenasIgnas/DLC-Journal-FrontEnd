@@ -1,29 +1,40 @@
-/* eslint-disable react/jsx-no-undef */
 /* eslint-disable max-len */
-import ClientsCollocations          from './ClientsCollocations'
-import EditableCollocationFormList  from './CollocationFormList'
-import { CheckboxValueType }        from 'antd/es/checkbox/Group'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                             from '../../../../store/hooks'
 
-type ClientsCollocationsTabProps = {
-  companyRacks:     string[] | undefined
-  edit:             boolean
-  setCheckedLists:  React.Dispatch<React.SetStateAction<CheckboxValueType[]>>
-  checkedLists:     CheckboxValueType[]
-}
+import {
+  Tabs,
+  TabsProps,
+}                             from 'antd'
 
-const ClientsCollocationsTab = ({ companyRacks, edit, checkedLists, setCheckedLists }: ClientsCollocationsTabProps) => {
-  return (
-    <>
-      {!edit ?
-        <ClientsCollocations companyRacks={companyRacks}/>
-        :
-        <EditableCollocationFormList
-          checkedLists={checkedLists}
-          setCheckedLists={setCheckedLists}
-          companyRacks={companyRacks}
-        />
-      }
-    </>
+import { setSiteId }          from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import CompaniesRacks         from './CompaniesRacks'
+import { useSearchParams }    from 'react-router-dom'
+import EditableCompaniesRacks from './EditableCompaniesRacks'
+
+const ClientsCollocationsTab = () => {
+  const [searchParams, setSearchParams]   = useSearchParams()
+  const sites                             = useAppSelector((state) => state.singleCompany.fullSiteData)
+  const editCompanyPage                   = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+  const dispatch                          = useAppDispatch()
+  const siteId                            = searchParams.get('siteId')
+  const tabKey                            = searchParams.get('tabKey')
+  const items: TabsProps['items'] = sites?.map((site) => ({
+    key:      site._id,
+    label:    site.name,
+    children: !editCompanyPage ? <CompaniesRacks site={site}/> : <EditableCompaniesRacks site={site}/>,
+  }))
+
+
+  const changeTab = (key: string) => {
+    setSearchParams(`?siteId=${key}&tabKey=${tabKey}`)
+    dispatch(setSiteId(key))
+  }
+
+  return(
+    <Tabs onTabClick={changeTab} activeKey={siteId ? siteId : undefined } items={items} />
   )
 }
 

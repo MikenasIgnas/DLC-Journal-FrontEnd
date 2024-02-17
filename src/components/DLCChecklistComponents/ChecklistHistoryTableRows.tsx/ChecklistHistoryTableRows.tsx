@@ -4,7 +4,7 @@ import { Button, Tag, Typography }      from 'antd'
 import Box                              from '@mui/joy/Box'
 import HighlightText                    from '../../UniversalComponents/HighlightText'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { calculateTimeDifference }      from '../../../Plugins/helpers'
+// import { calculateTimeDifference }      from '../../../Plugins/helpers'
 
 type UersTableProps = {
   id:         number;
@@ -31,7 +31,7 @@ const ChecklistHistoryTableRows = ({
   const filter          = searchParams.get('search')
   const fullStartTime   = `${startDate} ${startTime}`
   const fullEndTime     = `${endDate} ${endTime}`
-  const timeDifferencer = calculateTimeDifference(startDate, startTime, endDate, endTime)
+  // const timeDifferencer = calculateTimeDifference(startDate, endDate)
   const navigate        = useNavigate()
   return (
     <tr key={id}>
@@ -48,7 +48,7 @@ const ChecklistHistoryTableRows = ({
         <Typography>{HighlightText(filter, fullEndTime)}</Typography>
       </td>
       <td>
-        <Typography>{HighlightText(filter, timeDifferencer)}</Typography>
+        {/* <Typography>{HighlightText(filter, timeDifferencer)}</Typography> */}
       </td>
       <td>
         <Tag color={problems > 0 ? 'error' : 'success'}>{HighlightText(filter, String(problems))}</Tag>
