@@ -24,6 +24,24 @@ const get = async (url: string, token: TokenType) => {
   }
 }
 
+const patch = async (url: string, values: any, token: TokenType) => {
+  try {
+    const options = {
+      method:  'PATCH',
+      headers: {
+        'content-type': 'application/json',
+        'token':        `${token}`,
+      },
+      body: JSON.stringify(values),
+    }
+
+    const response = await fetch(`http://localhost:4002/${url}`, options)
+    return response.json()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const put = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
   if(fileList && setUploading && setFileList){
 
@@ -483,6 +501,7 @@ export {
   getCsvFile,
   generateCsv,
   put,
+  patch,
   deleteItem,
   getFile,
   downloadFile,

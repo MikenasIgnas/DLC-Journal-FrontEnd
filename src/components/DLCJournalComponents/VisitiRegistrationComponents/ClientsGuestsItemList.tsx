@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React              from 'react'
 import {
@@ -7,7 +6,7 @@ import {
   Input,
   List,
 }                         from 'antd'
-import { get, put }       from '../../../Plugins/helpers'
+import { put }            from '../../../Plugins/helpers'
 import { useCookies }     from 'react-cookie'
 import { Guest }          from '../../../types/globalTypes'
 import { useParams }      from 'react-router'
@@ -22,20 +21,23 @@ type ItemListProps = {
     fetchData?:         () => Promise<void>
 }
 
-const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: ItemListProps) => {
+const ClientsGuestsItemList = ({ url, list, setListItems, fetchData }: ItemListProps) => {
   const [cookies]                                                 = useCookies(['access_token'])
   const { id }                                                    = useParams()
   const [clientsGuestNamesInput, setClientsGuestsNamesInput]      = React.useState<string>('')
   const [clientsGuestCompanyInput, setClientsGuestCompanyInput]   = React.useState<string>('')
   const visitorsCount                                             = useAppSelector((state) => state.visit.visitor.length)
-  const visitData = useAppSelector((state) => state.visit.visit)
+  const visitData                                                 = useAppSelector((state) => state.visit.visit)
+
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
-    if(filtered){
+
+    if (filtered) {
       setListItems(filtered)
     }
-    if (removeUrl && id) {
-      await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
+
+    if (url && id) {
+      await put(url, {id: id, guests: filtered} ,cookies.access_token)
       if(fetchData){
         fetchData()
       }
@@ -47,10 +49,12 @@ const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: Ite
       name:    clientsGuestNamesInput,
       company: clientsGuestCompanyInput,
     }
-    if(id && visitData?.guests){
+
+    if (id && visitData?.guests && url) {
       await put('visit/visit', {id: id, guests: [...visitData.guests, guests]}, cookies.access_token)
     }
-    if(clientsGuestNamesInput !== ''){
+
+    if (clientsGuestNamesInput !== '') {
       setListItems((prev) => prev && [...prev, guests])
       setClientsGuestsNamesInput('')
       setClientsGuestCompanyInput('')

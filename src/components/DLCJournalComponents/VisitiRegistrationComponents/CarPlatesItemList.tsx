@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { Button, Card, Input, List } from 'antd'
 import React                         from 'react'
-import { get, put }                  from '../../../Plugins/helpers'
+import { patch, put }                  from '../../../Plugins/helpers'
 import { useParams }                 from 'react-router'
 import { useCookies }                from 'react-cookie'
 import { SearchProps }               from 'antd/es/input'
@@ -24,12 +24,13 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => 
   const [carPlatesInput, setCarPlatesInput]   = React.useState<string>('')
   const selectedSite                          = useAppSelector(selectSite)
   const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
-  const visitData = useAppSelector((state) => state.visit.visit)
-  const removeListItem = async(index: number) => {
+  const visitData                             = useAppSelector((state) => state.visit.visit)
+
+  const removeListItem = async(item: string, index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
     setList(filtered)
     if(removeUrl){
-      await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
+      await patch(removeUrl, {visitId: id, carPlate: item}, cookies.access_token)
     }
   }
 
@@ -60,7 +61,7 @@ const CarPlatesItemList = ({ removeUrl, url, list, setList }: ItemListProps) => 
           style={{marginTop: '50px'}}
           dataSource={list}
           renderItem={(item, index) =>
-            <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(index)}>Ištrinti</Button>]}>
+            <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(item, index)}>Ištrinti</Button>]}>
               <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
             </List.Item>
           }

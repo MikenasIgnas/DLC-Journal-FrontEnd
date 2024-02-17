@@ -32,11 +32,11 @@ const SingleVisitPage = () => {
       <ClientsGuestsItemList
         list={clientsGuests}
         setListItems={setClientsGuests}
-        removeUrl={'removeClientsGuest'}
         url={'visit/visit'}
       />
       <CarPlatesItemList
         url={'visit/visit'}
+        removeUrl={'visit/carPlate'}
         list={carPlates}
         setList={setCarPlates}
       />
