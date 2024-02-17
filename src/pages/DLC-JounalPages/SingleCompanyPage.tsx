@@ -77,7 +77,7 @@ const SingleCompanyPage = () => {
     {
       key:      '2',
       label:    'Sub klientai',
-      children: <SubClientsTab collocationsSites={{}}/>,
+      children: <SubClientsTab/>,
     },
     {
       key:      '3',

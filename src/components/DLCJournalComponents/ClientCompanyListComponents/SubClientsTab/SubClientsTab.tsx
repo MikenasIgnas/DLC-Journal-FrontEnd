@@ -1,50 +1,23 @@
 /* eslint-disable max-len */
-import React                                                            from 'react'
-import { CollocationsSites, SubClientsCollocationsType }                from '../../../../types/globalTypes'
-import { put }                                                          from '../../../../Plugins/helpers'
-import { useCookies }                                                   from 'react-cookie'
-import { useAppDispatch, useAppSelector }                               from '../../../../store/hooks'
-import SubClientAdditionModal                                           from '../CompanyAdditionComponent/SubClientAdditionModal'
-import SubClientAddition                                                from './SubClientAddition'
-import SubClients                                                       from './SubClients'
-import { setIsSubClientAdded }                                          from '../../../../auth/AddSubClientReducer/addSubClientReducer'
-import { setParentCompanies }                                           from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
-import { useParams }                                                    from 'react-router'
+import React                              from 'react'
+import { put }                            from '../../../../Plugins/helpers'
+import { useCookies }                     from 'react-cookie'
+import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
+import SubClientAdditionModal             from '../CompanyAdditionComponent/SubClientAdditionModal'
+import SubClientAddition                  from './SubClientAddition'
+import SubClients                         from './SubClients'
+import { setIsSubClientAdded }            from '../../../../auth/AddSubClientReducer/addSubClientReducer'
+import { setParentCompanies }             from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import { useParams }                      from 'react-router'
 
-type SubClientsTabProps = {
-  collocationsSites:  CollocationsSites
-}
 
-const SubClientsTab = ({ collocationsSites }: SubClientsTabProps) => {
-  const [cookies]                                           = useCookies(['access_token'])
-  const [selectedValue, setSelectedValue]                   = React.useState(null)
-  const [subClientsCollocations, setSubClientsCollocations] = React.useState<SubClientsCollocationsType>([])
-  const openSubClientAdditionModal                          = useAppSelector((state) => state.modals.openSubClientAdditionModal)
-  const dispatch                                            = useAppDispatch()
-  const parentCompanies                                     = useAppSelector((state) => state.singleCompany.parentCompanies)
-  const { id } = useParams()
-  React.useEffect(() => {
-    const newSubClientsCollocations = []
-    let newIndex = 1
-    for (const site in collocationsSites) {
-      const premisesData = collocationsSites[site]
-      const premisesArray = premisesData?.map(premiseData => {
-        const premiseName = Object.keys(premiseData)[0]
-        const racks = premiseData[premiseName]
-        return {
-          premiseName,
-          racks,
-        }
-      })
-
-      newSubClientsCollocations.push({
-        site,
-        id:       newIndex++,
-        premises: premisesArray,
-      })
-    }
-    setSubClientsCollocations(newSubClientsCollocations)
-  }, [collocationsSites])
+const SubClientsTab = () => {
+  const [cookies]                         = useCookies(['access_token'])
+  const [selectedValue, setSelectedValue] = React.useState(null)
+  const openSubClientAdditionModal        = useAppSelector((state) => state.modals.openSubClientAdditionModal)
+  const dispatch                          = useAppDispatch()
+  const parentCompanies                   = useAppSelector((state) => state.singleCompany.parentCompanies)
+  const { id }                            = useParams()
 
   const mainCompaniesOptions = parentCompanies?.map((el) => {
     return{
@@ -68,22 +41,14 @@ const SubClientsTab = ({ collocationsSites }: SubClientsTabProps) => {
 
   return (
     <div className='SubClientsTabContainer'>
-      {openSubClientAdditionModal &&
-        <SubClientAdditionModal
-          collocations={subClientsCollocations}
-          additionModalTitle={'Pridėkite sub klientą'}
-          postUrl={'company/company'}
-        />
-      }
+      {openSubClientAdditionModal && <SubClientAdditionModal/>}
       <SubClientAddition
         selectedValue={selectedValue}
         handleChange={handleChange}
         mainCompaniesOptions={mainCompaniesOptions}
         handleSelect={onSelect}
       />
-      <SubClients
-        subClientsCollocations={collocationsSites}
-      />
+      <SubClients/>
     </div>
   )
 }

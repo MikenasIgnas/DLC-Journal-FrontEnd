@@ -1,22 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import { Drawer, Row, Col, Divider, Form, List }            from 'antd'
-import React                                                from 'react'
-import { get }                                              from '../../../../Plugins/helpers'
-import { useCookies }                                       from 'react-cookie'
-import { ColocationDataType, CompaniesType, EmployeesType } from '../../../../types/globalTypes'
-import { useForm }                                          from 'antd/es/form/Form'
-import ListItem                                             from './ListItem'
+import React            from 'react'
+import {
+  Drawer,
+  Row,
+  Col,
+  Divider,
+  Form,
+  List,
+}                       from 'antd'
+import { get }          from '../../../../Plugins/helpers'
+import { useCookies }   from 'react-cookie'
+import {
+  CompaniesType,
+  EmployeesType,
+}                       from '../../../../types/globalTypes'
+import { useForm }      from 'antd/es/form/Form'
+import ListItem         from './ListItem'
 
 type SubClientsDrawerProps = {
     onClose:                () => void;
     open:                   boolean;
     subClientId:            string | null;
-    subClientsCollocations: {
-      J13?: ColocationDataType[];
-      T72?: ColocationDataType[];
-    }
 }
 interface DescriptionItemProps {
     title:        string;

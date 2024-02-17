@@ -5,17 +5,11 @@ import { useForm }                                from 'antd/es/form/Form'
 // import { post }                                   from '../../../../Plugins/helpers'
 // import { useCookies }                             from 'react-cookie'
 import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { CollocationsType }                       from '../../../../types/globalTypes'
 import { useAppDispatch }                         from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import { useParams } from 'react-router'
 // import useSetCheckedCollocationList               from '../../../../Plugins/useSetCheckedCollocationList'
 
-type AdditionModalProps = {
-    postUrl:            string;
-    additionModalTitle: string;
-    collocations:       CollocationsType[] | undefined
-}
+
 
 // type CompanyFormType = {
 //   companyName?:           string,
@@ -34,10 +28,9 @@ type AdditionModalProps = {
 //   }[];
 // };
 
-const SubClientAdditionModal = ({additionModalTitle}: AdditionModalProps) => {
+const SubClientAdditionModal = () => {
   // const [cookies]                 = useCookies(['access_token'])
   const [form]    = useForm()
-  const { id }    = useParams()
   // const [uploading, setUploading] = React.useState(false)
   const [fileList, setFileList]   = React.useState<UploadFile[]>([])
   const dispatch                  = useAppDispatch()
@@ -61,7 +54,6 @@ const SubClientAdditionModal = ({additionModalTitle}: AdditionModalProps) => {
 
   return (
     <Modal
-      title={additionModalTitle}
       centered
       open
       onOk={() => dispatch(setOpenSubClientAdditionModal(false))}
