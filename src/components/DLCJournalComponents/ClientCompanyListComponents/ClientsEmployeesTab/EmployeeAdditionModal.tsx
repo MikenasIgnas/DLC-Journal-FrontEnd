@@ -3,6 +3,7 @@
 import {
   Button,
   Checkbox,
+  ConfigProvider,
   DatePicker,
   Form,
   Input,
@@ -19,6 +20,9 @@ import { useAppDispatch }               from '../../../../store/hooks'
 import { setOpenEmployeeAdditionModal } from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import { useParams }                    from 'react-router'
 import SuccessMessage                   from '../../../UniversalComponents/SuccessMessage'
+
+import locale           from 'antd/es/locale/lt_LT'
+import 'dayjs/locale/lt'
 const { TextArea } = Input
 
 type EmployeesAdditionModal = {
@@ -87,9 +91,11 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
         <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo pavardę'}]} name='lastname'>
           <Input placeholder='Darbuotojo pavardė'/>
         </Form.Item>
-        <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo gimimo metus'}]} name='birthday'>
-          <DatePicker style={{width: '100%'}} placeholder='Darbuotojo gimimo data' />
-        </Form.Item>
+        <ConfigProvider locale={locale}>
+          <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo gimimo metus'}]} name='birthday'>
+            <DatePicker style={{width: '100%'}} placeholder='Darbuotojo gimimo data' />
+          </Form.Item>
+        </ConfigProvider>
         <Form.Item rules={[{ required: true, message: 'Įveskite darbuotojo pavardę'}]} name='occupation'>
           <Input placeholder='Darbuotojo pareigos'/>
         </Form.Item>

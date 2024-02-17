@@ -10,19 +10,25 @@ import {
   Form,
   Input,
   Row,
-  UploadFile }                             from 'antd'
+  UploadFile,
+}                                          from 'antd'
+
+import {
+  convertUTCtoLocalDate,
+  get,
+  put,
+}                                          from '../../../../Plugins/helpers'
 
 import { useForm }                         from 'antd/es/form/Form'
 import { EmployeesType }                   from '../../../../types/globalTypes'
-import { convertUTCtoLocalDate, get, put } from '../../../../Plugins/helpers'
 import { useCookies }                      from 'react-cookie'
-import { useParams, useSearchParams }      from 'react-router-dom'
-import PhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import { useSearchParams }                 from 'react-router-dom'
 import { useAppDispatch, useAppSelector }  from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }   from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
 import { Permissions }                     from '../../../../types/globalTypes'
 import { setEditCompanyEmployee }          from '../../../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+import PhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
+import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
 
 interface DescriptionItemProps {
     title:   string;
@@ -44,8 +50,6 @@ const ClientsEmployeeDrawer = () => {
   const [employee, setEmployee]       = React.useState<EmployeesType>()
   const [searchParams]                = useSearchParams()
   const employeeId                    = searchParams.get('employeeId')
-  const companyId                     = searchParams.get('companyId')
-  const {id}                          = useParams()
   const openClientsEmployeesDrawer    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   const dipatch                       = useAppDispatch()
   const windowSize                    = useSetWindowsSize()
@@ -56,13 +60,16 @@ const ClientsEmployeeDrawer = () => {
     let isMounted = true;
     (async () => {
       try {
-        if (employeeId && companyId) {
-          const employeeData    = await get(`company/CompanyEmployee?id=${employeeId}`, cookies.access_token)
-          const permissionsData = await get('company/permission', cookies.access_token)
+        if (employeeId) {
+          const employeeData: EmployeesType    = await get(`company/CompanyEmployee?id=${employeeId}`, cookies.access_token)
+          const permissionsData: Permissions[] = await get('company/permission', cookies.access_token)
           if (isMounted) {
+            const employeePermissionsValues = permissionsData?.filter(permission => employeeData.permissions.includes(permission._id))
+              .map(permission => permission._id)
+            form.setFieldsValue({ permissions: employeePermissionsValues })
+            form.setFieldsValue(employeeData)
             setEmployee(employeeData)
             setPermissions(permissionsData)
-            form.setFieldsValue(employeeData)
           }
         }
       } catch (err) {
@@ -72,20 +79,24 @@ const ClientsEmployeeDrawer = () => {
     return () => {
       isMounted = false
     }
-  }, [employeeId, companyId, id, cookies.access_token, form, editCompanyEmployee])
+  }, [employeeId, cookies.access_token])
 
   const editUser = async(values: EmployeesType) => {
     dipatch(setEditCompanyEmployee(!editCompanyEmployee))
     if(editCompanyEmployee) {
       values.companyId = employee?.companyId
       values.id = employee?._id
-      await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
+      const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
+      if (response) {
+        setEmployee(response)
+        form.setFieldsValue(response)
+      }
     }
   }
-  const editablePermissions = permissions?.map((el) => ({label: el.name, value: el._id}))
+  const employeePermissions         = permissions?.filter(permission => employee?.permissions.includes(permission._id))
+  const editablePermissionsOptions  = permissions?.map((el) => ({label: el.name, value: el._id}))
+  const permissionsOptions          = employeePermissions?.map(permission => ({ label: permission.name, value: permission._id }))
 
-  const employeePermissions = permissions?.filter(permission => employee?.permissions.includes(permission._id))
-    .map(permission => ({ label: permission.name, value: permission._id }))
   const onClose = () => {
     dipatch(setEditCompanyEmployee(false))
     dipatch(setOpenClientsEmployeesDrawer(false))
@@ -103,7 +114,6 @@ const ClientsEmployeeDrawer = () => {
           },
         }}
       >
-
         <Form form={form} onFinish={editUser}>
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <p className='site-description-item-profile-p' style={{ marginBottom: 24 }}>
@@ -178,7 +188,7 @@ const ClientsEmployeeDrawer = () => {
           <Row>
             <Col span={12}>
               <Form.Item name='permissions'>
-                <Checkbox.Group options={!editCompanyEmployee ? employeePermissions : editablePermissions} disabled={!editCompanyEmployee} />
+                <Checkbox.Group options={!editCompanyEmployee ? permissionsOptions : editablePermissionsOptions} disabled={!editCompanyEmployee} />
               </Form.Item>
             </Col>
           </Row>

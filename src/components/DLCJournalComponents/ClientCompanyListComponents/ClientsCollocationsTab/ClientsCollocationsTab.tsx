@@ -3,14 +3,16 @@ import {
   useAppDispatch,
   useAppSelector,
 }                             from '../../../../store/hooks'
-import EditableCompaniesRacks from './EditableCompaniesRacks'
+
 import {
   Tabs,
   TabsProps,
 }                             from 'antd'
+
+import { setSiteId }          from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 import CompaniesRacks         from './CompaniesRacks'
 import { useSearchParams }    from 'react-router-dom'
-import { setSiteId }          from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import EditableCompaniesRacks from './EditableCompaniesRacks'
 
 const ClientsCollocationsTab = () => {
   const [searchParams, setSearchParams]   = useSearchParams()

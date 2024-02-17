@@ -19,15 +19,20 @@ const ClientsEmployeeList = () => {
   const employeeFilter                  = searchParams.get('employeeFilter')
   const {id}                            = useParams()
   const companiesEmployees              = useAppSelector((state) => state.singleCompany.companiesEmployees)
+  const siteId                          = searchParams.get('siteId')
+  const tabKey                          = searchParams.get('tabKey')
+  const loading                         = useAppSelector((state) => state.singleCompany.loading)
   const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
-    setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}`, { replace: true })
+    setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}&siteId=${siteId}&tabKey=${tabKey}`)
     dispatch(setOpenClientsEmployeesDrawer(true))
   }
+
   const employeeRemoved = (id: string) => {
     let newEmployeesList = [...companiesEmployees]
     newEmployeesList = newEmployeesList.filter(x => x?._id !== id)
     dispatch(setCompaniesEmployees(newEmployeesList))
   }
+
   const deleteEmployee = async(employeeId: string | undefined) => {
     if(employeeId){
       await deleteItem('company/CompanyEmployee', {id: employeeId},cookies.access_token)
@@ -62,6 +67,7 @@ const ClientsEmployeeList = () => {
       <Divider>Darbuotojai</Divider>
       <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
+        loading={loading}
         locale={{emptyText: 'Nėra pridėtų darbuotojų'}}
         dataSource={companiesEmployees}
         bordered

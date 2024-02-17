@@ -15,6 +15,7 @@ import {
   setCompaniesEmployees,
   setCompanyId,
   setFullSiteData,
+  setLoading,
   setParentCompanies,
   setSingleCompany,
   setSiteId,
@@ -34,9 +35,11 @@ const useFetchSingleCompany = () => {
   const dispatch                              = useAppDispatch()
   const openEmployeeAdditionModal             = useAppSelector((state) => state.modals.openEmployeeAdditionModal)
   const setSubClientAdded                     = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
-  const openClientsEmployeesDrawer            = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
-  const editCompanyPage = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+  const editCompanyPage                       = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+  const editClientsEmployee                   = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+
   React.useEffect(() => {
+    dispatch(setLoading(true))
     const fetchData = async() => {
       const singleCompany: CompaniesType      = await get(`company/company?id=${id}`, cookies.access_token)
       const companyEmployees: EmployeesType[] = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
@@ -51,14 +54,14 @@ const useFetchSingleCompany = () => {
 
       const parentCompanies                   = allCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
       dispatch(setParentCompanies(parentCompanies))
+      dispatch(setLoading(false))
     }
 
     fetchData()
     return () => {
       dispatch(resetSingleCompanyReducer())
     }
-  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, openClientsEmployeesDrawer, editCompanyPage])
-
+  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee])
 }
 
 export default useFetchSingleCompany

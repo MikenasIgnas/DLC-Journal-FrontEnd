@@ -48,7 +48,6 @@ const SingleCompanyPage = () => {
   const checkedList                     = useAppSelector((state) => state.racks.checkedList)
   const siteId                          = searchParams.get('siteId')
   const tabKey                          = searchParams.get('tabKey')
-
   useFetchSingleCompany()
 
   const saveChanges = async(values:CompanyFormType) => {
