@@ -8,6 +8,7 @@ interface SingleCompanyReducer {
     fullSiteData:       FullSiteData[]
     siteId?:            string | null
     parentCompanies:    CompaniesType[]
+    loading:            boolean
 }
 
 const initialState: SingleCompanyReducer = {
@@ -15,6 +16,7 @@ const initialState: SingleCompanyReducer = {
   companiesEmployees: [],
   fullSiteData:       [],
   parentCompanies:    [],
+  loading:            false,
 }
 
 const singleCompanySlice = createSlice({
@@ -39,6 +41,9 @@ const singleCompanySlice = createSlice({
     setSiteId(state, { payload }: PayloadAction<string | null>) {
       state.siteId = payload
     },
+    setLoading(state, { payload }: PayloadAction<boolean>) {
+      state.loading = payload
+    },
     resetSingleCompanyReducer(){
       return initialState
     },
@@ -52,6 +57,7 @@ export const {
   setFullSiteData,
   setSiteId,
   setParentCompanies,
+  setLoading,
   resetSingleCompanyReducer,
 } = singleCompanySlice.actions
 
