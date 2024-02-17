@@ -14,7 +14,7 @@ const useSetVisitsData = () => {
   const limit                 = searchParams.get('limit') || 10
   const selectFilter          = searchParams.get('selectFilter')
   const searchFilter          = searchParams.get('search')
-  const tableSorter            = searchParams.get('tableSorter')
+  const tableOrder            = searchParams.get('descending')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -28,8 +28,8 @@ const useSetVisitsData = () => {
         fetchUrl += `&selectFilter=${selectFilter}`
       }
 
-      if(tableSorter){
-        fetchUrl += `&tableSorter=${tableSorter}`
+      if(tableOrder){
+        fetchUrl += `&descending=${tableOrder}`
       }
 
       try {
@@ -46,7 +46,7 @@ const useSetVisitsData = () => {
   React.useEffect(() => {
     (async () => {
       setLoading(true)
-      const documentsCount = await get('visit/count', cookies.access_token)
+      const documentsCount = await get('visit/visit/count', cookies.access_token)
       setCount(documentsCount)
       setLoading(false)
     })()

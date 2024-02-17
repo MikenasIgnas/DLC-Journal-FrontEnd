@@ -1,32 +1,44 @@
 /* eslint-disable max-len */
-import React                                                      from 'react'
-import { Collapse, Modal }                                               from 'antd'
-import { Premises }                                               from '../../../types/globalTypes'
-import { AppstoreAddOutlined, DeleteOutlined, FileExcelOutlined } from '@ant-design/icons'
-import { useCookies }                                             from 'react-cookie'
-import { deleteItem, generateCsv }                                from '../../../Plugins/helpers'
-import { setOpenRacksAdditionModal }                              from '../../../auth/ModalStateReducer/ModalStateReducer'
-import { useAppDispatch }                                         from '../../../store/hooks'
-import RacksList                                                  from './RacksList'
-import { useSearchParams }                                        from 'react-router-dom'
+import React                         from 'react'
+import {
+  Collapse,
+  Modal,
+}                                    from 'antd'
+import { Premises }                  from '../../../types/globalTypes'
+import {
+  AppstoreAddOutlined,
+  DeleteOutlined,
+  FileExcelOutlined,
+}                                    from '@ant-design/icons'
+import { useCookies }                from 'react-cookie'
+import {
+  deleteItem,
+  generateCsv,
+}                                    from '../../../Plugins/helpers'
+import { setOpenRacksAdditionModal } from '../../../auth/ModalStateReducer/ModalStateReducer'
+import { useAppDispatch }            from '../../../store/hooks'
+import RacksList                     from './RacksList'
+import { useSearchParams }           from 'react-router-dom'
 
 type CollocationListItemProps = {
-  item:         Premises
-  setPremises:  React.Dispatch<React.SetStateAction<Premises[] | undefined>>
-  premises:     Premises[] | undefined
-  siteId:       string | undefined
+  item:        Premises
+  setPremises: React.Dispatch<React.SetStateAction<Premises[] | undefined>>
+  premises:    Premises[] | undefined
+  siteId:      string | undefined
 }
 
 const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationListItemProps) => {
-  const [cookies]           = useCookies(['access_token'])
-  const [, setSearchParams] = useSearchParams()
-  const dispatch            = useAppDispatch()
+  const [cookies]                     = useCookies(['access_token'])
+  const [, setSearchParams]           = useSearchParams()
+  const dispatch                      = useAppDispatch()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
+
   const addRacks = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
     e.stopPropagation()
     dispatch(setOpenRacksAdditionModal(true))
     setSearchParams(`?menuKey=5&tabKey=1&siteId=${siteId}&premiseId=${id}`)
   }
+
   const showModal = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     e.stopPropagation()
     setIsModalOpen(true)

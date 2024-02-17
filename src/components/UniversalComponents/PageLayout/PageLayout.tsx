@@ -94,8 +94,8 @@ const PageLayout = ({children}:PageLayoutProps) => {
     getItem('DLC Žurnalas', 'sub1', <ReadOutlined />, [
       getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'): null,
-      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&tableSorter=desc'} >Vizitai</Link>, '3'): null,
-      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4&page=1&limit=10&tableSorter=desc'} >Įmonių sąrašas</Link>, '4'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&descending=true'} >Vizitai</Link>, '3'): null,
+      !isSecurity ? getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4&page=1&limit=10&descending=true'} >Įmonių sąrašas</Link>, '4'): null,
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'): null,
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'): null,
     ]),
@@ -137,8 +137,8 @@ const PageLayout = ({children}:PageLayoutProps) => {
           children: [
             getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
             getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'),
-            getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&tableSorter=desc'} >Vizitai</Link>, '3'),
-            getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4&page=1&limit=10&tableSorter=desc'} >Įmonių sąrašas</Link>, '4'),
+            getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&descending=true'} >Vizitai</Link>, '3'),
+            getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4&page=1&limit=10&descending=true'} >Įmonių sąrašas</Link>, '4'),
             getItem(<Link to={'DLC Žurnalas/Kolokacijos?menuKey=5&tabKey=1'} >Kolokacijos</Link>, '5'),
             getItem(<Link to={'DLC Žurnalas/Statistika?menuKey=6'} >Statistika</Link>, '6'),
           ],

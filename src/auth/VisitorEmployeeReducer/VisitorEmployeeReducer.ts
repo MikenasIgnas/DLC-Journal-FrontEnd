@@ -13,6 +13,7 @@ import {
   Permissions,
   VisitStatus,
   VisitorsIdTypes,
+  Guest,
 }                   from '../../types/globalTypes'
 
 interface Visits {
@@ -26,7 +27,10 @@ interface Visits {
     visitStatus:      VisitStatus[]
     visitorIdTypes:   VisitorsIdTypes[]
     dlcEmployee?:     EmployeesType;
+    guests:           Guest[] | undefined
+    carPlates?:       string[] | undefined
   }
+
 const initialState: Visits = {
   visitor:          [],
   companyEmployees: [],
@@ -34,6 +38,7 @@ const initialState: Visits = {
   permissions:      [],
   visitStatus:      [],
   visitorIdTypes:   [],
+  guests:           [],
 }
 
 const visitReducerSlice = createSlice({
@@ -81,6 +86,26 @@ const visitReducerSlice = createSlice({
     setSiteId(state, { payload }: PayloadAction<string | undefined>){
       state.siteId = payload
     },
+    setClientsGuests(state, { payload }: PayloadAction<Guest[] | undefined>){
+      state.guests = payload
+    },
+    addCarPlates(state, { payload }: PayloadAction<string>){
+      state?.carPlates?.push(payload)
+    },
+    removeCarPlates(state, { payload }: PayloadAction<number>){
+      const filterCarPlates = state.carPlates?.filter((_, i) => i !== payload)
+      state.carPlates = filterCarPlates
+    },
+    addGuests(state, { payload }: PayloadAction<Guest>){
+      state?.guests?.push(payload)
+    },
+    removeGuest(state, { payload }: PayloadAction<number>){
+      const filteredVisitors = state.guests?.filter((_, i) => i !== payload)
+      state.guests = filteredVisitors
+    },
+    setCarPlates(state, { payload }: PayloadAction<string[] | undefined>){
+      state.carPlates = payload
+    },
     resetVisitReducer() {
       return initialState
     },
@@ -102,6 +127,12 @@ export const {
   setVisitorIdTypes,
   setDlcEmployee,
   resetVisitReducer,
+  setCarPlates,
+  addCarPlates,
+  addGuests,
+  removeGuest,
+  setClientsGuests,
+  removeCarPlates,
 } = visitReducerSlice.actions
 
 export default visitReducerSlice.reducer

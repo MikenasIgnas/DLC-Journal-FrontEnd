@@ -1,44 +1,52 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React              from 'react'
+
 import {
   Button,
   Card,
   Input,
   List,
 }                         from 'antd'
-import { get, put }       from '../../../Plugins/helpers'
+
+import { put }            from '../../../Plugins/helpers'
 import { useCookies }     from 'react-cookie'
 import { Guest }          from '../../../types/globalTypes'
 import { useParams }      from 'react-router'
-import { useAppSelector } from '../../../store/hooks'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                         from '../../../store/hooks'
+
+import {
+  addGuests,
+  removeGuest,
+}                         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 type ItemListProps = {
     url?:               string;
-    removeUrl?:         string;
     cardTitle?:         string;
-    list:               Guest[] | undefined
-    setListItems:       React.Dispatch<React.SetStateAction<Guest[] | undefined>>
-    fetchData?:         () => Promise<void>
+    list?:              Guest[] | undefined
+    setListItems?:      React.Dispatch<React.SetStateAction<Guest[] | undefined>>
 }
 
-const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: ItemListProps) => {
+const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
   const [cookies]                                                 = useCookies(['access_token'])
   const { id }                                                    = useParams()
   const [clientsGuestNamesInput, setClientsGuestsNamesInput]      = React.useState<string>('')
   const [clientsGuestCompanyInput, setClientsGuestCompanyInput]   = React.useState<string>('')
   const visitorsCount                                             = useAppSelector((state) => state.visit.visitor.length)
-  const visitData = useAppSelector((state) => state.visit.visit)
+  const dispatch                                                  = useAppDispatch()
+  const clientsGuests                                             = useAppSelector((state) => state.visit.guests)
+
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
-    if(filtered){
+    if (filtered && setListItems) {
       setListItems(filtered)
-    }
-    if (removeUrl && id) {
-      await get(`${removeUrl}?visitId=${id}&index=${index}`, cookies.access_token)
-      if(fetchData){
-        fetchData()
-      }
+    } else {
+      dispatch(removeGuest(index))
+      const filteredGuests = clientsGuests?.filter((_, i) => i !== index)
+      await put('visit/visit', {id: id, guests: filteredGuests} ,cookies.access_token)
     }
   }
 
@@ -47,11 +55,16 @@ const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: Ite
       name:    clientsGuestNamesInput,
       company: clientsGuestCompanyInput,
     }
-    if(id && visitData?.guests){
-      await put('visit/visit', {id: id, guests: [...visitData.guests, guests]}, cookies.access_token)
-    }
-    if(clientsGuestNamesInput !== ''){
-      setListItems((prev) => prev && [...prev, guests])
+
+    if (clientsGuestNamesInput !== '') {
+      if (setListItems) {
+        setListItems((prev) => prev && [...prev, guests])
+      } else {
+        dispatch(addGuests(guests))
+        if(clientsGuests){
+          await put('visit/visit', {id: id, guests: [...clientsGuests, guests]}, cookies.access_token)
+        }
+      }
       setClientsGuestsNamesInput('')
       setClientsGuestCompanyInput('')
     }
@@ -70,7 +83,7 @@ const ClientsGuestsItemList = ({ removeUrl, list, setListItems, fetchData }: Ite
             <List
               locale={{ emptyText: ' ' }}
               itemLayout='horizontal'
-              dataSource={list}
+              dataSource={list ? list : clientsGuests}
               renderItem={(item, index) => (
                 <List.Item
                   key={index}
