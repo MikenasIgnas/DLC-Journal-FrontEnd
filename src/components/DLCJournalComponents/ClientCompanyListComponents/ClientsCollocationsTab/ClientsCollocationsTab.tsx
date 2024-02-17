@@ -21,12 +21,12 @@ const ClientsCollocationsTab = () => {
   const dispatch                          = useAppDispatch()
   const siteId                            = searchParams.get('siteId')
   const tabKey                            = searchParams.get('tabKey')
+
   const items: TabsProps['items'] = sites?.map((site) => ({
     key:      site._id,
     label:    site.name,
     children: !editCompanyPage ? <CompaniesRacks site={site}/> : <EditableCompaniesRacks site={site}/>,
   }))
-
 
   const changeTab = (key: string) => {
     setSearchParams(`?siteId=${key}&tabKey=${tabKey}`)

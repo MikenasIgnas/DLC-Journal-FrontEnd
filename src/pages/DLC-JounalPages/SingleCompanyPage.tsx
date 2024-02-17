@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                  from 'react'
 import { put }                from '../../Plugins/helpers'

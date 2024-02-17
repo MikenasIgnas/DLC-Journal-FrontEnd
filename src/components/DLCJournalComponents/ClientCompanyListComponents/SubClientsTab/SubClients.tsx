@@ -43,7 +43,8 @@ const SubClients = () => {
   const openSubClientAdditionModal      = useAppSelector((state) => state.modals.openSubClientAdditionModal)
   const dispatch                        = useAppDispatch()
   const addSubClient                    = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
-  const { id } = useParams()
+  const { id }                          = useParams()
+
   React.useEffect(() => {
     (async () => {
       try{

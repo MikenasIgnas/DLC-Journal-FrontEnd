@@ -26,10 +26,9 @@ type ColocationSelectorsProps = {
 
 const ColocationSelectors = ({item}: ColocationSelectorsProps) => {
   const checkedList = useAppSelector((state) => state.racks.checkedList)
-  const dispatch  = useAppDispatch()
+  const dispatch    = useAppDispatch()
 
   const nestedItems = item.premises.map((premise) => {
-
     const checkboxOptions = premise.racks.map(rack => ({ value: rack._id, label: rack.name }))
     const racksIds        = premise.racks.map((el) => el._id)
     const checkAll        = racksIds.length > 0 && racksIds.every((el) => checkedList.includes(el))

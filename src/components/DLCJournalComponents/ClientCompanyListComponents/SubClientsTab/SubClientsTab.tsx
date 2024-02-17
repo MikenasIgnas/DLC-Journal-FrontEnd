@@ -19,13 +19,6 @@ const SubClientsTab = () => {
   const parentCompanies                   = useAppSelector((state) => state.singleCompany.parentCompanies)
   const { id }                            = useParams()
 
-  const mainCompaniesOptions = parentCompanies?.map((el) => {
-    return{
-      value: el._id,
-      label: el.name,
-    }
-  })
-
   const handleChange = async(value: string) => {
     const selectedParentCompanies   = parentCompanies?.filter((el) => el._id === value)
     if(selectedParentCompanies){
@@ -45,7 +38,6 @@ const SubClientsTab = () => {
       <SubClientAddition
         selectedValue={selectedValue}
         handleChange={handleChange}
-        mainCompaniesOptions={mainCompaniesOptions}
         handleSelect={onSelect}
       />
       <SubClients/>

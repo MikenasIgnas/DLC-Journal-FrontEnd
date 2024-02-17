@@ -1,26 +1,29 @@
-import React                from 'react'
-import {
-  Card,
-  Divider,
-  Empty,
-}                           from 'antd'
-import { FullSiteData }     from '../../../../types/globalTypes'
+/* eslint-disable max-len */
+import React                    from 'react'
 
 import {
   useAppDispatch,
   useAppSelector,
-}                           from '../../../../store/hooks'
+}                               from '../../../../store/hooks'
 
-import { selectPremises }   from '../../../../auth/SingleCompanyReducer/selector'
-import { useSearchParams }  from 'react-router-dom'
-import RacksList            from './RacksList'
-import { setSiteId }        from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import { useSearchParams }      from 'react-router-dom'
+import { selectPremises }       from '../../../../auth/SingleCompanyReducer/selector'
+import { setSiteId }            from '../../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { FullSiteData }         from '../../../../types/globalTypes'
 
-type ColocationViewProps = {
+import {
+  Card,
+  Divider,
+  Empty,
+}                               from 'antd'
+
+import SubClientsRacksList      from './SubClientsRacksList'
+
+type SublientsRacksProps = {
   site: FullSiteData
 }
 
-const CompaniesRacks = ({ site }:ColocationViewProps) => {
+const SublientsRacks = ({site}: SublientsRacksProps) => {
   const companyPremise                  = useAppSelector(selectPremises)
   const [searchParams, setSearchParams] = useSearchParams()
   const tabKey                          = searchParams.get('tabKey')
@@ -40,7 +43,7 @@ const CompaniesRacks = ({ site }:ColocationViewProps) => {
           <Card className='CollocationDisplayCard' >
             {companyPremise?.map((premise, i) =>
               <div key={i}>
-                <RacksList premise={premise}/>
+                <SubClientsRacksList premise={premise}/>
               </div>
             )}
           </Card>
@@ -52,4 +55,4 @@ const CompaniesRacks = ({ site }:ColocationViewProps) => {
   )
 }
 
-export default CompaniesRacks
+export default SublientsRacks
