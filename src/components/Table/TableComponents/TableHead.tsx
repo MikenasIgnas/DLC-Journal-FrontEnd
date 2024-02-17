@@ -9,16 +9,15 @@ type TableHeadProps = {
 
 const TableHead = ({tableColumns}:TableHeadProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const tableSorter                     = searchParams.get('tableSorter')
+  const tableSorter                     = searchParams.get('descending')
 
   const orderTebleData = () => {
-    if(tableSorter === 'desc'){
-      setSearchParams('?page=1&limit=10&tableSorter=asc')
+    if(tableSorter === 'false'){
+      setSearchParams('?page=1&limit=10&descending=true')
     }else{
-      setSearchParams('?page=1&limit=10&tableSorter=desc')
+      setSearchParams('?page=1&limit=10&descending=false')
     }
   }
-
   return (
     <thead>
       <tr>
@@ -33,7 +32,7 @@ const TableHead = ({tableColumns}:TableHeadProps) => {
             sx={{
               '& svg': {
                 transition: '0.2s',
-                transform:  tableSorter === 'desc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                transform:  tableSorter === 'true' ? 'rotate(0deg)' : 'rotate(180deg)',
               },
             }}
           >

@@ -15,7 +15,7 @@ const BreadcrumbsLinks = () => {
   ]
   const pathItems = pathParts.map((el, index) => ({
     title: lastPath !== el && el !== 'Mano_Profilis' ?
-      <Link to={`/${pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')}?page=1&limit=10&tableSorter=desc`}>{decodeURIComponent(el)}</Link> :
+      <Link to={`/${pathParts.slice(0, index + 1).map(encodeURIComponent).join('/')}?page=1&limit=10&descending=true`}>{decodeURIComponent(el)}</Link> :
       <span style={{textDecoration: 'underline'}}>{el}</span>,
   }))
 

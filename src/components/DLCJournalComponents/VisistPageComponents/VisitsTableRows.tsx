@@ -82,9 +82,9 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
   const status          = visitStatus && statusMap[visitStatus.name]
 
   return (
-    <tr key={visit._id}>
+    <tr key={visit.id}>
       <td style={{padding: '12px' }}>
-        <Typography> {HighlightText(filter, String(visit._id))}</Typography>
+        <Typography> {HighlightText(filter, String(visit.id))}</Typography>
       </td>
       <td>
         <Tag color={status}>{visitStatus?.name}</Tag>
