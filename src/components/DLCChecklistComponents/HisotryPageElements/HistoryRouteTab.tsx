@@ -64,14 +64,16 @@ const HistoryRouteTab = ({ routeID, itemId, setIsUpdated }:AreasComponentProps) 
         return count + trueValues.length
       }, 0)
 
+      await post(`updateHistoryItem/${id}`, {updatedArray, problemCount}, cookies.access_token)
+
       if(problemCount){
         dispatch(setProblemCount(problemCount))
       }
+
       messageApi.success({
         type:    'success',
         content: 'Išsaugota',
       })
-      await post(`updateHistoryItem/${id}`, {updatedArray, problemCount}, cookies.access_token)
       setIsUpdated(true)
     }
   }

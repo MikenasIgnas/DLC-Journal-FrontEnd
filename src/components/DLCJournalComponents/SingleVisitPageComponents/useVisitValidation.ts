@@ -50,23 +50,18 @@ const useVisitValidation = () => {
 
     try {
       const res = await post(url, {visitId: id, statusId: visitStatuses?._id } ,cookies.access_token)
-      if (!res.error) {
-        messageApi.success({
-          type:    'success',
-          content: successMessage,
-        })
-        dispatch(setVisit(res))
-      } else {
+      messageApi.success({
+        type:    'success',
+        content: successMessage,
+      })
+      dispatch(setVisit(res))
+    } catch (error) {
+      if(error instanceof Error){
         messageApi.error({
           type:    'error',
-          content: 'Klaida vykdant užklausą',
+          content: error.message,
         })
       }
-    } catch (error) {
-      messageApi.error({
-        type:    'error',
-        content: 'Serverio klaida',
-      })
     }
   }
   return { validate, contextHolder }

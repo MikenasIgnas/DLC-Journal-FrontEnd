@@ -1,5 +1,10 @@
 /* eslint-disable max-len */
-import { Avatar, Card, List } from 'antd'
+import {
+  Avatar,
+  Card,
+  List,
+  message,
+}                             from 'antd'
 import { EmployeesType }      from '../../../types/globalTypes'
 import { useCookies }         from 'react-cookie'
 import Meta                   from 'antd/es/card/Meta'
@@ -9,6 +14,7 @@ import HighlightText          from '../../UniversalComponents/HighlightText'
 import { useAppDispatch }     from '../../../store/hooks'
 import { addVisitor}          from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 import { useSearchParams }    from 'react-router-dom'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type VisitorAdditionListItemProps = {
     item:                 EmployeesType
@@ -17,18 +23,27 @@ type VisitorAdditionListItemProps = {
 }
 
 const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: VisitorAdditionListItemProps) => {
-  const [cookies]         = useCookies(['access_token'])
-  const windowSize        = useSetWindowsSize()
-  const dispatch          = useAppDispatch()
-  const [searchParams]    = useSearchParams()
-  const visitId           = searchParams.get('id')
-
+  const [cookies]                   = useCookies(['access_token'])
+  const windowSize                  = useSetWindowsSize()
+  const dispatch                    = useAppDispatch()
+  const [searchParams]              = useSearchParams()
+  const visitId                     = searchParams.get('id')
+  const [messageApi, contextHolder] = message.useMessage()
   const addVisitingClient = async() => {
     try{
       const res = await post('visit/visitor', {visitId: visitId, employeeId: item._id}, cookies.access_token)
       dispatch(addVisitor(res))
-    }catch(err){
-      console.log(err)
+      messageApi.success({
+        type:    'success',
+        content: 'Lankytojas pridėtas',
+      })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 
@@ -45,6 +60,7 @@ const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: Visit
           description={<p style={{fontSize: windowSize > 600 ? '12px' : '10px'}}>{item.occupation}</p>}
         />
       </Card>
+      <SuccessMessage contextHolder={contextHolder}/>
     </List.Item>
   )
 }

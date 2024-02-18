@@ -21,7 +21,6 @@ import CompaniesListPage                from './pages/DLC-JounalPages/CompaniesL
 import SingleCompanyPage                from './pages/DLC-JounalPages/SingleCompanyPage'
 import VisitsPage                       from './pages/DLC-JounalPages/VisitsPage'
 import SingleVisitPage                  from './pages/DLC-JounalPages/SingleVisitPage'
-import SingleClientsEmployeePage        from './pages/DLC-JounalPages/SingleClientsEmployeePage'
 import axios                            from 'axios'
 import { jwtDecode }                    from 'jwt-decode'
 import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
@@ -73,7 +72,6 @@ const Routing = () => {
               <Route path='/DLC Žurnalas/Įmonių_Sąrašas/:id' element={<SingleCompanyPage/>}/>
               <Route path='/DLC Žurnalas/Statistika' element={<StatisticsPage/>}/>
               <Route path='/DLC Žurnalas/Kolokacijos' element={<CollocationsPage/>}/>
-              <Route path='SingleClientsEmployeePage' element={<SingleClientsEmployeePage/>}/>
 
               <Route path='DLC Checklistas' element={<ChecklistStartPage/>}/>
               <Route path='DLC Checklistas/Istorija' element={<ChecklistHistoryPage/>}/>

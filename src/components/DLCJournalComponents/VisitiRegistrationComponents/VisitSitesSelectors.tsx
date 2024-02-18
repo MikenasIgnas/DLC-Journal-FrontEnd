@@ -3,6 +3,7 @@ import {
   DatePicker,
   Form,
   Select,
+  message,
 }                                   from 'antd'
 
 import VisitRegistrationFormItem    from './VisitRegistrationSelect'
@@ -24,6 +25,7 @@ import {
 
 import { selectSite }               from '../../../auth/SitesReducer/selectors'
 import { VisitsType }               from '../../../types/globalTypes'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 const VisitSitesSelectors = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -38,6 +40,7 @@ const VisitSitesSelectors = () => {
   const form                            = Form.useFormInstance<VisitsType>()
   const companyNames                    = companies?.map((el) => ({value: el._id, label: el.name}))
   const addressesOptions                = sites?.map((el) => ({value: el._id, label: el.name}))
+  const [messageApi, contextHolder]     = message.useMessage()
 
   const selectCompany = async(value: string) => {
     setSearchParams(`companyId=${value}`)
@@ -51,20 +54,29 @@ const VisitSitesSelectors = () => {
 
   const selectAddress = async(siteId: string) => {
     const companyId = searchParams.get('companyId')
-    if(!visitId && siteId && companyId){
-      const res = await post('visit/visit',
-        { companyId:    companyId,
-          permissions:  [],
-          racks:        [],
-          visitPurpose: [],
-          siteId:       siteId,
-          statusId:     visitStatus?.[0]?._id,
-        }, cookies .access_token)
-      setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${res._id}`)
-      dispatch(setSiteId(siteId))
-      dispatch(setVisit(res))
-    }else{
-      setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${visitId}`)
+    try{
+      if(!visitId && siteId && companyId){
+        const res = await post('visit/visit',
+          { companyId:    companyId,
+            permissions:  [],
+            racks:        [],
+            visitPurpose: [],
+            siteId:       siteId,
+            statusId:     visitStatus?.[0]?._id,
+          }, cookies .access_token)
+        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${res._id}`)
+        dispatch(setSiteId(siteId))
+        dispatch(setVisit(res))
+      }else{
+        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${visitId}`)
+      }
+    }catch(error){
+      if (error instanceof Error) {
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 
@@ -104,6 +116,7 @@ const VisitSitesSelectors = () => {
       <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
     </Form.Item>
       }
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

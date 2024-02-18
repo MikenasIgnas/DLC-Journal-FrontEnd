@@ -30,27 +30,22 @@ const CreateUserPage = () => {
   const [form]                          = Form.useForm()
   const [messageApi, contextHolder]     = message.useMessage()
   const [cookies]                       = useCookies(['access_token'])
-  const [loginError, setLoginError]     = React.useState(false)
-  const [errorMessage, setErrorMessage] = React.useState('')
-
   const onFinish = async (values: FormValuesType) => {
     try{
       values.dateCreated = getCurrentDate()
-      const res = await post('user', values, cookies.access_token)
-      if (!res.error) {
-        messageApi.success({
-          type:    'success',
-          content: 'Išsaugota',
+      await post('user', values, cookies.access_token)
+      messageApi.success({
+        type:    'success',
+        content: 'Išsaugota',
+      })
+      form.resetFields()
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
         })
-        form.resetFields()
-        setLoginError(false)
-        setErrorMessage('')
-      }else{
-        setLoginError(res.error)
-        setErrorMessage(res.message)
       }
-    }catch(err){
-      console.log(err)
     }
   }
 
@@ -160,7 +155,6 @@ const CreateUserPage = () => {
           <Button htmlType='submit'>
               Sukurti
           </Button>
-          {loginError && <div style={{color: 'red', textAlign: 'center'}}>{errorMessage}</div>}
         </Form>
       </Card>
       <SuccessMessage contextHolder={contextHolder} />

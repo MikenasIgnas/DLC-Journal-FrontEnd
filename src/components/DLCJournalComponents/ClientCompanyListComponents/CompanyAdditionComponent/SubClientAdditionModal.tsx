@@ -9,6 +9,7 @@ import {
   Button,
   Tabs,
   TabsProps,
+  message,
 }                                         from 'antd'
 
 import { useForm }                        from 'antd/es/form/Form'
@@ -27,6 +28,7 @@ import { useCookies }                     from 'react-cookie'
 import { setSiteId }                      from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 import { useSearchParams }                from 'react-router-dom'
 import SublientsRacks                     from '../ClientsCollocationsTab/SublientsRacks'
+import SuccessMessage                     from '../../../UniversalComponents/SuccessMessage'
 
 const SubClientAdditionModal = () => {
   const [cookies]                         = useCookies(['access_token'])
@@ -40,12 +42,23 @@ const SubClientAdditionModal = () => {
   const dispatch                          = useAppDispatch()
   const siteId                            = searchParams.get('siteId')
   const tabKey                            = searchParams.get('tabKey')
+  const [messageApi, contextHolder]       = message.useMessage()
 
   const addSubClient = async(values: CompaniesType) => {
     values.parentId = id
     values.racks = checkedList
-    await post('company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
-    dispatch(setOpenSubClientAdditionModal(false))
+
+    try{
+      await post('company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
+      dispatch(setOpenSubClientAdditionModal(false))
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
 
@@ -86,6 +99,7 @@ const SubClientAdditionModal = () => {
           </div>
         </div>
         <Button loading={uploading} htmlType='submit'>Pridėti</Button>
+        <SuccessMessage contextHolder={contextHolder}/>
       </Form>
     </Modal>
   )

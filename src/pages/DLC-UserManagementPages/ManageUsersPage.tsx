@@ -5,7 +5,9 @@ import UersTableRows            from '../../components/DLCJournalComponents/User
 import { getCurrentDate, post } from '../../Plugins/helpers'
 import { useCookies }           from 'react-cookie'
 import useSetAllUsersData       from '../../Plugins/useSetAllUsersData'
-import { useAppSelector } from '../../store/hooks'
+import { useAppSelector }       from '../../store/hooks'
+import { message }              from 'antd'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 
 const ManageUsersPage = () => {
@@ -14,6 +16,7 @@ const ManageUsersPage = () => {
   const page                            = searchParams.get('page')
   const { users, setUsers, count }      = useSetAllUsersData(false)
   const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const [messageApi, contextHolder]     = message.useMessage()
 
   const tableColumnNames = [
     {itemName: 'Prisijungimas', itemWidth: 270, itemValue: 'username'},
@@ -48,45 +51,62 @@ const ManageUsersPage = () => {
     },
   ]
   const disableUser = async(id:string) => {
-    const tableItemRemoved = (id:string) => {
-      if(users){
-        let newTableItems = [...users]
-        newTableItems = newTableItems.filter(x => x._id !== id)
-        setUsers(newTableItems)
+    try{
+
+      const statusItems = {
+        id:           id,
+        isDisabled:   true,
+        disabledDate: getCurrentDate(),
       }
-    }
-
-    const statusItems = {
-      id:           id,
-      isDisabled:   true,
-      disabledDate: getCurrentDate(),
-    }
-
-    await post('user/changeStatus', statusItems, cookies.access_token)
-
-    if(tableItemRemoved){
       await post('user/changeStatus', statusItems, cookies.access_token)
-      tableItemRemoved(id)
+
+      const tableItemRemoved = (id:string) => {
+        if(users){
+          let newTableItems = [...users]
+          newTableItems = newTableItems.filter(x => x._id !== id)
+          setUsers(newTableItems)
+        }
+      }
+
+      if(tableItemRemoved){
+        await post('user/changeStatus', statusItems, cookies.access_token)
+        tableItemRemoved(id)
+      }
+
+      messageApi.success({
+        type:    'success',
+        content: 'Išsaugota',
+      })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 
   return (
-    <FullTable
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      tableColumns={<TableColumns />}
-      documentCount={count}
-      tableSorter={tableSorter}
-      tableRows={users?.map((item, index) => (
-        <UersTableRows
-          key={item?._id}
-          id={index + 1}
-          item={item}
-          deleteItem={disableUser}
-          deleteButtonText={'Archyvuoti'}
-        />
-      ))}
-    />
+    <>
+      <FullTable
+        currentPage={page}
+        setSearchParams={setSearchParams}
+        tableColumns={<TableColumns />}
+        documentCount={count}
+        tableSorter={tableSorter}
+        tableRows={users?.map((item, index) => (
+          <UersTableRows
+            key={item?._id}
+            id={index + 1}
+            item={item}
+            deleteItem={disableUser}
+            deleteButtonText={'Archyvuoti'}
+          />
+        ))}
+      />
+      <SuccessMessage contextHolder={contextHolder}/>
+    </>
   )
 }
 

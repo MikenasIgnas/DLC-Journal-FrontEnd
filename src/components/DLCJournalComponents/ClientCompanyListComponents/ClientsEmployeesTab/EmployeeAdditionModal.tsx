@@ -56,21 +56,24 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
 
   const addEmployees = async(values: EmployeesType) => {
     if(id){
-      values.companyId = id
-      values.isDisabled = false
-      const res =  await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
-      if(res.messsage){
-        messageApi.error({
-          type:    'error',
-          content: res.messsage,
-        })
-      }else{
+      try{
+        values.companyId = id
+        values.isDisabled = false
+        await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
         dispatch(setOpenEmployeeAdditionModal(false))
         messageApi.success({
           type:    'success',
           content: 'Darbuotojas pridėta',
         })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
+
     }
   }
 

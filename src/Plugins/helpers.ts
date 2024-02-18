@@ -36,7 +36,12 @@ const patch = async (url: string, values: any, token: TokenType) => {
     }
 
     const response = await fetch(`http://localhost:4002/${url}`, options)
-    return response.json()
+    if(response.ok){
+      return response.json()
+    }else{
+      const responseJson = await response.json()
+      throw new Error(responseJson.messsage)
+    }
   } catch (error) {
     console.error(error)
   }
@@ -104,7 +109,12 @@ const put = async (url: string, values: any, token: string, fileList?:any, setUp
     }
 
     const response = await fetch(`http://localhost:4002/${url}`, options)
-    return response.json()
+    if(response.ok){
+      return response.json()
+    }else{
+      const responseJson = await response.json()
+      throw new Error(responseJson.messsage)
+    }
   }
 }
 
@@ -166,7 +176,7 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
       return response.json()
     }else{
       const responseJson = await response.json()
-      throw new Error(responseJson.messsage)
+      throw new Error(responseJson.message)
     }
   }
 }

@@ -55,28 +55,31 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
         content: 'Privaloma pasirinkti kolokaciją',
       })
     }else{
-      if (fileList && fileList.length > 0) {
-        values.photo = fileList[0]
-      }
+      try{
+        await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
 
-      const res = await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
-      if(!res.error){
+        if (fileList && fileList.length > 0) {
+          values.photo = fileList[0]
+        }
+
         form.resetFields()
         dispatch(setOpenCompaniesAdditionModal(false))
+
         messageApi.success({
           type:    'success',
           content: 'Įmonė pridėta',
         })
-      }else{
-        form.resetFields()
-        dispatch(setOpenCompaniesAdditionModal(false))
-        messageApi.error({
-          type:    'error',
-          content: 'Pridėti nepavyko',
-        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     }
   }
+
   return (
     <Modal
       title={additionModalTitle}
