@@ -21,14 +21,14 @@ type SublientsRacksProps = {
 }
 
 const SublientsRacks = ({site}: SublientsRacksProps) => {
-  const companyPremise      = useAppSelector(selectPremises)
-  const [, setSearchParams] = useSearchParams()
-  const dispatch            = useAppDispatch()
+  const companyPremise                  = useAppSelector(selectPremises)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const dispatch                        = useAppDispatch()
+  const tabKey                          = searchParams.get('tabKey')
 
   React.useEffect(() => {
-    setSearchParams(`siteId=${site._id}`)
+    setSearchParams(`siteId=${site._id}&tabKey=${tabKey}`)
     dispatch(setSiteId(site._id))
-
     return () => {
       dispatch(resetRacksReducer())
     }

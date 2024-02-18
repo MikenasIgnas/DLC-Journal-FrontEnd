@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React            from 'react'
+import React              from 'react'
 import {
   Drawer,
   Row,
@@ -7,20 +7,20 @@ import {
   Divider,
   Form,
   List,
-}                       from 'antd'
-import { get }          from '../../../../Plugins/helpers'
-import { useCookies }   from 'react-cookie'
+}                         from 'antd'
+import { get }            from '../../../../Plugins/helpers'
+import { useCookies }     from 'react-cookie'
 import {
   CompaniesType,
   EmployeesType,
-}                       from '../../../../types/globalTypes'
-import { useForm }      from 'antd/es/form/Form'
-import ListItem         from './ListItem'
+}                         from '../../../../types/globalTypes'
+import { useForm }        from 'antd/es/form/Form'
+import EmployeesListItem  from '../ClientsEmployeesTab/EmployeesListItem'
 
 type SubClientsDrawerProps = {
-    onClose:                () => void;
-    open:                   boolean;
-    subClientId:            string | null;
+    onClose:      () => void;
+    open:         boolean;
+    subClientId:  string | null;
 }
 interface DescriptionItemProps {
     title:        string;
@@ -57,13 +57,6 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
       }
     })()
   },[subClientId, open])
-
-  const listButtons = () => {
-    const buttons = [
-      <></>,
-    ]
-    return buttons
-  }
 
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
@@ -103,12 +96,12 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
         dataSource={subClientEmployees}
         bordered
         renderItem={(item: EmployeesType) => (
-          <ListItem
-            id={item.companyId}
-            item={item}
-            listButtons={listButtons}
+          <EmployeesListItem id={item._id}
+            title={`${item.name} ${item.lastname}`}
             photosFolder={'../ClientsEmployeesPhotos'}
-            altImage={'noUserImage.jpeg'}/>
+            altImage={'noUserImage.jpeg'}
+            item={item}
+          />
         )}
       />
     </Drawer>
