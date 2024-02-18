@@ -1,67 +1,67 @@
 /* eslint-disable max-len */
-import React                                      from 'react'
-import { Modal, Form, Input, UploadFile } from 'antd'
-import { useForm }                                from 'antd/es/form/Form'
-// import { post }                                   from '../../../../Plugins/helpers'
-// import { useCookies }                             from 'react-cookie'
-import PhotoUploader                              from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { CollocationsType }                       from '../../../../types/globalTypes'
-import { useAppDispatch }                         from '../../../../store/hooks'
-import { setOpenSubClientAdditionModal }          from '../../../../auth/ModalStateReducer/ModalStateReducer'
-import { useParams } from 'react-router'
-// import useSetCheckedCollocationList               from '../../../../Plugins/useSetCheckedCollocationList'
+import React                              from 'react'
 
-type AdditionModalProps = {
-    postUrl:            string;
-    additionModalTitle: string;
-    collocations:       CollocationsType[] | undefined
-}
+import {
+  Modal,
+  Form,
+  Input,
+  UploadFile,
+  Button,
+  Tabs,
+  TabsProps,
+}                                         from 'antd'
 
-// type CompanyFormType = {
-//   companyName?:           string,
-//   companyDescription?:    string,
-//   companyPhoto?:          string,
-//   photo?:          string,
-//   subClient?: {
-//     subClientId:          string;
-//     subClientCompanyName: string
-//     }[]
-//   J13?: {
-//     [key: string]: string[];
-//   }[];
-//   T72?: {
-//     [key: string]: string[];
-//   }[];
-// };
+import { useForm }                        from 'antd/es/form/Form'
+import PhotoUploader                      from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 
-const SubClientAdditionModal = ({additionModalTitle}: AdditionModalProps) => {
-  // const [cookies]                 = useCookies(['access_token'])
-  const [form]    = useForm()
-  const { id }    = useParams()
-  // const [uploading, setUploading] = React.useState(false)
-  const [fileList, setFileList]   = React.useState<UploadFile[]>([])
-  const dispatch                  = useAppDispatch()
-  // const {
-  //   filteredResult,
-  //   checkedList,
-  //   checkAllStates,
-  //   onCheckAllChange,
-  //   onCheckboxChange,
-  // }                               = useSetCheckedCollocationList()
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                         from '../../../../store/hooks'
 
-  const addCompany = async() => {
-    // filteredResult.name = values.companyName
-    // filteredResult.description = values.companyDescription
-    // filteredResult.photo = fileList[0]
-    // filteredResult.parentId = parentCompanyId
+import { setOpenSubClientAdditionModal }  from '../../../../auth/ModalStateReducer/ModalStateReducer'
+import { CompaniesType }                  from '../../../../types/globalTypes'
+import { post }                           from '../../../../Plugins/helpers'
+import { useParams }                      from 'react-router'
+import { useCookies }                     from 'react-cookie'
+import { setSiteId }                      from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import { useSearchParams }                from 'react-router-dom'
+import SublientsRacks                     from '../ClientsCollocationsTab/SublientsRacks'
 
-    // await post(postUrl, filteredResult, cookies.access_token, fileList[0], setUploading, setFileList)
+const SubClientAdditionModal = () => {
+  const [cookies]                         = useCookies(['access_token'])
+  const [form]                            = useForm()
+  const [uploading, setUploading]         = React.useState(false)
+  const [fileList, setFileList]           = React.useState<UploadFile[]>([])
+  const { id }                            = useParams()
+  const [searchParams, setSearchParams]   = useSearchParams()
+  const checkedList                       = useAppSelector((state) => state.racks.checkedList)
+  const sites                             = useAppSelector((state) => state.singleCompany.fullSiteData)
+  const dispatch                          = useAppDispatch()
+  const siteId                            = searchParams.get('siteId')
+  const tabKey                            = searchParams.get('tabKey')
+
+  const addSubClient = async(values: CompaniesType) => {
+    values.parentId = id
+    values.racks = checkedList
+    await post('company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
     dispatch(setOpenSubClientAdditionModal(false))
+  }
+
+
+  const items: TabsProps['items'] = sites?.map((site) => ({
+    key:      site._id,
+    label:    site.name,
+    children: <SublientsRacks site={site}/>,
+  }))
+
+  const changeTab = (key: string) => {
+    setSearchParams(`?siteId=${key}&tabKey=${tabKey}`)
+    dispatch(setSiteId(key))
   }
 
   return (
     <Modal
-      title={additionModalTitle}
       centered
       open
       onOk={() => dispatch(setOpenSubClientAdditionModal(false))}
@@ -69,33 +69,23 @@ const SubClientAdditionModal = ({additionModalTitle}: AdditionModalProps) => {
       footer={false}
       width={'70%'}
     >
-      <Form style={{textAlign: 'center'}} form={form} onFinish={addCompany}>
+      <Form style={{textAlign: 'center'}} form={form} onFinish={addSubClient}>
         <div>
-          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='companyName'>
+          <Form.Item rules={[{ required: true, message: 'Įveskite įmonės pavadinimą'}]} name='name'>
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
-          <Form.Item name='companyDescription'>
+          <Form.Item name='description'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
+          <Form.Item name='companyCode'>
+            <Input placeholder='Įmonės kodas'/>
+          </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
-          {/* <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-            {collocations?.map((colocation, i) =>
-              colocation.premises ?
-                <ColocationSelectors
-                  key={i}
-                  collocationSite={colocation.site}
-                  colocationPremises={colocation.premises}
-                  colocationId={colocation.id}
-                  checkedList={checkedList}
-                  checkAllStates={checkAllStates}
-                  onCheckAllChange={onCheckAllChange}
-                  onCheckboxChange={onCheckboxChange}
-                />
-                : null
-            )}
-          </div> */}
+          <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+            <Tabs onTabClick={changeTab} activeKey={siteId ? siteId : undefined } items={items} />
+          </div>
         </div>
-        {/* <Button loading={uploading} htmlType='submit'>Pridėti</Button> */}
+        <Button loading={uploading} htmlType='submit'>Pridėti</Button>
       </Form>
     </Modal>
   )

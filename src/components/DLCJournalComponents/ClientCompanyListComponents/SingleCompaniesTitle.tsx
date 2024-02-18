@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                                from 'react'
-import { Avatar, Form, Input, UploadFile }  from 'antd'
-import PhotoUploader                        from '../../UniversalComponents/PhotoUploader/PhotoUploader'
-import useSetWindowsSize                    from '../../../Plugins/useSetWindowsSize'
+import React              from 'react'
+import {
+  Avatar,
+  Form,
+  Input,
+  UploadFile,
+}                         from 'antd'
+import PhotoUploader      from '../../UniversalComponents/PhotoUploader/PhotoUploader'
+import useSetWindowsSize  from '../../../Plugins/useSetWindowsSize'
 import { useAppSelector } from '../../../store/hooks'
 
 type SingleCompaniesTitleProps = {
@@ -12,9 +17,10 @@ type SingleCompaniesTitleProps = {
 }
 
 const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) => {
-  const windowSize = useSetWindowsSize()
-  const company = useAppSelector((state) => state.singleCompany.singleCompany)
+  const windowSize      = useSetWindowsSize()
+  const company         = useAppSelector((state) => state.singleCompany.singleCompany)
   const editCompanyPage = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+
   return (
     <div>
       {!editCompanyPage ?
@@ -35,11 +41,10 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
             <div style={{fontSize: windowSize > 600 ? '20px' : '12px', marginLeft: '20px'}}>{company?.name?.toUpperCase()}</div>
           </div>
           <div style={{fontSize: windowSize > 600 ? '15px' : '8px'}}>{company?.description}</div>
+          <div style={{fontSize: windowSize > 600 ? '15px' : '8px'}}>Įmonės kodas: {company?.companyCode}</div>
         </div>
         :
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
-          <Form.Item name='name' initialValue={company?.name}><Input/></Form.Item>
-          <Form.Item name='description' initialValue={company?.description}><Input/></Form.Item>
           <Avatar
             shape='square'
             size={70}
@@ -52,6 +57,9 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
               />
             }
           />
+          <Form.Item label='Pavadinimas' name='name' initialValue={company?.name}><Input/></Form.Item>
+          <Form.Item label='Aprašymas' name='description' initialValue={company?.description}><Input/></Form.Item>
+          <Form.Item label='Įmonės kodas' name='companyCode' initialValue={company?.companyCode}><Input/></Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
         </div>
       }

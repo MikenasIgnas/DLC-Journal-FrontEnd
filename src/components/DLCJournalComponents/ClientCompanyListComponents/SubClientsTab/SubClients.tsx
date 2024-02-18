@@ -1,32 +1,51 @@
 /* eslint-disable max-len */
-import React, { useState }                            from 'react'
-import { Button, Divider, List }                      from 'antd'
-import { deleteItem, get, put }                       from '../../../../Plugins/helpers'
-import { ColocationDataType, CompaniesType }          from '../../../../types/globalTypes'
-import { useCookies }                                 from 'react-cookie'
-import { useParams, useSearchParams }                            from 'react-router-dom'
-import SubClientsDrawer                               from './SubClientsDrawer'
-import ListItem                                       from './ListItem'
-import { useAppDispatch, useAppSelector }             from '../../../../store/hooks'
-import { resetIsSubClientAdded, setIsSubClientAdded } from '../../../../auth/AddSubClientReducer/addSubClientReducer'
+import React                  from 'react'
+import SubClientsDrawer       from './SubClientsDrawer'
+import ListItem               from './ListItem'
 
-type SubClientsProps = {
-  subClientsCollocations :  {
-    J13?: ColocationDataType[];
-    T72?: ColocationDataType[];
-  }
-}
+import {
+  Button,
+  Divider,
+  List,
+}                             from 'antd'
 
-const SubClients = ({ subClientsCollocations}: SubClientsProps) => {
-  const [open, setOpen]                 = useState(false)
+import {
+  deleteItem,
+  get,
+  put,
+}                             from '../../../../Plugins/helpers'
+
+import { CompaniesType }      from '../../../../types/globalTypes'
+import { useCookies }         from 'react-cookie'
+
+import {
+  useParams,
+  useSearchParams,
+}                             from 'react-router-dom'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                             from '../../../../store/hooks'
+
+import {
+  resetIsSubClientAdded,
+  setIsSubClientAdded,
+}                             from '../../../../auth/AddSubClientReducer/addSubClientReducer'
+
+
+const SubClients = () => {
+  const [open, setOpen]                 = React.useState(false)
   const [subClients, setSubClients]     = React.useState<CompaniesType[]>()
   const [cookies]                       = useCookies()
   const [searchParams, setSearchParams] = useSearchParams()
   const subClientId                     = searchParams.get('subClientId')
+  const tabKey                          = searchParams.get('tabKey')
   const openSubClientAdditionModal      = useAppSelector((state) => state.modals.openSubClientAdditionModal)
   const dispatch                        = useAppDispatch()
   const addSubClient                    = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
-  const { id } = useParams()
+  const { id }                          = useParams()
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -44,7 +63,7 @@ const SubClients = ({ subClientsCollocations}: SubClientsProps) => {
   },[openSubClientAdditionModal, addSubClient, open])
 
   const showDrawer = (subClient: string | undefined) => {
-    setSearchParams(`&subClientId=${subClient}`, { replace: true })
+    setSearchParams(`&subClientId=${subClient}&tabKey=${tabKey}`)
     setOpen(true)
   }
 
@@ -95,7 +114,6 @@ const SubClients = ({ subClientsCollocations}: SubClientsProps) => {
             <ListItem
               id={item._id}
               item={item}
-              removeFormSubClientList={removeFormSubClientList}
               photosFolder={'../CompanyLogos'}
               altImage={'noImage.jpg'}
               listButtons={listButtons}
@@ -104,7 +122,6 @@ const SubClients = ({ subClientsCollocations}: SubClientsProps) => {
         }}/>
       { open &&
       <SubClientsDrawer
-        subClientsCollocations={subClientsCollocations}
         subClientId={subClientId}
         onClose={onClose}
         open={open}/>

@@ -5,11 +5,11 @@ import { deleteItem, get }                from '../../../../Plugins/helpers'
 import { useCookies }                     from 'react-cookie'
 import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
 import { useParams, useSearchParams }     from 'react-router-dom'
-import ListItem                           from '../SubClientsTab/ListItem'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import { setOpenClientsEmployeesDrawer }  from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import HighlightText                      from '../../../UniversalComponents/HighlightText'
 import { setCompaniesEmployees }          from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import EmployeesListItem                  from './EmployeesListItem'
 
 
 const ClientsEmployeeList = () => {
@@ -22,6 +22,7 @@ const ClientsEmployeeList = () => {
   const siteId                          = searchParams.get('siteId')
   const tabKey                          = searchParams.get('tabKey')
   const loading                         = useAppSelector((state) => state.singleCompany.loading)
+
   const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}&siteId=${siteId}&tabKey=${tabKey}`)
     dispatch(setOpenClientsEmployeesDrawer(true))
@@ -54,13 +55,11 @@ const ClientsEmployeeList = () => {
     const filtered = companiesEmployees?.filter((el) => `${el.name} ${el.lastname}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
     setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
     dispatch(setCompaniesEmployees(filtered))
-    //todo fix old route
     if(e.target.value === ''){
-      const companyEmployees  = await get(`getSingleCompaniesEmployees?companyId=${id}`, cookies.access_token)
-      dispatch(setCompaniesEmployees(companyEmployees.data))
+      const companyEmployees  = await get(`company/CompanyEmployee?id=${id}`, cookies.access_token)
+      dispatch(setCompaniesEmployees(companyEmployees))
     }
   }
-
 
   return (
     <div className='EmployeeListContainer'>
@@ -77,12 +76,12 @@ const ClientsEmployeeList = () => {
           align:    'center',
         }}
         renderItem={(item) => (
-          <ListItem
-            id={item._id}
+          <EmployeesListItem id={item._id}
             listButtons={() => listButtons(item._id, item.companyId)}
             title={HighlightText(employeeFilter, `${item.name} ${item.lastname}`)}
             photosFolder={'../ClientsEmployeesPhotos'}
-            altImage={'noUserImage.jpeg'} item={item}
+            altImage={'noUserImage.jpeg'}
+            item={item}
           />
         )}
       />

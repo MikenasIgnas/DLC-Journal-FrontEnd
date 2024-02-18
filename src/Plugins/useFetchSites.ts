@@ -4,7 +4,7 @@ import { get }               from './helpers'
 import { useCookies }        from 'react-cookie'
 import { FullSiteData }      from '../types/globalTypes'
 import { useSearchParams }   from 'react-router-dom'
-import { useAppDispatch }    from '../store/hooks'
+import { useAppDispatch, useAppSelector }    from '../store/hooks'
 import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
 
 import {
@@ -18,7 +18,7 @@ const useFetchSites = () => {
   const companyId       = searchParams.get('companyId')
   const siteId          = searchParams.get('siteId')
   const dispatch        = useAppDispatch()
-
+  const openCompaniesAdditionModal  = useAppSelector((state) => state.modals.openCompaniesAdditionModal)
   React.useEffect(() => {
     const fetchData = async() => {
       const fullSiteData: FullSiteData[]  = await get('site/fullSiteData', cookies.access_token)
@@ -30,7 +30,7 @@ const useFetchSites = () => {
       dispatch(resetFullSiteData())
       dispatch(resetRacksReducer())
     }
-  },[siteId, companyId, cookies.access_token, dispatch])
+  },[siteId, companyId, cookies.access_token, dispatch, openCompaniesAdditionModal])
 
 }
 

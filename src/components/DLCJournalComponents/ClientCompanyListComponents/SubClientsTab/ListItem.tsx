@@ -1,16 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { Avatar, List }     from 'antd'
-import SubClientTag         from './SubClientTag'
+import { Avatar, List }  from 'antd'
+import SubClientTag      from './SubClientTag'
+import { CompaniesType } from '../../../../types/globalTypes'
 
 type ListItemProps = {
-  removeFormSubClientList?: (subClientId: string | undefined) => void
   photosFolder:             string;
   altImage:                 string;
   listButtons:              (listItemId: string | undefined) => JSX.Element[] | undefined
-  item: any
-  title?: JSX.Element
-  id: string | undefined
+  item:                     CompaniesType
+  title?:                   JSX.Element
+  id:                       string | undefined
 };
 
 const ListItem = ({
@@ -18,8 +17,8 @@ const ListItem = ({
   item,
   photosFolder,
   altImage,
-  title,
   listButtons,
+  title,
 }: ListItemProps) => {
   const buttons       = listButtons(id)
   return (
@@ -33,7 +32,7 @@ const ListItem = ({
             <Avatar src={<img style={{objectFit: 'contain'}} src={item.photo ? item.photo : `../${photosFolder}/${altImage}`} alt='err' />}/>
           </div>
         }
-        title={title}
+        title={title ? title : item.name}
         description={item?.description}
       />
       {item.parentId && <SubClientTag parentCompanyId={item.parentId}/>}

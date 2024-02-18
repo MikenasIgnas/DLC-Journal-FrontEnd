@@ -1,20 +1,31 @@
 /* eslint-disable max-len */
-import { Button, Select }                 from 'antd'
-import { useAppDispatch }                 from '../../../../store/hooks'
+import {
+  Button,
+  Select,
+}                                         from 'antd'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                         from '../../../../store/hooks'
 import { setOpenSubClientAdditionModal }  from '../../../../auth/ModalStateReducer/ModalStateReducer'
 
 type SubClientAdditionProps = {
     selectedValue:    null;
     handleChange:     (value: string) => Promise<void>;
-    mainCompaniesOptions:  {
-        value: string;
-        label: string;
-    }[],
     handleSelect:     () => void
 }
 
-const SubClientAddition = ({ selectedValue, handleChange, mainCompaniesOptions, handleSelect }:SubClientAdditionProps) => {
-  const dispatch = useAppDispatch()
+const SubClientAddition = ({ selectedValue, handleChange, handleSelect }:SubClientAdditionProps) => {
+  const dispatch              = useAppDispatch()
+  const parentCompanies       = useAppSelector((state) => state.singleCompany.parentCompanies)
+  const mainCompaniesOptions  = parentCompanies?.map((el) => {
+    return{
+      value: el._id,
+      label: el.name,
+    }
+  })
+
   return (
     <div className='SubClientAdditionContainer'>
       <div className='SubClientAdditionBody'>

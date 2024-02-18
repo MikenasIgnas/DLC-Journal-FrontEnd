@@ -8,12 +8,13 @@ import { CompaniesType }             from '../../types/globalTypes'
 import { Link, useSearchParams }     from 'react-router-dom'
 import CompanyAddition               from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
 import ListItem                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
-import { useAppSelector }            from '../../store/hooks'
-import ChildCompaniesTree            from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
+import { useAppDispatch, useAppSelector }            from '../../store/hooks'
 import useDelay                      from '../../Plugins/useDelay'
 import PermissionAdditionModal       from '../../components/DLCJournalComponents/ClientCompanyListComponents/PermissionAdditionModal'
 import { Permissions }               from '../../types/globalTypes'
 import CompaniesPagination           from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompaniesPagination'
+import ChildCompaniesTree            from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
+import { resetSingleCompanyEditReducer } from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]                 = React.useState(false)
@@ -30,6 +31,7 @@ const CompaniesListPage = () => {
   const page                                  = searchParams.get('page')
   const limit                                 = searchParams.get('limit')
   const name                                  = searchParams.get('name')
+  const dispatch                              = useAppDispatch()
 
   React.useEffect(() => {
     (async () => {
@@ -52,7 +54,11 @@ const CompaniesListPage = () => {
       }catch(err){
         console.log(err)
       }
+
     })()
+    return () => {
+      dispatch(resetSingleCompanyEditReducer())
+    }
   },[openCompaniesAdditionModal, isModalOpen, page, limit, name])
 
   const companyRemoved = (id: string | undefined) => {
@@ -61,7 +67,7 @@ const CompaniesListPage = () => {
   }
 
   const deleteCompany = async(companyId: string | undefined) => {
-    await deleteItem('company/company', {id: companyId}, cookies.access_token)
+    await deleteItem('company/company', {id: companyId, parentId: 'null'}, cookies.access_token)
     companyRemoved(companyId)
   }
 
@@ -139,7 +145,7 @@ const CompaniesListPage = () => {
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
               listButtons={listButtons}
-              title={<ChildCompaniesTree searchValue={searchValue} companies={companies} item={item}/>}
+              title={<ChildCompaniesTree searchValue={searchValue} companies={companies} item={item} />}
             />
           )
         }}/>

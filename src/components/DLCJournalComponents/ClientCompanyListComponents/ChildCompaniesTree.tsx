@@ -28,7 +28,6 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
 
   const filter      = treeCompanies.filter((el) => el.key === item._id)
   const hasChildren = filter[0].children.length >= 1
-
   return (
     <>
       {hasChildren ?

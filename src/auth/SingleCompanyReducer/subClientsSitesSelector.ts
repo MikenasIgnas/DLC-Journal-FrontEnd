@@ -10,8 +10,8 @@ import {
 } from '../../types/globalTypes'
 
 const fullSiteData  = (state: RootState) => state.singleCompany.fullSiteData
-const selectCompany = (state: RootState) => state.singleCompany.singleCompany
-const siteId        = (state: RootState) => state.singleCompany.siteId
+const selectCompany = (state: RootState) => state.subClient.subClient
+const siteId        = (state: RootState) => state.subClient.siteId
 
 const findSite      = (sites: FullSiteData[], siteId: string | null | undefined) => {
   const site = sites.find((el) => el._id === siteId)

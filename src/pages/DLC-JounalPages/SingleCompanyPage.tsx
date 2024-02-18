@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
 import React                  from 'react'
 import { put }                from '../../Plugins/helpers'
@@ -26,7 +25,6 @@ import {
 }                             from '../../store/hooks'
 
 import { setEditCompanyPage } from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
-
 import ClientsCollocationsTab from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsCollocationsTab/ClientsCollocationsTab'
 import ClientsEmployeesTab    from '../../components/DLCJournalComponents/ClientCompanyListComponents/ClientsEmployeesTab/ClientsEmployeesTab'
 import SubClientsTab          from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/SubClientsTab'
@@ -77,7 +75,7 @@ const SingleCompanyPage = () => {
     {
       key:      '2',
       label:    'Sub klientai',
-      children: <SubClientsTab collocationsSites={{}}/>,
+      children: <SubClientsTab/>,
     },
     {
       key:      '3',

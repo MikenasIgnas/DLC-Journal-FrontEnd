@@ -13,6 +13,7 @@ import VisitorEmployeeReducer       from '../auth/VisitorEmployeeReducer/Visitor
 import RacksReducer                 from '../auth/RacksReducer/RacksReducer'
 import SingleCompanyReducer         from '../auth/SingleCompanyReducer/SingleCompanyReducer'
 import SingleCompanyEditsReducer    from '../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+import subClientsReducer from '../auth/SingleCompanyReducer/subClientsReducer'
 
 export default combineReducers({
   auth:                      authReducer,
@@ -28,4 +29,5 @@ export default combineReducers({
   racks:                     RacksReducer,
   singleCompany:             SingleCompanyReducer,
   singleCompanyEdits:        SingleCompanyEditsReducer,
+  subClient:                 subClientsReducer,
 })
