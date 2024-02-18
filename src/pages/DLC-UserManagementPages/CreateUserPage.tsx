@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { Button, Card, Checkbox, Form, Input, message } from 'antd'
-import React                                            from 'react'
 import { getCurrentDate, post }                         from '../../Plugins/helpers'
 import { useCookies }                                   from 'react-cookie'
 import SuccessMessage                                   from '../../components/UniversalComponents/SuccessMessage'

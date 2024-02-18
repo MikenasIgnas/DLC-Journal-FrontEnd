@@ -12,12 +12,12 @@ type VisitRacksProps = {
 const VisitRacks = ({ premise } : VisitRacksProps) => {
   const companies = useAppSelector((state) => state.visit.companies)
   const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
-  const visitingRacks       = useAppSelector((state) => state.visit.visit)?.racks
+  const racksIds            = selectPremiseRacks.map((el) => el._id)
+  const visitingRacks       = useAppSelector((state) => state.visit.visit?.racks)?.filter((el) => racksIds.includes(el))
   const editCollocations    = useAppSelector((state) => state.visitPageEdits.editCollocations)
   const filledRacks         = selectPremiseRacks.filter((el) => visitingRacks?.includes(el._id))
   const checkboxOptions     =  filledRacks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
   const hasMatchingRacks    = companies.filter(company => company.racks.some(rack => visitingRacks?.includes(rack))).length > 1
-
   return (
     <>
       {

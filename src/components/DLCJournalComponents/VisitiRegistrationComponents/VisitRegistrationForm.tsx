@@ -131,7 +131,7 @@ const VisitRegistrationForm = () => {
       <Form form={form} onFinish={registerVisit} onKeyDown={onkeydown} initialValues={{visitingClient: companyId, siteId: siteId}}>
         <div>
           <VisitSitesSelectors/>
-          <VisitorAdditionList />
+          <VisitorAdditionList/>
           {companyEmployees && companyEmployees?.length <= 0 && <Empty description='Darbuotojų nėra' image={Empty.PRESENTED_IMAGE_SIMPLE} />}
           <VisitorsList/>
           <VisitPurposeList/>

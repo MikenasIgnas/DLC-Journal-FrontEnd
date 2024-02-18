@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
-import { Card, Checkbox }       from 'antd'
+import {
+  Card,
+  Checkbox,
+}                               from 'antd'
 import { Premises }             from '../../../../types/globalTypes'
 import {
   useAppDispatch,
@@ -25,7 +28,7 @@ const EditableVisitRacks = ({ premise }: VisitRegistraTionRacksCheckboxGroupProp
   const visitData           = useAppSelector((state)=> state.visit.visit)
   const selectPremiseRacks  = useAppSelector((state) => selectRacks(state, premise._id))
   const racksIds            = selectPremiseRacks.map((el) => el._id)
-  const checkboxOptions     =  selectPremiseRacks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
+  const checkboxOptions     = selectPremiseRacks.map((el) => ({value: el._id || 'error', label: el.name || 'error'}))
   const checkedList         = useAppSelector((state) => state.racks.checkedList).filter((el) => racksIds.includes(el))
   const checkAll            = racksIds.every((el) => checkedList.includes(el))
   const indeterminate       = checkedList?.length > 0 && checkedList.length < selectPremiseRacks.length

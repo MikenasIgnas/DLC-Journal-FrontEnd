@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { message }                        from 'antd'
-import { post }                           from '../../../Plugins/helpers'
+import { get, post }                           from '../../../Plugins/helpers'
 import {
   VisitStatus,
   Visitors,
@@ -12,7 +12,7 @@ import {
 import { useParams }                      from 'react-router'
 import { useCookies }                     from 'react-cookie'
 import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
-import { setVisit }                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { setDlcEmployee, setVisit }                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const useVisitValidation = () => {
   const [cookies]                   = useCookies(['access_token'])
@@ -54,7 +54,9 @@ const useVisitValidation = () => {
         type:    'success',
         content: successMessage,
       })
+      const employee = await get(`user?id=${res.dlcEmlpyee}`, cookies.access_token)
       dispatch(setVisit(res))
+      dispatch(setDlcEmployee(employee))
     } catch (error) {
       if(error instanceof Error){
         messageApi.error({
