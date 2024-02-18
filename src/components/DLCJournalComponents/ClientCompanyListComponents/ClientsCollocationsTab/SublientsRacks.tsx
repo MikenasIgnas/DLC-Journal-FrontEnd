@@ -1,56 +1,51 @@
 /* eslint-disable max-len */
-import React                    from 'react'
+import React                from 'react'
 
 import {
   useAppDispatch,
   useAppSelector,
-}                               from '../../../../store/hooks'
+}                           from '../../../../store/hooks'
 
-import { useSearchParams }      from 'react-router-dom'
-import { selectPremises }       from '../../../../auth/SingleCompanyReducer/selector'
-import { setSiteId }            from '../../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { FullSiteData }         from '../../../../types/globalTypes'
+import { useSearchParams }  from 'react-router-dom'
+import { selectPremises }   from '../../../../auth/SingleCompanyReducer/selector'
+import { FullSiteData }     from '../../../../types/globalTypes'
 
-import {
-  Card,
-  Divider,
-  Empty,
-}                               from 'antd'
+import { Empty}             from 'antd'
 
-import SubClientsRacksList      from './SubClientsRacksList'
+import SubClientsRacksList  from './SubClientsRacksList'
+import { setSiteId }        from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
+import { resetRacksReducer } from '../../../../auth/RacksReducer/RacksReducer'
 
 type SublientsRacksProps = {
   site: FullSiteData
 }
 
 const SublientsRacks = ({site}: SublientsRacksProps) => {
-  const companyPremise                  = useAppSelector(selectPremises)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const tabKey                          = searchParams.get('tabKey')
-  const dispatch                        = useAppDispatch()
+  const companyPremise      = useAppSelector(selectPremises)
+  const [, setSearchParams] = useSearchParams()
+  const dispatch            = useAppDispatch()
 
   React.useEffect(() => {
-    setSearchParams(`siteId=${site._id}&tabKey=${tabKey}`)
+    setSearchParams(`siteId=${site._id}`)
     dispatch(setSiteId(site._id))
+
+    return () => {
+      dispatch(resetRacksReducer())
+    }
   },[])
 
   return (
     <div>
-      { companyPremise &&
       <>
-        <Divider>{site.name}</Divider>
         {companyPremise && companyPremise?.length > 0 ?
-          <Card className='CollocationDisplayCard' >
-            {companyPremise?.map((premise, i) =>
-              <div key={i}>
-                <SubClientsRacksList premise={premise}/>
-              </div>
+          <>
+            {companyPremise?.map((premise) =>
+              <SubClientsRacksList key={premise._id} premise={premise}/>
             )}
-          </Card>
+          </>
           : <Empty description='Įmonė spintų neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />
         }
       </>
-      }
     </div>
   )
 }

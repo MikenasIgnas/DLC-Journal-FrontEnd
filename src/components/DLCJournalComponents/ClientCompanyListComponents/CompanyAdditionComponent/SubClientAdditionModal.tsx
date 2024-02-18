@@ -39,7 +39,6 @@ const SubClientAdditionModal = () => {
   const sites                             = useAppSelector((state) => state.singleCompany.fullSiteData)
   const dispatch                          = useAppDispatch()
   const siteId                            = searchParams.get('siteId')
-  const tabKey                            = searchParams.get('tabKey')
 
   const addSubClient = async(values: CompaniesType) => {
     values.parentId = id
@@ -56,7 +55,7 @@ const SubClientAdditionModal = () => {
   }))
 
   const changeTab = (key: string) => {
-    setSearchParams(`?siteId=${key}&tabKey=${tabKey}`)
+    setSearchParams(`?siteId=${key}`)
     dispatch(setSiteId(key))
   }
 

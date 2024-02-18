@@ -46,7 +46,7 @@ const SubClientsRacksList = ({premise}: SubClientsRacksListProps) => {
   }
 
   return (
-    <Card>
+    <Card title={premise.name}>
       <Checkbox
         onChange={onCheckAllChange}
         checked={checkAll}

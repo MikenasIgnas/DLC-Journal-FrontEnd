@@ -25,6 +25,7 @@ import {
   EmployeesType,
   FullSiteData,
 }                                        from '../types/globalTypes'
+import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
 
 
 const useFetchSingleCompany = () => {
@@ -60,6 +61,7 @@ const useFetchSingleCompany = () => {
     fetchData()
     return () => {
       dispatch(resetSingleCompanyReducer())
+      dispatch(resetRacksReducer())
     }
   },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee])
 }
