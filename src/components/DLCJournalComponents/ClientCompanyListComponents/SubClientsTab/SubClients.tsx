@@ -113,7 +113,6 @@ const SubClients = () => {
             <ListItem
               id={item._id}
               item={item}
-              removeFormSubClientList={removeFormSubClientList}
               photosFolder={'../CompanyLogos'}
               altImage={'noImage.jpg'}
               listButtons={listButtons}

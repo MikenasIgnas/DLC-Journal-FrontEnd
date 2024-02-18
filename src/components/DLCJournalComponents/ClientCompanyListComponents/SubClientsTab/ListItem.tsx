@@ -4,7 +4,6 @@ import SubClientTag      from './SubClientTag'
 import { CompaniesType } from '../../../../types/globalTypes'
 
 type ListItemProps = {
-  removeFormSubClientList?: (subClientId: string | undefined) => void
   photosFolder:             string;
   altImage:                 string;
   listButtons:              (listItemId: string | undefined) => JSX.Element[] | undefined
@@ -19,6 +18,7 @@ const ListItem = ({
   photosFolder,
   altImage,
   listButtons,
+  title,
 }: ListItemProps) => {
   const buttons       = listButtons(id)
   return (
@@ -32,7 +32,7 @@ const ListItem = ({
             <Avatar src={<img style={{objectFit: 'contain'}} src={item.photo ? item.photo : `../${photosFolder}/${altImage}`} alt='err' />}/>
           </div>
         }
-        title={item.name}
+        title={title ? title : item.name}
         description={item?.description}
       />
       {item.parentId && <SubClientTag parentCompanyId={item.parentId}/>}
