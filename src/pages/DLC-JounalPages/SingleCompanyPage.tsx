@@ -16,6 +16,7 @@ import {
   Tabs,
   TabsProps,
   UploadFile,
+  message,
 }                             from 'antd'
 
 import { useForm }            from 'antd/es/form/Form'
@@ -31,6 +32,7 @@ import SubClientsTab          from '../../components/DLCJournalComponents/Client
 import SingleCompanyTitle     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import ClientsDocumentsTab    from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
 import useFetchSingleCompany  from '../../Plugins/useFetchSingleCompany'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 
 type CompanyFormType = {
@@ -54,15 +56,29 @@ const SingleCompanyPage = () => {
   const checkedList                     = useAppSelector((state) => state.racks.checkedList)
   const siteId                          = searchParams.get('siteId')
   const tabKey                          = searchParams.get('tabKey')
+  const [messageApi, contextHolder]     = message.useMessage()
   useFetchSingleCompany()
 
   const saveChanges = async(values:CompanyFormType) => {
     dispatch(setEditCompanyPage(!editCompanyPage))
     if(editCompanyPage){
-      values.id = id
-      values.photo = fileList[0]
-      values.racks = checkedList
-      await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
+      try{
+        values.id = id
+        values.photo = fileList[0]
+        values.racks = checkedList
+        await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -115,6 +131,7 @@ const SingleCompanyPage = () => {
           items={items}
         />
       </Card>
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

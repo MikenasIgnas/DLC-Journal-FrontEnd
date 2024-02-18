@@ -21,17 +21,24 @@ const CollocationAdditionModal = () => {
   const [searchParams]                = useSearchParams()
   const siteId                        = searchParams.get('siteId')
   const [messageApi, contextHolder]   = message.useMessage()
+
   const onFinish = async(values: FormValuesType) => {
     values.siteId = siteId
-    const res = await post('site/premise', values, cookies.access_token)
-    if(!res.message){
+    try{
+      await post('site/premise', values, cookies.access_token)
       form.resetFields()
       dispatch(setOpenCollocationAdditionModal(false))
-    }else{
-      messageApi.error({
+      messageApi.success({
         type:    'error',
-        content: 'Patalpa jau egzituoja',
+        content: 'Patalpa pridėta',
       })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 

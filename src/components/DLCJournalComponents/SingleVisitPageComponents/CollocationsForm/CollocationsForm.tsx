@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useAppDispatch, useAppSelector }   from '../../../../store/hooks'
-import { Card, Form }                       from 'antd'
+import { Card, Form, message }              from 'antd'
 import { selectVisitingCompanyEmplyees }    from '../../../../auth/VisitorEmployeeReducer/selectors'
 import { selectPremises }                   from '../../../../auth/SitesReducer/selectors'
 import CardTitle                            from '../CardTitle'
@@ -12,22 +12,36 @@ import { useSearchParams }                  from 'react-router-dom'
 import { useCookies }                       from 'react-cookie'
 import VisitRacks                           from './VisitRacks'
 import EditableVisitRacks                   from './EditableVisitRacks'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 const CollocationsForm = () => {
-  const companyPremise    = useAppSelector(selectPremises)
-  const [form]            = useForm()
-  const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
-  const editCollocations  = useAppSelector((state) => state.visitPageEdits.editCollocations)
-  const dispatch          = useAppDispatch()
-  const [searchParams]    = useSearchParams()
-  const visitId           = searchParams.get('id')
-  const [cookies]         = useCookies()
-  const checkedList       = useAppSelector((state) => state.racks.checkedList)
-
+  const companyPremise              = useAppSelector(selectPremises)
+  const [form]                      = useForm()
+  const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
+  const editCollocations            = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const dispatch                    = useAppDispatch()
+  const [searchParams]              = useSearchParams()
+  const visitId                     = searchParams.get('id')
+  const [cookies]                   = useCookies()
+  const checkedList                 = useAppSelector((state) => state.racks.checkedList)
+  const [messageApi, contextHolder] = message.useMessage()
   const saveChanges = async() => {
     dispatch(setEditCollocations(!editCollocations))
     if(editCollocations){
-      await put('visit/visit', {id: visitId, racks: checkedList}, cookies.access_token)
+      try{
+        await put('visit/visit', {id: visitId, racks: checkedList}, cookies.access_token)
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -40,6 +54,7 @@ const CollocationsForm = () => {
           ))}
         </Card>
       )}
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

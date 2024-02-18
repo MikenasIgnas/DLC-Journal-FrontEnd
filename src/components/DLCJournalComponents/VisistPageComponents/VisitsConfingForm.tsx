@@ -1,11 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import { FileAddOutlined }              from '@ant-design/icons'
-import { Button, Form, Input, List }    from 'antd'
-import { useCookies } from 'react-cookie'
-import { post } from '../../../Plugins/helpers'
-import VisitConfigListItem from './VisitConfigListItem'
-import React from 'react'
+import React                from 'react'
+import { FileAddOutlined }  from '@ant-design/icons'
+import {
+  Button,
+  Form,
+  Input,
+  List,
+  message,
+}                           from 'antd'
+import { useCookies }       from 'react-cookie'
+import { post }             from '../../../Plugins/helpers'
+import VisitConfigListItem  from './VisitConfigListItem'
+import SuccessMessage       from '../../UniversalComponents/SuccessMessage'
+
 type ConfingItemsType = {
     name:   string | undefined;
     _id:    string;
@@ -18,14 +26,25 @@ type VisitsConfingFormProps = {
 }
 
 const VisitsConfingForm = ({ configItems, url, setConfigItems }: VisitsConfingFormProps ) => {
-  const [form]          = Form.useForm()
-  const [cookies]       = useCookies(['access_token'])
-
+  const [form]                      = Form.useForm()
+  const [cookies]                   = useCookies(['access_token'])
+  const [messageApi, contextHolder] = message.useMessage()
   const onFinish = async(values: any) => {
-    const res = await post(url, values, cookies.access_token)
-    if(!res.messsage){
+    try{
+      const res = await post(url, values, cookies.access_token)
       setConfigItems([...configItems, res])
       form.resetFields(['name'])
+      messageApi.success({
+        type:    'success',
+        content: 'Pridėta',
+      })
+    }catch(error){
+      if (error instanceof Error) {
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
   return (
@@ -44,6 +63,7 @@ const VisitsConfingForm = ({ configItems, url, setConfigItems }: VisitsConfingFo
         dataSource={configItems}
         renderItem={(item) => <VisitConfigListItem item={item} url={url} setConfigItems={setConfigItems} configItems={configItems}/>}
       />
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

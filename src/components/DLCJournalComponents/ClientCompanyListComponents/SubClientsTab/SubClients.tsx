@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
   List,
+  message,
 }                             from 'antd'
 
 import {
@@ -32,6 +33,7 @@ import {
   resetIsSubClientAdded,
   setIsSubClientAdded,
 }                             from '../../../../auth/AddSubClientReducer/addSubClientReducer'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 
 const SubClients = () => {
@@ -45,6 +47,7 @@ const SubClients = () => {
   const dispatch                        = useAppDispatch()
   const addSubClient                    = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const { id }                          = useParams()
+  const [messageApi, contextHolder]     = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -84,9 +87,22 @@ const SubClients = () => {
 
   const removeFormSubClientList = async(companyId: string | undefined) => {
     if(companyId){
-      await put('company/company', {id: companyId, parentId: 'null'} ,cookies.access_token)
-      dispatch(setIsSubClientAdded(true))
-      subClientCompanyRemoved(companyId)
+      try{
+        await put('company/company', {id: companyId, parentId: 'null'} ,cookies.access_token)
+        dispatch(setIsSubClientAdded(true))
+        subClientCompanyRemoved(companyId)
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -126,6 +142,7 @@ const SubClients = () => {
         onClose={onClose}
         open={open}/>
       }
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

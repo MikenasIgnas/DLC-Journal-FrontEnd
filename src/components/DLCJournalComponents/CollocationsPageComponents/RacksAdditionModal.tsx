@@ -1,25 +1,26 @@
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React                                from 'react'
-import { Form, Input, List, Modal }         from 'antd'
-import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
-import { setOpenRacksAdditionModal }        from '../../../auth/ModalStateReducer/ModalStateReducer'
-import { useCookies }                       from 'react-cookie'
-import { SearchProps }                      from 'antd/es/input'
-import { get, post }                        from '../../../Plugins/helpers'
-import { useSearchParams }                  from 'react-router-dom'
-import { Racks }                            from '../../../types/globalTypes'
+import React                                  from 'react'
+import { Form, Input, List, Modal, message }  from 'antd'
+import { useAppDispatch, useAppSelector }     from '../../../store/hooks'
+import { setOpenRacksAdditionModal }          from '../../../auth/ModalStateReducer/ModalStateReducer'
+import { useCookies }                         from 'react-cookie'
+import { SearchProps }                        from 'antd/es/input'
+import { get, post }                          from '../../../Plugins/helpers'
+import { useSearchParams }                    from 'react-router-dom'
+import { Racks }                              from '../../../types/globalTypes'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 const { Search } = Input
 
 const RacksAdditionModal = () => {
-  const [form]                  = Form.useForm()
-  const openRacksAdditionModal  = useAppSelector((state) => state.modals.openRacksAdditionModal)
-  const dispatch                = useAppDispatch()
-  const [cookies]               = useCookies(['access_token'])
-  const [searchParams]          = useSearchParams()
-  const premiseId               = searchParams.get('premiseId')
-  const [racks, setRacks]       = React.useState<Racks[]>([])
+  const [form]                        = Form.useForm()
+  const openRacksAdditionModal        = useAppSelector((state) => state.modals.openRacksAdditionModal)
+  const dispatch                      = useAppDispatch()
+  const [cookies]                     = useCookies(['access_token'])
+  const [searchParams]                = useSearchParams()
+  const premiseId                     = searchParams.get('premiseId')
+  const [racks, setRacks]             = React.useState<Racks[]>([])
+  const [messageApi, contextHolder]   = message.useMessage()
   React.useEffect(() => {
     (async () => {
       try {
@@ -50,31 +51,48 @@ const RacksAdditionModal = () => {
   }
   const onSearch: SearchProps['onSearch'] = async(value) => {
     if(value !== ''){
-      const data = {
-        name:      value,
-        premiseId: premiseId,
+      try{
+
+        const data = {
+          name:      value,
+          premiseId: premiseId,
+        }
+        const res = await post('site/rack', data, cookies.access_token)
+        setRacks([...racks, res])
+        form.resetFields(['name'])
+        messageApi.success({
+          type:    'success',
+          content: 'Pridėta',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
-      const res = await post('site/rack', data, cookies.access_token)
-      setRacks([...racks, res])
-      form.resetFields(['name'])
     }
   }
 
   return (
-    <Modal
-      width={1000}
-      title={'Spintų pridėjimas'}
-      open={openRacksAdditionModal}
-      onOk={onOK}
-      onCancel={onCancel}
-    >
-      <Form form={form} onFinish={onSearch} onKeyDown={onkeydown}>
-        <Form.Item style={{width: '100%'}} name='name' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
-          <Search placeholder='Spinta' onSearch={onSearch} />
-        </Form.Item>
-      </Form>
-      <List dataSource={racks} renderItem={(item) => <List.Item>{item.name}</List.Item>}/>
-    </Modal>
+    <>
+      <Modal
+        width={1000}
+        title={'Spintų pridėjimas'}
+        open={openRacksAdditionModal}
+        onOk={onOK}
+        onCancel={onCancel}
+      >
+        <Form form={form} onFinish={onSearch} onKeyDown={onkeydown}>
+          <Form.Item style={{width: '100%'}} name='name' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
+            <Search placeholder='Spinta' onSearch={onSearch} />
+          </Form.Item>
+        </Form>
+        <List dataSource={racks} renderItem={(item) => <List.Item>{item.name}</List.Item>}/>
+      </Modal>
+      <SuccessMessage contextHolder={contextHolder}/>
+    </>
   )
 }
 

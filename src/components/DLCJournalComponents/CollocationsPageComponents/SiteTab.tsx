@@ -2,7 +2,6 @@
 import React                                from 'react'
 import { generateCsv, get }                 from '../../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
-import CollocationRemovalModal              from './CollocationRemovalModal'
 import CollocationAdditionModal             from './CollocationAdditionModal'
 import { Button, Card, List }               from 'antd'
 import { FileExcelOutlined }                from '@ant-design/icons'
@@ -78,7 +77,6 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
         />
       </Card>
       <CollocationAdditionModal/>
-      <CollocationRemovalModal/>
       <RacksAdditionModal/>
     </div>
   )

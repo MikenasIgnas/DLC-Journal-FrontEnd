@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React, { useRef, useState }  from 'react'
-import { Input, Modal, Tabs }       from 'antd'
+import { Input, Modal, Tabs, message }       from 'antd'
 import { useCookies }               from 'react-cookie'
 import { deleteItem, get, post }    from '../../../Plugins/helpers'
 import { useSearchParams }          from 'react-router-dom'
 import SiteTab                      from './SiteTab'
 import { CloseOutlined }            from '@ant-design/icons'
 import { Sites }                    from '../../../types/globalTypes'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -22,9 +23,10 @@ const CollocationTab = () => {
   const newTabIndex                                             = useRef(0)
   const [cookies]                                               = useCookies(['access_token'])
   const [searchParams, setSearchParamas]                        = useSearchParams()
-  const menuKey = searchParams.get('menuKey')
-  const tabKey = searchParams.get('tabKey')
-  const siteId = searchParams.get('siteId')
+  const [messageApi, contextHolder]                             = message.useMessage()
+  const menuKey                                                 = searchParams.get('menuKey')
+  const tabKey                                                  = searchParams.get('tabKey')
+  const siteId                                                  = searchParams.get('siteId')
 
 
   React.useEffect(() => {
@@ -56,17 +58,31 @@ const CollocationTab = () => {
   }
 
   const onOk = async() => {
-    const newActiveKey = `newTab${newTabIndex.current++}`
-    const newPanes = [...sites]
-    newPanes.push({
-      name: '',
-      _id:  '',
-    })
-    setSites(newPanes)
-    setActiveKey(newActiveKey)
-    setSiteNameInputValue('')
-    await post('site/site', { name: siteNameInputValue }, cookies.access_token )
-    setIsSiteAdditionModalOpen(false)
+    try{
+
+      await post('site/site', { name: siteNameInputValue }, cookies.access_token )
+      const newActiveKey = `newTab${newTabIndex.current++}`
+      const newPanes = [...sites]
+      newPanes.push({
+        name: '',
+        _id:  '',
+      })
+      setSites(newPanes)
+      setActiveKey(newActiveKey)
+      setSiteNameInputValue('')
+      setIsSiteAdditionModalOpen(false)
+      messageApi.success({
+        type:    'success',
+        content: 'Adresas pridėtas',
+      })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const openSiteRemoveModal = async(targetKey: TargetKey) => {
@@ -127,6 +143,7 @@ const CollocationTab = () => {
       <Modal title='Pašalinti adresą' open={isSiteRemovalModalOpen} onOk={onRemoveSite} onCancel={cancelSiteRemove}>
         <p>Ar tikrai norite pašalintį adresą?</p>
       </Modal>
+      <SuccessMessage contextHolder={contextHolder}/>
     </>
   )
 }

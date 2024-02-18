@@ -1,20 +1,43 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-import { Button, Form, Input, List } from 'antd'
-import React                         from 'react'
-import { deleteItem, get, post }     from '../../Plugins/helpers'
-import { useCookies }                from 'react-cookie'
-import { CompaniesType }             from '../../types/globalTypes'
-import { Link, useSearchParams }     from 'react-router-dom'
-import CompanyAddition               from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
-import ListItem                      from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
-import { useAppDispatch, useAppSelector }            from '../../store/hooks'
-import useDelay                      from '../../Plugins/useDelay'
-import PermissionAdditionModal       from '../../components/DLCJournalComponents/ClientCompanyListComponents/PermissionAdditionModal'
-import { Permissions }               from '../../types/globalTypes'
-import CompaniesPagination           from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompaniesPagination'
-import ChildCompaniesTree            from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
-import { resetSingleCompanyEditReducer } from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+import React                              from 'react'
+import PermissionAdditionModal            from '../../components/DLCJournalComponents/ClientCompanyListComponents/PermissionAdditionModal'
+import CompaniesPagination                from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompaniesPagination'
+import ChildCompaniesTree                 from '../../components/DLCJournalComponents/ClientCompanyListComponents/ChildCompaniesTree'
+import CompanyAddition                    from '../../components/DLCJournalComponents/ClientCompanyListComponents/CompanyAdditionComponent/CompanyAddition'
+import ListItem                           from '../../components/DLCJournalComponents/ClientCompanyListComponents/SubClientsTab/ListItem'
+import useDelay                           from '../../Plugins/useDelay'
+
+import {
+  Button,
+  Form,
+  Input,
+  List,
+  message,
+}                                         from 'antd'
+
+import {
+  deleteItem,
+  get,
+  post,
+}                                         from '../../Plugins/helpers'
+
+
+import {
+  Link,
+  useSearchParams,
+}                                         from 'react-router-dom'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                         from '../../store/hooks'
+
+import { Permissions }                    from '../../types/globalTypes'
+import { resetSingleCompanyEditReducer }  from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
+import { useCookies }                     from 'react-cookie'
+import { CompaniesType }                  from '../../types/globalTypes'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]                 = React.useState(false)
@@ -32,7 +55,7 @@ const CompaniesListPage = () => {
   const limit                                 = searchParams.get('limit')
   const name                                  = searchParams.get('name')
   const dispatch                              = useAppDispatch()
-
+  const [messageApi, contextHolder]           = message.useMessage()
   React.useEffect(() => {
     (async () => {
       try{
@@ -92,10 +115,21 @@ const CompaniesListPage = () => {
   }
 
   const addPermission = async(values: Permissions) => {
-    const res = await post('company/permission', values, cookies.access_token)
-    if(!res.messsage){
+    try{
+      const res = await post('company/permission', values, cookies.access_token)
       setPermissions([...permissions, res])
       form.resetFields(['name'])
+      messageApi.success({
+        type:    'success',
+        content: 'Pridėta',
+      })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 
@@ -150,6 +184,7 @@ const CompaniesListPage = () => {
           )
         }}/>
       <CompaniesPagination companiesCount={companiesCount}/>
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }
