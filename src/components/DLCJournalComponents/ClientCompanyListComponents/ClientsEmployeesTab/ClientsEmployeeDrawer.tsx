@@ -11,6 +11,7 @@ import {
   Input,
   Row,
   UploadFile,
+  message,
 }                                          from 'antd'
 
 import {
@@ -29,6 +30,7 @@ import { Permissions }                     from '../../../../types/globalTypes'
 import { setEditCompanyEmployee }          from '../../../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
 import PhotoUploader                       from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
 import useSetWindowsSize                   from '../../../../Plugins/useSetWindowsSize'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 interface DescriptionItemProps {
     title:   string;
@@ -55,6 +57,7 @@ const ClientsEmployeeDrawer = () => {
   const windowSize                    = useSetWindowsSize()
   const [permissions, setPermissions] = React.useState<Permissions[]>()
   const editCompanyEmployee           = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+  const [messageApi, contextHolder]   = message.useMessage()
 
   React.useEffect(() => {
     let isMounted = true;
@@ -84,12 +87,23 @@ const ClientsEmployeeDrawer = () => {
   const editUser = async(values: EmployeesType) => {
     dipatch(setEditCompanyEmployee(!editCompanyEmployee))
     if(editCompanyEmployee) {
-      values.companyId = employee?.companyId
-      values.id = employee?._id
-      const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
-      if (response) {
+      try{
+        values.companyId = employee?.companyId
+        values.id = employee?._id
+        const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
         setEmployee(response)
         form.setFieldsValue(response)
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     }
   }
@@ -215,6 +229,7 @@ const ClientsEmployeeDrawer = () => {
         </Form>
       </ConfigProvider>
       }
+      <SuccessMessage contextHolder={contextHolder}/>
     </Drawer>
   )
 }

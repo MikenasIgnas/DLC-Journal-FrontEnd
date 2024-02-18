@@ -6,6 +6,7 @@ import {
   Card,
   Input,
   List,
+  message,
 }                         from 'antd'
 
 import { put }            from '../../../Plugins/helpers'
@@ -22,6 +23,7 @@ import {
   addGuests,
   removeGuest,
 }                         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type ItemListProps = {
     url?:               string;
@@ -38,15 +40,30 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
   const visitorsCount                                             = useAppSelector((state) => state.visit.visitor.length)
   const dispatch                                                  = useAppDispatch()
   const clientsGuests                                             = useAppSelector((state) => state.visit.guests)
+  const [messageApi, contextHolder]                               = message.useMessage()
 
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
     if (filtered && setListItems) {
       setListItems(filtered)
     } else {
-      dispatch(removeGuest(index))
-      const filteredGuests = clientsGuests?.filter((_, i) => i !== index)
-      await put('visit/visit', {id: id, guests: filteredGuests} ,cookies.access_token)
+      try{
+
+        dispatch(removeGuest(index))
+        const filteredGuests = clientsGuests?.filter((_, i) => i !== index)
+        await put('visit/visit', {id: id, guests: filteredGuests} ,cookies.access_token)
+        messageApi.success({
+          type:    'success',
+          content: 'Ištrinta',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -60,9 +77,22 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
       if (setListItems) {
         setListItems((prev) => prev && [...prev, guests])
       } else {
-        dispatch(addGuests(guests))
-        if(clientsGuests){
-          await put('visit/visit', {id: id, guests: [...clientsGuests, guests]}, cookies.access_token)
+        try{
+          dispatch(addGuests(guests))
+          if(clientsGuests){
+            await put('visit/visit', {id: id, guests: [...clientsGuests, guests]}, cookies.access_token)
+          }
+          messageApi.success({
+            type:    'success',
+            content: 'Pridėta',
+          })
+        }catch(error){
+          if(error instanceof Error){
+            messageApi.error({
+              type:    'error',
+              content: error.message,
+            })
+          }
         }
       }
       setClientsGuestsNamesInput('')
@@ -110,6 +140,7 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
         </div>
         : null
       } */}
+      <SuccessMessage contextHolder={contextHolder}/>
     </>
   )
 }

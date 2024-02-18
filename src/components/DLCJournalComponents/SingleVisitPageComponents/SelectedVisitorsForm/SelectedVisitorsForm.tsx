@@ -4,7 +4,7 @@
 import React                                        from 'react'
 import RegisteredVisitorsListItemCardTitle          from '../RegisteredVisitorsListItemCardTitle'
 import RegisteredVisitorsListItem                   from '../RegisteredVisitorsListItem'
-import { Button, Card, Form, List }                 from 'antd'
+import { Button, Card, Form, List, message }        from 'antd'
 import { useAppDispatch, useAppSelector }           from '../../../../store/hooks'
 import VisitorAdditionList                          from '../../VisitiRegistrationComponents/VisitorAdditionList'
 import { setEditVisitors, setOpenVisitorAddition }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
@@ -12,27 +12,40 @@ import { selectVisitingCompanyEmplyees }            from '../../../../auth/Visit
 import {  put }                                     from '../../../../Plugins/helpers'
 import { useSearchParams }                          from 'react-router-dom'
 import { useCookies }                               from 'react-cookie'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 const SelectedVisitorsForm = () => {
-  const [form]              = Form.useForm()
-  const [cookies]           = useCookies(['access_token'])
-  const dispatch            = useAppDispatch()
-  const editVisitors        = useAppSelector((state) => state.visitPageEdits.editVisitors)
-  const [searchParams]      = useSearchParams()
-  const visitingEmployees   = useAppSelector(selectVisitingCompanyEmplyees)
-  const visitId             = searchParams.get('id')
-  const openVisitorAddition = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
+  const [form]                      = Form.useForm()
+  const [cookies]                   = useCookies(['access_token'])
+  const dispatch                    = useAppDispatch()
+  const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const [searchParams]              = useSearchParams()
+  const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
+  const visitId                     = searchParams.get('id')
+  const openVisitorAddition         = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
+  const [messageApi, contextHolder] = message.useMessage()
 
   const saveChanges = async(values: any) => {
     dispatch(setEditVisitors(!editVisitors))
     if(editVisitors){
-      visitingEmployees.forEach(visitor => {
-        if (values.visitors[visitor._id]) {
-          visitor.visitorIdType = values.visitors[visitor._id].visitorIdType
+      try{
+
+        visitingEmployees.forEach(visitor => {
+          if (values.visitors[visitor._id]) {
+            visitor.visitorIdType = values.visitors[visitor._id].visitorIdType
+          }
+        })
+        for(const visitor of visitingEmployees){
+          await put('visit/visitor', { id: visitor._id, visitId: visitId, visitorIdType: visitor.visitorIdType }, cookies.access_token)
         }
-      })
-      for(const visitor of visitingEmployees){
-        await put('visit/visitor', { id: visitor._id, visitId: visitId, visitorIdType: visitor.visitorIdType }, cookies.access_token)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+
       }
     }
   }
@@ -56,6 +69,7 @@ const SelectedVisitorsForm = () => {
           }
         />
       </Card>
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

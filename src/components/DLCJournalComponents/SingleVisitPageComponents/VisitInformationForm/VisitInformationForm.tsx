@@ -1,30 +1,52 @@
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Descriptions, Form }             from 'antd'
-import VisitDescriptionTitle              from '../VisitDescriptionTitle'
-import { put }                            from '../../../../Plugins/helpers'
-import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
-import VisitInformationItems              from '../../VisitiRegistrationComponents/VisitInformationItems'
-import { useParams }                      from 'react-router'
-import { useCookies }                     from 'react-cookie'
-import { setEditVisitInformation }        from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
-import { useSearchParams }                from 'react-router-dom'
+import {
+  Descriptions,
+  Form,
+  message,
+}                                   from 'antd'
+import VisitDescriptionTitle        from '../VisitDescriptionTitle'
+import VisitInformationItems        from '../../VisitiRegistrationComponents/VisitInformationItems'
+import { put }                      from '../../../../Plugins/helpers'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                   from '../../../../store/hooks'
+import { useParams }                from 'react-router'
+import { useCookies }               from 'react-cookie'
+import { setEditVisitInformation }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
+import { useSearchParams }          from 'react-router-dom'
+import SuccessMessage               from '../../../UniversalComponents/SuccessMessage'
 
 
 const VisitInformationForm = () => {
-  const [form]               = Form.useForm()
-  const { id }               = useParams()
-  const [cookies]            = useCookies(['access_token'])
-  const dispatch             = useAppDispatch()
-  const editVisitInformation = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
-  const items                = VisitInformationItems(editVisitInformation)
-  const [searchParams]       = useSearchParams()
-  const siteId               = searchParams.get('siteId')
+  const [form]                      = Form.useForm()
+  const { id }                      = useParams()
+  const [cookies]                   = useCookies(['access_token'])
+  const dispatch                    = useAppDispatch()
+  const editVisitInformation        = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
+  const items                       = VisitInformationItems(editVisitInformation)
+  const [searchParams]              = useSearchParams()
+  const siteId                      = searchParams.get('siteId')
+  const [messageApi, contextHolder] = message.useMessage()
 
   const saveChanges = async (values: any) => {
     dispatch(setEditVisitInformation(!editVisitInformation))
     if(editVisitInformation){
-      await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId, startDate: values.startDate, endDate: values.endDate}, cookies.access_token)
+      try{
+        await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId, startDate: values.startDate, endDate: values.endDate}, cookies.access_token)
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -35,6 +57,7 @@ const VisitInformationForm = () => {
         title={<VisitDescriptionTitle/>}
         items={items}
       />
+      <SuccessMessage contextHolder={contextHolder}/>
     </Form>
   )
 }

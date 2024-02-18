@@ -9,6 +9,8 @@ import SubClients                         from './SubClients'
 import { setIsSubClientAdded }            from '../../../../auth/AddSubClientReducer/addSubClientReducer'
 import { setParentCompanies }             from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 import { useParams }                      from 'react-router'
+import { message } from 'antd'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 
 const SubClientsTab = () => {
@@ -18,13 +20,27 @@ const SubClientsTab = () => {
   const dispatch                          = useAppDispatch()
   const parentCompanies                   = useAppSelector((state) => state.singleCompany.parentCompanies)
   const { id }                            = useParams()
+  const [messageApi, contextHolder]       = message.useMessage()
 
   const handleChange = async(value: string) => {
     const selectedParentCompanies   = parentCompanies?.filter((el) => el._id === value)
     if(selectedParentCompanies){
-      dispatch(setParentCompanies(selectedParentCompanies))
-      await put('company/company', {id: value, parentId: id}, cookies.access_token)
-      dispatch(setIsSubClientAdded(true))
+      try{
+        dispatch(setParentCompanies(selectedParentCompanies))
+        await put('company/company', {id: value, parentId: id}, cookies.access_token)
+        dispatch(setIsSubClientAdded(true))
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -41,6 +57,7 @@ const SubClientsTab = () => {
         handleSelect={onSelect}
       />
       <SubClients/>
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

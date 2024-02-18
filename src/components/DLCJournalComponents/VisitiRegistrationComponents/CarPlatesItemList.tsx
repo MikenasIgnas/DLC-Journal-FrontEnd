@@ -6,6 +6,7 @@ import {
   Card,
   Input,
   List,
+  message,
 }                       from 'antd'
 
 import {
@@ -28,6 +29,7 @@ import {
   addCarPlates,
   removeCarPlates,
 }                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type ItemListProps = {
     url?:               string;
@@ -47,14 +49,28 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
   const visitorCount                          = useAppSelector((state) => state.visit.visitor.length)
   const carPlates                             = useAppSelector((state) => state.visit.carPlates)
   const dispatch                              = useAppDispatch()
+  const [messageApi, contextHolder]           = message.useMessage()
 
   const removeListItem = async(item: string, index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
     if (setList && list) {
       setList(filtered)
     } else {
-      dispatch(removeCarPlates(index))
-      await patch('visit/carplate', {visitId: id, carPlate: item}, cookies.access_token)
+      try{
+        dispatch(removeCarPlates(index))
+        await patch('visit/carplate', {visitId: id, carPlate: item}, cookies.access_token)
+        messageApi.success({
+          type:    'success',
+          content: 'Ištrinta',
+        })
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
   }
 
@@ -63,9 +79,22 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
       if (setList && list) {
         setList([...list, value])
       } else {
-        dispatch(addCarPlates(value))
-        if (carPlates) {
-          await put('visit/visit', {id: id, carPlates: [...carPlates, value]}, cookies.access_token)
+        try{
+          dispatch(addCarPlates(value))
+          if (carPlates) {
+            await put('visit/visit', {id: id, carPlates: [...carPlates, value]}, cookies.access_token)
+          }
+          messageApi.success({
+            type:    'success',
+            content: 'Pridėta',
+          })
+        }catch(error){
+          if(error instanceof Error){
+            messageApi.error({
+              type:    'error',
+              content: error.message,
+            })
+          }
         }
       }
       setCarPlatesInput('')
@@ -95,6 +124,7 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
         </Card>
         : null
       }
+      <SuccessMessage contextHolder={contextHolder}/>
     </>
   )
 }

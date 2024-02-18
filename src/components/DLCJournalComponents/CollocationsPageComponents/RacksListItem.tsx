@@ -1,14 +1,26 @@
 /* eslint-disable max-len */
-import React                    from 'react'
+import React          from 'react'
 import {
   DeleteOutlined,
   EditOutlined,
   SaveOutlined,
-}                               from '@ant-design/icons'
-import { Input, List, Tag }     from 'antd'
-import { CompaniesType, Racks } from '../../../types/globalTypes'
-import { deleteItem, put }      from '../../../Plugins/helpers'
-import { useCookies }           from 'react-cookie'
+}                     from '@ant-design/icons'
+import {
+  Input,
+  List,
+  Tag,
+  message,
+}                     from 'antd'
+import {
+  CompaniesType,
+  Racks,
+}                     from '../../../types/globalTypes'
+import {
+  deleteItem,
+  put,
+}                     from '../../../Plugins/helpers'
+import { useCookies } from 'react-cookie'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type RacksListItem = {
     item:            Racks
@@ -20,9 +32,10 @@ type RacksListItem = {
 }
 
 const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, companies}: RacksListItem) => {
-  const [cookies]       = useCookies(['access_token'])
-  const [edit, setEdit] = React.useState(false)
+  const [cookies]                         = useCookies(['access_token'])
+  const [edit, setEdit]                   = React.useState(false)
   const [rackNameInput, setRackNameInput] = React.useState<string | undefined>(item.name)
+  const [messageApi, contextHolder]       = message.useMessage()
 
   const deleteRack = async(id: string | undefined) => {
     await deleteItem('site/rack', {id: id}, cookies.access_token)
@@ -35,16 +48,28 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   }
 
   const saveChanges = async(id: string | undefined) => {
+    try{
+      const values = {
+        name: rackNameInput,
+        premiseId,
+        id,
+      }
 
-    const values = {
-      name: rackNameInput,
-      premiseId,
-      id,
+      const res = await put('site/rack', values ,cookies.access_token)
+      setEdit(false)
+      updateRacksList(res)
+      messageApi.success({
+        type:    'success',
+        content: 'Išsaugota',
+      })
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
-
-    const res = await put('site/rack', values ,cookies.access_token)
-    setEdit(false)
-    updateRacksList(res)
   }
 
   const findMatchingCompanies = (companies: CompaniesType[] | undefined, itemId: string | undefined) => {
@@ -85,6 +110,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
           </div>
         }
       ></List.Item.Meta>
+      <SuccessMessage contextHolder={contextHolder}/>
     </List.Item>
   )
 }

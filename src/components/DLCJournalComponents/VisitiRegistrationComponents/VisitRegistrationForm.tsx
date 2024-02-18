@@ -94,22 +94,21 @@ const VisitRegistrationForm = () => {
     }
 
     try {
-      const res = await put('visit/visit', visitValues, cookies.access_token)
-      if (res.message) {
+      await put('visit/visit', visitValues, cookies.access_token)
+      localStorage.clear()
+      form.resetFields()
+      messageApi.success({
+        type:    'success',
+        content: 'Išsaugota',
+      })
+      navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&id=${visitId}&companyId=${companyId}`)
+    } catch (error) {
+      if (error instanceof Error){
         messageApi.error({
           type:    'error',
-          content: res.message,
+          content: error.message,
         })
-      } else {
-        localStorage.clear()
-        form.resetFields()
-        navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&id=${visitId}&companyId=${companyId}`)
       }
-    } catch (error) {
-      messageApi.error({
-        type:    'error',
-        content: 'Įvyko klaida vykdant vizito registraciją.',
-      })
     }
   }
 
