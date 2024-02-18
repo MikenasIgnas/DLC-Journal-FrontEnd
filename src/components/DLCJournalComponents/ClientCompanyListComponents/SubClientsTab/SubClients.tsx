@@ -40,6 +40,7 @@ const SubClients = () => {
   const [cookies]                       = useCookies()
   const [searchParams, setSearchParams] = useSearchParams()
   const subClientId                     = searchParams.get('subClientId')
+  const tabKey                          = searchParams.get('tabKey')
   const openSubClientAdditionModal      = useAppSelector((state) => state.modals.openSubClientAdditionModal)
   const dispatch                        = useAppDispatch()
   const addSubClient                    = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
@@ -62,7 +63,7 @@ const SubClients = () => {
   },[openSubClientAdditionModal, addSubClient, open])
 
   const showDrawer = (subClient: string | undefined) => {
-    setSearchParams(`&subClientId=${subClient}`, { replace: true })
+    setSearchParams(`&subClientId=${subClient}&tabKey=${tabKey}`)
     setOpen(true)
   }
 

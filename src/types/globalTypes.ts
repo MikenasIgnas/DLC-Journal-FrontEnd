@@ -110,6 +110,7 @@ export type CompaniesType = {
   code:             string | undefined;
   description:      string;
   photo:            string;
+  companyCode:      number
 };
 
 export type CompanyInfoType = {

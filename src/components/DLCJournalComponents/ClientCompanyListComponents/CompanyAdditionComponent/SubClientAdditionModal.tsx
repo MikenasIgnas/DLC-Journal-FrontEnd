@@ -77,6 +77,9 @@ const SubClientAdditionModal = () => {
           <Form.Item name='description'>
             <Input placeholder='Įmonės apibūdinimas'/>
           </Form.Item>
+          <Form.Item name='companyCode'>
+            <Input placeholder='Įmonės kodas'/>
+          </Form.Item>
           <PhotoUploader setFileList={setFileList} fileList={fileList}/>
           <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
             <Tabs onTabClick={changeTab} activeKey={siteId ? siteId : undefined } items={items} />

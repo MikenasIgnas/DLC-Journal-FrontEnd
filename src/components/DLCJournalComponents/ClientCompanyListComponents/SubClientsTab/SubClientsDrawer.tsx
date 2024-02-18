@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import React              from 'react'
+import React                from 'react'
+
 import {
   Drawer,
   Row,
@@ -7,15 +8,33 @@ import {
   Divider,
   Form,
   List,
-}                         from 'antd'
-import { get }            from '../../../../Plugins/helpers'
-import { useCookies }     from 'react-cookie'
+  Tabs,
+  TabsProps,
+}                           from 'antd'
+
+import { get }              from '../../../../Plugins/helpers'
+import { useCookies }       from 'react-cookie'
+
 import {
-  CompaniesType,
   EmployeesType,
-}                         from '../../../../types/globalTypes'
-import { useForm }        from 'antd/es/form/Form'
-import EmployeesListItem  from '../ClientsEmployeesTab/EmployeesListItem'
+}                           from '../../../../types/globalTypes'
+
+import { useForm }          from 'antd/es/form/Form'
+import EmployeesListItem    from '../ClientsEmployeesTab/EmployeesListItem'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                           from '../../../../store/hooks'
+
+import {
+  setCompanyId,
+  setSiteId,
+  setSubClient,
+}                           from '../../../../auth/SingleCompanyReducer/subClientsReducer'
+
+import { useSearchParams }  from 'react-router-dom'
+import SubClientsRacks      from '../ClientsCollocationsTab/SubClientsRacks'
 
 type SubClientsDrawerProps = {
     onClose:      () => void;
@@ -26,14 +45,19 @@ interface DescriptionItemProps {
     title:        string;
     content:      React.ReactNode;
     formItemName: string | undefined;
-    initialValue: string | undefined;
+    initialValue: string | number | undefined;
 }
 
 const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) => {
-  const [subClient, setSubClient]                   = React.useState<CompaniesType>()
   const [cookies]                                   = useCookies()
   const [subClientEmployees, setSubClientEmployees] = React.useState<EmployeesType[]>()
   const [form]                                      = useForm()
+  const sites                                       = useAppSelector((state) => state.singleCompany.fullSiteData)
+  const dispatch                                    = useAppDispatch()
+  const [searchParams, setSearchParams]             = useSearchParams()
+  const tabKey                                      = searchParams.get('tabKey')
+  const siteId                                      = searchParams.get('siteId')
+  const subClient                                   = useAppSelector((state) => state.subClient.subClient)
 
   const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
     <Row>
@@ -50,13 +74,27 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
       try{
         const subClientRes      = await get(`company/company?id=${subClientId}`, cookies.access_token)
         const companyEmployees  = await get(`company/CompanyEmployee?companyId=${subClientId}&limit=10&page=1`, cookies.access_token)
-        setSubClient(subClientRes)
         setSubClientEmployees(companyEmployees)
+        if(subClientId){
+          dispatch(setCompanyId(subClientId))
+          dispatch(setSubClient(subClientRes))
+        }
       }catch(err){
         console.log(err)
       }
     })()
-  },[subClientId, open])
+  },[open])
+
+  const items: TabsProps['items'] = sites?.map((site) => ({
+    key:      site._id,
+    label:    site.name,
+    children: <SubClientsRacks site={site}/>,
+  }))
+
+  const changeTab = (key: string) => {
+    setSearchParams(`?siteId=${key}&tabKey=${tabKey}&subClientId=${subClientId}`)
+    dispatch(setSiteId(key))
+  }
 
   return(
     <Drawer width={640} placement='right' closable={false} onClose={onClose} open={open}>
@@ -87,9 +125,16 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
               formItemName={'description'}
               initialValue={subClient?.description}
             />
+            <DescriptionItem
+              title='Įmonės kodas'
+              content={subClient?.companyCode}
+              formItemName={'companyCode'}
+              initialValue={subClient?.companyCode}
+            />
           </div>
         </div>
         <Divider >Kolokacijos</Divider>
+        <Tabs onTabClick={changeTab} activeKey={siteId ? siteId : undefined } items={items} />
       </Form>
       <Divider >Darbuotojai</Divider>
       <List

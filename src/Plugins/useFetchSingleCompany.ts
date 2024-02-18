@@ -27,7 +27,6 @@ import {
 }                                        from '../types/globalTypes'
 import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
 
-
 const useFetchSingleCompany = () => {
   const [cookies]                             = useCookies(['access_token'])
   const [searchParams]                        = useSearchParams()
