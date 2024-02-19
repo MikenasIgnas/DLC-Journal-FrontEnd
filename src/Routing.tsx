@@ -28,9 +28,12 @@ import CollocationsPage                 from './pages/DLC-JounalPages/Collocatio
 import SendRecoveryCodePage             from './pages/SendRecoveryCodePage'
 import RecoveryCodeConfirmationPage     from './pages/RecoveryCodeConfirmationPage'
 import PasswordResetPage                from './pages/PasswordResetPage'
+import { message }                      from 'antd'
+import SuccessMessage                   from './components/UniversalComponents/SuccessMessage'
 
 const Routing = () => {
-  const [cookies, , removeCookie] = useCookies(['access_token'])
+  const [cookies, , removeCookie]   = useCookies(['access_token'])
+  const [messageApi, contextHolder] = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -52,7 +55,12 @@ const Routing = () => {
             }, timeRemaining)
           }
         } catch (error) {
-          console.log('Invalid token', error)
+          if(error instanceof Error){
+            messageApi.error({
+              type:    'error',
+              content: error.message,
+            })
+          }
         }
       }
     })()
@@ -85,6 +93,7 @@ const Routing = () => {
               <Route path='/Darbuotojų_Archyvas/:id' element={<SingleUserPage/>}/>
               <Route path='/Sukurti_Darbuotoją' element={<CreateUserPage/>}/>
             </Routes>
+            <SuccessMessage contextHolder={contextHolder}/>
           </PageLayout>
         )
         : (
@@ -94,6 +103,7 @@ const Routing = () => {
             <Route path='/RecoveryCodeConfirmationPage' element={<RecoveryCodeConfirmationPage/>} />
             <Route path='/PasswordResetPage' element={<PasswordResetPage/>} />
             <Route path='*' element={<NotFoundPage />} />
+            <SuccessMessage contextHolder={contextHolder}/>
           </Routes>
         )}
     </BrowserRouter>

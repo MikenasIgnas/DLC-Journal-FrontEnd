@@ -56,8 +56,13 @@ const SubClients = () => {
         if(companiesSubClients.length > 0){
           setSubClients(companiesSubClients)
         }
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
     return () => {

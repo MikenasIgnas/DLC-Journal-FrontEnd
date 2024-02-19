@@ -1,18 +1,28 @@
 /* eslint-disable max-len */
 import React                    from 'react'
-import { useCookies }           from 'react-cookie'
-import { get }                  from '../../Plugins/helpers'
-import { CompaniesType, VisitsType }           from '../../types/globalTypes'
 import VisitsBarChart           from '../../components/DLCJournalComponents/StatisticsPageComponents/VisitsBarChart'
 import CompaniesVIsitsBarChart  from '../../components/DLCJournalComponents/StatisticsPageComponents/CompaniesVisitsBarChart'
-import { Tabs }                 from 'antd'
 import useSetWindowsSize        from '../../Plugins/useSetWindowsSize'
+import { useCookies }           from 'react-cookie'
+import { get }                  from '../../Plugins/helpers'
+
+import {
+  CompaniesType,
+  VisitsType,
+}                               from '../../types/globalTypes'
+
+import {
+  Tabs,
+  message,
+}                               from 'antd'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 const StatisticsPage = () => {
   const [cookies]                   = useCookies()
   const [visits, setVisits]         = React.useState<VisitsType[] | undefined>([])
   const [companies, setCompanies]   = React.useState<CompaniesType[] | undefined>([])
   const windowSize                  = useSetWindowsSize()
+  const [messageApi, contextHolder] = message.useMessage()
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -21,8 +31,13 @@ const StatisticsPage = () => {
         const allCompanies  = await get('company/company', cookies.access_token)
         setCompanies(allCompanies)
         setVisits(allVisits)
-      } catch (err) {
-        console.error(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     }
     fetchData()
@@ -42,10 +57,13 @@ const StatisticsPage = () => {
   ]
 
   return (
-    <Tabs
-      tabPosition={windowSize > 600 ? 'left' : 'top'}
-      items={tabItems}
-    />
+    <>
+      <Tabs
+        tabPosition={windowSize > 600 ? 'left' : 'top'}
+        items={tabItems}
+      />
+      <SuccessMessage contextHolder={contextHolder}/>
+    </>
   )
 }
 

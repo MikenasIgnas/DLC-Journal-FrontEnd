@@ -23,7 +23,7 @@ import {
   convertUTCtoLocalDateTime,
 }                                 from '../../../Plugins/helpers'
 
-import { selectCompany }          from '../../../auth/VisitorEmployeeReducer/selectors'
+import { selectAllSelectedVisitorPermissions, selectCompany }          from '../../../auth/VisitorEmployeeReducer/selectors'
 import statusMap                  from '../VisistPageComponents/visitStatusMap'
 
 const VisitInformationItems = ( edit: boolean) => {
@@ -38,12 +38,11 @@ const VisitInformationItems = ( edit: boolean) => {
   const creationDate          = convertUTCtoLocalDate(visitData?.date)
   const creationTime          = convertUTCtoLocalDateTime(visitData?.date)
   const permissions           = useAppSelector((state) => state.visit.permissions)
-  const visitPurposeOptions   = permissions.map((el) => ({value: el._id, label: el.name}))
   const selectedVisitPurposes = permissions.filter((el) => visitData?.visitPurpose.includes(el._id)).map((item) => ({value: item._id, label: item.name}))
   const visitStatuses         = useAppSelector((state) => state.visit.visitStatus)
   const preparedStatus        = visitStatuses.find((el) => el._id === visitData?.statusId)
   const dlcEmlpyee            = useAppSelector((state) => state.visit.dlcEmployee)
-
+  const matchingPermissionsItems  =  useAppSelector(selectAllSelectedVisitorPermissions).map((el) => ({value: el._id, label: el.name}))
   const changeAddress = async(value:string) => {
     setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&id=${visitData?._id}`)
   }
@@ -114,7 +113,7 @@ const VisitInformationItems = ( edit: boolean) => {
               mode='multiple'
               style={{width: '250px'}}
               value={visitData?.visitPurpose}
-              options={visitPurposeOptions}
+              options={matchingPermissionsItems}
             />
           </Form.Item>
         }

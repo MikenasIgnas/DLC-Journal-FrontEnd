@@ -1,21 +1,51 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable max-len */
-import React                                                              from 'react'
-import {ConfigProvider, Menu, MenuProps, Space, message }                 from 'antd'
-import { Layout }                                                         from 'antd'
-import { Link, useLocation, useNavigate, useSearchParams }                from 'react-router-dom'
-import { clearFilleChecklistdData, get }                                  from '../../../Plugins/helpers'
-import { useCookies }                                                     from 'react-cookie'
-import {jwtDecode}                                                        from 'jwt-decode'
-import { TokenType }                                                      from '../../../types/globalTypes'
-import { useAppDispatch, useAppSelector }                                 from '../../../store/hooks'
-import { setUserEmail, setEmployeeName, setUsersRole, setIsAdmin, setIsSecurity } from '../../../auth/AuthReducer/reducer'
-import PageContainer                                                      from '../../Table/TableComponents/PageContainer'
-import Sider                                                              from 'antd/es/layout/Sider'
-import { LogoutOutlined, MenuOutlined, ReadOutlined, ScheduleOutlined, UserOutlined }  from '@ant-design/icons'
-import SideBar                                                            from './SideBar'
-import { Header }                                                         from 'antd/es/layout/layout'
-import useSetWindowsSize                                                  from '../../../Plugins/useSetWindowsSize'
+import React                 from 'react'
+import {
+  ConfigProvider,
+  Menu,
+  MenuProps,
+  Space,
+  message,
+}                            from 'antd'
+import { Layout }            from 'antd'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+}                             from 'react-router-dom'
+import {
+  clearFilleChecklistdData,
+  get,
+}                             from '../../../Plugins/helpers'
+import { useCookies }         from 'react-cookie'
+import {jwtDecode}            from 'jwt-decode'
+import { TokenType }          from '../../../types/globalTypes'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                             from '../../../store/hooks'
+import {
+  setUserEmail,
+  setEmployeeName,
+  setUsersRole,
+  setIsAdmin,
+  setIsSecurity,
+}                             from '../../../auth/AuthReducer/reducer'
+import PageContainer          from '../../Table/TableComponents/PageContainer'
+import Sider                  from 'antd/es/layout/Sider'
+import {
+  LogoutOutlined,
+  MenuOutlined,
+  ReadOutlined,
+  ScheduleOutlined,
+  UserOutlined,
+}                             from '@ant-design/icons'
+import SideBar                from './SideBar'
+import { Header }             from 'antd/es/layout/layout'
+import useSetWindowsSize      from '../../../Plugins/useSetWindowsSize'
+import SuccessMessage         from '../SuccessMessage'
 
 const { Content, Footer } = Layout
 
@@ -44,25 +74,24 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
   const isSecurity                  = useAppSelector((state) => state.auth.isSecurity)
   const windowSize                  = useSetWindowsSize()
+  const [messageApi, contextHolder] = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
       try{
         const user = await get(`user?id=${decodedToken.userId}`, cookies.access_token)
-        if(user){
-          dispatch(setEmployeeName(user.name))
-          dispatch(setIsAdmin(user.isAdmin))
-          dispatch(setIsSecurity(user.isSecurity))
-          dispatch(setUserEmail(user.email))
-          dispatch(setUsersRole(user.userRole))
-        }else{
-          message.error({
-            content: 'Nepavyko rasti vartotojo',
+        dispatch(setEmployeeName(user.name))
+        dispatch(setIsAdmin(user.isAdmin))
+        dispatch(setIsSecurity(user.isSecurity))
+        dispatch(setUserEmail(user.email))
+        dispatch(setUsersRole(user.userRole))
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
             type:    'error',
+            content: error.message,
           })
         }
-      }catch(err){
-        console.log(err)
       }
     })()
 
@@ -70,10 +99,19 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
 
   const userLogOut = async() => {
-    const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
-    removeCookie('access_token')
-    clearFilleChecklistdData(totalHistoryData)
-    navigate('/')
+    try{
+      const totalHistoryData = await get('getTotalAreasCount', cookies.access_token)
+      removeCookie('access_token')
+      clearFilleChecklistdData(totalHistoryData)
+      navigate('/')
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const getItem = (
@@ -227,6 +265,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
           </Layout>
         </Layout>
       </ConfigProvider>
+      <SuccessMessage contextHolder={contextHolder}/>
     </Space>
   )
 }

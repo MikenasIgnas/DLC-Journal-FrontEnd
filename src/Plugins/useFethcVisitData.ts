@@ -28,62 +28,70 @@ import {
   setDlcEmployee,
   setClientsGuests,
   setCarPlates,
-}                          from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import { useSearchParams } from 'react-router-dom'
-import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
+}                             from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { useSearchParams }    from 'react-router-dom'
+import { resetRacksReducer }  from '../auth/RacksReducer/RacksReducer'
 
 const useFetchVisitData = () => {
-  const [cookies]             = useCookies(['access_token'])
-  const dispatch              = useAppDispatch()
-  const [searchParams]        = useSearchParams()
-  const visitId               = searchParams.get('id')
-  const siteId                = searchParams.get('siteId')
-  const companyId             = searchParams.get('companyId')
-  const editRacks             = useAppSelector((state) => state.visitPageEdits.editCollocations)
-  const editVisitInformation  = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
+  const [cookies]                   = useCookies(['access_token'])
+  const dispatch                    = useAppDispatch()
+  const [searchParams]              = useSearchParams()
+  const visitId                     = searchParams.get('id')
+  const siteId                      = searchParams.get('siteId')
+  const companyId                   = searchParams.get('companyId')
+  const editRacks                   = useAppSelector((state) => state.visitPageEdits.editCollocations)
+  const editVisitInformation        = useAppSelector((state) => state.visitPageEdits.editVisitInformation)
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      const companies                               = await get('company/company', cookies.access_token)
-      const visitStatusRes: VisitStatus[]           = await get('visit/visitStatus', cookies.access_token)
-      if(visitId && cookies.access_token){
-        const singleVisitRes: VisitsType            = await get(`visit/visit/?id=${visitId}`, cookies.access_token)
-        const companyEmployeesRes: EmployeesType[]  = await get(`company/CompanyEmployee?companyId=${companyId}`, cookies.access_token)
-        const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
-        const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
-        const visitorsIdTypes: VisitorsIdTypes[]    = await get('visit/visitorIdType', cookies.access_token)
+    try{
+      const fetchData = async () => {
+        const companies                               = await get('company/company', cookies.access_token)
+        const visitStatusRes: VisitStatus[]           = await get('visit/visitStatus', cookies.access_token)
+        if(visitId && cookies.access_token){
+          const singleVisitRes: VisitsType            = await get(`visit/visit/?id=${visitId}`, cookies.access_token)
+          const companyEmployeesRes: EmployeesType[]  = await get(`company/CompanyEmployee?companyId=${companyId}`, cookies.access_token)
+          const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
+          const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
+          const visitorsIdTypes: VisitorsIdTypes[]    = await get('visit/visitorIdType', cookies.access_token)
 
-        if(companyId){
-          dispatch(setCompanyId(companyId))
+          if(companyId){
+            dispatch(setCompanyId(companyId))
+          }
+
+          if(siteId){
+            dispatch(setSiteId(siteId))
+          }
+
+          if(singleVisitRes.dlcEmlpyee){
+            const dlcEmployee: EmployeesType            = await get(`user?id=${singleVisitRes.dlcEmlpyee}`, cookies.access_token)
+            dispatch(setDlcEmployee(dlcEmployee))
+          }
+
+          dispatch(setVisitorIdTypes(visitorsIdTypes))
+          dispatch(setPermissions(permissions))
+          dispatch(setVisit(singleVisitRes))
+          dispatch(setVisitors(visitors))
+          dispatch(setClientsGuests(singleVisitRes.guests))
+          dispatch(setCarPlates(singleVisitRes.carPlates))
+          dispatch(setCompanyEmployees(companyEmployeesRes))
         }
-
-        if(siteId){
-          dispatch(setSiteId(siteId))
-        }
-
-        if(singleVisitRes.dlcEmlpyee){
-          const dlcEmployee: EmployeesType            = await get(`user?id=${singleVisitRes.dlcEmlpyee}`, cookies.access_token)
-          dispatch(setDlcEmployee(dlcEmployee))
-        }
-
-        dispatch(setVisitorIdTypes(visitorsIdTypes))
-        dispatch(setPermissions(permissions))
-        dispatch(setVisit(singleVisitRes))
-        dispatch(setVisitors(visitors))
-        dispatch(setClientsGuests(singleVisitRes.guests))
-        dispatch(setCarPlates(singleVisitRes.carPlates))
-        dispatch(setCompanyEmployees(companyEmployeesRes))
+        dispatch(setCompanies(companies))
+        dispatch(setVisitStatus(visitStatusRes))
       }
-      dispatch(setCompanies(companies))
-      dispatch(setVisitStatus(visitStatusRes))
+
+      fetchData()
+      return () => {
+        dispatch(resetVisitReducer())
+        dispatch(resetRacksReducer())
+      }
+    }catch(error){
+      if(error instanceof Error){
+        alert(error.message)
+      }
     }
 
-    fetchData()
-    return () => {
-      dispatch(resetVisitReducer())
-      dispatch(resetRacksReducer())
-    }
   }, [cookies.access_token, dispatch, visitId, siteId, companyId, editRacks, editVisitInformation])
+
 }
 
 export default useFetchVisitData

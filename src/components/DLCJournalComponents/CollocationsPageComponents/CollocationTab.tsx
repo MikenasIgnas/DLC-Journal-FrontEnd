@@ -28,15 +28,19 @@ const CollocationTab = () => {
   const tabKey                                                  = searchParams.get('tabKey')
   const siteId                                                  = searchParams.get('siteId')
 
-
   React.useEffect(() => {
     (async () => {
       try {
         const sitesRes  = await get('site/site', cookies.access_token)
         setSites(sitesRes)
         setActiveKey(sitesRes[0]._id)
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   }, [isSiteAdditionModalOpen])
@@ -59,7 +63,6 @@ const CollocationTab = () => {
 
   const onOk = async() => {
     try{
-
       await post('site/site', { name: siteNameInputValue }, cookies.access_token )
       const newActiveKey = `newTab${newTabIndex.current++}`
       const newPanes = [...sites]
@@ -91,25 +94,34 @@ const CollocationTab = () => {
   }
 
   const onRemoveSite = async() => {
-    let newActiveKey = activeKey
-    let lastIndex = -1
-    sites.forEach((item, i) => {
-      if (item._id === siteId) {
-        lastIndex = i - 1
+    try{
+      await deleteItem('site/site', {id: siteId} ,cookies.access_token)
+      let newActiveKey = activeKey
+      let lastIndex = -1
+      sites.forEach((item, i) => {
+        if (item._id === siteId) {
+          lastIndex = i - 1
+        }
+      })
+      const newPanes = sites.filter((item) => item._id !== siteId)
+      if (newPanes.length && newActiveKey === siteId) {
+        if (lastIndex >= 0) {
+          newActiveKey = newPanes[lastIndex]._id
+        } else {
+          newActiveKey = newPanes[0]._id
+        }
       }
-    })
-    const newPanes = sites.filter((item) => item._id !== siteId)
-    if (newPanes.length && newActiveKey === siteId) {
-      if (lastIndex >= 0) {
-        newActiveKey = newPanes[lastIndex]._id
-      } else {
-        newActiveKey = newPanes[0]._id
+      setSites(newPanes)
+      setActiveKey(newActiveKey)
+      setIsSiteRemovalModalOpen(false)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
       }
     }
-    setSites(newPanes)
-    setActiveKey(newActiveKey)
-    await deleteItem('site/site', {id: siteId} ,cookies.access_token)
-    setIsSiteRemovalModalOpen(false)
   }
 
 

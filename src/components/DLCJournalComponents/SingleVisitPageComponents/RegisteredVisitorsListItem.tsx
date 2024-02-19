@@ -9,6 +9,7 @@ import {
   Modal,
   Select,
   Tag,
+  message,
 }                                    from 'antd'
 import SignatureCanvas               from 'react-signature-canvas'
 import { useCookies }                from 'react-cookie'
@@ -22,20 +23,22 @@ import {
   useAppSelector,
 }                                    from '../../../store/hooks'
 import { removeVisitor }             from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type RegisteredVisitorsListItemProps = {
   item: VisitorEmployee
 }
 
 const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) => {
-  const {id}               = useParams()
-  const [cookies]          = useCookies(['access_token'])
-  const signatureCanvasRef = React.useRef<any>(null)
-  const [open, setOpen]    = React.useState(false)
-  const windowSize         = useSetWindowsSize()
-  const editVisitors       = useAppSelector((state) => state.visitPageEdits.editVisitors)
-  const dispatch           = useAppDispatch()
-  const visitorIdTypes     = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
+  const {id}                        = useParams()
+  const [cookies]                   = useCookies(['access_token'])
+  const signatureCanvasRef          = React.useRef<any>(null)
+  const [open, setOpen]             = React.useState(false)
+  const windowSize                  = useSetWindowsSize()
+  const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const dispatch                    = useAppDispatch()
+  const visitorIdTypes              = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
+  const [messageApi, contextHolder] = message.useMessage()
 
   const onOk = async() => {
     if(signatureCanvasRef.current){
@@ -63,7 +66,12 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
       await deleteItem('visit/visitor', {id: item._id}, cookies.access_token)
       dispatch(removeVisitor(item._id))
     }catch (error){
-      console.log(error)
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 
@@ -101,6 +109,7 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
           <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
         </Form.Item>
       </Modal>
+      <SuccessMessage contextHolder={contextHolder}/>
     </List.Item>
   )
 }

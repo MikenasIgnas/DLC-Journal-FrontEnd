@@ -59,8 +59,17 @@ const VisitConfigListItem = ({ item, configItems, setConfigItems, url }: VisitCo
     setConfigItems(newPermissionsList)
   }
   const deletePermission = async(id: string) => {
-    await deleteItem(url, { id: id }, cookies.access_token)
-    permissionRemoved(id)
+    try{
+      await deleteItem(url, { id: id }, cookies.access_token)
+      permissionRemoved(id)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
   return (
     <List.Item>

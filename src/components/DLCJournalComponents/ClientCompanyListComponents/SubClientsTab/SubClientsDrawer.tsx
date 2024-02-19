@@ -10,6 +10,7 @@ import {
   List,
   Tabs,
   TabsProps,
+  message,
 }                           from 'antd'
 
 import { get }              from '../../../../Plugins/helpers'
@@ -35,6 +36,7 @@ import {
 
 import { useSearchParams }  from 'react-router-dom'
 import SubClientsRacks      from '../ClientsCollocationsTab/SubClientsRacks'
+import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 type SubClientsDrawerProps = {
     onClose:      () => void;
@@ -58,6 +60,7 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
   const tabKey                                      = searchParams.get('tabKey')
   const siteId                                      = searchParams.get('siteId')
   const subClient                                   = useAppSelector((state) => state.subClient.subClient)
+  const [messageApi, contextHolder]                 = message.useMessage()
 
   const DescriptionItem = ({ title, content }: DescriptionItemProps) => (
     <Row>
@@ -79,8 +82,13 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
           dispatch(setCompanyId(subClientId))
           dispatch(setSubClient(subClientRes))
         }
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   },[open])
@@ -149,6 +157,7 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
           />
         )}
       />
+      <SuccessMessage contextHolder={contextHolder}/>
     </Drawer>
   )
 }

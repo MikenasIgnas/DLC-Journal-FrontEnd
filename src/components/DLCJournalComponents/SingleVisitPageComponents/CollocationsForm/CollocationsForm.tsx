@@ -1,18 +1,27 @@
 /* eslint-disable max-len */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useAppDispatch, useAppSelector }   from '../../../../store/hooks'
-import { Card, Form, message }              from 'antd'
+import VisitRacks                           from './VisitRacks'
+import EditableVisitRacks                   from './EditableVisitRacks'
+import SuccessMessage                       from '../../../UniversalComponents/SuccessMessage'
+import CardTitle                            from '../CardTitle'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                           from '../../../../store/hooks'
+
+import {
+  Card,
+  Form,
+  message,
+}                                           from 'antd'
+
 import { selectVisitingCompanyEmplyees }    from '../../../../auth/VisitorEmployeeReducer/selectors'
 import { selectPremises }                   from '../../../../auth/SitesReducer/selectors'
-import CardTitle                            from '../CardTitle'
 import { useForm }                          from 'antd/es/form/Form'
 import { put }                              from '../../../../Plugins/helpers'
 import { setEditCollocations }              from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 import { useSearchParams }                  from 'react-router-dom'
 import { useCookies }                       from 'react-cookie'
-import VisitRacks                           from './VisitRacks'
-import EditableVisitRacks                   from './EditableVisitRacks'
-import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
 
 const CollocationsForm = () => {
   const companyPremise              = useAppSelector(selectPremises)
@@ -25,6 +34,7 @@ const CollocationsForm = () => {
   const [cookies]                   = useCookies()
   const checkedList                 = useAppSelector((state) => state.racks.checkedList)
   const [messageApi, contextHolder] = message.useMessage()
+
   const saveChanges = async() => {
     dispatch(setEditCollocations(!editCollocations))
     if(editCollocations){

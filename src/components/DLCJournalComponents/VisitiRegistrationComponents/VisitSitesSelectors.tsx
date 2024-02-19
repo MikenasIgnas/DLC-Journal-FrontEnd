@@ -43,13 +43,22 @@ const VisitSitesSelectors = () => {
   const [messageApi, contextHolder]     = message.useMessage()
 
   const selectCompany = async(value: string) => {
-    setSearchParams(`companyId=${value}`)
-    const companiesEmployees = await get(`company/CompanyEmployee?companyId=${value}`, cookies.access_token)
-    dispatch(setCompanyId(value))
-    dispatch(setSiteId(undefined))
-    dispatch(setCompanyEmployees(companiesEmployees))
-    localStorage.removeItem('visitPurpose')
-    form.setFieldValue('siteId', null)
+    try{
+      const companiesEmployees = await get(`company/CompanyEmployee?companyId=${value}`, cookies.access_token)
+      setSearchParams(`companyId=${value}`)
+      dispatch(setCompanyId(value))
+      dispatch(setSiteId(undefined))
+      dispatch(setCompanyEmployees(companiesEmployees))
+      localStorage.removeItem('visitPurpose')
+      form.setFieldValue('siteId', null)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const selectAddress = async(siteId: string) => {
