@@ -11,6 +11,7 @@ import PdfGenerator              from '../../components/UniversalComponents/PdfG
 import visitsRowMenuItems        from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 import { useAppSelector }        from '../../store/hooks'
 import { deleteTableItem }       from '../../Plugins/helpers'
+import SuccessMessage            from '../../components/UniversalComponents/SuccessMessage'
 
 const TableColumns = () => {
   return(
@@ -51,13 +52,13 @@ const tableSorter = [
 ]
 
 const VisitPage = () => {
-  const [cookies]                         = useCookies(['access_token'])
-  const [searchParams, setSearchParams]   = useSearchParams()
-  const page                              = searchParams.get('page')
-  const {data, count, setData}            = useSetVisitsData()
-  const {generateSingleVisitPDF, loading} = useGenerateSingleVisitPDF()
-  const isSecurity                        = useAppSelector((state) => state.auth.isSecurity)
-  const rowMenuItems                      = visitsRowMenuItems(loading, isSecurity)
+  const [cookies]                             = useCookies(['access_token'])
+  const [searchParams, setSearchParams]       = useSearchParams()
+  const page                                  = searchParams.get('page')
+  const {data, count, setData, contextHolder} = useSetVisitsData()
+  const {generateSingleVisitPDF, loading}     = useGenerateSingleVisitPDF()
+  const isSecurity                            = useAppSelector((state) => state.auth.isSecurity)
+  const rowMenuItems                          = visitsRowMenuItems(loading, isSecurity)
 
   return (
     <>
@@ -80,6 +81,7 @@ const VisitPage = () => {
           />
         ))}
       />
+      <SuccessMessage contextHolder={contextHolder}/>
     </>
   )
 }

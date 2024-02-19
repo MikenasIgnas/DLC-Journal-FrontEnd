@@ -6,11 +6,11 @@ import { get }             from './helpers'
 import { UserType }        from '../types/globalTypes'
 
 const useSetAllUsersData = (isDisabled?: boolean) => {
-  const [users, setUsers]   = React.useState<UserType[]>()
-  const [count, setCount]   = React.useState<number>()
-  const [cookies]           = useCookies(['access_token'])
-  const [searchParams]      = useSearchParams()
-  const tableSorter         = searchParams.get('tableSorter')
+  const [users, setUsers]           = React.useState<UserType[]>()
+  const [count, setCount]           = React.useState<number>()
+  const [cookies]                   = useCookies(['access_token'])
+  const [searchParams]              = useSearchParams()
+  const tableSorter                 = searchParams.get('tableSorter')
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -56,7 +56,9 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
         }
 
       } catch (error) {
-        console.error('Error fetching data:', error)
+        if(error instanceof Error){
+          alert(error.message)
+        }
       }
     }
 
@@ -65,12 +67,19 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
 
   React.useEffect(() => {
     (async () => {
-      let fetchUrl = 'user/count'
-      if(isDisabled !== undefined) {
-        fetchUrl += `?isDisabled=${isDisabled}`
+      try{
+
+        let fetchUrl = 'user/count'
+        if(isDisabled !== undefined) {
+          fetchUrl += `?isDisabled=${isDisabled}`
+        }
+        const documents = await get(fetchUrl, cookies.access_token)
+        setCount(documents)
+      }catch(error){
+        if(error instanceof Error){
+          alert(error.message)
+        }
       }
-      const documents = await get(fetchUrl, cookies.access_token)
-      setCount(documents)
     })()
   }, [])
 

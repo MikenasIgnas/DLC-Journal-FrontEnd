@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { message }                        from 'antd'
-import { get, post }                           from '../../../Plugins/helpers'
+import { get, post }                      from '../../../Plugins/helpers'
 import {
   VisitStatus,
   Visitors,
@@ -12,7 +12,7 @@ import {
 import { useParams }                      from 'react-router'
 import { useCookies }                     from 'react-cookie'
 import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
-import { setDlcEmployee, setVisit }                       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import { setDlcEmployee, setVisit }       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const useVisitValidation = () => {
   const [cookies]                   = useCookies(['access_token'])

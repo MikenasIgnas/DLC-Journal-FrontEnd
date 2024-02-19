@@ -1,9 +1,10 @@
 /* eslint-disable max-len */
 import React, { useState }        from 'react'
-import { Button, Divider, Modal } from 'antd'
+import { Button, Divider, Modal, message } from 'antd'
 import { get }                    from '../../../Plugins/helpers'
 import { useCookies }             from 'react-cookie'
 import VisitsConfingForm          from './VisitsConfingForm'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type ConfingItemsType = {
     name:   string | undefined;
@@ -14,6 +15,7 @@ const VisitsConfigModal: React.FC = () => {
   const [isModalOpen, setIsModalOpen]     = useState(false)
   const [cookies]                         = useCookies(['access_token'])
   const [visitorIdType, setVisitorIdType] = React.useState<ConfingItemsType[]>([])
+  const [messageApi, contextHolder]       = message.useMessage()
 
   const showModal = () => {
     setIsModalOpen(true)
@@ -32,8 +34,13 @@ const VisitsConfigModal: React.FC = () => {
       try{
         const visitorIdTypeRes = await get('visit/visitorIdType', cookies.access_token)
         setVisitorIdType(visitorIdTypeRes)
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   },[])
@@ -51,6 +58,7 @@ const VisitsConfigModal: React.FC = () => {
           setConfigItems={setVisitorIdType}
         />
       </Modal>
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

@@ -56,6 +56,7 @@ const CompaniesListPage = () => {
   const name                                  = searchParams.get('name')
   const dispatch                              = useAppDispatch()
   const [messageApi, contextHolder]           = message.useMessage()
+
   React.useEffect(() => {
     (async () => {
       try{
@@ -74,8 +75,13 @@ const CompaniesListPage = () => {
         setPermissions(permissionsRes)
         setCompanies(mainCompanies)
         setLoading(false)
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
 
     })()
@@ -90,8 +96,17 @@ const CompaniesListPage = () => {
   }
 
   const deleteCompany = async(companyId: string | undefined) => {
-    await deleteItem('company/company', {id: companyId, parentId: 'null'}, cookies.access_token)
-    companyRemoved(companyId)
+    try{
+      await deleteItem('company/company', {id: companyId, parentId: 'null'}, cookies.access_token)
+      companyRemoved(companyId)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const listButtons = (listItemId: string | undefined) => {
@@ -140,8 +155,17 @@ const CompaniesListPage = () => {
   }
 
   const deletePermission = async(id: string) => {
-    await deleteItem('company/permission',{id: id}, cookies.access_token)
-    permissionRemoved(id)
+    try{
+      await deleteItem('company/permission',{id: id}, cookies.access_token)
+      permissionRemoved(id)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   return (

@@ -1,20 +1,22 @@
 /* eslint-disable max-len */
 import React                    from 'react'
-import { Card, Checkbox, Form } from 'antd'
+import { Card, Checkbox, Form, message } from 'antd'
 import { get }                  from '../../../Plugins/helpers'
 import { useCookies }           from 'react-cookie'
 import { useSearchParams }      from 'react-router-dom'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type CollocationsType = {
   [key: string]: string[]
 }
 
 const CollocationsSelect = () => {
-  const [cookies] =                                         useCookies(['access_token'])
-  const [searchParams] =                                    useSearchParams()
-  const companyId =                                         searchParams.get('companyId')
-  const siteId =                                         searchParams.get('siteId')
-  const [companiesColocations, setCompaniesCollocations] =  React.useState<CollocationsType[]>()
+  const [cookies]                                           = useCookies(['access_token'])
+  const [searchParams]                                      = useSearchParams()
+  const companyId                                           = searchParams.get('companyId')
+  const siteId                                              = searchParams.get('siteId')
+  const [companiesColocations, setCompaniesCollocations]    = React.useState<CollocationsType[]>()
+  const [messageApi, contextHolder]                         = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -25,8 +27,13 @@ const CollocationsSelect = () => {
         }else{
           setCompaniesCollocations(singleCompany?.data?.companyInfo?.T72)
         }
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   },[siteId])
@@ -43,6 +50,7 @@ const CollocationsSelect = () => {
           </Card>
         )})
       }
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

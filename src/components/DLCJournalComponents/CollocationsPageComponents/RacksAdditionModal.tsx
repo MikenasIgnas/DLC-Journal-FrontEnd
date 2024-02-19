@@ -8,7 +8,7 @@ import { SearchProps }                        from 'antd/es/input'
 import { get, post }                          from '../../../Plugins/helpers'
 import { useSearchParams }                    from 'react-router-dom'
 import { Racks }                              from '../../../types/globalTypes'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import SuccessMessage                         from '../../UniversalComponents/SuccessMessage'
 
 const { Search } = Input
 
@@ -21,6 +21,7 @@ const RacksAdditionModal = () => {
   const premiseId                     = searchParams.get('premiseId')
   const [racks, setRacks]             = React.useState<Racks[]>([])
   const [messageApi, contextHolder]   = message.useMessage()
+
   React.useEffect(() => {
     (async () => {
       try {
@@ -29,8 +30,13 @@ const RacksAdditionModal = () => {
           const filter = rackRes?.filter((el: Racks) => el.premiseId === premiseId)
           setRacks(filter)
         }
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   }, [openRacksAdditionModal])

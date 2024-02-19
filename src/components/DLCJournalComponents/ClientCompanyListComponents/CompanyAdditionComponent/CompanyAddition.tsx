@@ -11,8 +11,9 @@ type CompanyAdditionProps = {
   additionModalTitle: string;
 }
 const CompanyAddition = ({postUrl, additionModalTitle}:CompanyAdditionProps) => {
-  const dispatch = useAppDispatch()
+  const dispatch          = useAppDispatch()
   useFetchSites()
+
   return (
     <div>
       <Button

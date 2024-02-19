@@ -3,6 +3,7 @@ import React                         from 'react'
 import {
   Collapse,
   Modal,
+  message,
 }                                    from 'antd'
 import { Premises }                  from '../../../types/globalTypes'
 import {
@@ -19,6 +20,7 @@ import { setOpenRacksAdditionModal } from '../../../auth/ModalStateReducer/Modal
 import { useAppDispatch }            from '../../../store/hooks'
 import RacksList                     from './RacksList'
 import { useSearchParams }           from 'react-router-dom'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type CollocationListItemProps = {
   item:        Premises
@@ -32,6 +34,7 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
   const [, setSearchParams]           = useSearchParams()
   const dispatch                      = useAppDispatch()
   const [isModalOpen, setIsModalOpen] = React.useState(false)
+  const [messageApi, contextHolder]   = message.useMessage()
 
   const addRacks = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
     e.stopPropagation()
@@ -47,9 +50,18 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
   const handleOk = async(e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
     setIsModalOpen(false)
     e.stopPropagation()
-    await deleteItem('site/premise', {id: item._id} ,cookies.access_token)
-    const newPremises = premises?.filter((el) => el._id !== id)
-    setPremises(newPremises)
+    try{
+      await deleteItem('site/premise', {id: item._id} ,cookies.access_token)
+      const newPremises = premises?.filter((el) => el._id !== id)
+      setPremises(newPremises)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const handleCancel = () => {
@@ -85,6 +97,7 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
       <Modal title='Pašalinti patalpą' open={isModalOpen} onOk={(e) => handleOk(e, item._id)} onCancel={handleCancel}>
         <p>Ar tikrai norite pašalinti {item.name} patalpą? </p>
       </Modal>
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }
