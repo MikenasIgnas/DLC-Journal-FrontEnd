@@ -56,11 +56,11 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
       })
     }else{
       try{
-        await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
-
         if (fileList && fileList.length > 0) {
           values.photo = fileList[0]
         }
+
+        await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
 
         form.resetFields()
         dispatch(setOpenCompaniesAdditionModal(false))

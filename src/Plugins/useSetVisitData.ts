@@ -36,7 +36,9 @@ const useSetVisitsData = () => {
         const data = await get(fetchUrl, cookies.access_token)
         setData(data)
       } catch (error) {
-        console.error('Error fetching data:', error)
+        if(error instanceof Error){
+          alert(error.message)
+        }
       }
     }
 
@@ -45,10 +47,16 @@ const useSetVisitsData = () => {
 
   React.useEffect(() => {
     (async () => {
-      setLoading(true)
-      const documentsCount = await get('visit/visit/count', cookies.access_token)
-      setCount(documentsCount)
-      setLoading(false)
+      try{
+        setLoading(true)
+        const documentsCount = await get('visit/visit/count', cookies.access_token)
+        setCount(documentsCount)
+        setLoading(false)
+      }catch(error){
+        if(error instanceof Error){
+          alert(error.message)
+        }
+      }
     })()
   }, [])
   return {data, count, setData, loading, setCount}

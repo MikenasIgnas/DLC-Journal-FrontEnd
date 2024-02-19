@@ -1,26 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React, { useRef, useState }  from 'react'
-import { Input, Modal, Tabs, message }       from 'antd'
-import { useCookies }               from 'react-cookie'
-import { deleteItem, get, post }    from '../../../Plugins/helpers'
-import { useSearchParams }          from 'react-router-dom'
+import React                        from 'react'
 import SiteTab                      from './SiteTab'
+import SuccessMessage               from '../../UniversalComponents/SuccessMessage'
+import RacksAdditionModal           from './RacksAdditionModal'
+
+import {
+  Input,
+  Modal,
+  Tabs,
+  message,
+}                                   from 'antd'
+
+
+import {
+  deleteItem,
+  get,
+  post,
+}                                   from '../../../Plugins/helpers'
+
+import { useCookies }               from 'react-cookie'
+import { useSearchParams }          from 'react-router-dom'
 import { CloseOutlined }            from '@ant-design/icons'
 import { Sites }                    from '../../../types/globalTypes'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 
 
 const CollocationTab = () => {
-  const [activeKey, setActiveKey]                               = useState<string>()
+  const [activeKey, setActiveKey]                               = React.useState<string>()
   const [isSiteAdditionModalOpen, setIsSiteAdditionModalOpen]   = React.useState(false)
   const [isSiteRemovalModalOpen, setIsSiteRemovalModalOpen]     = React.useState(false)
   const [siteNameInputValue, setSiteNameInputValue]             = React.useState<string>('')
   const [sites, setSites]                                       = React.useState<Sites[]>([])
-  const newTabIndex                                             = useRef(0)
+  const newTabIndex                                             = React.useRef(0)
   const [cookies]                                               = useCookies(['access_token'])
   const [searchParams, setSearchParamas]                        = useSearchParams()
   const [messageApi, contextHolder]                             = message.useMessage()
@@ -59,7 +73,6 @@ const CollocationTab = () => {
 
   const onOk = async() => {
     try{
-
       await post('site/site', { name: siteNameInputValue }, cookies.access_token )
       const newActiveKey = `newTab${newTabIndex.current++}`
       const newPanes = [...sites]
@@ -144,6 +157,7 @@ const CollocationTab = () => {
         <p>Ar tikrai norite pašalintį adresą?</p>
       </Modal>
       <SuccessMessage contextHolder={contextHolder}/>
+      <RacksAdditionModal/>
     </>
   )
 }

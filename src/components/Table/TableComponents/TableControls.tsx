@@ -17,13 +17,14 @@ const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
+  const descending                      = searchParams.get('descending')
   const delay                           = useDelay()
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     delay( async() => {
-      setSearchParams(`page=${page}&limit=${limit}&search=${e.target.value.toLocaleLowerCase()}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&search=${e.target.value.toLocaleLowerCase()}`)
       if(e.target.value === ''){
-        setSearchParams(`page=${page}&limit=${limit}`)
+        setSearchParams(`page=${page}&limit=${limit}&descending=${descending}`)
       }
     })
   }
