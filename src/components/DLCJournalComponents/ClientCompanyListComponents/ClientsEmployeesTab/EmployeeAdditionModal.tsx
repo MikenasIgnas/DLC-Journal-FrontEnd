@@ -42,14 +42,19 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
   React.useEffect(() => {
     (async () => {
       try{
-        const res       = await get('company/permission', cookies.access_token)
+        const res = await get('company/permission', cookies.access_token)
         const formattedPermissions = res.map((permission: { name: string; _id: string }) => ({
           label: permission.name,
           value: permission._id,
         }))
         setPermissions(formattedPermissions)
-      }catch(err){
-        console.log(err)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   },[])

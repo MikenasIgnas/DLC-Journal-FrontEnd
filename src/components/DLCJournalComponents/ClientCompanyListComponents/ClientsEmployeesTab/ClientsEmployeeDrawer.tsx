@@ -75,8 +75,13 @@ const ClientsEmployeeDrawer = () => {
             setPermissions(permissionsData)
           }
         }
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
     return () => {

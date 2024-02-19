@@ -1,15 +1,15 @@
 /* eslint-disable max-len */
-import React                             from 'react'
-import { get }                           from './helpers'
-import { useCookies }                    from 'react-cookie'
+import React                  from 'react'
+import { get }                from './helpers'
+import { useCookies }         from 'react-cookie'
 import {
   useParams,
   useSearchParams,
-}                                        from 'react-router-dom'
+}                             from 'react-router-dom'
 import {
   useAppDispatch,
   useAppSelector,
-}                                        from '../store/hooks'
+}                             from '../store/hooks'
 import {
   resetSingleCompanyReducer,
   setCompaniesEmployees,
@@ -19,13 +19,14 @@ import {
   setParentCompanies,
   setSingleCompany,
   setSiteId,
-}                                        from '../auth/SingleCompanyReducer/SingleCompanyReducer'
+}                             from '../auth/SingleCompanyReducer/SingleCompanyReducer'
 import {
   CompaniesType,
   EmployeesType,
   FullSiteData,
-}                                        from '../types/globalTypes'
-import { resetRacksReducer } from '../auth/RacksReducer/RacksReducer'
+}                             from '../types/globalTypes'
+import { resetRacksReducer }  from '../auth/RacksReducer/RacksReducer'
+import { message }            from 'antd'
 
 const useFetchSingleCompany = () => {
   const [cookies]                             = useCookies(['access_token'])
@@ -37,32 +38,45 @@ const useFetchSingleCompany = () => {
   const setSubClientAdded                     = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const editCompanyPage                       = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
   const editClientsEmployee                   = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+  const [messageApi, contextHolder]           = message.useMessage()
 
   React.useEffect(() => {
     dispatch(setLoading(true))
-    const fetchData = async() => {
-      const singleCompany: CompaniesType      = await get(`company/company?id=${id}`, cookies.access_token)
-      const companyEmployees: EmployeesType[] = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
-      const fullSiteData: FullSiteData[]      = await get('site/fullSiteData', cookies.access_token)
-      const allCompanies: CompaniesType[]     = await get('company/company', cookies.access_token)
+    try{
 
-      dispatch(setFullSiteData(fullSiteData))
-      dispatch(setSingleCompany(singleCompany))
-      dispatch(setCompanyId(id))
-      dispatch(setSiteId(siteId))
-      dispatch(setCompaniesEmployees(companyEmployees))
+      const fetchData = async() => {
+        const singleCompany: CompaniesType      = await get(`company/company?id=${id}`, cookies.access_token)
+        const companyEmployees: EmployeesType[] = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
+        const fullSiteData: FullSiteData[]      = await get('site/fullSiteData', cookies.access_token)
+        const allCompanies: CompaniesType[]     = await get('company/company', cookies.access_token)
 
-      const parentCompanies                   = allCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
-      dispatch(setParentCompanies(parentCompanies))
-      dispatch(setLoading(false))
-    }
+        dispatch(setFullSiteData(fullSiteData))
+        dispatch(setSingleCompany(singleCompany))
+        dispatch(setCompanyId(id))
+        dispatch(setSiteId(siteId))
+        dispatch(setCompaniesEmployees(companyEmployees))
 
-    fetchData()
-    return () => {
-      dispatch(resetSingleCompanyReducer())
-      dispatch(resetRacksReducer())
+        const parentCompanies                   = allCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
+        dispatch(setParentCompanies(parentCompanies))
+        dispatch(setLoading(false))
+      }
+
+      fetchData()
+      return () => {
+        dispatch(resetSingleCompanyReducer())
+        dispatch(resetRacksReducer())
+      }
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee])
+
+  return {contextHolder}
 }
 
 export default useFetchSingleCompany

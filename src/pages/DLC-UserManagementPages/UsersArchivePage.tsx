@@ -6,6 +6,8 @@ import { deleteItem }      from '../../Plugins/helpers'
 import { useCookies }      from 'react-cookie'
 import useSetAllUsersData  from '../../Plugins/useSetAllUsersData'
 import { useAppSelector }  from '../../store/hooks'
+import { message } from 'antd'
+import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
 
 const UsersArchivePage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -13,6 +15,8 @@ const UsersArchivePage = () => {
   const [cookies]                       = useCookies(['access_token'])
   const { users, setUsers, count }      = useSetAllUsersData()
   const isAdmin                         = useAppSelector((state) => state.auth.isAdmin)
+  const [messageApi, contextHolder]     = message.useMessage()
+
   const TableColumns = () => {
     return(
       <>
@@ -49,29 +53,41 @@ const UsersArchivePage = () => {
     }
 
     if(tableItemRemoved){
-      await deleteItem('user', {id: id}, cookies.access_token)
-      tableItemRemoved(id)
+      try{
+        await deleteItem('user', {id: id}, cookies.access_token)
+        tableItemRemoved(id)
+      }catch(error){
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
+      }
     }
 
   }
 
   return (
-    <FullTable
-      tableColumns={<TableColumns/>}
-      currentPage={page}
-      setSearchParams={setSearchParams}
-      tableRows={users?.map((item, index) => (
-        <UersTableRows
-          id={index + 1}
-          key={item._id}
-          item={item}
-          deleteItem={deleteUser}
-          deleteButtonText={'Ištrinti'}
-        />
-      ))}
-      documentCount={count}
-      tableSorter={tableSorter}
-    />
+    <>
+      <FullTable
+        tableColumns={<TableColumns/>}
+        currentPage={page}
+        setSearchParams={setSearchParams}
+        tableRows={users?.map((item, index) => (
+          <UersTableRows
+            id={index + 1}
+            key={item._id}
+            item={item}
+            deleteItem={deleteUser}
+            deleteButtonText={'Ištrinti'}
+          />
+        ))}
+        documentCount={count}
+        tableSorter={tableSorter}
+      />
+      <SuccessMessage contextHolder={contextHolder}/>
+    </>
   )
 }
 

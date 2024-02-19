@@ -8,18 +8,20 @@ import {
 import { useCookies }      from 'react-cookie'
 import { useAppSelector }  from '../../../store/hooks'
 import { get }             from '../../../Plugins/helpers'
-import { List }            from 'antd'
+import { List, message }            from 'antd'
 import RacksListItem       from './RacksListItem'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type RacksListItemProps = {
   premiseId: string
 }
 
 const RacksList = ({ premiseId }: RacksListItemProps) => {
-  const [cookies]                 = useCookies(['access_token'])
-  const openRacksAdditionModal    = useAppSelector((state) => state.modals.openRacksAdditionModal)
-  const [racks, setRacks]         = React.useState<Racks[]>([])
-  const [companies, setCompanies] = React.useState<CompaniesType[]>()
+  const [cookies]                   = useCookies(['access_token'])
+  const openRacksAdditionModal      = useAppSelector((state) => state.modals.openRacksAdditionModal)
+  const [racks, setRacks]           = React.useState<Racks[]>([])
+  const [companies, setCompanies]   = React.useState<CompaniesType[]>()
+  const [messageApi, contextHolder] = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -28,8 +30,13 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
         const companiesRes  = await get('company/company', cookies.access_token)
         setCompanies(companiesRes)
         setRacks(rackRes)
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   }, [openRacksAdditionModal])
@@ -53,7 +60,7 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
           updateRacksList={updateRacksList}
         />
       }/>
-
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

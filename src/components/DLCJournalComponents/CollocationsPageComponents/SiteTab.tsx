@@ -3,7 +3,7 @@ import React                                from 'react'
 import { generateCsv, get }                 from '../../../Plugins/helpers'
 import { useCookies }                       from 'react-cookie'
 import CollocationAdditionModal             from './CollocationAdditionModal'
-import { Button, Card, List }               from 'antd'
+import { Button, Card, List, message }               from 'antd'
 import { FileExcelOutlined }                from '@ant-design/icons'
 import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
 import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReducer/ModalStateReducer'
@@ -11,6 +11,7 @@ import CollocationListItem                  from './CollocationListItem'
 import { Premises }                         from '../../../types/globalTypes'
 import { useSearchParams }                  from 'react-router-dom'
 import RacksAdditionModal from './RacksAdditionModal'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
 
 type SiteTabProps = {
     name:   string | undefined
@@ -23,6 +24,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
   const [premises, setPremises]         = React.useState<Premises[]>()
   const openCollocationAdditionModal    = useAppSelector((state) => state.modals.openCollocationAdditionModal)
   const [,setSearchParamas]             = useSearchParams()
+  const [messageApi, contextHolder]     = message.useMessage()
 
   React.useEffect(() => {
     (async () => {
@@ -31,8 +33,13 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
           const premiseRes = await get(`site/premise?siteId=${siteId}&page=1&limit=10`, cookies.access_token)
           setPremises(premiseRes)
         }
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        if(error instanceof Error){
+          messageApi.error({
+            type:    'error',
+            content: error.message,
+          })
+        }
       }
     })()
   }, [siteId, openCollocationAdditionModal])
@@ -78,6 +85,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
       </Card>
       <CollocationAdditionModal/>
       <RacksAdditionModal/>
+      <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )
 }

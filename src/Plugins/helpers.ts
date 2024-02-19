@@ -5,22 +5,19 @@
 import { TokenType } from '../types/globalTypes'
 
 const get = async (url: string, token: TokenType) => {
-  try {
-    const response = await fetch(`http://localhost:4002/${url}`, {
-      method:  'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'token':        `${token}`,
-      },
-    })
-    if (response.status === 401) {
-      console.error('Unauthorized request')
-      return
-    }
-    const data = await response.json()
-    return data
-  } catch (error) {
-    console.error(error)
+  const response = await fetch(`http://localhost:4002/${url}`, {
+    method:  'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'token':        `${token}`,
+    },
+  })
+
+  if (response.ok) {
+    return response.json()
+  } else {
+    const responseJson = await response.json()
+    throw new Error(responseJson.message)
   }
 }
 
@@ -246,9 +243,14 @@ const deleteItem = async (url: string, data: any, token: string) => {
     },
     body: JSON.stringify(data),
   }
-
   const response = await fetch(`http://localhost:4002/${url}`, options)
-  return response.json()
+
+  if(response.ok){
+    return response.json()
+  }else{
+    const responseJson = await response.json()
+    throw new Error(responseJson.message)
+  }
 }
 
 const getPdfFile = async (url: string, token: TokenType) => {
@@ -354,7 +356,12 @@ const validateUser = async (url: string, data: any) => {
     body: JSON.stringify(data),
   }
   const response = await fetch(`http://localhost:4002/auth/${url}`, options)
-  return response.json()
+  if(response.ok){
+    return response.json()
+  }else{
+    const responseJson = await response.json()
+    throw new Error(responseJson.message)
+  }
 }
 
 const postImage = async (url: string, data: any, token: TokenType) => {

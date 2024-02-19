@@ -38,9 +38,18 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   const [messageApi, contextHolder]       = message.useMessage()
 
   const deleteRack = async(id: string | undefined) => {
-    await deleteItem('site/rack', {id: id}, cookies.access_token)
-    const filter = racks.filter((el) => el._id !== id)
-    setRacks(filter)
+    try{
+      await deleteItem('site/rack', {id: id}, cookies.access_token)
+      const filter = racks.filter((el) => el._id !== id)
+      setRacks(filter)
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
+    }
   }
 
   const editRack = () => {
