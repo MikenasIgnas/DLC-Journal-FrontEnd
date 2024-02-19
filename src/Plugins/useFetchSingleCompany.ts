@@ -47,10 +47,10 @@ const useFetchSingleCompany = () => {
       const fetchData = async() => {
         const singleCompany: CompaniesType      = await get(`company/company?id=${id}`, cookies.access_token)
         const companyEmployees: EmployeesType[] = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)
-        const fullSiteData: FullSiteData[]      = await get('site/fullSiteData', cookies.access_token)
+        // const fullSiteData: FullSiteData[]      = await get('site/fullSiteData', cookies.access_token)
         const allCompanies: CompaniesType[]     = await get('company/company', cookies.access_token)
 
-        dispatch(setFullSiteData(fullSiteData))
+        // dispatch(setFullSiteData(fullSiteData))
         dispatch(setSingleCompany(singleCompany))
         dispatch(setCompanyId(id))
         dispatch(setSiteId(siteId))

@@ -1,32 +1,30 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                        from 'react'
-import SiteTab                      from './SiteTab'
-import SuccessMessage               from '../../UniversalComponents/SuccessMessage'
-import RacksAdditionModal           from './RacksAdditionModal'
+import React               from 'react'
+import SiteTab             from './SiteTab'
+import SuccessMessage      from '../../UniversalComponents/SuccessMessage'
+import RacksAdditionModal  from './RacksAdditionModal'
 
 import {
   Input,
   Modal,
   Tabs,
   message,
-}                                   from 'antd'
+}                          from 'antd'
 
 
 import {
   deleteItem,
   get,
   post,
-}                                   from '../../../Plugins/helpers'
+}                          from '../../../Plugins/helpers'
 
-import { useCookies }               from 'react-cookie'
-import { useSearchParams }          from 'react-router-dom'
-import { CloseOutlined }            from '@ant-design/icons'
-import { Sites }                    from '../../../types/globalTypes'
+import { useCookies }      from 'react-cookie'
+import { useSearchParams } from 'react-router-dom'
+import { CloseOutlined }   from '@ant-design/icons'
+import { Sites }           from '../../../types/globalTypes'
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
-
-
 
 const CollocationTab = () => {
   const [activeKey, setActiveKey]                               = React.useState<string>()
@@ -62,6 +60,7 @@ const CollocationTab = () => {
   const handleCancel = () => {
     setIsSiteAdditionModalOpen(false)
   }
+
   const cancelSiteRemove = () => {
     setIsSiteRemovalModalOpen(false)
   }
@@ -138,7 +137,6 @@ const CollocationTab = () => {
     }
   }
 
-
   const onEdit = (
     targetKey: React.MouseEvent | React.KeyboardEvent | string,
     action: 'add' | 'remove',
@@ -149,6 +147,7 @@ const CollocationTab = () => {
       openSiteRemoveModal(targetKey)
     }
   }
+
   return (
     <>
       <Tabs

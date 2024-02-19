@@ -1,20 +1,39 @@
 /* eslint-disable max-len */
 import React                                from 'react'
-import { generateCsv, get }                 from '../../../Plugins/helpers'
-import { useCookies }                       from 'react-cookie'
 import CollocationAdditionModal             from './CollocationAdditionModal'
-import { Button, Card, List, message }               from 'antd'
-import { FileExcelOutlined }                from '@ant-design/icons'
-import { useAppDispatch, useAppSelector }   from '../../../store/hooks'
-import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReducer/ModalStateReducer'
 import CollocationListItem                  from './CollocationListItem'
-import { Premises }                         from '../../../types/globalTypes'
-import { useSearchParams }                  from 'react-router-dom'
 import SuccessMessage                       from '../../UniversalComponents/SuccessMessage'
 
+import {
+  generateCsv,
+  get,
+}                                           from '../../../Plugins/helpers'
+
+import {
+  Button,
+  Card,
+  List,
+  message,
+}                                           from 'antd'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                           from '../../../store/hooks'
+
+import { useCookies }                       from 'react-cookie'
+
+
+import { FileExcelOutlined }                from '@ant-design/icons'
+
+
+import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReducer/ModalStateReducer'
+import { Premises }                         from '../../../types/globalTypes'
+import { useSearchParams }                  from 'react-router-dom'
+
 type SiteTabProps = {
-    name:   string | undefined
-    siteId: string | undefined
+  name:   string | undefined
+  siteId: string | undefined
 }
 
 const SiteTab = ({name, siteId}: SiteTabProps) => {

@@ -97,7 +97,7 @@ const CompaniesListPage = () => {
 
   const deleteCompany = async(companyId: string | undefined) => {
     try{
-      await deleteItem('company/company', {id: companyId, parentId: 'null'}, cookies.access_token)
+      await deleteItem('company/company', { id: companyId }, cookies.access_token)
       companyRemoved(companyId)
     }catch(error){
       if(error instanceof Error){

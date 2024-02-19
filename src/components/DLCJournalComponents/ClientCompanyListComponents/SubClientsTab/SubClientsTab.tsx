@@ -9,9 +9,8 @@ import SubClients                         from './SubClients'
 import { setIsSubClientAdded }            from '../../../../auth/AddSubClientReducer/addSubClientReducer'
 import { setParentCompanies }             from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 import { useParams }                      from 'react-router'
-import { message } from 'antd'
-import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
-
+import { message }                        from 'antd'
+import SuccessMessage                     from '../../../UniversalComponents/SuccessMessage'
 
 const SubClientsTab = () => {
   const [cookies]                         = useCookies(['access_token'])
@@ -27,7 +26,7 @@ const SubClientsTab = () => {
     if(selectedParentCompanies){
       try{
         dispatch(setParentCompanies(selectedParentCompanies))
-        await put('company/company', {id: value, parentId: id}, cookies.access_token)
+        await put('company/company', { id: value, parentId: id }, cookies.access_token)
         dispatch(setIsSubClientAdded(true))
         messageApi.success({
           type:    'success',

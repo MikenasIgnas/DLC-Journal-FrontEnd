@@ -20,7 +20,7 @@ import { setOpenRacksAdditionModal } from '../../../auth/ModalStateReducer/Modal
 import { useAppDispatch }            from '../../../store/hooks'
 import RacksList                     from './RacksList'
 import { useSearchParams }           from 'react-router-dom'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import SuccessMessage                from '../../UniversalComponents/SuccessMessage'
 
 type CollocationListItemProps = {
   item:        Premises
@@ -36,7 +36,7 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
   const [isModalOpen, setIsModalOpen] = React.useState(false)
   const [messageApi, contextHolder]   = message.useMessage()
 
-  const addRacks = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
+  const openRacksAdditionModal = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string) => {
     e.stopPropagation()
     dispatch(setOpenRacksAdditionModal(true))
     setSearchParams(`?menuKey=5&tabKey=1&siteId=${siteId}&premiseId=${id}`)
@@ -75,7 +75,7 @@ const CollocationListItem = ({item, setPremises, premises, siteId}: CollocationL
 
   const genExtra = (id: string) => (
     <div className='SingleCollocationIconContainer'>
-      <AppstoreAddOutlined onClick={(e) => addRacks(e, id)}/>
+      <AppstoreAddOutlined onClick={(e) => openRacksAdditionModal(e, id)}/>
       <FileExcelOutlined style={{color: 'green'}} onClick={(e) => generateSingleCollocationCSV(e, id)}/>
       <DeleteOutlined style={{color: 'red'}} onClick={showModal}/>
     </div>

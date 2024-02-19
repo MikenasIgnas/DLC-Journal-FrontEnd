@@ -55,7 +55,8 @@ const RacksAdditionModal = () => {
       e.preventDefault()
     }
   }
-  const onSearch: SearchProps['onSearch'] = async(value) => {
+
+  const addRack: SearchProps['onSearch'] = async(value) => {
     if(value !== ''){
       try{
 
@@ -90,9 +91,9 @@ const RacksAdditionModal = () => {
         onOk={onOK}
         onCancel={onCancel}
       >
-        <Form form={form} onFinish={onSearch} onKeyDown={onkeydown}>
+        <Form form={form} onFinish={addRack} onKeyDown={onkeydown}>
           <Form.Item style={{width: '100%'}} name='name' rules={[{ required: true, message: 'Įveskite patalpą'}]}>
-            <Search placeholder='Spinta' onSearch={onSearch} />
+            <Search placeholder='Spinta' onSearch={addRack} />
           </Form.Item>
         </Form>
         <List dataSource={racks} renderItem={(item) => <List.Item>{item.name}</List.Item>}/>
