@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   SetURLSearchParams,
   useSearchParams,
@@ -16,16 +17,17 @@ const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => 
   const selectFilter                    = searchParams.get('selectFilter')
   const searchFilter                    = searchParams.get('filter')
   const tableSorter                     = searchParams.get('tableSorter')
+  const descending                      = searchParams.get('descending')
 
   const changePage = async(page: number, limit: number) => {
     if(searchFilter){
-      setSearchParams(`page=${page}&limit=${limit}&filter=${searchFilter}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&filter=${searchFilter}`)
     }else if(selectFilter){
-      setSearchParams(`page=${page}&limit=${limit}&selectFilter=${selectFilter}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&selectFilter=${selectFilter}`)
     }else if(tableSorter){
-      setSearchParams(`page=${page}&limit=${limit}&tableSorter=${tableSorter}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&tableSorter=${tableSorter}`)
     }else{
-      setSearchParams(`page=${page}&limit=${limit}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}`)
     }
   }
 

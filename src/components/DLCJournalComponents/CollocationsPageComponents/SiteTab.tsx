@@ -10,8 +10,7 @@ import { setOpenCollocationAdditionModal }  from '../../../auth/ModalStateReduce
 import CollocationListItem                  from './CollocationListItem'
 import { Premises }                         from '../../../types/globalTypes'
 import { useSearchParams }                  from 'react-router-dom'
-import RacksAdditionModal from './RacksAdditionModal'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import SuccessMessage                       from '../../UniversalComponents/SuccessMessage'
 
 type SiteTabProps = {
     name:   string | undefined
@@ -30,7 +29,7 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
     (async () => {
       try {
         if(siteId){
-          const premiseRes = await get(`site/premise?siteId=${siteId}&page=1&limit=10`, cookies.access_token)
+          const premiseRes = await get(`site/premise?siteId=${siteId}`, cookies.access_token)
           setPremises(premiseRes)
         }
       } catch (error) {
@@ -84,7 +83,6 @@ const SiteTab = ({name, siteId}: SiteTabProps) => {
         />
       </Card>
       <CollocationAdditionModal/>
-      <RacksAdditionModal/>
       <SuccessMessage contextHolder={contextHolder}/>
     </div>
   )

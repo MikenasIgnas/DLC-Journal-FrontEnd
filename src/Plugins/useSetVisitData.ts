@@ -3,7 +3,6 @@ import { useCookies }       from 'react-cookie'
 import { useSearchParams }  from 'react-router-dom'
 import { get }              from './helpers'
 import { VisitsType }       from '../types/globalTypes'
-import { message } from 'antd'
 
 const useSetVisitsData = () => {
   const [data, setData]             = React.useState<VisitsType[]>()
@@ -16,7 +15,6 @@ const useSetVisitsData = () => {
   const selectFilter                = searchParams.get('selectFilter')
   const searchFilter                = searchParams.get('search')
   const tableOrder                  = searchParams.get('descending')
-  const [messageApi, contextHolder] = message.useMessage()
 
   React.useEffect(() => {
     const setFetchedData = async () => {
@@ -39,10 +37,7 @@ const useSetVisitsData = () => {
         setData(data)
       } catch (error) {
         if(error instanceof Error){
-          messageApi.error({
-            type:    'error',
-            content: error.message,
-          })
+          alert(error.message)
         }
       }
     }
@@ -59,15 +54,12 @@ const useSetVisitsData = () => {
         setLoading(false)
       }catch(error){
         if(error instanceof Error){
-          messageApi.error({
-            type:    'error',
-            content: error.message,
-          })
+          alert(error.message)
         }
       }
     })()
   }, [])
-  return {data, count, setData, loading, setCount, contextHolder}
+  return { data, count, setData, loading, setCount }
 }
 
 export default useSetVisitsData

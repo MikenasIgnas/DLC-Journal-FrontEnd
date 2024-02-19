@@ -26,7 +26,7 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
   React.useEffect(() => {
     (async () => {
       try {
-        const rackRes       = await get(`site/rack?premiseId=${premiseId}&page=1&limit=10`, cookies.access_token)
+        const rackRes       = await get(`site/rack?premiseId=${premiseId}`, cookies.access_token)
         const companiesRes  = await get('company/company', cookies.access_token)
         setCompanies(companiesRes)
         setRacks(rackRes)
@@ -50,7 +50,7 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
 
   return (
     <div>
-      <List dataSource={racks} renderItem={(item) =>
+      <List style={{overflow: 'auto', maxHeight: '350px'}} dataSource={racks} renderItem={(item) =>
         <RacksListItem
           companies={companies}
           item={item}

@@ -70,7 +70,7 @@ const CompaniesListPage = () => {
         const permissionsRes  = await get('company/permission', cookies.access_token)
         const allComapnies    = await get(fetchCompaniesUrl, cookies.access_token)
         const countCompanies  = await get('company/company/count', cookies.access_token)
-        setCompaniesCount(countCompanies)
+        setCompaniesCount(20)
         const mainCompanies = allComapnies.filter((el: CompaniesType) => el.parentId !== null || el.parentId !== undefined )
         setPermissions(permissionsRes)
         setCompanies(mainCompanies)

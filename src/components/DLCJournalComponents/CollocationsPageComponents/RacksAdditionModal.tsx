@@ -26,7 +26,7 @@ const RacksAdditionModal = () => {
     (async () => {
       try {
         if(premiseId){
-          const rackRes:Racks[]  = await get(`site/rack?premiseId=${premiseId}&page=1&limit=10`, cookies.access_token)
+          const rackRes:Racks[]  = await get(`site/rack?premiseId=${premiseId}`, cookies.access_token)
           const filter = rackRes?.filter((el: Racks) => el.premiseId === premiseId)
           setRacks(filter)
         }
