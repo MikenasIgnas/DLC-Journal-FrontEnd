@@ -1,5 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { CompaniesType, EmployeesType, FullSiteData } from '../../types/globalTypes'
+import {
+  createSlice,
+  PayloadAction,
+} from '@reduxjs/toolkit'
+
+import {
+  CompaniesType,
+  CompanyDocuments,
+  EmployeesType,
+  FullSiteData,
+} from '../../types/globalTypes'
 
 interface SingleCompanyReducer {
     singleCompany:      CompaniesType | undefined
@@ -9,6 +18,7 @@ interface SingleCompanyReducer {
     siteId?:            string | null
     parentCompanies:    CompaniesType[]
     loading:            boolean
+    companyDocuments:   CompanyDocuments[]
 }
 
 const initialState: SingleCompanyReducer = {
@@ -16,6 +26,7 @@ const initialState: SingleCompanyReducer = {
   companiesEmployees: [],
   fullSiteData:       [],
   parentCompanies:    [],
+  companyDocuments:   [],
   loading:            false,
 }
 
@@ -44,6 +55,9 @@ const singleCompanySlice = createSlice({
     setLoading(state, { payload }: PayloadAction<boolean>) {
       state.loading = payload
     },
+    setCompanyDocuments(state, { payload }: PayloadAction<CompanyDocuments[]>) {
+      state.companyDocuments = payload
+    },
     resetSingleCompanyReducer(){
       return initialState
     },
@@ -58,6 +72,7 @@ export const {
   setSiteId,
   setParentCompanies,
   setLoading,
+  setCompanyDocuments,
   resetSingleCompanyReducer,
 } = singleCompanySlice.actions
 

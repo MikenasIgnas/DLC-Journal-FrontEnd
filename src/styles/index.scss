@@ -1261,3 +1261,9 @@ thead[class*="ant-table-thead"] th{
   background-color: rgb(177, 177, 177);
 
 }
+
+:where(.css-dev-only-do-not-override-1kvti75).ant-upload-wrapper .ant-upload-select {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
