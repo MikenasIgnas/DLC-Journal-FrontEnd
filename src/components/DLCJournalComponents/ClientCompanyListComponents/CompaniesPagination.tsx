@@ -8,8 +8,13 @@ type CompaniesPaginationProps = {
 const CompaniesPagination = ({companiesCount}: CompaniesPaginationProps) => {
   const [searhParams, setSearchParams] = useSearchParams()
   const currentPage = searhParams.get('page')
+  const name = searhParams.get('name')
   const changePage = async(page: number, limit: number) => {
-    setSearchParams(`page=${page}&limit=${limit}`)
+    if(!name){
+      setSearchParams(`page=${page}&limit=${limit}`)
+    }else{
+      setSearchParams(`page=${page}&limit=${limit}&name=${name}`)
+    }
   }
   return (
     <>

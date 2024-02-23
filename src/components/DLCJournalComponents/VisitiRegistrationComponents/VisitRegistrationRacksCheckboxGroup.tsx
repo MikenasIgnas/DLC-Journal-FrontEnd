@@ -31,7 +31,8 @@ const VisitRegistraTionRacksCheckboxGroup = ({ premise }: VisitRegistraTionRacks
   const dispatch            = useAppDispatch()
   const checkedList         = useAppSelector((state) => state.racks.checkedList).filter((el) => racksIds.includes(el))
   const companies           = useAppSelector((state) => state.visit.companies)
-  const hasMatchingRacks    = companies.filter(company => company.racks.some(rack => checkedList.includes(rack))).length > 1
+  const filteredDLC         = companies.filter((el) => el.name !== 'Duomenų logistikos centras')
+  const hasMatchingRacks    = filteredDLC.filter(company => company.racks.some(rack => checkedList.includes(rack))).length > 1
   const checkAll            = racksIds.every((el) => checkedList.includes(el))
   const indeterminate       = checkedList?.length > 0 && checkedList.length < selectPremiseRacks.length
 
@@ -48,6 +49,7 @@ const VisitRegistraTionRacksCheckboxGroup = ({ premise }: VisitRegistraTionRacks
       dispatch(removeFromChecklist(racksIds))
     }
   }
+
   return (
     <Card
       className='CollocationItemCard'

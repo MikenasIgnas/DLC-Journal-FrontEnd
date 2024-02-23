@@ -1,4 +1,5 @@
 import React                from 'react'
+import RacksList            from './RacksList'
 import {
   Card,
   Divider,
@@ -13,7 +14,6 @@ import {
 
 import { selectPremises }   from '../../../../auth/SingleCompanyReducer/selector'
 import { useSearchParams }  from 'react-router-dom'
-import RacksList            from './RacksList'
 import { setSiteId }        from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 
 type ColocationViewProps = {
@@ -43,6 +43,7 @@ const CompaniesRacks = ({ site }:ColocationViewProps) => {
                 <RacksList premise={premise}/>
               </div>
             )}
+            <div>Kolokacijos J13 {companyPremise.length}</div>
           </Card>
           : <Empty description='Įmonė spintų neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />
         }

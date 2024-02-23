@@ -45,7 +45,6 @@ const useFetchSingleCompany = () => {
   React.useEffect(() => {
     dispatch(setLoading(true))
     try{
-
       const fetchData = async() => {
         const singleCompany: CompaniesType          = await get(`company/company?id=${id}`, cookies.access_token)
         const companyEmployees: EmployeesType[]     = await get(`company/CompanyEmployee?companyId=${id}&limit=10&page=1`, cookies.access_token)

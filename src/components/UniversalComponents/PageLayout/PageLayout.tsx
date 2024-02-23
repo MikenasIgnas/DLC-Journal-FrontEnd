@@ -94,7 +94,6 @@ const PageLayout = ({children}:PageLayoutProps) => {
         }
       }
     })()
-
   }, [])
 
 
@@ -235,7 +234,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
                 </div>
               </Sider>
           }
-          <Layout className='Layout'>
+          <Layout style={{marginLeft: collapsed ? '78px' : '250px'}} className='Layout'>
             {
               windowSize > 600 ?
                 <Header className='Header'>

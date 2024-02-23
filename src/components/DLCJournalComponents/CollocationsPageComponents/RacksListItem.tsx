@@ -1,26 +1,32 @@
 /* eslint-disable max-len */
 import React          from 'react'
+import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+
 import {
   DeleteOutlined,
   EditOutlined,
   SaveOutlined,
 }                     from '@ant-design/icons'
+
 import {
   Input,
   List,
   Tag,
   message,
 }                     from 'antd'
+
 import {
   CompaniesType,
   Racks,
 }                     from '../../../types/globalTypes'
+
 import {
   deleteItem,
   put,
 }                     from '../../../Plugins/helpers'
+
 import { useCookies } from 'react-cookie'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import { useNavigate } from 'react-router'
 
 type RacksListItem = {
     item:            Racks
@@ -36,6 +42,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   const [edit, setEdit]                   = React.useState(false)
   const [rackNameInput, setRackNameInput] = React.useState<string | undefined>(item.name)
   const [messageApi, contextHolder]       = message.useMessage()
+  const navigate                          = useNavigate()
 
   const deleteRack = async(id: string | undefined) => {
     try{
@@ -82,13 +89,14 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
   }
 
   const findMatchingCompanies = (companies: CompaniesType[] | undefined, itemId: string | undefined) => {
-    const matchingCompanies = companies?.filter(item => itemId && item.racks.includes(itemId)).map(item => item.name)
+    const matchingCompanies = companies?.filter(company => itemId && company.racks.includes(itemId)).map(item => ({name: item.name, id: item._id}))
     if(matchingCompanies){
       return { matchFound: true, companyNames: matchingCompanies }
     }
   }
 
   const matchingCompanies = findMatchingCompanies(companies, item._id)
+
   return (
     <List.Item>
       <List.Item.Meta
@@ -104,7 +112,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
               </React.Fragment>
             ) : (
               <React.Fragment>
-                <p>{item.name}</p>
+                <div>{item.name}</div>
                 <div style={{display: 'flex'}}>
                   <EditOutlined onClick={editRack} style={{ marginRight: 8 }} />
                   <DeleteOutlined onClick={() => deleteRack(item._id)} />
@@ -115,7 +123,16 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
         }
         description={
           <div>
-            {matchingCompanies?.matchFound ? matchingCompanies?.companyNames.map((el) => <Tag color='blue' key={el}>{el}</Tag>) : null}
+            {matchingCompanies?.matchFound ?
+              matchingCompanies?.companyNames.map((el) =>
+                <Tag
+                  style={{cursor: 'pointer'}}
+                  onClick={() => navigate(`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}`)}
+                  color='blue'
+                  key={el.id}>
+                  {el.name}
+                </Tag>)
+              : null}
           </div>
         }
       ></List.Item.Meta>
