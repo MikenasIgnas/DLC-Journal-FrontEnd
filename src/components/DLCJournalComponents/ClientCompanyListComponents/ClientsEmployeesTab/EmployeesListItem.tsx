@@ -9,9 +9,10 @@ type EmployeesListItemProps = {
     listButtons?: (listItemId: string | undefined) => JSX.Element[] | undefined
     title?:       JSX.Element | string
     id:           string | undefined
+    description:  JSX.Element | string;
 }
 
-const EmployeesListItem = ({ item, altImage, id, listButtons, photosFolder, title }: EmployeesListItemProps) => {
+const EmployeesListItem = ({ item, altImage, id, listButtons, photosFolder, title, description }: EmployeesListItemProps) => {
   const buttons = listButtons && listButtons(id)
 
   return (
@@ -26,7 +27,7 @@ const EmployeesListItem = ({ item, altImage, id, listButtons, photosFolder, titl
           </div>
         }
         title={title}
-        description={item?.occupation}
+        description={description}
       />
     </List.Item>
   )

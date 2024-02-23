@@ -11,15 +11,16 @@ import {
 } from '../../types/globalTypes'
 
 interface SingleCompanyReducer {
-    singleCompany:      CompaniesType | undefined
-    companyId?:         string
-    companiesEmployees: EmployeesType[]
-    fullSiteData:       FullSiteData[]
-    siteId?:            string | null
-    parentCompanies:    CompaniesType[]
-    loading:            boolean
-    companyDocuments:   CompanyDocuments[]
-}
+    singleCompany:          CompaniesType | undefined
+    companyId?:             string
+    companiesEmployees:     EmployeesType[]
+    fullSiteData:           FullSiteData[]
+    siteId?:                string | null
+    parentCompanies:        CompaniesType[]
+    loading:                boolean
+    companyDocuments:       CompanyDocuments[]
+    companyEmployeesCount?: number
+  }
 
 const initialState: SingleCompanyReducer = {
   singleCompany:      undefined,
@@ -58,6 +59,9 @@ const singleCompanySlice = createSlice({
     setCompanyDocuments(state, { payload }: PayloadAction<CompanyDocuments[]>) {
       state.companyDocuments = payload
     },
+    setCompanyEmployeesCount(state, { payload }: PayloadAction<number>) {
+      state.companyEmployeesCount = payload
+    },
     resetSingleCompanyReducer(){
       return initialState
     },
@@ -73,6 +77,7 @@ export const {
   setParentCompanies,
   setLoading,
   setCompanyDocuments,
+  setCompanyEmployeesCount,
   resetSingleCompanyReducer,
 } = singleCompanySlice.actions
 

@@ -57,6 +57,8 @@ const SingleCompanyPage = () => {
   const siteId                            = searchParams.get('siteId')
   const tabKey                            = searchParams.get('tabKey')
   const [messageApi, contextHolder]       = message.useMessage()
+  const page                              = searchParams.get('page') || 1
+  const limit                             = searchParams.get('limit') || 10
   useFetchSingleCompany()
 
   const saveChanges = async(values:CompanyFormType) => {
@@ -107,9 +109,9 @@ const SingleCompanyPage = () => {
 
   const changeTab = (key: string) => {
     if(siteId){
-      setSearchParams(`siteId=${siteId}&tabKey=${key}`)
+      setSearchParams(`?page=${page}&limit=${limit}&siteId=${siteId}&tabKey=${key}`)
     }else{
-      setSearchParams(`tabKey=${key}`)
+      setSearchParams(`?page=${page}&limit=${limit}&tabKey=${key}`)
     }
   }
 

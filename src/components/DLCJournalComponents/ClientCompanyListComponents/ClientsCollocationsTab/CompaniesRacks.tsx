@@ -17,7 +17,7 @@ import { useSearchParams }  from 'react-router-dom'
 import { setSiteId }        from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 
 type ColocationViewProps = {
-  site: FullSiteData
+  site:           FullSiteData
 }
 
 const CompaniesRacks = ({ site }:ColocationViewProps) => {
@@ -25,9 +25,11 @@ const CompaniesRacks = ({ site }:ColocationViewProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tabKey                          = searchParams.get('tabKey')
   const dispatch                        = useAppDispatch()
+  const page                            = searchParams.get('page')
+  const limit                           = searchParams.get('limit')
 
   React.useEffect(() => {
-    setSearchParams(`siteId=${site._id}&tabKey=${tabKey}`)
+    setSearchParams(`page=${page}&limit=${limit}&siteId=${site._id}&tabKey=${tabKey}`)
     dispatch(setSiteId(site._id))
   },[])
 
