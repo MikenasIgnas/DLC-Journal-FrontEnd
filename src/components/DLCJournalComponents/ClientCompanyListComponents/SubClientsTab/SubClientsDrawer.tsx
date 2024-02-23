@@ -150,6 +150,7 @@ const SubClientsDrawer = ({open, subClientId, onClose}:SubClientsDrawerProps) =>
         bordered
         renderItem={(item: EmployeesType) => (
           <EmployeesListItem id={item._id}
+            description={item.occupation}
             title={`${item.name} ${item.lastname}`}
             photosFolder={'../ClientsEmployeesPhotos'}
             altImage={'noUserImage.jpeg'}

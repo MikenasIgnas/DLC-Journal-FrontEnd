@@ -9,11 +9,9 @@ import {
 }                                         from 'antd'
 import {
   deleteItem,
-  get,
 }                                         from '../../../../Plugins/helpers'
 import { useCookies }                     from 'react-cookie'
 import {
-  useParams,
   useSearchParams,
 }                                         from 'react-router-dom'
 import {
@@ -26,19 +24,23 @@ import ClientsEmployeeDrawer              from './ClientsEmployeeDrawer'
 import HighlightText                      from '../../../UniversalComponents/HighlightText'
 import EmployeesListItem                  from './EmployeesListItem'
 import SuccessMessage                     from '../../../UniversalComponents/SuccessMessage'
+import useDelay from '../../../../Plugins/useDelay'
 
 
 const ClientsEmployeeList = () => {
   const [cookies]                       = useCookies(['access_token'])
   const [searchParams, setSearchParams] = useSearchParams()
   const dispatch                        = useAppDispatch()
-  const employeeFilter                  = searchParams.get('employeeFilter')
-  const {id}                            = useParams()
+  const search                            = searchParams.get('search')
   const companiesEmployees              = useAppSelector((state) => state.singleCompany.companiesEmployees)
   const siteId                          = searchParams.get('siteId')
   const tabKey                          = searchParams.get('tabKey')
   const loading                         = useAppSelector((state) => state.singleCompany.loading)
   const [messageApi, contextHolder]     = message.useMessage()
+  const page                            = searchParams.get('page')
+  const companyEmployeeCount            = useAppSelector((state) => state.singleCompany.companyEmployeesCount)
+  const limit                           = searchParams.get('limit')
+  const delay                           = useDelay()
 
   const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
     setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}&siteId=${siteId}&tabKey=${tabKey}`)
@@ -78,21 +80,22 @@ const ClientsEmployeeList = () => {
   }
 
   const onChange = async(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const filtered = companiesEmployees?.filter((el) => `${el.name} ${el.lastname}`.toLowerCase().includes(e.target.value.toLocaleLowerCase()))
-    setSearchParams(`employeeFilter=${e.target.value.toLowerCase()}`)
-    dispatch(setCompaniesEmployees(filtered))
-    if(e.target.value === ''){
-      try{
-        const companyEmployees  = await get(`company/CompanyEmployee?id=${id}`, cookies.access_token)
-        dispatch(setCompaniesEmployees(companyEmployees))
-      }catch(error){
-        if(error instanceof Error){
-          messageApi.error({
-            type:    'error',
-            content: error.message,
-          })
-        }
+
+    const searchTerm = e.target.value.toLowerCase()
+    delay( async() => {
+      if (searchTerm === '') {
+        setSearchParams(`?page=${page}&limit=${limit}&tabKey=${tabKey}`)
+      } else {
+        setSearchParams(`page=${page}&limit=${limit}&tabKey=${tabKey}&search=${e.target.value.toLowerCase()}`)
       }
+    })
+  }
+
+  const changePage = async(page: number, limit: number) => {
+    if(search){
+      setSearchParams(`page=${page}&limit=${limit}&tabKey=${tabKey}&search=${search}`)
+    }else{
+      setSearchParams(`page=${page}&limit=${limit}&tabKey=${tabKey}`)
     }
   }
 
@@ -101,19 +104,22 @@ const ClientsEmployeeList = () => {
       <Divider>Darbuotojai</Divider>
       <Input style={{marginBottom: '15px'}} onChange={onChange} placeholder='Ieškoti darubotojo'/>
       <List
+        pagination={{
+          defaultCurrent:  Number(page),
+          total:           companyEmployeeCount,
+          onChange:        changePage,
+          showSizeChanger: true,
+          align:           'center',
+        }}
         loading={loading}
         locale={{emptyText: 'Nėra pridėtų darbuotojų'}}
         dataSource={companiesEmployees}
         bordered
-        pagination={{
-          pageSize: 10,
-          position: 'bottom',
-          align:    'center',
-        }}
         renderItem={(item) => (
           <EmployeesListItem id={item._id}
+            description={HighlightText(search, `${item.occupation}`)}
             listButtons={() => listButtons(item._id, item.companyId)}
-            title={HighlightText(employeeFilter, `${item.name} ${item.lastname}`)}
+            title={HighlightText(search, `${item.name} ${item.lastname}`)}
             photosFolder={'../ClientsEmployeesPhotos'}
             altImage={'noUserImage.jpeg'}
             item={item}

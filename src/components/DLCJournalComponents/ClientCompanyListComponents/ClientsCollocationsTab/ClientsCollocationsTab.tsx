@@ -21,7 +21,8 @@ const ClientsCollocationsTab = () => {
   const dispatch                          = useAppDispatch()
   const siteId                            = searchParams.get('siteId')
   const tabKey                            = searchParams.get('tabKey')
-
+  const page                              = searchParams.get('page')
+  const limit                             = searchParams.get('limit')
   const items: TabsProps['items'] = sites?.map((site) => ({
     key:      site._id,
     label:    site.name,
@@ -29,7 +30,7 @@ const ClientsCollocationsTab = () => {
   }))
 
   const changeTab = (key: string) => {
-    setSearchParams(`?siteId=${key}&tabKey=${tabKey}`)
+    setSearchParams(`page=${page}&limit=${limit}&siteId=${key}&tabKey=${tabKey}`)
     dispatch(setSiteId(key))
   }
 
