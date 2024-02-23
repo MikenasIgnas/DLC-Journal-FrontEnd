@@ -49,33 +49,27 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
 
   const addCompany = async(values: CompanyFormType) => {
     values.racks = checkedList
-    if(checkedList.length <= 0 || checkedList.length <= 0 ){
-      messageApi.error({
-        type:    'error',
-        content: 'Privaloma pasirinkti kolokaciją',
+
+    try{
+      if (fileList && fileList.length > 0) {
+        values.photo = fileList[0]
+      }
+
+      await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
+
+      form.resetFields()
+      dispatch(setOpenCompaniesAdditionModal(false))
+
+      messageApi.success({
+        type:    'success',
+        content: 'Įmonė pridėta',
       })
-    }else{
-      try{
-        if (fileList && fileList.length > 0) {
-          values.photo = fileList[0]
-        }
-
-        await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
-
-        form.resetFields()
-        dispatch(setOpenCompaniesAdditionModal(false))
-
-        messageApi.success({
-          type:    'success',
-          content: 'Įmonė pridėta',
+    }catch(error){
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
         })
-      }catch(error){
-        if(error instanceof Error){
-          messageApi.error({
-            type:    'error',
-            content: error.message,
-          })
-        }
       }
     }
   }

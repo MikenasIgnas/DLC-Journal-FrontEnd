@@ -7,7 +7,7 @@ import { useCookies }         from 'react-cookie'
 import {
   useParams,
   useSearchParams,
-}                            from 'react-router-dom'
+}                             from 'react-router-dom'
 
 import {
   Button,
@@ -32,7 +32,7 @@ import SubClientsTab          from '../../components/DLCJournalComponents/Client
 import SingleCompanyTitle     from '../../components/DLCJournalComponents/ClientCompanyListComponents/SingleCompaniesTitle'
 import ClientsDocumentsTab    from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
 import useFetchSingleCompany  from '../../Plugins/useFetchSingleCompany'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage         from '../../components/UniversalComponents/SuccessMessage'
 
 
 type CompanyFormType = {
@@ -45,18 +45,18 @@ type CompanyFormType = {
 };
 
 const SingleCompanyPage = () => {
-  const [cookies]                       = useCookies(['access_token'])
-  const {id}                            = useParams()
-  const [form]                          = useForm()
-  const [fileList, setFileList]         = React.useState<UploadFile[]>([])
-  const [, setUploading]                = React.useState(false)
-  const [searchParams, setSearchParams] = useSearchParams()
-  const dispatch                        = useAppDispatch()
-  const editCompanyPage                 = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
-  const checkedList                     = useAppSelector((state) => state.racks.checkedList)
-  const siteId                          = searchParams.get('siteId')
-  const tabKey                          = searchParams.get('tabKey')
-  const [messageApi, contextHolder]     = message.useMessage()
+  const [cookies]                         = useCookies(['access_token'])
+  const {id}                              = useParams()
+  const [form]                            = useForm()
+  const [fileList, setFileList]           = React.useState<UploadFile[]>([])
+  const [, setUploading]                  = React.useState(false)
+  const [searchParams, setSearchParams]   = useSearchParams()
+  const dispatch                          = useAppDispatch()
+  const editCompanyPage                   = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
+  const checkedList                       = useAppSelector((state) => state.racks.checkedList)
+  const siteId                            = searchParams.get('siteId')
+  const tabKey                            = searchParams.get('tabKey')
+  const [messageApi, contextHolder]       = message.useMessage()
   useFetchSingleCompany()
 
   const saveChanges = async(values:CompanyFormType) => {

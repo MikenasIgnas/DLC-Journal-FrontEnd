@@ -178,8 +178,8 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
   }
 }
 
-const postDocument = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
-  if(fileList && setUploading && setFileList){
+const postDocument = async (url: string, values: any, token: string, fileList?:any, setFileList?: any) => {
+  if(fileList && setFileList){
 
     const formData = new FormData()
 
@@ -199,8 +199,6 @@ const postDocument = async (url: string, values: any, token: string, fileList?:a
       }
     }
 
-    setUploading(true)
-
     try {
       const response = await fetch(`http://localhost:4002/${url}`, {
         method:  'POST',
@@ -216,8 +214,6 @@ const postDocument = async (url: string, values: any, token: string, fileList?:a
 
     } catch (error) {
       console.log(error)
-    } finally {
-      setUploading(false)
     }
   }else{
     const options = {
@@ -287,26 +283,42 @@ const getFile = async (url: string, token: TokenType) => {
       },
     })
 
+    // Check for various response statuses
+    if (response.status === 404) {
+      console.error('Document file not found')
+      return null
+    }
+
+    if (response.status === 500) {
+      console.error('Unexpected error')
+      return null
+    }
+
     if (response.status === 401) {
       console.error('Unauthorized request')
       return null
     }
 
-    const data = await response.blob()
-    return data
+    // If the response is OK, return the blob
+    if (response.ok) {
+      const data = await response.blob()
+      return data
+    }
+
+    throw new Error('An error occurred while fetching the document')
   } catch (error) {
     console.error(error)
     return null
   }
 }
 
-const downloadFile = async (url: string, token: TokenType) => {
+const downloadFile = async (url: string, name: string, format: string, token: TokenType) => {
   const blob = await getFile(url, token)
   if (blob) {
     const blobUrl = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = blobUrl
-    link.download = 'filename.csv'
+    link.download = `${name}.${format}`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)

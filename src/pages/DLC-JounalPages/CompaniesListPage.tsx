@@ -37,7 +37,7 @@ import { Permissions }                    from '../../types/globalTypes'
 import { resetSingleCompanyEditReducer }  from '../../auth/SingleCompanyEditsReducer/SingleCompanyEditsReducer'
 import { useCookies }                     from 'react-cookie'
 import { CompaniesType }                  from '../../types/globalTypes'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage                     from '../../components/UniversalComponents/SuccessMessage'
 
 const CompaniesListPage = () => {
   const [loading, setLoading]                 = React.useState(false)
@@ -62,18 +62,18 @@ const CompaniesListPage = () => {
       try{
         setLoading(true)
         let fetchCompaniesUrl = `company/company?page=${page}&limit=${limit}`
-
+        let companiesCountUrl ='company/company/count'
         if(name){
-          fetchCompaniesUrl += `company/company?page=${page}&limit=${limit}&name=${name}`
+          fetchCompaniesUrl += `&name=${name}`
+          companiesCountUrl += `?name=${name}`
         }
 
         const permissionsRes  = await get('company/permission', cookies.access_token)
         const allComapnies    = await get(fetchCompaniesUrl, cookies.access_token)
-        const countCompanies  = await get('company/company/count', cookies.access_token)
-        setCompaniesCount(20)
-        const mainCompanies = allComapnies.filter((el: CompaniesType) => el.parentId !== null || el.parentId !== undefined )
+        const countCompanies  = await get(companiesCountUrl, cookies.access_token)
+        setCompaniesCount(countCompanies)
         setPermissions(permissionsRes)
-        setCompanies(mainCompanies)
+        setCompanies(allComapnies)
         setLoading(false)
       }catch(error){
         if(error instanceof Error){
@@ -97,7 +97,7 @@ const CompaniesListPage = () => {
 
   const deleteCompany = async(companyId: string | undefined) => {
     try{
-      await deleteItem('company/company', {id: companyId, parentId: 'null'}, cookies.access_token)
+      await deleteItem('company/company', { id: companyId }, cookies.access_token)
       companyRemoved(companyId)
     }catch(error){
       if(error instanceof Error){
@@ -122,7 +122,7 @@ const CompaniesListPage = () => {
     setSearchValues(searchTerm)
     delay( async() => {
       if (searchTerm === '') {
-        setSearchParams(`company/company?page=${page}&limit=${limit}`)
+        setSearchParams(`?page=${page}&limit=${limit}`)
       } else {
         setSearchParams(`?page=${page}&limit=${limit}&name=${e.target.value}`)
       }
@@ -156,7 +156,7 @@ const CompaniesListPage = () => {
 
   const deletePermission = async(id: string) => {
     try{
-      await deleteItem('company/permission',{id: id}, cookies.access_token)
+      await deleteItem('company/permission',{ id: id }, cookies.access_token)
       permissionRemoved(id)
     }catch(error){
       if(error instanceof Error){
@@ -203,7 +203,12 @@ const CompaniesListPage = () => {
               photosFolder={'CompanyLogos'}
               altImage={'noImage.jpg'}
               listButtons={listButtons}
-              title={<ChildCompaniesTree searchValue={searchValue} companies={companies} item={item} />}
+              title={
+                <ChildCompaniesTree
+                  searchValue={searchValue}
+                  companies={companies}
+                  item={item}
+                />}
             />
           )
         }}/>

@@ -320,3 +320,11 @@ export interface PremiseRacks extends Premises {
 export interface FullSiteData extends Sites {
   premises: PremiseRacks[]
 }
+
+export interface CompanyDocuments {
+  _id:        string;
+  companyId:  string;
+  path:       string;
+  name:       string;
+  format:     string;
+}

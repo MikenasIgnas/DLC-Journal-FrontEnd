@@ -12,6 +12,7 @@ const RacksList = ({ premise }: CollocationListItemsProps) => {
   const premiseRacks = useAppSelector((state) => selectRacks(state, premise._id))
   return (
     <List
+      footer={<div>Spintos: {premiseRacks.length}</div>}
       key={premise._id}
       size='small'
       header={<strong>{premise.name}</strong>}

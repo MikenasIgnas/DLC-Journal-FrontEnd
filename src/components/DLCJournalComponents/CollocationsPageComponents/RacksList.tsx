@@ -50,7 +50,7 @@ const RacksList = ({ premiseId }: RacksListItemProps) => {
 
   return (
     <div>
-      <List style={{overflow: 'auto', maxHeight: '350px'}} dataSource={racks} renderItem={(item) =>
+      <List loading={racks.length > 0 ? false : true} style={{overflow: 'auto', maxHeight: '350px'}} dataSource={racks} renderItem={(item) =>
         <RacksListItem
           companies={companies}
           item={item}
