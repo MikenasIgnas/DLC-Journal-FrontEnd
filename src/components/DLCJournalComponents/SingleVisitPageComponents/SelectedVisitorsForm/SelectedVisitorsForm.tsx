@@ -13,7 +13,6 @@ import {
   Form,
   List,
   message,
-  UploadFile,
 }                                           from 'antd'
 
 import {
@@ -54,7 +53,7 @@ const SelectedVisitorsForm = () => {
   const visitId                     = searchParams.get('id')
   const openVisitorAddition         = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
   const [messageApi, contextHolder] = message.useMessage()
-
+  const isSecurity                  = useAppSelector((state) => state.auth.isSecurity)
 
   const saveChanges = async (values: VisitorsData) => {
     dispatch(setEditVisitors(!editVisitors))
@@ -83,6 +82,12 @@ const SelectedVisitorsForm = () => {
           }
 
           await put('visit/visitor', updateValues, cookies.access_token, signatureFile)
+
+
+          messageApi.success({
+            type:    'success',
+            content: 'Išsaugota',
+          })
         }
       } catch (error) {
         if (error instanceof Error) {
@@ -106,7 +111,7 @@ const SelectedVisitorsForm = () => {
       {openVisitorAddition && <VisitorAdditionList setOpenVisitorAddition={setOpenVisitorAddition}/>}
       <Card
         title={<RegisteredVisitorsListItemCardTitle/>} style={{margin: '10px', backgroundColor: '#f9f9f9'}}
-        extra={<Button onClick={() => dispatch(setOpenVisitorAddition(true))} type='link' >Pridėti Lankytoją</Button>}>
+        extra={!isSecurity && <Button onClick={() => dispatch(setOpenVisitorAddition(true))} type='link' >Pridėti Lankytoją</Button>}>
         <List
           dataSource={visitingEmployees}
           renderItem={(item) =>

@@ -15,7 +15,7 @@ const DLCJournalStartPage = () => {
     <div className='DLCJournalStartPageContainer'>
       <div className='DisplayFlex'>
         {!isSecurity ? <JournalStartPageCard icon={<FileAddOutlined/>} navigateLink={'/DLC Žurnalas/Vizito_Registracija'} buttonText={'Registruoti naują vizitą'}/> : null}
-        { <JournalStartPageCard icon={<ReadOutlined />} navigateLink={!isSecurity ? '/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true': '/DLC Žurnalas/Vizitai?page=1&limit=10&selectFilter=T72'} buttonText={'Vizitai'}/>}
+        { <JournalStartPageCard icon={<ReadOutlined />} navigateLink={!isSecurity ? '/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true': '/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true&selectFilter=T72'} buttonText={'Vizitai'}/>}
         {!isSecurity ? <JournalStartPageCard icon={<UnorderedListOutlined/>} navigateLink={'/DLC Žurnalas/Įmonių_Sąrašas?page=1&limit=10&descending=true'} buttonText={'Įmonių sąrašas'}/> : null}
       </div>
       {

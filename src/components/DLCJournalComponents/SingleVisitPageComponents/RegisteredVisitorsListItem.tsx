@@ -40,16 +40,17 @@ type RegisteredVisitorsListItemProps = {
 }
 
 const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) => {
-  const [cookies]                     = useCookies(['access_token'])
-  const signatureCanvasRef            = React.useRef<SignatureCanvas>(null)
-  const [open, setOpen]               = React.useState(false)
-  const windowSize                    = useSetWindowsSize()
-  const editVisitors                  = useAppSelector((state) => state.visitPageEdits.editVisitors)
-  const dispatch                      = useAppDispatch()
-  const visitorIdTypes                = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
-  const [messageApi, contextHolder]   = message.useMessage()
-  const form                          = Form.useFormInstance<VisitsType>()
+  const [cookies]                       = useCookies(['access_token'])
+  const signatureCanvasRef              = React.useRef<SignatureCanvas>(null)
+  const [open, setOpen]                 = React.useState(false)
+  const windowSize                      = useSetWindowsSize()
+  const editVisitors                    = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const dispatch                        = useAppDispatch()
+  const visitorIdTypes                  = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
+  const [messageApi, contextHolder]     = message.useMessage()
+  const form                            = Form.useFormInstance<VisitsType>()
   const [signatureUrl, setSignatureURl] = React.useState('')
+  const isSecurity                      = useAppSelector((state) => state.auth.isSecurity)
 
   const onOk = async() => {
     if(signatureCanvasRef.current){
@@ -108,9 +109,9 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
               </>
           }
           <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={item.visitorIdType}>
-            <Select style={{width: '100%'}} disabled={!editVisitors} options={visitorIdTypes} />
+            <Select disabled={!editVisitors} options={visitorIdTypes} />
           </Form.Item>
-          <Button onClick={deleteVisitor}>Pašalinti lankytoją</Button>,
+          {!isSecurity && <Button onClick={deleteVisitor}>Pašalinti lankytoją</Button> }
         </div>,
       ]}
     >

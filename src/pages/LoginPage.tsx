@@ -42,7 +42,7 @@ const LoginPage = () => {
       if(!user.isSecurity){
         navigate('/DLC Žurnalas?menuKey=1')
       }else{
-        navigate('/DLC Žurnalas/Vizitai?page=1&limit=10&selectFilter=T72')
+        navigate('/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true&selectFilter=T72')
       }
     }catch (error){
       if (error instanceof Error){

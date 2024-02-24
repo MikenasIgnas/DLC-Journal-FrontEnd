@@ -6,6 +6,7 @@ import { FilterOptions }      from '../../../types/globalTypes'
 import { SetURLSearchParams } from 'react-router-dom'
 import TablePagination        from './TablePagination'
 import VisitsConfigModal      from '../../DLCJournalComponents/VisistPageComponents/VisitsConfigModal'
+import { useAppSelector } from '../../../store/hooks'
 
 type FullTableProps = {
   tableColumns:     React.ReactNode;
@@ -26,10 +27,11 @@ const FullTable = ({
   documentCount,
   pdfGenerator,
 }: FullTableProps) => {
+  const isSecurity = useAppSelector((state) => state.auth.isSecurity)
   return (
     <>
-      <TableControls pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>
-      <VisitsConfigModal/>
+      {!isSecurity && <TableControls pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>}
+      {!isSecurity && <VisitsConfigModal/>}
       <Table tableRows={tableRows} tableColumns={tableColumns}/>
       <TablePagination documentCount={documentCount} currentPage={currentPage} setSearchParams={setSearchParams}
       />

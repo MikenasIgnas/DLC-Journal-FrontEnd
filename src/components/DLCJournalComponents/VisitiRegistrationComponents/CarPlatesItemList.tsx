@@ -50,6 +50,7 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
   const carPlates                             = useAppSelector((state) => state.visit.carPlates)
   const dispatch                              = useAppDispatch()
   const [messageApi, contextHolder]           = message.useMessage()
+  const isSecurity                            = useAppSelector((state) => state.auth.isSecurity)
 
   const removeListItem = async(item: string, index: number) => {
     const filtered = list?.filter((_el, i) => index !== i)
@@ -106,6 +107,7 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
       {visitorCount && visitorCount > 0 && selectedSite?.name === 'T72' ?
         <Card title='Pridėti automobilį' style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
           <Search
+            disabled={isSecurity as boolean}
             value={carPlatesInput}
             onChange={(e) => setCarPlatesInput(e.target.value)}
             placeholder='Įveskite automobilio numerius'
@@ -116,7 +118,7 @@ const CarPlatesItemList = ({ list, setList }: ItemListProps) => {
             style={{marginTop: '50px'}}
             dataSource={list ? list : carPlates}
             renderItem={(item, index) =>
-              <List.Item actions={[<Button key={index} type='link' onClick={() => removeListItem(item, index)}>Ištrinti</Button>]}>
+              <List.Item actions={[!isSecurity && <Button key={index} type='link' onClick={() => removeListItem(item, index)}>Ištrinti</Button>]}>
                 <List.Item.Meta title={ <div style={{width: '100%'}}>{item}</div>}/>
               </List.Item>
             }
