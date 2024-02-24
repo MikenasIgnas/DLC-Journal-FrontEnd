@@ -10,7 +10,7 @@ const useGenerateSingleVisitPDF = () => {
   const generateSingleVisitPDF = async (visitId: string) => {
     try {
       setLoading(true)
-      const response = await getPdfFile(`generatePDF?visitId=${visitId}`, cookies.access_token)
+      const response = await getPdfFile(`visit/pdf?id=${visitId}`, cookies.access_token)
       if(response){
         const blob = new Blob([response], { type: 'visit/pdf' })
         const link = document.createElement('a')

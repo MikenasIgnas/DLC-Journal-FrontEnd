@@ -1,18 +1,48 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                                        from 'react'
-import RegisteredVisitorsListItemCardTitle          from '../RegisteredVisitorsListItemCardTitle'
-import RegisteredVisitorsListItem                   from '../RegisteredVisitorsListItem'
-import { Button, Card, Form, List, message }        from 'antd'
-import { useAppDispatch, useAppSelector }           from '../../../../store/hooks'
-import VisitorAdditionList                          from '../../VisitiRegistrationComponents/VisitorAdditionList'
-import { setEditVisitors, setOpenVisitorAddition }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
-import { selectVisitingCompanyEmplyees }            from '../../../../auth/VisitorEmployeeReducer/selectors'
-import {  put }                                     from '../../../../Plugins/helpers'
-import { useSearchParams }                          from 'react-router-dom'
-import { useCookies }                               from 'react-cookie'
-import SuccessMessage from '../../../UniversalComponents/SuccessMessage'
+import React                                from 'react'
+import RegisteredVisitorsListItemCardTitle  from '../RegisteredVisitorsListItemCardTitle'
+import RegisteredVisitorsListItem           from '../RegisteredVisitorsListItem'
+import VisitorAdditionList                  from '../../VisitiRegistrationComponents/VisitorAdditionList'
+import SuccessMessage                       from '../../../UniversalComponents/SuccessMessage'
+
+import {
+  Button,
+  Card,
+  Form,
+  List,
+  message,
+  UploadFile,
+}                                           from 'antd'
+
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                           from '../../../../store/hooks'
+
+import {
+  setEditVisitors,
+  setOpenVisitorAddition,
+}                                           from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
+
+import { selectVisitingCompanyEmplyees }    from '../../../../auth/VisitorEmployeeReducer/selectors'
+import {  put }                             from '../../../../Plugins/helpers'
+import { useSearchParams }                  from 'react-router-dom'
+import { useCookies }                       from 'react-cookie'
+
+type VisitorInfo = {
+  visitorIdType: string;
+  signatures: string;
+};
+
+type Visitors = {
+  [visitorId: string]: VisitorInfo;
+};
+
+type VisitorsData = {
+  visitors: Visitors;
+};
 
 const SelectedVisitorsForm = () => {
   const [form]                      = Form.useForm()
@@ -25,27 +55,42 @@ const SelectedVisitorsForm = () => {
   const openVisitorAddition         = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
   const [messageApi, contextHolder] = message.useMessage()
 
-  const saveChanges = async(values: any) => {
-    dispatch(setEditVisitors(!editVisitors))
-    if(editVisitors){
-      try{
 
-        visitingEmployees.forEach(visitor => {
+  const saveChanges = async (values: VisitorsData) => {
+    dispatch(setEditVisitors(!editVisitors))
+    if (editVisitors) {
+      try {
+        for (const visitor of visitingEmployees) {
           if (values.visitors[visitor._id]) {
             visitor.visitorIdType = values.visitors[visitor._id].visitorIdType
+            visitor.signatures = values.visitors[visitor._id].signatures
           }
-        })
-        for(const visitor of visitingEmployees){
-          await put('visit/visitor', { id: visitor._id, visitId: visitId, visitorIdType: visitor.visitorIdType }, cookies.access_token)
+
+          let signatureFile
+          if (visitor.signatures) {
+            const signatureDataURL = visitor.signatures
+            if (signatureDataURL) {
+              const resBlob = await fetch(signatureDataURL)
+              const blob = await resBlob.blob()
+              signatureFile = new File([blob], 'signature.png', { type: 'image/png' })
+            }
+          }
+
+          const updateValues = {
+            id:            visitor._id,
+            visitId:       visitId,
+            visitorIdType: visitor.visitorIdType,
+          }
+
+          await put('visit/visitor', updateValues, cookies.access_token, signatureFile)
         }
-      }catch(error){
-        if(error instanceof Error){
+      } catch (error) {
+        if (error instanceof Error) {
           messageApi.error({
             type:    'error',
             content: error.message,
           })
         }
-
       }
     }
   }

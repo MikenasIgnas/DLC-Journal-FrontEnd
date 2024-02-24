@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
-import React                         from 'react'
+import React                          from 'react'
 import {
   Button,
   Form,
@@ -10,45 +9,54 @@ import {
   Select,
   Tag,
   message,
-}                                    from 'antd'
-import SignatureCanvas               from 'react-signature-canvas'
-import { useCookies }                from 'react-cookie'
-import { deleteItem, post }          from '../../../Plugins/helpers'
-import { useParams }                 from 'react-router'
-import useSetWindowsSize             from '../../../Plugins/useSetWindowsSize'
-import { VisitorEmployee }           from '../../../types/globalTypes'
-import { selectVisitorsPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
+}                                       from 'antd'
+
+import {
+  VisitorEmployee,
+  VisitsType,
+}                                       from '../../../types/globalTypes'
+
 import {
   useAppDispatch,
   useAppSelector,
-}                                    from '../../../store/hooks'
-import { removeVisitor }             from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+}                                       from '../../../store/hooks'
+
+import { useCookies }                   from 'react-cookie'
+import { deleteItem }                   from '../../../Plugins/helpers'
+import { selectVisitorsPermissions }    from '../../../auth/VisitorEmployeeReducer/selectors'
+import { removeVisitor }                from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+
+import SignatureCanvas                  from 'react-signature-canvas'
+import useSetWindowsSize                from '../../../Plugins/useSetWindowsSize'
+import SuccessMessage                   from '../../UniversalComponents/SuccessMessage'
+
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+}                                       from '@ant-design/icons'
 
 type RegisteredVisitorsListItemProps = {
   item: VisitorEmployee
 }
 
 const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) => {
-  const {id}                        = useParams()
-  const [cookies]                   = useCookies(['access_token'])
-  const signatureCanvasRef          = React.useRef<any>(null)
-  const [open, setOpen]             = React.useState(false)
-  const windowSize                  = useSetWindowsSize()
-  const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
-  const dispatch                    = useAppDispatch()
-  const visitorIdTypes              = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
-  const [messageApi, contextHolder] = message.useMessage()
+  const [cookies]                     = useCookies(['access_token'])
+  const signatureCanvasRef            = React.useRef<SignatureCanvas>(null)
+  const [open, setOpen]               = React.useState(false)
+  const windowSize                    = useSetWindowsSize()
+  const editVisitors                  = useAppSelector((state) => state.visitPageEdits.editVisitors)
+  const dispatch                      = useAppDispatch()
+  const visitorIdTypes                = useAppSelector((state) => state.visit.visitorIdTypes).map((el) => ({value: el._id, label: el.name}))
+  const [messageApi, contextHolder]   = message.useMessage()
+  const form                          = Form.useFormInstance<VisitsType>()
+  const [signatureUrl, setSignatureURl] = React.useState('')
 
   const onOk = async() => {
     if(signatureCanvasRef.current){
-      const signature = {
-        signature: signatureCanvasRef.current.toDataURL(),
-      }
-      const res = await post(`addSignature?visitId=${id}&employeeId=${item._id}`,signature, cookies.access_token)
-      if(!res.error){
-        setOpen(false)
-      }
+      form.setFieldValue(['visitors', item._id, 'signatures'], signatureCanvasRef.current.toDataURL())
+
+      setSignatureURl(signatureCanvasRef.current.toDataURL())
+      setOpen(false)
     }
   }
 
@@ -75,13 +83,30 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
     }
   }
 
+  const removeSignature = () => {
+    if(signatureCanvasRef.current){
+      signatureCanvasRef.current.clear()
+      setSignatureURl('')
+    }
+  }
   return (
     <List.Item
       className='VisitorsListItemContainer'
       actions={[
-        <div key={item._id} className='SelectedVisitorsButtonContainer'>
+        <div key={item._id} style={{width: !signatureCanvasRef.current ? '500px' : '450px'}} className='SelectedVisitorsButtonContainer'>
           <div>
           </div>
+          {
+            signatureUrl === '' ?
+              <Button disabled={!editVisitors} onClick={() => setOpen(true)}>Pasirašyti</Button>
+              :
+              <>
+                <Tag style={{cursor: 'pointer'}} icon={<CheckCircleOutlined />} color='success'>
+                  Pasirašyta
+                </Tag>
+                <DeleteOutlined type='primary' onClick={() => removeSignature()}/>
+              </>
+          }
           <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={item.visitorIdType}>
             <Select style={{width: '100%'}} disabled={!editVisitors} options={visitorIdTypes} />
           </Form.Item>
@@ -105,7 +130,7 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
         onCancel={onCancel}
         onOk={onOk}
       >
-        <Form.Item name={[item._id, 'signature']}>
+        <Form.Item name={['visitors', item._id, 'signatures']}>
           <SignatureCanvas canvasProps={{width: 500, height: 200 }} ref={signatureCanvasRef} />
         </Form.Item>
       </Modal>
@@ -115,5 +140,3 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
 }
 
 export default RegisteredVisitorsListItem
-
-

@@ -44,13 +44,13 @@ const patch = async (url: string, values: any, token: TokenType) => {
   }
 }
 
-const put = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any) => {
+const put = async (url: string, values: any, token: string, fileList?:any, setUploading?: any, setFileList?: any, formDataName?: string) => {
   if(fileList && setUploading && setFileList){
 
     const formData = new FormData()
 
-    if (fileList && fileList.length > 0) {
-      formData.append('photo', fileList)
+    if (formDataName && fileList && fileList.length > 0) {
+      formData.append(formDataName, fileList)
     }
 
     for (const key in values) {

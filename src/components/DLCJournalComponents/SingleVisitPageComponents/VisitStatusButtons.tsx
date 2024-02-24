@@ -3,9 +3,8 @@ import useVisitValidation  from './useVisitValidation'
 import SuccessMessage      from '../../UniversalComponents/SuccessMessage'
 import { useAppSelector }  from '../../../store/hooks'
 
-
 const VisitStatusButton = () => {
-  const { validate, contextHolder } = useVisitValidation()
+  const { validate, contextHolder, loading } = useVisitValidation()
   const visitData                   = useAppSelector((state) => state.visit.visit)
   const visitStatuses               = useAppSelector((state) => state.visit.visitStatus)
 
@@ -21,10 +20,10 @@ const VisitStatusButton = () => {
     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
       <div style={{ width: '30%', display: 'flex', justifyContent: 'space-around'}}>
         {!visitData?.startDate && (
-          <Button onClick={startVisit}>Pradėti Vizitą</Button>
+          <Button loading={loading} onClick={startVisit}>Pradėti Vizitą</Button>
         )}
         {visitData?.startDate && !visitData?.endDate && (
-          <Button onClick={endVisit}>Baigti Vizitą</Button>
+          <Button loading={loading} onClick={endVisit}>Baigti Vizitą</Button>
         )}
       </div>
       <SuccessMessage contextHolder={contextHolder}/>
