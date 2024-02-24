@@ -43,6 +43,7 @@ const VisitInformationItems = ( edit: boolean) => {
   const preparedStatus        = visitStatuses.find((el) => el._id === visitData?.statusId)
   const dlcEmlpyee            = useAppSelector((state) => state.visit.dlcEmployee)
   const matchingPermissionsItems  =  useAppSelector(selectAllSelectedVisitorPermissions).map((el) => ({value: el._id, label: el.name}))
+
   const changeAddress = async(value:string) => {
     setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&id=${visitData?._id}`)
   }

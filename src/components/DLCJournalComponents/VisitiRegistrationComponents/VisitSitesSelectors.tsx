@@ -101,6 +101,8 @@ const VisitSitesSelectors = () => {
           placeholder='Pasirinkite įmonę'
           onSelect={selectCompany}
           allowClear
+          optionFilterProp='children'
+          filterOption={(input, option) => (option?.label?.toLowerCase() ?? '').includes(input?.toLowerCase())}
           options={companyNames}
         >
         </Select>

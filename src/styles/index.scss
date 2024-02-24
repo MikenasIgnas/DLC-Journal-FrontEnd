@@ -469,7 +469,7 @@ display: flex;
   }
 }
 .RegisteredVisitorsSelect{
-  width: 160px;
+  width: 50%;
 }
 .SelectedVisitorsButtons{
   display: flex;
@@ -488,7 +488,6 @@ display: flex;
 .SelectedVisitorsButtonContainer{
   display: flex; 
   align-items: center; 
-  width: 500px; 
   justify-content: space-around
 }
 .SignatureButtons{

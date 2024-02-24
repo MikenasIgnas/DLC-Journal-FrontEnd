@@ -41,6 +41,7 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
   const dispatch                                                  = useAppDispatch()
   const clientsGuests                                             = useAppSelector((state) => state.visit.guests)
   const [messageApi, contextHolder]                               = message.useMessage()
+  const isSecurity                                                = useAppSelector((state) => state.auth.isSecurity)
 
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
@@ -105,10 +106,10 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
       {
         visitorsCount && visitorsCount > 0 ?
           <Card title={'Atvykstanty tretieji asmenys'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
-            <Input addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
-            <Input addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
+            <Input disabled={isSecurity as boolean} addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
+            <Input disabled={isSecurity as boolean} addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
             <div style={{width: '100%', textAlign: 'center'}}>
-              <Button onClick={onCreate} >Pridėti</Button>
+              {!isSecurity && <Button onClick={onCreate} >Pridėti</Button>}
             </div>
             <List
               locale={{ emptyText: ' ' }}

@@ -186,7 +186,8 @@ export type Visitors = {
   _id:            string;
   employeeId:     string;
   visitId:        string;
-  visitorIdType: string;
+  visitorIdType:  string;
+  signatures:     string;
 }
 export type ClientsGuests = {
   guestName: string;

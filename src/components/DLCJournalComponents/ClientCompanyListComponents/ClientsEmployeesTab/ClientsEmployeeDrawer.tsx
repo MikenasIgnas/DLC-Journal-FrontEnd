@@ -95,7 +95,7 @@ const ClientsEmployeeDrawer = () => {
       try{
         values.companyId = employee?.companyId
         values.id = employee?._id
-        const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList)
+        const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
         setEmployee(response)
         form.setFieldsValue(response)
         messageApi.success({

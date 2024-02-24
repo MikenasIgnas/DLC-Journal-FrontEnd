@@ -68,7 +68,7 @@ const SingleCompanyPage = () => {
         values.id = id
         values.photo = fileList[0]
         values.racks = checkedList
-        await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList)
+        await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
         messageApi.success({
           type:    'success',
           content: 'Išsaugota',
