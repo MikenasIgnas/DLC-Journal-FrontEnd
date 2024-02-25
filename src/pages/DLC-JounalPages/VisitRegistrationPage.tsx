@@ -4,10 +4,14 @@ import { Card, theme }        from 'antd'
 import VisitRegistrationForm  from '../../components/DLCJournalComponents/VisitiRegistrationComponents/VisitRegistrationForm'
 import useFetchVisitData      from '../../Plugins/useFethcVisitData'
 import useFetchSites          from '../../Plugins/useFetchSites'
+import { useAppDispatch }     from '../../store/hooks'
+import { resetFullSiteData }  from '../../auth/SitesReducer/SitesReducer'
+import { resetRacksReducer }  from '../../auth/RacksReducer/RacksReducer'
+import { resetVisitReducer }  from '../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const VisitRegistrationPage= () => {
   const { token } = theme.useToken()
-
+  const dispatch  = useAppDispatch()
   const contentStyle: React.CSSProperties = {
     lineHeight:      '260px',
     color:           token.colorTextTertiary,
@@ -20,6 +24,12 @@ const VisitRegistrationPage= () => {
 
   useFetchVisitData()
   useFetchSites()
+
+  React.useEffect(() => {
+    dispatch(resetVisitReducer())
+    dispatch(resetFullSiteData())
+    dispatch(resetRacksReducer())
+  },[])
 
   return (
     <div style={contentStyle}>

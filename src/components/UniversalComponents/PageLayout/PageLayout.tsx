@@ -69,6 +69,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
   const [collapsed, setCollapsed]   = React.useState(false)
   const [searchParams]              = useSearchParams()
   const menuKey                     = searchParams.get('menuKey')
+  const siteId                      = searchParams.get('siteId')
   const employee                    = useAppSelector((state)=> state.auth.name)
   const dispatch                    = useAppDispatch()
   const isAdmin                     = useAppSelector((state) => state.auth.isAdmin)
@@ -129,7 +130,7 @@ const PageLayout = ({children}:PageLayoutProps) => {
 
   const siderItems: MenuItem[] = [
     getItem('DLC Žurnalas', 'sub1', <ReadOutlined />, [
-      getItem(<Link to={'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
+      getItem(<Link to={siteId ? `DLC Žurnalas?menuKey=1&siteId=${siteId}` : 'DLC Žurnalas?menuKey=1'} >Pradžia</Link>, '1'),
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizito_Registracija?menuKey=2'} >Vizito registracija</Link>, '2'): null,
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Vizitai?menuKey=3&page=1&limit=10&descending=true'} >Vizitai</Link>, '3'): null,
       !isSecurity ? getItem(<Link to={'DLC Žurnalas/Įmonių_Sąrašas?menuKey=4&page=1&limit=10&descending=true'} >Įmonių sąrašas</Link>, '4'): null,

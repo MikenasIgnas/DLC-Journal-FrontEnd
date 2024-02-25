@@ -15,7 +15,6 @@ import {
   useAppSelector,
 }                          from '../store/hooks'
 import {
-  resetVisitReducer,
   setCompanyEmployees,
   setCompanyId,
   setPermissions,
@@ -30,13 +29,12 @@ import {
   setCarPlates,
 }                             from '../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 import { useSearchParams }    from 'react-router-dom'
-import { resetRacksReducer }  from '../auth/RacksReducer/RacksReducer'
 
 const useFetchVisitData = () => {
   const [cookies]                   = useCookies(['access_token'])
   const dispatch                    = useAppDispatch()
   const [searchParams]              = useSearchParams()
-  const visitId                     = searchParams.get('id')
+  const visitId                     = searchParams.get('_id')
   const siteId                      = searchParams.get('siteId')
   const companyId                   = searchParams.get('companyId')
   const editRacks                   = useAppSelector((state) => state.visitPageEdits.editCollocations)
@@ -48,7 +46,7 @@ const useFetchVisitData = () => {
         const companies                               = await get('company/company', cookies.access_token)
         const visitStatusRes: VisitStatus[]           = await get('visit/visitStatus', cookies.access_token)
         if(visitId && cookies.access_token){
-          const singleVisitRes: VisitsType            = await get(`visit/visit/?id=${visitId}`, cookies.access_token)
+          const singleVisitRes: VisitsType            = await get(`visit/visit/?_id=${visitId}`, cookies.access_token)
           const companyEmployeesRes: EmployeesType[]  = await get(`company/CompanyEmployee?companyId=${companyId}`, cookies.access_token)
           const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
           const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
@@ -62,8 +60,8 @@ const useFetchVisitData = () => {
             dispatch(setSiteId(siteId))
           }
 
-          if(singleVisitRes.dlcEmlpyee){
-            const dlcEmployee: EmployeesType            = await get(`user?id=${singleVisitRes.dlcEmlpyee}`, cookies.access_token)
+          if(singleVisitRes.dlcEmployee){
+            const dlcEmployee: EmployeesType           = await get(`user?id=${singleVisitRes.dlcEmployee}`, cookies.access_token)
             dispatch(setDlcEmployee(dlcEmployee))
           }
 
@@ -80,10 +78,6 @@ const useFetchVisitData = () => {
       }
 
       fetchData()
-      return () => {
-        dispatch(resetVisitReducer())
-        dispatch(resetRacksReducer())
-      }
     }catch(error){
       if(error instanceof Error){
         alert(error.message)

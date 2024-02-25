@@ -27,7 +27,7 @@ const VisitorAdditionListItem = ({item, photoFolder, searchEmployeeValue}: Visit
   const windowSize                  = useSetWindowsSize()
   const dispatch                    = useAppDispatch()
   const [searchParams]              = useSearchParams()
-  const visitId                     = searchParams.get('id')
+  const visitId                     = searchParams.get('_id')
   const [messageApi, contextHolder] = message.useMessage()
   const addVisitingClient = async() => {
     try{

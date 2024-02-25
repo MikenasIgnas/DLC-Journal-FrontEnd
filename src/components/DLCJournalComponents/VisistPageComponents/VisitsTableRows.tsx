@@ -17,6 +17,7 @@ import {
 import {
   CompaniesType,
   EmployeesType,
+  Permissions,
   Sites,
   UserType,
   VisitPurpose,
@@ -60,8 +61,8 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
         const companyEmployeesRes:EmployeesType[] = await get('company/CompanyEmployee', cookies.access_token)
         const visitsVisitors                      = companyEmployeesRes.filter((el) => visitorsEmployeeIds.includes(el._id))
         const companiesRes: CompaniesType         = await get(`company/company?id=${visit.companyId}`, cookies.access_token)
-        const visitPuposeRes: VisitPurpose[]      = await get('company/permission', cookies.access_token)
-        const purposes                            = visitPuposeRes.filter((el) => visit.visitPurpose.includes(el._id))
+        const permissionsRes: Permissions[]       = await get('visit/visitPurpose', cookies.access_token)
+        const purposes                            = permissionsRes.filter((el) => visit.visitPurpose.includes(el._id))
         const visitStatusRes                      = await get(`visit/visitStatus?id=${visit.statusId}`, cookies.access_token)
         const siteRes                             = await get(`site/site?id=${visit.siteId}`, cookies.access_token)
         setVisitStatus(visitStatusRes)
@@ -69,8 +70,8 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
         setVisitPurposes(purposes)
         setCompanies(companiesRes)
         setVisitors(visitsVisitors)
-        if(visit?.dlcEmlpyee){
-          const dlcEmployeeRes                      = await get(`user?id=${visit?.dlcEmlpyee}`, cookies.access_token)
+        if(visit?.dlcEmployee){
+          const dlcEmployeeRes                      = await get(`user?id=${visit?.dlcEmployee}`, cookies.access_token)
           setDlcEmployee(dlcEmployeeRes)
         }
       }catch(error){
@@ -133,7 +134,7 @@ const VisitsTableRows = ({ rowMenu, visit }: VisitsTableRowsProps) => {
           <Button
             type='link'
             style={{border: '1px solid #1677ff'}}
-            onClick={() => navigate(`${visit._id}?siteId=${visit.siteId}&companyId=${visit.companyId}&id=${visit._id}`)}>
+            onClick={() => navigate(`${visit._id}?siteId=${visit.siteId}&companyId=${visit.companyId}&_id=${visit._id}`)}>
           Peržiūrėti
           </Button>
         </td>

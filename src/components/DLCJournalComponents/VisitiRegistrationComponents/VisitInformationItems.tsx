@@ -15,7 +15,10 @@ import {
   useSearchParams,
 }                                 from 'react-router-dom'
 
-import { useAppSelector }         from '../../../store/hooks'
+import {
+  useAppDispatch,
+  useAppSelector,
+}                                 from '../../../store/hooks'
 
 import {
   calculateTimeDifference,
@@ -23,29 +26,35 @@ import {
   convertUTCtoLocalDateTime,
 }                                 from '../../../Plugins/helpers'
 
-import { selectAllSelectedVisitorPermissions, selectCompany }          from '../../../auth/VisitorEmployeeReducer/selectors'
+import {
+  selectAllSelectedVisitorPermissions,
+  selectCompany,
+}                                 from '../../../auth/VisitorEmployeeReducer/selectors'
 import statusMap                  from '../VisistPageComponents/visitStatusMap'
+import { setSiteId }              from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const VisitInformationItems = ( edit: boolean) => {
-  const [, setSearchParams]   = useSearchParams()
-  const sites                 = useAppSelector((state) => state.sites.fullSiteData)
-  const addresses             = sites?.map((el) => ({value: el._id, label: el.name}))
-  const [searchParams]        = useSearchParams()
-  const visitData             = useAppSelector((state) => state.visit.visit)
-  const company               = useAppSelector(selectCompany)
-  const siteId                = searchParams.get('siteId')
-  const site                  = sites?.filter((el) => el._id === siteId)
-  const creationDate          = convertUTCtoLocalDate(visitData?.date)
-  const creationTime          = convertUTCtoLocalDateTime(visitData?.date)
-  const permissions           = useAppSelector((state) => state.visit.permissions)
-  const selectedVisitPurposes = permissions.filter((el) => visitData?.visitPurpose.includes(el._id)).map((item) => ({value: item._id, label: item.name}))
-  const visitStatuses         = useAppSelector((state) => state.visit.visitStatus)
-  const preparedStatus        = visitStatuses.find((el) => el._id === visitData?.statusId)
-  const dlcEmlpyee            = useAppSelector((state) => state.visit.dlcEmployee)
+  const [, setSearchParams]       = useSearchParams()
+  const sites                     = useAppSelector((state) => state.sites.fullSiteData)
+  const addresses                 = sites?.map((el) => ({value: el._id, label: el.name}))
+  const [searchParams]            = useSearchParams()
+  const visitData                 = useAppSelector((state) => state.visit.visit)
+  const company                   = useAppSelector(selectCompany)
+  const siteId                    = searchParams.get('siteId')
+  const site                      = sites?.filter((el) => el._id === siteId)
+  const creationDate              = convertUTCtoLocalDate(visitData?.date)
+  const creationTime              = convertUTCtoLocalDateTime(visitData?.date)
+  const permissions               = useAppSelector((state) => state.visit.permissions)
+  const selectedVisitPurposes     = permissions.filter((el) => visitData?.visitPurpose.includes(el._id)).map((item) => ({value: item._id, label: item.name}))
+  const visitStatuses             = useAppSelector((state) => state.visit.visitStatus)
+  const preparedStatus            = visitStatuses.find((el) => el._id === visitData?.statusId)
+  const dlcEmlpyee                = useAppSelector((state) => state.visit.dlcEmployee)
   const matchingPermissionsItems  =  useAppSelector(selectAllSelectedVisitorPermissions).map((el) => ({value: el._id, label: el.name}))
+  const dispatch                  = useAppDispatch()
 
   const changeAddress = async(value:string) => {
-    setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&id=${visitData?._id}`)
+    setSearchParams(`siteId=${value}&companyId=${visitData?.companyId}&_id=${visitData?._id}`)
+    dispatch(setSiteId(value))
   }
 
   const status = preparedStatus && statusMap[preparedStatus.name]

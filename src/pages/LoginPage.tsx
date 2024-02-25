@@ -1,26 +1,27 @@
 /* eslint-disable max-len */
 
-import axios            from 'axios'
+import axios                from 'axios'
 import {
   get,
   validateUser,
-}                       from '../Plugins/helpers'
+}                           from '../Plugins/helpers'
 import {
   LockOutlined,
   UserOutlined,
-}                       from '@ant-design/icons'
+}                           from '@ant-design/icons'
 import {
   Button,
   Form,
   Input,
   Card,
   message,
-}                       from 'antd'
-import { useCookies }   from 'react-cookie'
-import { useNavigate }  from 'react-router'
-import { jwtDecode }    from 'jwt-decode'
-import { TokenType }    from '../types/globalTypes'
-import SuccessMessage from '../components/UniversalComponents/SuccessMessage'
+}                           from 'antd'
+import { useCookies }       from 'react-cookie'
+import { useNavigate }      from 'react-router'
+import { jwtDecode }        from 'jwt-decode'
+import { Sites, TokenType } from '../types/globalTypes'
+import SuccessMessage       from '../components/UniversalComponents/SuccessMessage'
+import { useSearchParams } from 'react-router-dom'
 
 type LoginValuesType = {
   email:    string,
@@ -31,7 +32,7 @@ const LoginPage = () => {
   const [ ,setCookie]               = useCookies(['access_token'])
   const navigate                    = useNavigate()
   const [messageApi, contextHolder] = message.useMessage()
-
+  const [, setSearchParams]         = useSearchParams()
   const onFinish = async(values: LoginValuesType) => {
     try{
       const res = await validateUser('login', values)
@@ -42,7 +43,10 @@ const LoginPage = () => {
       if(!user.isSecurity){
         navigate('/DLC Žurnalas?menuKey=1')
       }else{
-        navigate('/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true&selectFilter=T72')
+        const sites: Sites[] = await get('site/site', res.token)
+        const t72SiteId = sites.find((el) => el.name === 'T72')
+        setSearchParams(`/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true&siteId=${t72SiteId?._id}`)
+        navigate(`/DLC Žurnalas/Vizitai?page=1&limit=10&descending=true&siteId=${t72SiteId?._id}`)
       }
     }catch (error){
       if (error instanceof Error){

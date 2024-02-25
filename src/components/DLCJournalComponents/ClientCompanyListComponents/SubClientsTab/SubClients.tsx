@@ -85,7 +85,6 @@ const SubClients = () => {
 
   const deletSubClient = async (subClientId: string | undefined) => {
     if(subClientId ){
-      console.log(subClientId)
       await deleteItem('company/company', {id: subClientId} ,cookies.access_token)
       subClientCompanyRemoved(subClientId)
     }

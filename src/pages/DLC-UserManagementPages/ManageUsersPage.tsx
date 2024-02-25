@@ -7,7 +7,7 @@ import { useCookies }           from 'react-cookie'
 import useSetAllUsersData       from '../../Plugins/useSetAllUsersData'
 import { useAppSelector }       from '../../store/hooks'
 import { message }              from 'antd'
-import SuccessMessage from '../../components/UniversalComponents/SuccessMessage'
+import SuccessMessage           from '../../components/UniversalComponents/SuccessMessage'
 
 
 const ManageUsersPage = () => {

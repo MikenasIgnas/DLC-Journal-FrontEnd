@@ -1,19 +1,31 @@
 /* eslint-disable max-len */
+import React                              from 'react'
 import { message }                        from 'antd'
-import { get, post }                      from '../../../Plugins/helpers'
+
+import {
+  get,
+  post,
+}                                         from '../../../Plugins/helpers'
+
 import {
   VisitStatus,
   Visitors,
 }                                         from '../../../types/globalTypes'
+
 import {
   useAppDispatch,
   useAppSelector,
 }                                         from '../../../store/hooks'
+
 import { useParams }                      from 'react-router'
 import { useCookies }                     from 'react-cookie'
 import { selectVisitingCompanyEmplyees }  from '../../../auth/VisitorEmployeeReducer/selectors'
-import { setDlcEmployee, setVisit }       from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import React from 'react'
+
+import {
+  setDlcEmployee,
+  setVisit,
+  setVisitors,
+}                                         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
 
 const useVisitValidation = () => {
   const [cookies]                   = useCookies(['access_token'])
@@ -27,7 +39,7 @@ const useVisitValidation = () => {
   const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
   const dispatch                    = useAppDispatch()
   const hasValidId                  = (visitors: Visitors[]) => visitors?.every(obj => obj.visitorIdType)
-  const hasSigned                   = (visitors: Visitors[]) => visitors?.every(obj => obj.signatures)
+  const hasSigned                   = (visitors: Visitors[]) => visitors?.every(obj => obj.signatures || obj.signed)
 
 
   const validate = async (url: string, successMessage: string, visitStatuses: VisitStatus | undefined) => {
@@ -62,8 +74,10 @@ const useVisitValidation = () => {
       setLoading(true)
       const signatures  = visitingEmployees.map(el => ({ signature: el.signatures, visitorId: el._id }))
       const res         = await post(url, {visitId: id, statusId: visitStatuses?._id, signatures } ,cookies.access_token)
-      const employee    = await get(`user?id=${res.dlcEmlpyee}`, cookies.access_token)
+      const employee    = await get(`user?id=${res.dlcEmployee}`, cookies.access_token)
+      const visitors    = await get(`visit/visitor?visitId=${id}`, cookies.access_token)
       setLoading(false)
+      dispatch(setVisitors(visitors))
       dispatch(setVisit(res))
       dispatch(setDlcEmployee(employee))
 

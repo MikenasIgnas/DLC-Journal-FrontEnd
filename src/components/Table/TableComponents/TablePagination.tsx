@@ -14,16 +14,19 @@ type TablePaginationProps = {
 
 const TablePagination = ({currentPage, documentCount}: TablePaginationProps) => {
   const [searchParams, setSearchParams] =  useSearchParams()
-  const selectFilter                    = searchParams.get('selectFilter')
-  const searchFilter                    = searchParams.get('filter')
+  const siteId                    = searchParams.get('siteId')
+  const statusId                    = searchParams.get('statusId')
+  const searchFilter                    = searchParams.get('search')
   const tableSorter                     = searchParams.get('tableSorter')
   const descending                      = searchParams.get('descending')
 
   const changePage = async(page: number, limit: number) => {
     if(searchFilter){
-      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&filter=${searchFilter}`)
-    }else if(selectFilter){
-      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&selectFilter=${selectFilter}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&search=${searchFilter}`)
+    }else if(siteId){
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&siteId=${siteId}`)
+    }else if(statusId){
+      setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&statusId=${statusId}`)
     }else if(tableSorter){
       setSearchParams(`page=${page}&limit=${limit}&descending=${descending}&tableSorter=${tableSorter}`)
     }else{
