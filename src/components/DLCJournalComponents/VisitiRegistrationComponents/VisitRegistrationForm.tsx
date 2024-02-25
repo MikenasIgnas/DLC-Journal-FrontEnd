@@ -41,7 +41,7 @@ const VisitRegistrationForm = () => {
   const visitStatus                       = useAppSelector((state) => state.visit.visitStatus)
   const siteId                            = searchParams.get('siteId')
   const companyId                         = searchParams.get('companyId')
-  const visitId                           = searchParams.get('id')
+  const visitId                           = searchParams.get('_id')
   const checkedList                       = useAppSelector((state) => state.racks.checkedList)
   const visitingEmployees                 = useAppSelector(selectVisitingCompanyEmplyees)
 
@@ -101,7 +101,7 @@ const VisitRegistrationForm = () => {
         type:    'success',
         content: 'Išsaugota',
       })
-      navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&id=${visitId}&companyId=${companyId}`)
+      navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&_id=${visitId}&companyId=${companyId}`)
     } catch (error) {
       if (error instanceof Error){
         messageApi.error({

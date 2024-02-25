@@ -31,7 +31,7 @@ const VisitSitesSelectors = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [cookies]                       = useCookies(['access_token'])
   const companyId                       = searchParams.get('companyId')
-  const visitId                         = searchParams.get('id')
+  const visitId                         = searchParams.get('_id')
   const dispatch                        = useAppDispatch()
   const companies                       = useAppSelector((state) => state.visit.companies)
   const sites                           = useAppSelector((state) => state.sites.fullSiteData)
@@ -73,11 +73,11 @@ const VisitSitesSelectors = () => {
             siteId:       siteId,
             statusId:     visitStatus?.[0]?._id,
           }, cookies .access_token)
-        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${res._id}`)
+        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&_id=${res._id}`)
         dispatch(setSiteId(siteId))
         dispatch(setVisit(res))
       }else{
-        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&id=${visitId}`)
+        setSearchParams(`?companyId=${companyId}&siteId=${siteId}&_id=${visitId}`)
       }
     }catch(error){
       if (error instanceof Error) {

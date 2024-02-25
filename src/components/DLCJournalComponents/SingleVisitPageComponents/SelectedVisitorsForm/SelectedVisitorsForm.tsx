@@ -50,7 +50,7 @@ const SelectedVisitorsForm = () => {
   const editVisitors                = useAppSelector((state) => state.visitPageEdits.editVisitors)
   const [searchParams]              = useSearchParams()
   const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
-  const visitId                     = searchParams.get('id')
+  const visitId                     = searchParams.get('_id')
   const openVisitorAddition         = useAppSelector((state) => state.visitPageEdits.openVisitorAddition)
   const [messageApi, contextHolder] = message.useMessage()
   const isSecurity                  = useAppSelector((state) => state.auth.isSecurity)
@@ -65,23 +65,13 @@ const SelectedVisitorsForm = () => {
             visitor.signatures = values.visitors[visitor._id].signatures
           }
 
-          let signatureFile
-          if (visitor.signatures) {
-            const signatureDataURL = visitor.signatures
-            if (signatureDataURL) {
-              const resBlob = await fetch(signatureDataURL)
-              const blob = await resBlob.blob()
-              signatureFile = new File([blob], 'signature.png', { type: 'image/png' })
-            }
-          }
-
           const updateValues = {
             id:            visitor._id,
             visitId:       visitId,
             visitorIdType: visitor.visitorIdType,
           }
 
-          await put('visit/visitor', updateValues, cookies.access_token, signatureFile)
+          await put('visit/visitor', updateValues, cookies.access_token)
 
 
           messageApi.success({

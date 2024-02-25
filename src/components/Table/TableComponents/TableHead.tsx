@@ -7,17 +7,20 @@ type TableHeadProps = {
   tableColumns: React.ReactNode
 }
 
-const TableHead = ({tableColumns}:TableHeadProps) => {
+const TableHead = ({ tableColumns }:TableHeadProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const tableSorter                     = searchParams.get('descending')
+  const page                            = searchParams.get('page')
+  const limit                           = searchParams.get('limit')
 
   const orderTebleData = () => {
-    if(tableSorter === 'false'){
-      setSearchParams('?page=1&limit=10&descending=true')
-    }else{
-      setSearchParams('?page=1&limit=10&descending=false')
+    if (tableSorter === 'false') {
+      setSearchParams(`?page=${page}&limit=${limit}&descending=true`)
+    } else {
+      setSearchParams(`?page=${page}&limit=${limit}&descending=false`)
     }
   }
+
   return (
     <thead>
       <tr>

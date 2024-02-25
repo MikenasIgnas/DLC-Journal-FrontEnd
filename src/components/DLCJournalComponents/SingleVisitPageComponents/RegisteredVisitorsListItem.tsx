@@ -90,6 +90,7 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
       setSignatureURl('')
     }
   }
+
   return (
     <List.Item
       className='VisitorsListItemContainer'
@@ -98,14 +99,17 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
           <div>
           </div>
           {
-            signatureUrl === '' ?
+            signatureUrl === '' && !item.signed ?
               <Button disabled={!editVisitors} onClick={() => setOpen(true)}>Pasirašyti</Button>
               :
               <>
-                <Tag style={{cursor: 'pointer'}} icon={<CheckCircleOutlined />} color='success'>
+                <Tag icon={<CheckCircleOutlined />} color='success'>
                   Pasirašyta
                 </Tag>
-                <DeleteOutlined type='primary' onClick={() => removeSignature()}/>
+                {
+                  signatureUrl !== '' && !item.signed &&
+                  <DeleteOutlined type='primary' onClick={() => removeSignature()}/>
+                }
               </>
           }
           <Form.Item name={['visitors', item._id, 'visitorIdType']} className='RegisteredVisitorsSelect' initialValue={item.visitorIdType}>

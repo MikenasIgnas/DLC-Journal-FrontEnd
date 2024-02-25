@@ -32,32 +32,28 @@ const TableColumns = () => {
   )
 }
 
-const tableSorter = [
-  {
-    filterName:    'statusas',
-    filterOptions: [
-      { value: '1', label: 'Pradėtas', filterParam: 'selectFilter', filterValue: 'success' },
-      { value: '2', label: 'Paruoštas', filterParam: 'selectFilter', filterValue: 'processing'},
-      { value: '3', label: 'Baigtas', filterParam: 'selectFilter', filterValue: 'error'},
-    ],
-  },
-  {
-    filterName:    'adresas',
-    filterOptions: [
-      { value: '1', label: 'J13', filterParam: 'selectFilter', filterValue: 'J13' },
-      { value: '2', label: 'T72', filterParam: 'selectFilter', filterValue: 'T72' },
-    ],
-  },
-]
 
 const VisitPage = () => {
   const [cookies]                             = useCookies(['access_token'])
   const [searchParams, setSearchParams]       = useSearchParams()
   const page                                  = searchParams.get('page')
-  const {data, count, setData}                = useSetVisitsData()
+  const {data, count, setData, sites, visitStatus}                = useSetVisitsData()
   const {generateSingleVisitPDF, loading}     = useGenerateSingleVisitPDF()
   const isSecurity                            = useAppSelector((state) => state.auth.isSecurity)
   const rowMenuItems                          = visitsRowMenuItems(loading, isSecurity)
+
+  const tableSorter = [
+    {
+      filterName:    'statusas',
+      filterOptions: visitStatus.map((el) => ({
+        value: el._id, label: el.name, filterParam: 'statusId', filterValue: el._id,
+      })),
+    },
+    {
+      filterName:    'adresas',
+      filterOptions: sites.map((el) => ({value: el._id, label: el.name, filterParam: 'siteId', filterValue: el._id })),
+    },
+  ]
 
   return (
     <>

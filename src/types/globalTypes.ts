@@ -188,6 +188,7 @@ export type Visitors = {
   visitId:        string;
   visitorIdType:  string;
   signatures:     string;
+  signed:         boolean;
 }
 export type ClientsGuests = {
   guestName: string;
@@ -210,7 +211,7 @@ export type VisitsType = {
     date:         Date
     startDate:    Date
     endDate:      Date
-    dlcEmlpyee:   string;
+    dlcEmployee:  string;
     statusId:     string;
 }
 

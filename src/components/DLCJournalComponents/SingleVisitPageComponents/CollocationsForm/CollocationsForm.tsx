@@ -30,7 +30,7 @@ const CollocationsForm = () => {
   const editCollocations            = useAppSelector((state) => state.visitPageEdits.editCollocations)
   const dispatch                    = useAppDispatch()
   const [searchParams]              = useSearchParams()
-  const visitId                     = searchParams.get('id')
+  const visitId                     = searchParams.get('_id')
   const [cookies]                   = useCookies()
   const checkedList                 = useAppSelector((state) => state.racks.checkedList)
   const [messageApi, contextHolder] = message.useMessage()

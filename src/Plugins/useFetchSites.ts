@@ -8,10 +8,8 @@ import {
   useAppDispatch,
   useAppSelector,
 }                             from '../store/hooks'
-import { resetRacksReducer }  from '../auth/RacksReducer/RacksReducer'
 
 import {
-  resetFullSiteData,
   setFullSiteData,
 }                             from '../auth/SitesReducer/SitesReducer'
 
@@ -32,10 +30,6 @@ const useFetchSites = () => {
       }
 
       fetchData()
-      return () => {
-        dispatch(resetFullSiteData())
-        dispatch(resetRacksReducer())
-      }
     }catch(error){
       if(error instanceof Error){
         alert(error.message)

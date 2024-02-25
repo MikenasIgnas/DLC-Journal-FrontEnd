@@ -13,17 +13,17 @@ const TableFilters = ({tableSorter}: TableFiltersProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
-
+  const tableOrder                      = searchParams.get('descending')
   const filterByStatus = async (selectFilter: string, options: any) => {
     if (selectFilter) {
-      setSearchParams(`page=${page}&limit=${limit}&${options.filterParam}=${options.filterValue}`)
+      setSearchParams(`page=${page}&limit=${limit}&descending=${tableOrder}&${options.filterParam}=${options.filterValue}`)
     } else {
       clearSelect()
     }
   }
 
   const clearSelect = () => {
-    setSearchParams(`page=${page}&limit=${limit}`)
+    setSearchParams(`page=${page}&limit=${limit}&descending=${tableOrder}`)
   }
 
   return (
