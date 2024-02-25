@@ -283,7 +283,6 @@ const getFile = async (url: string, token: TokenType) => {
       },
     })
 
-    // Check for various response statuses
     if (response.status === 404) {
       console.error('Document file not found')
       return null
@@ -299,7 +298,6 @@ const getFile = async (url: string, token: TokenType) => {
       return null
     }
 
-    // If the response is OK, return the blob
     if (response.ok) {
       const data = await response.blob()
       return data

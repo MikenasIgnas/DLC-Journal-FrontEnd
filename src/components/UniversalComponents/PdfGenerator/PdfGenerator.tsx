@@ -4,7 +4,7 @@ import { Button, ConfigProvider, DatePicker, Tooltip }  from 'antd'
 import dayjs                                            from 'dayjs'
 import type { Dayjs }                                   from 'dayjs'
 import type { TimeRangePickerProps }                    from 'antd'
-import useGenerateMultiplePDF                           from '../../../Plugins/useGenerateMultiplePDF'
+import useGenerateVisitsReport                           from '../../../Plugins/useGenerateVisitsReport'
 import locale                                           from 'antd/es/locale/lt_LT'
 import 'dayjs/locale/lt'
 
@@ -16,17 +16,17 @@ type PdfGeneratorProps = {
 }
 
 const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
-  const [pdfDateFrom, setPDFDateFrom]   = React.useState<string | undefined>()
-  const [pdfDateTo, setPDFDateTo]       = React.useState<string | undefined>()
-  const {generateMultiplePdf, loading}  = useGenerateMultiplePDF()
+  const [reportDateFrom, setReportDateFrom]   = React.useState<Dayjs | null>()
+  const [reportDateTo, setReportDateTo]       = React.useState<Dayjs | null>()
+  const {generateVisitsReport, loading}       = useGenerateVisitsReport()
 
-  const onRangeChange = (dates: null | (Dayjs | null)[], dateStrings: string[]) => {
+  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
     if (dates) {
-      setPDFDateFrom(dateStrings[0])
-      setPDFDateTo(dateStrings[1])
+      setReportDateFrom(dates[0])
+      setReportDateTo(dates[1])
     } else {
-      setPDFDateFrom(undefined)
-      setPDFDateTo(undefined)
+      setReportDateFrom(undefined)
+      setReportDateTo(undefined)
     }
   }
 
@@ -43,9 +43,9 @@ const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
         <ConfigProvider locale={locale}>
           <RangePicker presets={rangePresets} onChange={onRangeChange}/>
         </ConfigProvider>
-        {pdfDateFrom && pdfDateTo &&
+        {reportDateFrom && reportDateTo &&
       <Tooltip title={tooltipText} color='blue'>
-        <Button loading={loading} onClick={() => generateMultiplePdf(url, pdfDateFrom, pdfDateTo)}>PDF</Button>
+        <Button loading={loading} onClick={() => generateVisitsReport(url, reportDateFrom, reportDateTo)}>Ataskaita</Button>
       </Tooltip>
         }
       </div>
