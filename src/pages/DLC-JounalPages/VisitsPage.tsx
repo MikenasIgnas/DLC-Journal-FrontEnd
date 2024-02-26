@@ -58,7 +58,7 @@ const VisitPage = () => {
   return (
     <>
       <FullTable
-        pdfGenerator={<PdfGenerator url={'generateMultipleVisitPdf'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
+        pdfGenerator={<PdfGenerator url={'visit/visit/report'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
         tableSorter={tableSorter}
         currentPage={page}
         setSearchParams={setSearchParams}

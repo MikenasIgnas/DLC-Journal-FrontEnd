@@ -2,31 +2,31 @@
 import { useCookies } from 'react-cookie'
 import { getPdfFile } from './helpers'
 import React          from 'react'
-
-const useGenerateMultiplePDF = () => {
+import type { Dayjs }                                   from 'dayjs'
+const useGenerateVisitsReport = () => {
   const [loading, setLoading] = React.useState(false)
   const [cookies]             = useCookies(['access_token'])
 
-  const generateMultiplePdf = async (url: string, dateFrom: string, dateTo: string) => {
+  const generateVisitsReport = async (url: string, dateFrom: Dayjs | null, dateTo: Dayjs | null) => {
     try {
       setLoading(true)
       const response = await getPdfFile(`${url}?dateFrom=${dateFrom}&dateTo=${dateTo}`, cookies.access_token)
       if(response){
-        const blob = new Blob([response], { type: 'visit/pdf' })
+        const blob = new Blob([response], { type: 'visit/csv' })
         const link = document.createElement('a')
         link.href = window.URL.createObjectURL(blob)
-        link.download = 'visit.pdf'
+        link.download = 'visit.csv'
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
         setLoading(false)
       }
     } catch (error) {
-      console.error('Error downloading file:', error)
+      alert(error)
     }
   }
 
-  return {generateMultiplePdf, loading}
+  return {generateVisitsReport, loading}
 }
 
-export default useGenerateMultiplePDF
+export default useGenerateVisitsReport

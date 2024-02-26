@@ -1,29 +1,31 @@
 /* eslint-disable max-len */
-import React              from 'react'
+import React                                    from 'react'
 
 import {
   Button,
   Card,
   Input,
   List,
+  Tag,
   message,
-}                         from 'antd'
+}                                               from 'antd'
 
-import { put }            from '../../../Plugins/helpers'
-import { useCookies }     from 'react-cookie'
-import { Guest }          from '../../../types/globalTypes'
-import { useParams }      from 'react-router'
+import { put }                                  from '../../../Plugins/helpers'
+import { useCookies }                           from 'react-cookie'
+import { Guest }                                from '../../../types/globalTypes'
+import { useParams }                            from 'react-router'
 
 import {
   useAppDispatch,
   useAppSelector,
-}                         from '../../../store/hooks'
+}                                               from '../../../store/hooks'
 
 import {
   addGuests,
   removeGuest,
-}                         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+}                                               from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import SuccessMessage                           from '../../UniversalComponents/SuccessMessage'
+import { selectAllSelectedVisitorPermissions }  from '../../../auth/VisitorEmployeeReducer/selectors'
 
 type ItemListProps = {
     url?:               string;
@@ -42,6 +44,8 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
   const clientsGuests                                             = useAppSelector((state) => state.visit.guests)
   const [messageApi, contextHolder]                               = message.useMessage()
   const isSecurity                                                = useAppSelector((state) => state.auth.isSecurity)
+  const matchingPermissionsItems                                  =  useAppSelector(selectAllSelectedVisitorPermissions)
+  const canBringCompany                                           = matchingPermissionsItems.some((el) => el.name === 'Įleisti trečius asmenis')
 
   const removeListItem = async(index: number) => {
     const filtered = list?.filter((_item, i) => i !== index)
@@ -104,7 +108,7 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
   return (
     <>
       {
-        visitorsCount && visitorsCount > 0 ?
+        visitorsCount && visitorsCount > 0 && canBringCompany ?
           <Card title={'Atvykstanty tretieji asmenys'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
             <Input disabled={isSecurity as boolean} addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
             <Input disabled={isSecurity as boolean} addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
@@ -132,15 +136,12 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
               )}
             />
           </Card>
-          : null
+          :
+          <div style={{ textAlign: 'center', margin: '30px'}}>
+            <Tag color='error'>Klientas negali turėti palydos</Tag>
+          </div>
       }
 
-      {/* {visitorsCount && visitorsCount > 0 && !canBringCompany ?
-        <div style={{ textAlign: 'center', margin: '30px'}}>
-          <Tag color='error'>Klientas negali turėti palydos</Tag>
-        </div>
-        : null
-      } */}
       <SuccessMessage contextHolder={contextHolder}/>
     </>
   )

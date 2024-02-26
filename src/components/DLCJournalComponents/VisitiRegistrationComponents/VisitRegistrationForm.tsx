@@ -8,7 +8,7 @@ import {
   Form,
   message,
 }                                 from 'antd'
-import { Guest}                   from '../../../types/globalTypes'
+import { Guest, VisitsType}                   from '../../../types/globalTypes'
 import VisitorsList               from './VisitorsList'
 import VisitPurposeList           from './VisitPurposeList'
 import VisitorAdditionList        from './VisitorAdditionList'
@@ -49,7 +49,7 @@ const VisitRegistrationForm = () => {
     form.resetFields()
   },[])
 
-  const registerVisit = async () => {
+  const registerVisit = async (values: VisitsType) => {
     const visitPurpose = localStorage.getItem('visitPurpose')
     const preparedStatus = visitStatus.find((el) => el.name === 'Paruošti')
 
@@ -83,14 +83,16 @@ const VisitRegistrationForm = () => {
     const selectedPermissions = JSON.parse(visitPurpose)
 
     const visitValues = {
-      id:           visitId,
+      id:                 visitId,
       companyId,
-      racks:        checkedList,
+      racks:              checkedList,
       carPlates,
-      guests:       clientsGuests,
+      guests:             clientsGuests,
       siteId,
-      visitPurpose: selectedPermissions,
-      statusId:     preparedStatus?._id,
+      visitPurpose:       selectedPermissions,
+      statusId:           preparedStatus?._id,
+      sendEmail:          true,
+      scheduledVisitTime: values.scheduledVisitTime,
     }
 
     try {
