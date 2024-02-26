@@ -22,8 +22,8 @@ const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
 
   const onRangeChange = (dates: null | (Dayjs | null)[]) => {
     if (dates) {
-      setReportDateFrom(dates[0])
-      setReportDateTo(dates[1])
+      setReportDateFrom(dates[0]?.startOf('day') ?? null)
+      setReportDateTo(dates[1]?.startOf('day') ?? null)
     } else {
       setReportDateFrom(undefined)
       setReportDateTo(undefined)
