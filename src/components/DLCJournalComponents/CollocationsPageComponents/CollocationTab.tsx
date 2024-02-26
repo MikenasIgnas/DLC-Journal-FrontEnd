@@ -10,6 +10,8 @@ import {
   Modal,
   Tabs,
   message,
+  Checkbox,
+  CheckboxProps,
 }                          from 'antd'
 
 
@@ -30,6 +32,7 @@ const CollocationTab = () => {
   const [activeKey, setActiveKey]                               = React.useState<string>()
   const [isSiteAdditionModalOpen, setIsSiteAdditionModalOpen]   = React.useState(false)
   const [isSiteRemovalModalOpen, setIsSiteRemovalModalOpen]     = React.useState(false)
+  const [isRemote, setIsRemote]                                 = React.useState(false)
   const [siteNameInputValue, setSiteNameInputValue]             = React.useState<string>('')
   const [sites, setSites]                                       = React.useState<Sites[]>([])
   const newTabIndex                                             = React.useRef(0)
@@ -39,7 +42,6 @@ const CollocationTab = () => {
   const menuKey                                                 = searchParams.get('menuKey')
   const tabKey                                                  = searchParams.get('tabKey')
   const siteId                                                  = searchParams.get('siteId')
-
   React.useEffect(() => {
     (async () => {
       try {
@@ -76,7 +78,7 @@ const CollocationTab = () => {
 
   const onOk = async() => {
     try{
-      await post('site/site', { name: siteNameInputValue }, cookies.access_token )
+      await post('site/site', { name: siteNameInputValue, isRemote: isRemote }, cookies.access_token )
       const newActiveKey = `newTab${newTabIndex.current++}`
       const newPanes = [...sites]
       newPanes.push({
@@ -105,7 +107,9 @@ const CollocationTab = () => {
     setSearchParamas(`menuKey=${menuKey}&tabKey=${tabKey}&siteId=${targetKey}`)
     setIsSiteRemovalModalOpen(true)
   }
-
+  const onIsRemoteChange: CheckboxProps['onChange'] = (e) => {
+    setIsRemote(e.target.checked)
+  }
   const onRemoveSite = async() => {
     try{
       await deleteItem('site/site', {id: siteId} ,cookies.access_token)
@@ -164,6 +168,7 @@ const CollocationTab = () => {
       />
       <Modal title='Pridėti adresą' open={isSiteAdditionModalOpen} onOk={onOk} onCancel={handleCancel}>
         <Input value={siteNameInputValue} onChange={(e) => setSiteNameInputValue(e.target.value)}/>
+        <Checkbox onChange={onIsRemoteChange}/>
       </Modal>
       <Modal title='Pašalinti adresą' open={isSiteRemovalModalOpen} onOk={onRemoveSite} onCancel={cancelSiteRemove}>
         <p>Ar tikrai norite pašalintį adresą?</p>
