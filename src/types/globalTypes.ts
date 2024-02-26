@@ -199,20 +199,21 @@ export interface Guest {
   company: string
 }
 export type VisitsType = {
-    id:           string;
-    _id:          string;
-    companyId:    string | null;
-    guests:       Guest[] | undefined;
-    carPlates:    string[] | undefined
-    racks:        string[] | undefined
-    permissions:  string[]
-    siteId:       string | null;
-    visitPurpose: string[]
-    date:         Date
-    startDate:    Date
-    endDate:      Date
-    dlcEmployee:  string;
-    statusId:     string;
+    id:                 string;
+    _id:                string;
+    companyId:          string | null;
+    guests:             Guest[] | undefined;
+    carPlates:          string[] | undefined
+    racks:              string[] | undefined
+    permissions:        string[]
+    siteId:             string | null;
+    visitPurpose:       string[]
+    date:               Date
+    startDate:          Date
+    endDate:            Date
+    dlcEmployee:        string;
+    statusId:           string;
+    scheduledVisitTime: Date
 }
 
 export type CollocationsType = {

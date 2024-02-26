@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React              from 'react'
+import React                                    from 'react'
 
 import {
   Button,
@@ -8,24 +8,24 @@ import {
   List,
   Tag,
   message,
-}                         from 'antd'
+}                                               from 'antd'
 
-import { put }            from '../../../Plugins/helpers'
-import { useCookies }     from 'react-cookie'
-import { Guest }          from '../../../types/globalTypes'
-import { useParams }      from 'react-router'
+import { put }                                  from '../../../Plugins/helpers'
+import { useCookies }                           from 'react-cookie'
+import { Guest }                                from '../../../types/globalTypes'
+import { useParams }                            from 'react-router'
 
 import {
   useAppDispatch,
   useAppSelector,
-}                         from '../../../store/hooks'
+}                                               from '../../../store/hooks'
 
 import {
   addGuests,
   removeGuest,
-}                         from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
-import { selectAllSelectedVisitorPermissions } from '../../../auth/VisitorEmployeeReducer/selectors'
+}                                               from '../../../auth/VisitorEmployeeReducer/VisitorEmployeeReducer'
+import SuccessMessage                           from '../../UniversalComponents/SuccessMessage'
+import { selectAllSelectedVisitorPermissions }  from '../../../auth/VisitorEmployeeReducer/selectors'
 
 type ItemListProps = {
     url?:               string;

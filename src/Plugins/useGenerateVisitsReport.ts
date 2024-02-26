@@ -8,8 +8,6 @@ const useGenerateVisitsReport = () => {
   const [cookies]             = useCookies(['access_token'])
 
   const generateVisitsReport = async (url: string, dateFrom: Dayjs | null, dateTo: Dayjs | null) => {
-    console.log(dateFrom)
-    console.log(dateTo)
     try {
       setLoading(true)
       const response = await getPdfFile(`${url}?dateFrom=${dateFrom}&dateTo=${dateTo}`, cookies.access_token)
