@@ -11,7 +11,6 @@ import {
   useAppSelector,
 }                             from '../store/hooks'
 import {
-  resetSingleCompanyReducer,
   setCompaniesEmployees,
   setCompanyDocuments,
   setCompanyEmployeesCount,
@@ -28,7 +27,6 @@ import {
   FullSiteData,
   CompanyDocuments,
 }                             from '../types/globalTypes'
-import { resetRacksReducer }  from '../auth/RacksReducer/RacksReducer'
 import { message }            from 'antd'
 
 const useFetchSingleCompany = () => {
@@ -66,11 +64,6 @@ const useFetchSingleCompany = () => {
       }
 
       fetchData()
-      return () => {
-        dispatch(resetSingleCompanyReducer())
-        dispatch(resetRacksReducer())
-      }
-
     }catch(error){
       if(error instanceof Error){
         messageApi.error({
@@ -98,7 +91,8 @@ const useFetchSingleCompany = () => {
     }
 
     fetchData()
-  },[page, search, limit])
+  },[page, search, limit, openEmployeeAdditionModal])
+
   return {contextHolder}
 }
 

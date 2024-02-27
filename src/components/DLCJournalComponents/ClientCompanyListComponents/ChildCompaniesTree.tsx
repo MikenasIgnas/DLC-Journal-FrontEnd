@@ -15,11 +15,11 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
   const treeCompanies = companies?.map((el, i) => {
     const childCompanies = companies.filter((ele) => ele.parentId === el._id)
     return{
-      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el._id}`}>{el.name}</Link>,
+      title:    <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${el._id}?tabKey=1`}>{el.name}</Link>,
       key:      el._id,
       children: childCompanies.map((elem, index) => {
         return{
-          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem._id}`}>{elem.name}</Link>,
+          title: <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${elem._id}?tabKey=1`}>{elem.name}</Link>,
           key:   `${i+1} - ${index}`,
         }
       }),
@@ -38,7 +38,7 @@ const ChildCompaniesTree = ({companies, item, searchValue}: ChildCompaniesTreePr
             defaultExpandedKeys={['0-0-0']}
             treeData={filter} />
         </ConfigProvider>
-        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item._id}`}>{HighlightText(searchValue, item.name)}</Link>}
+        : <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${item._id}?tabKey=1`}>{HighlightText(searchValue, item.name)}</Link>}
     </>
   )
 }

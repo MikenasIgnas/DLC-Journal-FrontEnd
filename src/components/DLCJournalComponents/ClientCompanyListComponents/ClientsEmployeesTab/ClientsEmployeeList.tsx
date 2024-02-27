@@ -68,7 +68,6 @@ const ClientsEmployeeList = () => {
       }
     }
   }
-
   const listButtons = (listItemId: string | undefined, companyId: string | undefined) => {
     const buttons = [
       <div key={listItemId} className='ListItemButtons'>
