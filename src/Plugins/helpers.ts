@@ -452,7 +452,7 @@ const convertUTCtoLocalTime = (utcTimestamp: Date | undefined) => {
   }
 }
 
-const convertUTCtoLocalDate = (utcTimestamp: Date | undefined) => {
+const convertUTCtoLocalDate = (utcTimestamp: Date | undefined | string) => {
   if (utcTimestamp) {
     const dateObject          = new Date(utcTimestamp)
     const day                 = dateObject.toLocaleString('en-US', { day: '2-digit' })

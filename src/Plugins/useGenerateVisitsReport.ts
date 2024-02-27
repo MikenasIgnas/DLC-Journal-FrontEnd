@@ -2,12 +2,11 @@
 import { useCookies } from 'react-cookie'
 import { getPdfFile } from './helpers'
 import React          from 'react'
-import type { Dayjs }                                   from 'dayjs'
 const useGenerateVisitsReport = () => {
   const [loading, setLoading] = React.useState(false)
   const [cookies]             = useCookies(['access_token'])
 
-  const generateVisitsReport = async (url: string, dateFrom: Dayjs | null, dateTo: Dayjs | null) => {
+  const generateVisitsReport = async (url: string, dateFrom: string | null, dateTo: string | null) => {
     try {
       setLoading(true)
       const response = await getPdfFile(`${url}?dateFrom=${dateFrom}&dateTo=${dateTo}`, cookies.access_token)

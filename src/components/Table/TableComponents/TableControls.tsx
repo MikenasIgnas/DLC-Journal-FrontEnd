@@ -9,11 +9,11 @@ import useDelay                        from '../../../Plugins/useDelay'
 
 type TableControlsProps = {
   tableSorter:    FilterOptions;
-  pdfGenerator?:  React.ReactNode
+  csvGenerator?:  React.ReactNode
 }
 
 
-const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
+const TableControls = ({tableSorter, csvGenerator}: TableControlsProps) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const page                            = searchParams.get('page')
   const limit                           = searchParams.get('limit')
@@ -53,7 +53,7 @@ const TableControls = ({tableSorter, pdfGenerator}: TableControlsProps) => {
         </FormControl>
         {<TableFilters tableSorter={tableSorter} />}
       </Box>
-      {pdfGenerator}
+      {csvGenerator}
     </React.Fragment>
   )
 }
