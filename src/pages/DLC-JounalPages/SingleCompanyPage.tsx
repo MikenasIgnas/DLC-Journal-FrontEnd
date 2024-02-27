@@ -53,7 +53,6 @@ const SingleCompanyPage = () => {
   const [searchParams, setSearchParams]   = useSearchParams()
   const dispatch                          = useAppDispatch()
   const editCompanyPage                   = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
-  const checkedList                       = useAppSelector((state) => state.racks.checkedList)
   const siteId                            = searchParams.get('siteId')
   const tabKey                            = searchParams.get('tabKey')
   const [messageApi, contextHolder]       = message.useMessage()
@@ -67,7 +66,6 @@ const SingleCompanyPage = () => {
       try{
         values.id = id
         values.photo = fileList[0]
-        values.racks = checkedList
         await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
         messageApi.success({
           type:    'success',
@@ -120,15 +118,13 @@ const SingleCompanyPage = () => {
       <Card
         styles={{header: {textAlign: 'center'}}}
         bordered={false}
+        extra={ <Button htmlType='submit' type='link'>
+          {!editCompanyPage ? 'Edit' : 'Save'}
+        </Button>}
         title={<SingleCompanyTitle setFileList={setFileList} fileList={fileList}/>}>
         <Tabs
           activeKey={tabKey ? tabKey : undefined}
           onTabClick={changeTab}
-          tabBarExtraContent={
-            <Button htmlType='submit' type='link'>
-              {!editCompanyPage ? 'Edit' : 'Save'}
-            </Button>
-          }
           defaultActiveKey='1'
           items={items}
         />

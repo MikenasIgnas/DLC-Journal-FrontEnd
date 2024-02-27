@@ -7,7 +7,7 @@ import VisitsTableRows           from '../../components/DLCJournalComponents/Vis
 import RowMenu                   from '../../components/Table/TableComponents/RowMenu'
 import useSetVisitsData          from '../../Plugins/useSetVisitData'
 import useGenerateSingleVisitPDF from '../../Plugins/useGenerateSingleVIsitPDF'
-import PdfGenerator              from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import CsvGenerator              from '../../components/UniversalComponents/CsvGenerator/CsvGenerator'
 import visitsRowMenuItems        from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 import { useAppSelector }        from '../../store/hooks'
 import { deleteTableItem }       from '../../Plugins/helpers'
@@ -58,7 +58,7 @@ const VisitPage = () => {
   return (
     <>
       <FullTable
-        pdfGenerator={<PdfGenerator url={'visit/visit/report'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
+        csvGenerator={<CsvGenerator url={'visit/visit/report'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
         tableSorter={tableSorter}
         currentPage={page}
         setSearchParams={setSearchParams}

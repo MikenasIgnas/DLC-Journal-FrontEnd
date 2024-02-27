@@ -780,7 +780,7 @@ thead[class*="ant-table-thead"] th{
   .Header{
     position:       sticky;
     top:              0;
-    z-Index:          1;
+    z-Index:          1000;
     width:            100%;
     display:          flex;
     justify-content:  flex-end;

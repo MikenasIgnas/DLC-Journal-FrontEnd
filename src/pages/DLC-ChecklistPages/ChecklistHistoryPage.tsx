@@ -4,7 +4,7 @@ import FullTable                    from '../../components/Table/TableComponents
 import ChecklistHistoryTableRows    from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/ChecklistHistoryTableRows'
 import RowMenu                      from '../../components/Table/TableComponents/RowMenu'
 import useSetChecklistHistoryData   from '../../Plugins/useSetChecklistHistoryData'
-import PdfGenerator                 from '../../components/UniversalComponents/PdfGenerator/PdfGenerator'
+import PdfGenerator                 from '../../components/UniversalComponents/CsvGenerator/CsvGenerator'
 import { deleteTableItem }          from '../../Plugins/helpers'
 import { useCookies }               from 'react-cookie'
 import checklistHistoryRowMenuItems from '../../components/DLCChecklistComponents/ChecklistHistoryTableRows.tsx/checklistHistoryRowMenuItems'

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import React                                            from 'react'
 import { Button, ConfigProvider, DatePicker, Tooltip }  from 'antd'
@@ -7,23 +8,26 @@ import type { TimeRangePickerProps }                    from 'antd'
 import useGenerateVisitsReport                           from '../../../Plugins/useGenerateVisitsReport'
 import locale                                           from 'antd/es/locale/lt_LT'
 import 'dayjs/locale/lt'
+import { convertUTCtoLocalDate } from '../../../Plugins/helpers'
 
 const { RangePicker } = DatePicker
 
-type PdfGeneratorProps = {
+type CsvGeneratorProps = {
     url :         string
     tooltipText:  string
 }
 
-const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
-  const [reportDateFrom, setReportDateFrom]   = React.useState<Dayjs | null>()
-  const [reportDateTo, setReportDateTo]       = React.useState<Dayjs | null>()
+const CsvGenerator = ({url, tooltipText}: CsvGeneratorProps) => {
+  const [reportDateFrom, setReportDateFrom]   = React.useState<string>()
+  const [reportDateTo, setReportDateTo]       = React.useState<string>()
   const {generateVisitsReport, loading}       = useGenerateVisitsReport()
 
-  const onRangeChange = (dates: null | (Dayjs | null)[]) => {
-    if (dates) {
-      setReportDateFrom(dates[0]?.startOf('day') ?? null)
-      setReportDateTo(dates[1]?.startOf('day') ?? null)
+  const onRangeChange = (dates: null | (Dayjs | null)[], dateString: [string, string] | string) => {
+    if (dateString) {
+      const dateFrom = convertUTCtoLocalDate(dateString[0])
+      const dateTo = convertUTCtoLocalDate(dateString[1])
+      setReportDateFrom(dateFrom)
+      setReportDateTo(dateTo)
     } else {
       setReportDateFrom(undefined)
       setReportDateTo(undefined)
@@ -53,4 +57,4 @@ const PdfGenerator = ({url, tooltipText}: PdfGeneratorProps) => {
   )
 }
 
-export default PdfGenerator
+export default CsvGenerator

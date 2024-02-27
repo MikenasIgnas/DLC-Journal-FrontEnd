@@ -15,7 +15,7 @@ type FullTableProps = {
   tableSorter:      FilterOptions
   tableRows :       React.ReactNode
   documentCount:    number | undefined;
-  pdfGenerator?:    React.ReactNode
+  csvGenerator?:    React.ReactNode
 }
 
 const FullTable = ({
@@ -25,12 +25,12 @@ const FullTable = ({
   tableSorter,
   tableRows,
   documentCount,
-  pdfGenerator,
+  csvGenerator,
 }: FullTableProps) => {
   const isSecurity = useAppSelector((state) => state.auth.isSecurity)
   return (
     <>
-      {!isSecurity && <TableControls pdfGenerator={pdfGenerator} tableSorter={tableSorter}/>}
+      {!isSecurity && <TableControls csvGenerator={csvGenerator} tableSorter={tableSorter}/>}
       {!isSecurity && <VisitsConfigModal/>}
       <Table tableRows={tableRows} tableColumns={tableColumns}/>
       <TablePagination documentCount={documentCount} currentPage={currentPage} setSearchParams={setSearchParams}

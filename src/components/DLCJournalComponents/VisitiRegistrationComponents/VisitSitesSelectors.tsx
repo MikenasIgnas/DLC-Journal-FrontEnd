@@ -122,15 +122,15 @@ const VisitSitesSelectors = () => {
       />
       }
       {companyId && seletedSite?.name === 'T72' &&
-    <Form.Item
-      name='scheduledVisitTime'
-      style={{width: '100%'}}
-      rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}
-    >
-      <ConfigProvider locale={locale}>
+    <ConfigProvider locale={locale}>
+      <Form.Item
+        name='scheduledVisitTime'
+        style={{width: '100%'}}
+        rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}
+      >
         <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
-      </ConfigProvider>
-    </Form.Item>
+      </Form.Item>
+    </ConfigProvider>
       }
       <SuccessMessage contextHolder={contextHolder}/>
     </div>

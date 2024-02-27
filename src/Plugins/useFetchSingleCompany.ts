@@ -39,6 +39,7 @@ const useFetchSingleCompany = () => {
   const setSubClientAdded            = useAppSelector((state) => state.isSubClientAdded.isSubClientAdded)
   const editCompanyPage              = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
   const editClientsEmployee          = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
+  const editCompanyRacks             = useAppSelector((state) => state.singleCompanyEdits.editCompanyRacks)
   const [messageApi, contextHolder]  = message.useMessage()
   const page                         = searchParams.get('page') || 1
   const limit                        = searchParams.get('limit') || 10
@@ -72,7 +73,7 @@ const useFetchSingleCompany = () => {
         })
       }
     }
-  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee])
+  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee, editCompanyRacks])
 
 
   React.useEffect(() => {
