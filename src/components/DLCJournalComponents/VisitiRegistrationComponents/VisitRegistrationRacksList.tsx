@@ -8,7 +8,7 @@ import VisitRegistrationRacks             from './VisitRegistrationRacksCheckbox
 const VisitRegistrationRacksList = () => {
   const companyPremise    = useAppSelector(selectPremises)
   const visitingEmployees = useAppSelector(selectVisitingCompanyEmplyees)
-  console.log(companyPremise)
+
   return (
     <>
       { visitingEmployees.length > 0 &&

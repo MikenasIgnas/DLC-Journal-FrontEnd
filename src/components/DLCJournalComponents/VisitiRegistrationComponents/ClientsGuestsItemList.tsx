@@ -104,11 +104,10 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
       setClientsGuestCompanyInput('')
     }
   }
-
   return (
     <>
       {
-        visitorsCount && visitorsCount > 0 && canBringCompany ?
+        visitorsCount && visitorsCount > 0 ?
           <Card title={'Atvykstanty tretieji asmenys'} style={{margin: '10px', backgroundColor: '#f9f9f9'}}>
             <Input disabled={isSecurity as boolean} addonBefore='Vardas/Pavardė' value={clientsGuestNamesInput} onChange={(e) => setClientsGuestsNamesInput(e.target.value)}/>
             <Input disabled={isSecurity as boolean} addonBefore='Įmonė' value={clientsGuestCompanyInput} onChange={(e) => setClientsGuestCompanyInput(e.target.value)}/>
@@ -136,12 +135,12 @@ const ClientsGuestsItemList = ({ list, setListItems }: ItemListProps) => {
               )}
             />
           </Card>
-          :
-          <div style={{ textAlign: 'center', margin: '30px'}}>
-            <Tag color='error'>Klientas negali turėti palydos</Tag>
-          </div>
+          : null
       }
 
+      {visitorsCount && visitorsCount > 0 ? !canBringCompany && <div style={{ textAlign: 'center', margin: '30px'}}>
+        <Tag color='error'>Klientas negali turėti palydos</Tag>
+      </div> : null}
       <SuccessMessage contextHolder={contextHolder}/>
     </>
   )

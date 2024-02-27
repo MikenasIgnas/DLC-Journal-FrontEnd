@@ -16,13 +16,14 @@ import { useCookies }                   from 'react-cookie'
 import { EmployeesType }                from '../../../../types/globalTypes'
 import { get, post }                    from '../../../../Plugins/helpers'
 import PhotoUploader                    from '../../../UniversalComponents/PhotoUploader/PhotoUploader'
-import { useAppDispatch }               from '../../../../store/hooks'
+import { useAppDispatch, useAppSelector }               from '../../../../store/hooks'
 import { setOpenEmployeeAdditionModal } from '../../../../auth/ModalStateReducer/ModalStateReducer'
 import { useParams }                    from 'react-router'
 import SuccessMessage                   from '../../../UniversalComponents/SuccessMessage'
 
 import locale           from 'antd/es/locale/lt_LT'
 import 'dayjs/locale/lt'
+import { setCompaniesEmployees } from '../../../../auth/SingleCompanyReducer/SingleCompanyReducer'
 const { TextArea } = Input
 
 type EmployeesAdditionModal = {
@@ -38,6 +39,7 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
   const {id}                          = useParams()
   const [permissions, setPermissions] = React.useState([])
   const [messageApi, contextHolder]   = message.useMessage()
+  const companyEployes = useAppSelector((state) => state.singleCompany.companiesEmployees)
 
   React.useEffect(() => {
     (async () => {
@@ -64,7 +66,8 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
       try{
         values.companyId = id
         values.isDisabled = false
-        await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
+        const res = await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
+        dispatch(setCompaniesEmployees([...companyEployes, res]))
         dispatch(setOpenEmployeeAdditionModal(false))
         messageApi.success({
           type:    'success',

@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import {
+  ConfigProvider,
   DatePicker,
   Form,
   Select,
@@ -25,7 +26,9 @@ import {
 
 import { selectSite }               from '../../../auth/SitesReducer/selectors'
 import { VisitsType }               from '../../../types/globalTypes'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import SuccessMessage               from '../../UniversalComponents/SuccessMessage'
+import locale                       from 'antd/es/locale/lt_LT'
+import 'dayjs/locale/lt'
 
 const VisitSitesSelectors = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -124,7 +127,9 @@ const VisitSitesSelectors = () => {
       style={{width: '100%'}}
       rules={[{ required: true, message: 'Iveskite atvykimo datą' }]}
     >
-      <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
+      <ConfigProvider locale={locale}>
+        <DatePicker placeholder={'Planuojama vizito data/laikas'} style={{width: '100%'}} showTime />
+      </ConfigProvider>
     </Form.Item>
       }
       <SuccessMessage contextHolder={contextHolder}/>

@@ -45,7 +45,7 @@ const CompaniesRacks = ({ site }:ColocationViewProps) => {
                 <RacksList premise={premise}/>
               </div>
             )}
-            <div>Kolokacijos J13 {companyPremise.length}</div>
+            <div>Kolokacijos {site.name} {companyPremise.length}</div>
           </Card>
           : <Empty description='Įmonė spintų neturi' image={Empty.PRESENTED_IMAGE_SIMPLE} />
         }

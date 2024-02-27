@@ -12,6 +12,7 @@ import {
   message,
   Checkbox,
   CheckboxProps,
+  Tooltip,
 }                          from 'antd'
 
 
@@ -168,7 +169,9 @@ const CollocationTab = () => {
       />
       <Modal title='Pridėti adresą' open={isSiteAdditionModalOpen} onOk={onOk} onCancel={handleCancel}>
         <Input value={siteNameInputValue} onChange={(e) => setSiteNameInputValue(e.target.value)}/>
-        <Checkbox onChange={onIsRemoteChange}/>
+        <Tooltip title='Jei pažymėta, registruojant vizitą šiuo adresu bus išsiunčiamas laiškas apsaugai'>
+          <Checkbox onChange={onIsRemoteChange}>Nutolęs adresas</Checkbox>
+        </Tooltip>
       </Modal>
       <Modal title='Pašalinti adresą' open={isSiteRemovalModalOpen} onOk={onRemoveSite} onCancel={cancelSiteRemove}>
         <p>Ar tikrai norite pašalintį adresą?</p>

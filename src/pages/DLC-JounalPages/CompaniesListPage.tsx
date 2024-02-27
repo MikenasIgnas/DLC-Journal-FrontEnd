@@ -111,7 +111,7 @@ const CompaniesListPage = () => {
 
   const listButtons = (listItemId: string | undefined) => {
     const buttons = [
-      <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}`}>Peržiūrėti</Link>,
+      <Link key={listItemId} to={`/DLC Žurnalas/Įmonių_Sąrašas/${listItemId}?tabKey=1`}>Peržiūrėti</Link>,
       <Button type='link' onClick={() => deleteCompany(listItemId)} key={listItemId}>Ištrinti</Button>,
     ]
     return buttons
