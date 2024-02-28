@@ -20,7 +20,6 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
   const windowSize      = useSetWindowsSize()
   const company         = useAppSelector((state) => state.singleCompany.singleCompany)
   const editCompanyPage = useAppSelector((state) => state.singleCompanyEdits.editCompanyPage)
-
   return (
     <div>
       {!editCompanyPage ?
@@ -33,7 +32,7 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
               style={{margin: '10px'}}
               src={
                 <img style={{objectFit: 'contain'}}
-                  src={company?.photo ? company?.photo :'../../CompanyLogos/noImage.jpg'}
+                  src={company?.photo ? company?.photo : '/home/dev/DLCchecklist-main/BackEnd/Photos/noImage.jpg'}
                   alt='err'
                 />
               }
@@ -52,7 +51,7 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
             src={
               <img
                 style={{objectFit: 'contain'}}
-                src={company?.photo ? company?.photo : '../../CompanyLogos/noImage.jpg'}
+                src={company?.photo ? company.photo : '/home/dev/DLCchecklist-main/BackEnd/Photos/noImage.jpg'}
                 alt='err'
               />
             }

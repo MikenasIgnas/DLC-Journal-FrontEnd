@@ -36,7 +36,7 @@ const UersTableRows = ({ id, item, deleteItem, deleteButtonText }: UersTableProp
         <Tag>{HighlightText(filter, item.isSecurity ? 'apsauga' : item.isAdmin ? 'admin': 'user' )}</Tag>
       </td>
       <td>
-        <Tag color={!status ? 'success' : 'error'}>{HighlightText(filter, !status ? 'aktyvus' : 'neaktyvus')}</Tag>
+        <Tag color={!item.isDisabled ? 'success' : 'error'}>{HighlightText(filter, !item.isDisabled ? 'aktyvus' : 'neaktyvus')}</Tag>
       </td>
       <td>
         <Typography >{HighlightText(filter, convertUTCtoLocalDate(item.created))}</Typography>

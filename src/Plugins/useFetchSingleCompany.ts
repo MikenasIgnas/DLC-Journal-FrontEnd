@@ -49,19 +49,21 @@ const useFetchSingleCompany = () => {
     dispatch(setLoading(true))
     try{
       const fetchData = async() => {
-        const singleCompany: CompaniesType          = await get(`company/company?id=${id}`, cookies.access_token)
-        const fullSiteData: FullSiteData[]          = await get('site/fullSiteData', cookies.access_token)
-        const allCompanies: CompaniesType[]         = await get('company/company', cookies.access_token)
-        const companyDocuments: CompanyDocuments[]  = await get(`company/document?companyId=${singleCompany._id}`, cookies.access_token)
+        if(id){
+          const singleCompany: CompaniesType          = await get(`company/company?id=${id}`, cookies.access_token)
+          const fullSiteData: FullSiteData[]          = await get('site/fullSiteData', cookies.access_token)
+          const allCompanies: CompaniesType[]         = await get('company/company', cookies.access_token)
+          const companyDocuments: CompanyDocuments[]  = await get(`company/document?companyId=${singleCompany._id}`, cookies.access_token)
 
-        dispatch(setFullSiteData(fullSiteData))
-        dispatch(setCompanyDocuments(companyDocuments))
-        dispatch(setSingleCompany(singleCompany))
-        dispatch(setCompanyId(id))
-        dispatch(setSiteId(siteId))
-        const parentCompanies                         = allCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
-        dispatch(setParentCompanies(parentCompanies))
-        dispatch(setLoading(false))
+          dispatch(setFullSiteData(fullSiteData))
+          dispatch(setCompanyDocuments(companyDocuments))
+          dispatch(setSingleCompany(singleCompany))
+          dispatch(setCompanyId(id))
+          dispatch(setSiteId(siteId))
+          const parentCompanies                       = allCompanies.filter((el: CompaniesType) => el._id !== id && !el.parentId)
+          dispatch(setParentCompanies(parentCompanies))
+          dispatch(setLoading(false))
+        }
       }
 
       fetchData()

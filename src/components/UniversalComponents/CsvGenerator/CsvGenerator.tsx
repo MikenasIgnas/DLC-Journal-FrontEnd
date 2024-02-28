@@ -22,7 +22,7 @@ const CsvGenerator = ({url, tooltipText}: CsvGeneratorProps) => {
   const [reportDateTo, setReportDateTo]       = React.useState<string>()
   const {generateVisitsReport, loading}       = useGenerateVisitsReport()
 
-  const onRangeChange = (dates: null | (Dayjs | null)[], dateString: [string, string] | string) => {
+  const onRangeChange = (_dates: null | (Dayjs | null)[], dateString: [string, string] | string) => {
     if (dateString) {
       const dateFrom = convertUTCtoLocalDate(dateString[0])
       const dateTo = convertUTCtoLocalDate(dateString[1])

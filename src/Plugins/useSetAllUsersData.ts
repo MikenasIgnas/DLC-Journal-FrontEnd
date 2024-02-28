@@ -21,9 +21,9 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
   React.useEffect(() => {
     const setFetchedData = async () => {
       let fetchUrl        = `user?page=${page}&limit=${limit}`
-      let fetchCountUrl   = `user/count?isDisabled=${isDisabled}`
+      let fetchCountUrl   = `user/count?page=${page}&limit=${limit}`
 
-      if(isDisabled !== undefined){
+      if (isDisabled !== undefined) {
         fetchUrl += `&isDisabled=${isDisabled}`
         fetchCountUrl += `&isDisabled=${isDisabled}`
       }
@@ -33,22 +33,22 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
         fetchCountUrl += `&search=${searchFilter}`
       }
 
-      if(isAdminFilter){
+      if (isAdminFilter) {
         fetchUrl += `&isAdmin=${isAdminFilter}`
         fetchCountUrl += `&isAdmin=${isAdminFilter}`
       }
 
-      if(isDisabledFilter){
+      if (isDisabledFilter) {
         fetchUrl += `&isDisabled=${isDisabledFilter}`
         fetchCountUrl += `&isDisabled=${isDisabledFilter}`
       }
 
-      if(tableSorter){
+      if (tableSorter) {
         fetchUrl += `&tableSorter=${tableSorter}`
         fetchCountUrl += `&tableSorter=${tableSorter}`
       }
 
-      if(isSecurityFilter){
+      if (isSecurityFilter) {
         fetchUrl += `&isSecurity=${isSecurityFilter}`
         fetchCountUrl += `&isSecurity=${isSecurityFilter}`
       }
@@ -58,58 +58,17 @@ const useSetAllUsersData = (isDisabled?: boolean) => {
         const documents = await get(fetchCountUrl, cookies.access_token)
         setUsers(data)
         setCount(documents)
-        if(isDisabled !== undefined){
-          const filterData = data.filter((el:UserType) => el.isDisabled !== true)
-          setUsers(filterData)
-        }
-
       } catch (error) {
-        if(error instanceof Error){
+        if (error instanceof Error) {
           alert(error.message)
         }
       }
     }
 
     setFetchedData()
-  }, [cookies.access_token, searchParams])
+  }, [cookies.access_token, page, limit, searchFilter, isAdminFilter, isSecurityFilter, isDisabled, isDisabledFilter, tableSorter])
 
-  // React.useEffect(() => {
-  //   (async () => {
-  //     try{
-
-  //       let fetchUrl = `user/count?isDisabled=${isDisabled}`
-
-  //       if (searchFilter) {
-  //         fetchUrl += `&search=${searchFilter}`
-  //       }
-
-  //       if(isAdminFilter){
-  //         fetchUrl += `&isAdmin=${isAdminFilter}`
-  //       }
-
-  //       if(isDisabledFilter){
-  //         fetchUrl += `&isDisabled=${isDisabledFilter}`
-  //       }
-
-  //       if(tableSorter){
-  //         fetchUrl += `&tableSorter=${tableSorter}`
-  //       }
-
-  //       if(isSecurityFilter){
-  //         fetchUrl += `&isSecurity=${isSecurityFilter}`
-  //       }
-
-  //       const documents = await get(fetchUrl, cookies.access_token)
-  //       setCount(documents)
-  //     }catch(error){
-  //       if(error instanceof Error){
-  //         alert(error.message)
-  //       }
-  //     }
-  //   })()
-  // }, [cookies.access_token, searchParams])
-
-  return {users, setUsers, count, setCount}
+  return { users, setUsers, count, setCount }
 }
 
 export default useSetAllUsersData
