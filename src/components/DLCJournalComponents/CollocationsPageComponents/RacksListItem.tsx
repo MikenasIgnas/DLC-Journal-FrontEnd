@@ -127,7 +127,7 @@ const RacksListItem = ({item, premiseId, racks, setRacks, updateRacksList, compa
               matchingCompanies?.companyNames.map((el) =>
                 <Tag
                   style={{cursor: 'pointer'}}
-                  onClick={() => navigate(`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}`)}
+                  onClick={() => navigate(`/DLC Žurnalas/Įmonių_Sąrašas/${el.id}?tabKey=1`)}
                   color='blue'
                   key={el.id}>
                   {el.name}

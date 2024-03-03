@@ -103,6 +103,7 @@ const VisitRegistrationForm = () => {
         type:    'success',
         content: 'Išsaugota',
       })
+      window.scrollTo(0, 0)
       navigate(`/DLC Žurnalas/Vizitai/${visitId}?siteId=${siteId}&_id=${visitId}&companyId=${companyId}`)
     } catch (error) {
       if (error instanceof Error){

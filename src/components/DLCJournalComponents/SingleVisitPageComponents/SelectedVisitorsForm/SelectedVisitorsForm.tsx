@@ -74,11 +74,11 @@ const SelectedVisitorsForm = () => {
           await put('visit/visitor', updateValues, cookies.access_token)
 
 
-          messageApi.success({
-            type:    'success',
-            content: 'Išsaugota',
-          })
         }
+        messageApi.success({
+          type:    'success',
+          content: 'Išsaugota',
+        })
       } catch (error) {
         if (error instanceof Error) {
           messageApi.error({

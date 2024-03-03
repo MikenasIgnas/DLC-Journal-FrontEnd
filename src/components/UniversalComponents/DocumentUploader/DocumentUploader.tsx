@@ -70,7 +70,7 @@ const DocumentUploader = () => {
   }
 
   return (
-    <div style={{ paddingBottom: '10px' }}>
+    <div style={{width: '100%', justifyContent: 'center', alignItems: 'center', paddingBottom: '10px' }}>
       <Upload fileList={fileList} {...props}>
         <Button icon={<UploadOutlined />}>Įkelti dokumentą</Button>
       </Upload>

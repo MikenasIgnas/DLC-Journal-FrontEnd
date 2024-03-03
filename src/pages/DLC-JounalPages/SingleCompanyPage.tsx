@@ -33,6 +33,7 @@ import SingleCompanyTitle     from '../../components/DLCJournalComponents/Client
 import ClientsDocumentsTab    from '../../components/DLCJournalComponents/CollocationsPageComponents/ClientsDocumentsTab'
 import useFetchSingleCompany  from '../../Plugins/useFetchSingleCompany'
 import SuccessMessage         from '../../components/UniversalComponents/SuccessMessage'
+import { setSingleCompany }   from '../../auth/SingleCompanyReducer/SingleCompanyReducer'
 
 
 type CompanyFormType = {
@@ -60,25 +61,29 @@ const SingleCompanyPage = () => {
   const limit                             = searchParams.get('limit') || 10
   useFetchSingleCompany()
 
-  const saveChanges = async(values:CompanyFormType) => {
-    dispatch(setEditCompanyPage(!editCompanyPage))
-    if(editCompanyPage){
-      try{
+  const saveChanges = async(values: CompanyFormType) => {
+    if (editCompanyPage) {
+      try {
         values.id = id
         values.photo = fileList[0]
-        await put( 'company/company', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
+        const res = await put('company/company', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
+        dispatch(setSingleCompany(res))
         messageApi.success({
           type:    'success',
           content: 'Išsaugota',
         })
-      }catch(error){
-        if(error instanceof Error){
+      } catch (error) {
+        if (error instanceof Error) {
           messageApi.error({
             type:    'error',
             content: error.message,
           })
         }
+      } finally {
+        dispatch(setEditCompanyPage(false))
       }
+    } else {
+      dispatch(setEditCompanyPage(true))
     }
   }
 

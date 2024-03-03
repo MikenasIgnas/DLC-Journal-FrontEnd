@@ -66,6 +66,8 @@ const EmployeesAdditionModal = ({urlPath}: EmployeesAdditionModal) => {
       try{
         values.companyId = id
         values.isDisabled = false
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        values.photo = fileList[0] as any
         const res = await post(urlPath, values, cookies.access_token, fileList[0], setUploading, setFileList)
         dispatch(setCompaniesEmployees([...companyEployes, res]))
         dispatch(setOpenEmployeeAdditionModal(false))

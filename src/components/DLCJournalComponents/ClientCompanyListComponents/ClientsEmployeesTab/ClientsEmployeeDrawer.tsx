@@ -53,7 +53,7 @@ const ClientsEmployeeDrawer = () => {
   const [searchParams]                = useSearchParams()
   const employeeId                    = searchParams.get('employeeId')
   const openClientsEmployeesDrawer    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
-  const dipatch                       = useAppDispatch()
+  const dispatch                       = useAppDispatch()
   const windowSize                    = useSetWindowsSize()
   const [permissions, setPermissions] = React.useState<Permissions[]>()
   const editCompanyEmployee           = useAppSelector((state) => state.singleCompanyEdits.editClientsEmployee)
@@ -87,14 +87,15 @@ const ClientsEmployeeDrawer = () => {
     return () => {
       isMounted = false
     }
-  }, [employeeId, cookies.access_token])
+  }, [employeeId, cookies.access_token, editCompanyEmployee, openClientsEmployeesDrawer])
 
   const editUser = async(values: EmployeesType) => {
-    dipatch(setEditCompanyEmployee(!editCompanyEmployee))
     if(editCompanyEmployee) {
       try{
         values.companyId = employee?.companyId
         values.id = employee?._id
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        values.photo = fileList[0] as any
         const response = await put('company/CompanyEmployee', values, cookies.access_token, fileList[0], setUploading, setFileList, 'photo')
         setEmployee(response)
         form.setFieldsValue(response)
@@ -109,16 +110,20 @@ const ClientsEmployeeDrawer = () => {
             content: error.message,
           })
         }
+      }finally {
+        dispatch(setEditCompanyEmployee(false))
       }
+    }else{
+      dispatch(setEditCompanyEmployee(true))
     }
   }
-  const employeePermissions         = permissions?.filter(permission => employee?.permissions.includes(permission._id))
+  const employeePermissions         = permissions?.filter(permission => employee?.permissions?.includes(permission._id))
   const editablePermissionsOptions  = permissions?.map((el) => ({label: el.name, value: el._id}))
   const permissionsOptions          = employeePermissions?.map(permission => ({ label: permission.name, value: permission._id }))
 
   const onClose = () => {
-    dipatch(setEditCompanyEmployee(false))
-    dipatch(setOpenClientsEmployeesDrawer(false))
+    dispatch(setEditCompanyEmployee(false))
+    dispatch(setOpenClientsEmployeesDrawer(false))
   }
 
   return (

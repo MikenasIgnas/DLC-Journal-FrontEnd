@@ -44,12 +44,12 @@ const useFetchSingleCompany = () => {
   const page                         = searchParams.get('page') || 1
   const limit                        = searchParams.get('limit') || 10
   const search                       = searchParams.get('search')
-
+  const openClientsEmployeesDrawer    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
   React.useEffect(() => {
     dispatch(setLoading(true))
     try{
       const fetchData = async() => {
-        if(id){
+        if (id) {
           const singleCompany: CompaniesType          = await get(`company/company?id=${id}`, cookies.access_token)
           const fullSiteData: FullSiteData[]          = await get('site/fullSiteData', cookies.access_token)
           const allCompanies: CompaniesType[]         = await get('company/company', cookies.access_token)
@@ -75,7 +75,7 @@ const useFetchSingleCompany = () => {
         })
       }
     }
-  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee, editCompanyRacks])
+  },[cookies.access_token, dispatch, openEmployeeAdditionModal, setSubClientAdded, editCompanyPage, editClientsEmployee, editCompanyRacks ])
 
 
   React.useEffect(() => {
@@ -94,7 +94,7 @@ const useFetchSingleCompany = () => {
     }
 
     fetchData()
-  },[page, search, limit, openEmployeeAdditionModal])
+  },[page, search, limit, openEmployeeAdditionModal, openClientsEmployeesDrawer])
 
   return {contextHolder}
 }

@@ -32,7 +32,7 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
               style={{margin: '10px'}}
               src={
                 <img style={{objectFit: 'contain'}}
-                  src={company?.photo ? company?.photo : '/home/dev/DLCchecklist-main/BackEnd/Photos/noImage.jpg'}
+                  src={company?.photo ? company?.photo : '../../CompanyLogos/noImage.jpg'}
                   alt='err'
                 />
               }
@@ -51,7 +51,7 @@ const SingleCompanyTitle = ({setFileList, fileList}: SingleCompaniesTitleProps) 
             src={
               <img
                 style={{objectFit: 'contain'}}
-                src={company?.photo ? company.photo : '/home/dev/DLCchecklist-main/BackEnd/Photos/noImage.jpg'}
+                src={company?.photo ? company?.photo : '../../CompanyLogos/noImage.jpg'}
                 alt='err'
               />
             }
