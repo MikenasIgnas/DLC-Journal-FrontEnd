@@ -5,7 +5,7 @@
 import { TokenType } from '../types/globalTypes'
 
 const get = async (url: string, token: TokenType) => {
-  const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+  const response = await fetch(`http://localhost:4002/${url}`, {
     method:  'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -32,12 +32,12 @@ const patch = async (url: string, values: any, token: TokenType) => {
       body: JSON.stringify(values),
     }
 
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+    const response = await fetch(`http://localhost:4002/${url}`, options)
     if(response.ok){
       return response.json()
     }else{
       const responseJson = await response.json()
-      throw new Error(responseJson.messsage)
+      throw new Error(responseJson.message)
     }
   } catch (error) {
     console.error(error)
@@ -68,7 +68,7 @@ const put = async (url: string, values: any, token: string, fileList?:any, setUp
     setUploading(true)
 
     try {
-      const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+      const response = await fetch(`http://localhost:4002/${url}`, {
         method:  'PUT',
         headers: {
           'token': token,
@@ -105,12 +105,12 @@ const put = async (url: string, values: any, token: string, fileList?:any, setUp
       body: JSON.stringify(values),
     }
 
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+    const response = await fetch(`http://localhost:4002/${url}`, options)
     if(response.ok){
       return response.json()
     }else{
       const responseJson = await response.json()
-      throw new Error(responseJson.messsage)
+      throw new Error(responseJson.message)
     }
   }
 }
@@ -139,7 +139,7 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
     setUploading(true)
 
     try {
-      const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+      const response = await fetch(`http://localhost:4002/${url}`, {
         method:  'POST',
         headers: {
           'token': token,
@@ -168,7 +168,7 @@ const post = async (url: string, values: any, token: string, fileList?:any, setU
       body: JSON.stringify(values),
     }
 
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+    const response = await fetch(`http://localhost:4002/${url}`, options)
     if(response.ok){
       return response.json()
     }else{
@@ -200,7 +200,7 @@ const postDocument = async (url: string, values: any, token: string, fileList?:a
     }
 
     try {
-      const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+      const response = await fetch(`http://localhost:4002/${url}`, {
         method:  'POST',
         headers: {
           'token': token,
@@ -225,7 +225,7 @@ const postDocument = async (url: string, values: any, token: string, fileList?:a
       body: JSON.stringify(values),
     }
 
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+    const response = await fetch(`http://localhost:4002/${url}`, options)
     return response.json()
   }
 }
@@ -239,7 +239,7 @@ const deleteItem = async (url: string, data: any, token: string) => {
     },
     body: JSON.stringify(data),
   }
-  const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4002/${url}`, options)
 
   if(response.ok){
     return response.json()
@@ -251,7 +251,7 @@ const deleteItem = async (url: string, data: any, token: string) => {
 
 const getPdfFile = async (url: string, token: TokenType) => {
   try {
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+    const response = await fetch(`http://localhost:4002/${url}`, {
       method:  'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -275,7 +275,7 @@ const getPdfFile = async (url: string, token: TokenType) => {
 
 const getFile = async (url: string, token: TokenType) => {
   try {
-    const response = await fetch(`http://10.81.7.29:4000/${url}`, {
+    const response = await fetch(`http://localhost:4002/${url}`, {
       method:  'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -336,7 +336,7 @@ const getCsvFile = async (url: string, data: any, token: TokenType) => {
     body: JSON.stringify(data),
   }
 
-  const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4002/${url}`, options)
   const doc = await response.blob()
   return doc
 }
@@ -365,7 +365,7 @@ const validateUser = async (url: string, data: any) => {
     },
     body: JSON.stringify(data),
   }
-  const response = await fetch(`http://10.81.7.29:4000/auth/${url}`, options)
+  const response = await fetch(`http://localhost:4002/auth/${url}`, options)
   if(response.ok){
     return response.json()
   }else{
@@ -384,7 +384,7 @@ const postImage = async (url: string, data: any, token: TokenType) => {
     body: data,
   }
 
-  const response = await fetch(`http://10.81.7.29:4000/${url}`, options)
+  const response = await fetch(`http://localhost:4002/${url}`, options)
   return response.json()
 }
 

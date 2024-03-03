@@ -5,8 +5,6 @@ import {
   Form,
   message,
 }                                   from 'antd'
-import VisitDescriptionTitle        from '../VisitDescriptionTitle'
-import VisitInformationItems        from '../../VisitiRegistrationComponents/VisitInformationItems'
 import { put }                      from '../../../../Plugins/helpers'
 import {
   useAppDispatch,
@@ -17,6 +15,8 @@ import { useCookies }               from 'react-cookie'
 import { setEditVisitInformation }  from '../../../../auth/SingleVisitPageEditsReducer/singleVisitPageEditsReducer'
 import { useSearchParams }          from 'react-router-dom'
 import SuccessMessage               from '../../../UniversalComponents/SuccessMessage'
+import VisitDescriptionTitle        from '../VisitDescriptionTitle'
+import VisitInformationItems        from '../../VisitiRegistrationComponents/VisitInformationItems'
 
 
 const VisitInformationForm = () => {
@@ -34,7 +34,16 @@ const VisitInformationForm = () => {
     dispatch(setEditVisitInformation(!editVisitInformation))
     if(editVisitInformation){
       try{
-        await put('visit/visit', {id: id, visitPurpose: values.visitPurpose, siteId: siteId, startDate: values.startDate, endDate: values.endDate}, cookies.access_token)
+        const updataValues = {
+          id:           id,
+          visitPurpose: values.visitPurpose,
+          siteId:       siteId,
+          startDate:    values.startDate,
+          endDate:      values.endDate,
+        }
+
+        await put('visit/visit', updataValues, cookies.access_token)
+
         messageApi.success({
           type:    'success',
           content: 'Išsaugota',

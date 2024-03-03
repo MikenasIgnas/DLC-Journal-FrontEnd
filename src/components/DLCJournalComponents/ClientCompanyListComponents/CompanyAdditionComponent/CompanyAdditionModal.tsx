@@ -8,6 +8,7 @@ import {
   Input,
   UploadFile,
   message,
+  InputNumber,
 }                                         from 'antd'
 
 import { useForm }                        from 'antd/es/form/Form'
@@ -23,6 +24,7 @@ import { setOpenCompaniesAdditionModal }  from '../../../../auth/ModalStateReduc
 import SuccessMessage                     from '../../../UniversalComponents/SuccessMessage'
 import { post }                           from '../../../../Plugins/helpers'
 import { useCookies }                     from 'react-cookie'
+import { setCheckedList }                 from '../../../../auth/RacksReducer/RacksReducer'
 
 type AdditionModalProps = {
   postUrl:            string;
@@ -48,30 +50,44 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
   const checkedList                 = useAppSelector((state) => state.racks.checkedList)
 
   const addCompany = async(values: CompanyFormType) => {
-    values.racks = checkedList
-
     try{
       if (fileList && fileList.length > 0) {
         values.photo = fileList[0]
       }
 
-      await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
+      values.racks = checkedList
 
-      form.resetFields()
+      const res    = await post(postUrl, values, cookies.access_token, fileList, setUploading, setFileList)
+
+      if(res.message){
+        messageApi.error({
+          type:    'error',
+          content: 'Only admin can add companies',
+        })
+      }else{
+        messageApi.success({
+          type:    'success',
+          content: 'Įmonė pridėta',
+        })
+      }
+
+      form.resetFields(['name', 'companyCode', 'description'])
       dispatch(setOpenCompaniesAdditionModal(false))
+      dispatch(setCheckedList([]))
 
-      messageApi.success({
-        type:    'success',
-        content: 'Įmonė pridėta',
-      })
     }catch(error){
       if(error instanceof Error){
         messageApi.error({
           type:    'error',
-          content: error.message,
+          content: 'Only admin can add companies',
         })
       }
     }
+  }
+  const onCancel = () => {
+    dispatch(setOpenCompaniesAdditionModal(false))
+    form.resetFields(['name', 'companyCode', 'description'])
+    dispatch(setCheckedList([]))
   }
 
   return (
@@ -79,7 +95,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
       title={additionModalTitle}
       open={openCompaniesAdditionModal}
       onOk={() => dispatch(setOpenCompaniesAdditionModal(false))}
-      onCancel={() => dispatch(setOpenCompaniesAdditionModal(false))}
+      onCancel={onCancel}
       footer={false}
       width={'1000px'}
     >
@@ -89,7 +105,7 @@ const CompanyAdditionModal = ({postUrl, additionModalTitle}: AdditionModalProps)
             <Input placeholder='Įmonės pavadinimas'/>
           </Form.Item>
           <Form.Item rules={[{ required: true, message: 'Įveskite įmonės kodą'}]} name='companyCode'>
-            <Input placeholder='Įmonės kodas'/>
+            <InputNumber placeholder='Įmonės kodas' style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name='description'>
             <Input placeholder='Įmonės apibūdinimas'/>

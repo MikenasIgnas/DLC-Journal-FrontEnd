@@ -44,7 +44,9 @@ const useFetchSingleCompany = () => {
   const page                         = searchParams.get('page') || 1
   const limit                        = searchParams.get('limit') || 10
   const search                       = searchParams.get('search')
-  const openClientsEmployeesDrawer    = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
+  const openClientsEmployeesDrawer   = useAppSelector((state) => state.modals.openClientsEmployeesDrawer)
+  const isAdmin                      = useAppSelector((state) => state.auth.isAdmin)
+
   React.useEffect(() => {
     dispatch(setLoading(true))
     try{
@@ -53,10 +55,13 @@ const useFetchSingleCompany = () => {
           const singleCompany: CompaniesType          = await get(`company/company?id=${id}`, cookies.access_token)
           const fullSiteData: FullSiteData[]          = await get('site/fullSiteData', cookies.access_token)
           const allCompanies: CompaniesType[]         = await get('company/company', cookies.access_token)
-          const companyDocuments: CompanyDocuments[]  = await get(`company/document?companyId=${singleCompany._id}`, cookies.access_token)
+
+          if(isAdmin){
+            const companyDocuments: CompanyDocuments[]  = await get(`company/document?companyId=${singleCompany._id}`, cookies.access_token)
+            dispatch(setCompanyDocuments(companyDocuments))
+          }
 
           dispatch(setFullSiteData(fullSiteData))
-          dispatch(setCompanyDocuments(companyDocuments))
           dispatch(setSingleCompany(singleCompany))
           dispatch(setCompanyId(id))
           dispatch(setSiteId(siteId))

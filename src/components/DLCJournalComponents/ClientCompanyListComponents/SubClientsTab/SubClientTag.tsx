@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { Tag }  from 'antd'
-import { Link } from 'react-router-dom'
-import { CompaniesType } from '../../../../types/globalTypes'
-import useFetch from '../../../../customHooks/useFetch'
+import { Tag }            from 'antd'
+import { Link }           from 'react-router-dom'
+import { CompaniesType }  from '../../../../types/globalTypes'
+import useFetch           from '../../../../customHooks/useFetch'
 
 type SubClientTagProps = {
     parentCompanyId:  string;

@@ -59,6 +59,7 @@ const SingleCompanyPage = () => {
   const [messageApi, contextHolder]       = message.useMessage()
   const page                              = searchParams.get('page') || 1
   const limit                             = searchParams.get('limit') || 10
+  const isAdmin                           = useAppSelector((state) => state.auth.isAdmin)
   useFetchSingleCompany()
 
   const saveChanges = async(values: CompanyFormType) => {
@@ -103,11 +104,11 @@ const SingleCompanyPage = () => {
       label:    'Kliento Kolokacijos',
       children: <ClientsCollocationsTab/>,
     },
-    {
+    isAdmin ? {
       key:      '4',
       label:    'Dokumentai',
       children: <ClientsDocumentsTab/>,
-    },
+    }: {key: '', label: ''},
   ]
 
   const changeTab = (key: string) => {

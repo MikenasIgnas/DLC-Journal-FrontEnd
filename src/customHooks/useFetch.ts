@@ -1,28 +1,21 @@
-/* eslint-disable max-len */
-/* eslint-disable prefer-spread */
 import { useState }   from 'react'
 import { get }        from '../Plugins/helpers'
 import React          from 'react'
 import { useCookies } from 'react-cookie'
 
-export const useFetch = <T>(url: string, setLoading?: React.Dispatch<React.SetStateAction<boolean>>) => {
+export const useFetch = <T>(url: string) => {
   const [cookies]       = useCookies(['access_token'])
   const [data, setData] = useState<T | undefined>()
 
   React.useEffect(() => {
     (async () => {
       try{
-        if(setLoading){
-          setLoading(true)
-          const response = await get(url, cookies.access_token)
-          setData(response)
-          setLoading(false)
-        }else{
-          const response = await get(url, cookies.access_token)
-          setData(response)
+        const response = await get(url, cookies.access_token)
+        setData(response)
+      }catch(error){
+        if(error instanceof Error){
+          alert(error)
         }
-      }catch(err){
-        console.log(err)
       }
     })()
   }, [url])
