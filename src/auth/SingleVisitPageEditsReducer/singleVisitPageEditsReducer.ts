@@ -5,6 +5,7 @@ interface VisitEditsReducer {
     editVisitors:         boolean
     editCollocations:     boolean
     openVisitorAddition:  boolean
+    editClientsGuests:    boolean
 }
 
 const initialState: VisitEditsReducer = {
@@ -12,6 +13,7 @@ const initialState: VisitEditsReducer = {
   editVisitors:         false,
   editCollocations:     false,
   openVisitorAddition:  false,
+  editClientsGuests:    false,
 }
 const visitEditsSlice = createSlice({
   name:     'visitEdits',
@@ -29,6 +31,9 @@ const visitEditsSlice = createSlice({
     setOpenVisitorAddition(state, {payload}: PayloadAction<boolean>){
       state.openVisitorAddition = payload
     },
+    setEditClientsGuests(state, {payload}: PayloadAction<boolean>){
+      state.editClientsGuests = payload
+    },
   },
 })
 
@@ -37,6 +42,7 @@ export const {
   setEditVisitors,
   setEditCollocations,
   setOpenVisitorAddition,
+  setEditClientsGuests,
 } = visitEditsSlice.actions
 
 export default visitEditsSlice.reducer

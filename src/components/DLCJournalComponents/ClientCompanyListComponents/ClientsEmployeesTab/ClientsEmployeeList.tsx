@@ -33,7 +33,6 @@ const ClientsEmployeeList = () => {
   const dispatch                        = useAppDispatch()
   const search                            = searchParams.get('search')
   const companiesEmployees              = useAppSelector((state) => state.singleCompany.companiesEmployees)
-  const siteId                          = searchParams.get('siteId')
   const tabKey                          = searchParams.get('tabKey')
   const loading                         = useAppSelector((state) => state.singleCompany.loading)
   const [messageApi, contextHolder]     = message.useMessage()
@@ -42,8 +41,8 @@ const ClientsEmployeeList = () => {
   const limit                           = searchParams.get('limit')
   const delay                           = useDelay()
 
-  const showDrawer = ( employeeId: string | undefined, companyId: number | undefined) => {
-    setSearchParams(`&employeeId=${employeeId}&companyId=${companyId}&siteId=${siteId}&tabKey=${tabKey}`)
+  const showDrawer = ( employeeId: string | undefined) => {
+    setSearchParams(`&page=${page}&limit=${limit}&employeeId=${employeeId}&tabKey=${tabKey}`)
     dispatch(setOpenClientsEmployeesDrawer(true))
   }
 
@@ -68,10 +67,10 @@ const ClientsEmployeeList = () => {
       }
     }
   }
-  const listButtons = (listItemId: string | undefined, companyId: string | undefined) => {
+  const listButtons = (listItemId: string | undefined) => {
     const buttons = [
       <div key={listItemId} className='ListItemButtons'>
-        <Button type='link' onClick={() => showDrawer(listItemId, Number(companyId))} >Peržiūrėti</Button>
+        <Button type='link' onClick={() => showDrawer(listItemId)} >Peržiūrėti</Button>
         <Button type='link' onClick={() => deleteEmployee(listItemId)} >Ištrinti</Button>
       </div>,
     ]
@@ -117,7 +116,7 @@ const ClientsEmployeeList = () => {
         renderItem={(item) => (
           <EmployeesListItem id={item._id}
             description={HighlightText(search, `${item.occupation}`)}
-            listButtons={() => listButtons(item._id, item.companyId)}
+            listButtons={() => listButtons(item._id)}
             title={HighlightText(search, `${item.name} ${item.lastname}`)}
             photosFolder={'../ClientsEmployeesPhotos'}
             altImage={'noUserImage.jpeg'}

@@ -373,7 +373,22 @@ const validateUser = async (url: string, data: any) => {
     throw new Error(responseJson.message)
   }
 }
-
+const sendRecoveryCode = async (url: string, data: any) => {
+  const options = {
+    method:  'POST',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  }
+  const response = await fetch(`http://localhost:4002/auth/${url}`, options)
+  if(response.ok){
+    return response.json()
+  }else{
+    const responseJson = await response.json()
+    throw new Error(responseJson.message)
+  }
+}
 const postImage = async (url: string, data: any, token: TokenType) => {
   const options = {
     method:  'POST',
@@ -533,5 +548,6 @@ export {
   getFile,
   downloadFile,
   postDocument,
+  sendRecoveryCode,
 }
 

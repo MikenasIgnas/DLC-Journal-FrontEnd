@@ -72,8 +72,6 @@ const SelectedVisitorsForm = () => {
           }
 
           await put('visit/visitor', updateValues, cookies.access_token)
-
-
         }
         messageApi.success({
           type:    'success',

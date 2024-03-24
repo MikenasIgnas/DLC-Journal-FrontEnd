@@ -14,7 +14,7 @@ const SubClientTag = ({parentCompanyId}:SubClientTagProps ) => {
     <>
       {parentCompany &&
       <Tag color='green'>
-        <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${parentCompanyId}`}>Pagrindinis Klientas:
+        <Link to={`/DLC Žurnalas/Įmonių_Sąrašas/${parentCompanyId}?page=1&limit=10&tabKey=1`}>Pagrindinis Klientas:
           {parentCompany?.name}
         </Link>
       </Tag>

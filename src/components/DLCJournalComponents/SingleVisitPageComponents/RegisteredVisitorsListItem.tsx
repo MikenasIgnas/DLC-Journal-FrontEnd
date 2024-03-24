@@ -55,7 +55,6 @@ const RegisteredVisitorsListItem = ({ item }: RegisteredVisitorsListItemProps) =
   const onOk = async() => {
     if(signatureCanvasRef.current){
       form.setFieldValue(['visitors', item._id, 'signatures'], signatureCanvasRef.current.toDataURL())
-
       setSignatureURl(signatureCanvasRef.current.toDataURL())
       setOpen(false)
     }

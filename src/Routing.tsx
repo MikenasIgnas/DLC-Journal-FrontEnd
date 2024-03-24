@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable max-len */
 import React                            from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import LoginPage                        from './pages/LoginPage'
-import NotFoundPage                     from './pages/NotFoundPage'
 import ChecklistHistoryPage             from './pages/DLC-ChecklistPages/ChecklistHistoryPage'
 import ChecklistStartPage               from './pages/DLC-ChecklistPages/ChecklistStartPage'
 import ChecklistRoutesPage              from './pages/DLC-ChecklistPages/ChecklistRoutesPage'
@@ -26,7 +24,6 @@ import { jwtDecode }                    from 'jwt-decode'
 import StatisticsPage                   from './pages/DLC-JounalPages/StatisticsPage'
 import CollocationsPage                 from './pages/DLC-JounalPages/CollocationsPage'
 import SendRecoveryCodePage             from './pages/SendRecoveryCodePage'
-import RecoveryCodeConfirmationPage     from './pages/RecoveryCodeConfirmationPage'
 import PasswordResetPage                from './pages/PasswordResetPage'
 
 const Routing = () => {
@@ -93,9 +90,8 @@ const Routing = () => {
           <Routes>
             <Route path='/' element={<LoginPage />} />
             <Route path='/SendRecoveryCodePage' element={<SendRecoveryCodePage/>} />
-            <Route path='/RecoveryCodeConfirmationPage' element={<RecoveryCodeConfirmationPage/>} />
             <Route path='/PasswordResetPage' element={<PasswordResetPage/>} />
-            <Route path='*' element={<NotFoundPage />} />
+            <Route path='*' element={<LoginPage />} />
           </Routes>
         )}
     </BrowserRouter>

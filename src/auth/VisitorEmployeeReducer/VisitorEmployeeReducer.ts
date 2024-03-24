@@ -27,7 +27,7 @@ interface Visits {
     visitStatus:      VisitStatus[]
     visitorIdTypes:   VisitorsIdTypes[]
     dlcEmployee?:     EmployeesType;
-    guests:           Guest[] | undefined
+    guests:           Guest[]
     carPlates?:       string[] | undefined
   }
 
@@ -86,7 +86,7 @@ const visitReducerSlice = createSlice({
     setSiteId(state, { payload }: PayloadAction<string | undefined>){
       state.siteId = payload
     },
-    setClientsGuests(state, { payload }: PayloadAction<Guest[] | undefined>){
+    setClientsGuests(state, { payload }: PayloadAction<Guest[]>){
       state.guests = payload
     },
     addCarPlates(state, { payload }: PayloadAction<string>){
@@ -99,8 +99,8 @@ const visitReducerSlice = createSlice({
     addGuests(state, { payload }: PayloadAction<Guest>){
       state?.guests?.push(payload)
     },
-    removeGuest(state, { payload }: PayloadAction<number>){
-      const filteredVisitors = state.guests?.filter((_, i) => i !== payload)
+    removeGuest(state, { payload }: PayloadAction<string | undefined>){
+      const filteredVisitors = state.guests?.filter((item) => item._id !== payload)
       state.guests = filteredVisitors
     },
     setCarPlates(state, { payload }: PayloadAction<string[] | undefined>){

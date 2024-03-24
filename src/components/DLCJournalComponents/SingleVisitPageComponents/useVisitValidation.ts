@@ -8,6 +8,7 @@ import {
 }                                         from '../../../Plugins/helpers'
 
 import {
+  Guest,
   VisitStatus,
   Visitors,
 }                                         from '../../../types/globalTypes'
@@ -37,15 +38,18 @@ const useVisitValidation = () => {
   const { id }                      = useParams()
   const visitData                   = useAppSelector((state) => state.visit.visit)
   const visitingEmployees           = useAppSelector(selectVisitingCompanyEmplyees)
+  const clientsGuests               = useAppSelector((state) => state.visit.guests)
+  const editClientsGuests           = useAppSelector((state) => state.visitPageEdits.editClientsGuests)
   const dispatch                    = useAppDispatch()
   const hasValidId                  = (visitors: Visitors[]) => visitors?.every(obj => obj.visitorIdType)
   const hasSigned                   = (visitors: Visitors[]) => visitors?.every(obj => obj.signatures || obj.signed)
-
+  const guestHasValidId             = (guest: Guest[]) => guest.every(obj => obj.idType)
+  const hasGuestSigned              = (guest: Guest[]) => guest?.every(obj => obj.signatures || obj.signed)
 
   const validate = async (url: string, successMessage: string, visitStatuses: VisitStatus | undefined) => {
     const visitPurpose = visitData?.visitPurpose
 
-    if (editVisitInformation || editVisitors || editCollocations) {
+    if (editVisitInformation || editVisitors || editCollocations || editClientsGuests) {
       messageApi.error({ type: 'error', content: 'Neišsaugoti duomenys' })
       return
     }
@@ -60,22 +64,23 @@ const useVisitValidation = () => {
       return
     }
 
-    if (!hasValidId(visitingEmployees)) {
+    if (!hasValidId(visitingEmployees) || !guestHasValidId(clientsGuests)) {
       messageApi.error({ type: 'error', content: 'Nepasirinktas dokumento tipas' })
       return
     }
 
-    if (!hasSigned(visitingEmployees)) {
+    if (!hasSigned(visitingEmployees) || !hasGuestSigned(clientsGuests)) {
       messageApi.error({ type: 'error', content: 'Trūksta parašo' })
       return
     }
 
     try {
       setLoading(true)
-      const signatures  = visitingEmployees.map(el => ({ signature: el.signatures, visitorId: el._id }))
-      const res         = await post(url, {visitId: id, statusId: visitStatuses?._id, signatures } ,cookies.access_token)
-      const employee    = await get(`user?id=${res.dlcEmployee}`, cookies.access_token)
-      const visitors    = await get(`visit/visitor?visitId=${id}`, cookies.access_token)
+      const signatures      = visitingEmployees.map(el => ({ signature: el.signatures, visitorId: el._id }))
+      const guestSignatures = clientsGuests?.map((el) => ({ signature: el.signatures, id: el._id}))
+      const res             = await post(url, {visitId: id, statusId: visitStatuses?._id, signatures, guestSignatures } ,cookies.access_token)
+      const employee        = await get(`user?id=${res.dlcEmployee}`, cookies.access_token)
+      const visitors        = await get(`visit/visitor?visitId=${id}`, cookies.access_token)
       setLoading(false)
       dispatch(setVisitors(visitors))
       dispatch(setVisit(res))

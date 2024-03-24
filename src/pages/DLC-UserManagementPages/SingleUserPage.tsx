@@ -65,17 +65,11 @@ const SingleUserPage = () => {
     try {
       const res = await (endpoint === 'user' ? put : post)(endpoint, postData, cookies.access_token)
       if (!values.password && !values.oldPassword && !values.repeatPassword) {
-        if(res.messsage){
-          messageApi.info({
-            type:    'info',
-            content: res.messsage,
-          })
-        }else{
-          messageApi.success({
-            type:    'success',
-            content: 'Pakeitimai išsaugoti',
-          })
-        }
+        messageApi.info({
+          type:    'info',
+          content: 'Pakeista',
+        })
+
         if (!values.password && values.name) {
           if(logedInUser){
             dispatch(setEmployeeName(res.name))
@@ -101,10 +95,12 @@ const SingleUserPage = () => {
         })
       }
     } catch (error) {
-      messageApi.error({
-        type:    'error',
-        content: 'Errror',
-      })
+      if(error instanceof Error){
+        messageApi.error({
+          type:    'error',
+          content: error.message,
+        })
+      }
     }
   }
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { useSearchParams }       from 'react-router-dom'
 import { useCookies }            from 'react-cookie'
@@ -11,6 +10,7 @@ import CsvGenerator              from '../../components/UniversalComponents/CsvG
 import visitsRowMenuItems        from '../../components/DLCJournalComponents/VisistPageComponents/visitsRowMenuItems'
 import { useAppSelector }        from '../../store/hooks'
 import { deleteTableItem }       from '../../Plugins/helpers'
+import DocumentTypeModal         from '../../components/DLCJournalComponents/VisistPageComponents/DocumentTypeModal'
 
 const TableColumns = () => {
   return(
@@ -59,6 +59,7 @@ const VisitPage = () => {
     <>
       <FullTable
         csvGenerator={<CsvGenerator url={'visit/visit/report'} tooltipText={'Generuoja tik pabaigtus vizitus'}/>}
+        documentTypeModal={<DocumentTypeModal/>}
         tableSorter={tableSorter}
         currentPage={page}
         setSearchParams={setSearchParams}

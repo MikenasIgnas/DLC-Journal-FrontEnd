@@ -195,9 +195,15 @@ export type ClientsGuests = {
   companyName?: string;
 }
 export interface Guest {
-  name:     string
-  company: string
+  _id:          string
+  name:         string
+  company:      string
+  visitId:      string;
+  idType?:      string;
+  signatures?:  string;
+  signed:       boolean;
 }
+
 export type VisitsType = {
     id:                 string;
     _id:                string;

@@ -8,6 +8,7 @@ import {
   Permissions,
   VisitStatus,
   VisitorsIdTypes,
+  Guest,
 }                          from '../types/globalTypes'
 import { useCookies }      from 'react-cookie'
 import {
@@ -51,6 +52,7 @@ const useFetchVisitData = () => {
           const visitors: Visitors[]                  = await get(`visit/visitor?visitId=${visitId}`, cookies.access_token)
           const permissions: Permissions[]            = await get('company/permission', cookies.access_token)
           const visitorsIdTypes: VisitorsIdTypes[]    = await get('visit/visitorIdType', cookies.access_token)
+          const guests: Guest[]                       = await get(`visit/guests?visitId=${visitId}`, cookies.access_token)
 
           if(companyId){
             dispatch(setCompanyId(companyId))
@@ -69,7 +71,7 @@ const useFetchVisitData = () => {
           dispatch(setPermissions(permissions))
           dispatch(setVisit(singleVisitRes))
           dispatch(setVisitors(visitors))
-          dispatch(setClientsGuests(singleVisitRes.guests))
+          dispatch(setClientsGuests(guests))
           dispatch(setCarPlates(singleVisitRes.carPlates))
           dispatch(setCompanyEmployees(companyEmployeesRes))
         }

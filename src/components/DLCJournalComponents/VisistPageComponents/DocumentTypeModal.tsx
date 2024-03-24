@@ -1,18 +1,23 @@
 /* eslint-disable max-len */
-import React, { useState }        from 'react'
-import { Button, Divider, Modal, message } from 'antd'
+import React                      from 'react'
+import {
+  Button,
+  Divider,
+  Modal,
+  message,
+}                                 from 'antd'
 import { get }                    from '../../../Plugins/helpers'
 import { useCookies }             from 'react-cookie'
 import VisitsConfingForm          from './VisitsConfingForm'
-import SuccessMessage from '../../UniversalComponents/SuccessMessage'
+import SuccessMessage             from '../../UniversalComponents/SuccessMessage'
 
 type ConfingItemsType = {
     name:   string | undefined;
     _id:    string;
 }
 
-const VisitsConfigModal: React.FC = () => {
-  const [isModalOpen, setIsModalOpen]     = useState(false)
+const DocumentTypeModal = () => {
+  const [isModalOpen, setIsModalOpen]     = React.useState(false)
   const [cookies]                         = useCookies(['access_token'])
   const [visitorIdType, setVisitorIdType] = React.useState<ConfingItemsType[]>([])
   const [messageApi, contextHolder]       = message.useMessage()
@@ -63,4 +68,4 @@ const VisitsConfigModal: React.FC = () => {
   )
 }
 
-export default VisitsConfigModal
+export default DocumentTypeModal

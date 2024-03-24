@@ -199,7 +199,7 @@ const ClientsEmployeeDrawer = () => {
                 <Col span={24}>
                   {!editCompanyEmployee ?
                     <DescriptionItem title='Pastabos' content={`${employee?.note ? employee?.note : '-'}`} /> :
-                    <Form.Item label='Pastabos' labelAlign='left' name='note' initialValue={employee?.note} style={{width: '270px', padding: '0px'}} >
+                    <Form.Item label='Pastabos' labelAlign='left' name='note' initialValue={employee?.note ? employee?.note : '-'} style={{width: '270px', padding: '0px'}} >
                       <Input/>
                     </Form.Item>
                   }

@@ -1,16 +1,47 @@
 /* eslint-disable max-len */
-import {  UserOutlined }                        from '@ant-design/icons'
-import { Button, Card, Form, Input , message }  from 'antd'
-import { useNavigate }                          from 'react-router'
+import {  UserOutlined }  from '@ant-design/icons'
+import {
+  Button,
+  Card,
+  Form,
+  Input,
+  message,
+}                         from 'antd'
+import { useCookies }     from 'react-cookie'
+import { useNavigate }    from 'react-router'
+import SuccessMessage     from '../components/UniversalComponents/SuccessMessage'
+import axios              from 'axios'
+import { sendRecoveryCode } from '../Plugins/helpers'
 
 const SendRecoveryCodePage = () => {
-  const [form]    = Form.useForm()
-  const navigate  = useNavigate()
+  const [form]                      = Form.useForm()
+  const navigate                    = useNavigate()
+  const [, setCookie]        = useCookies(['recovery_token'])
+  const [messageApi, contextHolder] = message.useMessage()
 
-  const onFinish = () => {
-    message.success('Laiškas su patvirtinimo kodu išsiųstas el. paštu')
-    form.resetFields()
-    navigate('/RecoveryCodeConfirmationPage')
+  const onFinish = async(values: {email: string}) => {
+    try{
+      const res = await sendRecoveryCode('sendPasswordRecovery', { email: values.email })
+      setCookie('recovery_token', res.token, { path: '/'})
+      axios.defaults.headers.common['Authorization'] = res.token
+      form.resetFields()
+      messageApi.success({
+        content: 'Laiškas su nuoroda išsiųstas',
+        type:    'success',
+      })
+
+      setTimeout(() => {
+        navigate('/')
+      }, 1000)
+    }catch(error){
+      console.log(error)
+      if (error instanceof Error){
+        messageApi.error({
+          content: error.message,
+          type:    'error',
+        })
+      }
+    }
   }
 
   return (
@@ -41,6 +72,7 @@ const SendRecoveryCodePage = () => {
           </Form.Item>
         </Form>
       </Card>
+      <SuccessMessage contextHolder={contextHolder} />
     </div>
   )
 }

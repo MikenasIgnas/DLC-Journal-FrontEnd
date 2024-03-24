@@ -8,7 +8,7 @@ import {
   Form,
   message,
 }                                 from 'antd'
-import { Guest, VisitsType}                   from '../../../types/globalTypes'
+import {VisitsType}               from '../../../types/globalTypes'
 import VisitorsList               from './VisitorsList'
 import VisitPurposeList           from './VisitPurposeList'
 import VisitorAdditionList        from './VisitorAdditionList'
@@ -33,7 +33,6 @@ const VisitRegistrationForm = () => {
   const [form]                            = Form.useForm()
   const navigate                          = useNavigate()
   const [messageApi, contextHolder]       = message.useMessage()
-  const [clientsGuests, setClientsGuests] = React.useState<Guest[] | undefined>([])
   const [carPlates, setCarPlates]         = React.useState<string[] | undefined>([])
   const companyEmployees                  = useAppSelector((state) => state.visit.companyEmployees)
   const dispatch                          = useAppDispatch()
@@ -87,7 +86,6 @@ const VisitRegistrationForm = () => {
       companyId,
       racks:              checkedList,
       carPlates,
-      guests:             clientsGuests,
       siteId,
       visitPurpose:       selectedPermissions,
       statusId:           preparedStatus?._id,
@@ -124,7 +122,6 @@ const VisitRegistrationForm = () => {
   const resetForm = () => {
     form.resetFields()
     dispatch(setCompanyEmployees([]))
-    setClientsGuests([])
     setCarPlates([])
     localStorage.removeItem('visitPurpose')
   }
@@ -140,7 +137,7 @@ const VisitRegistrationForm = () => {
           <VisitPurposeList/>
           <VisitRegistrationRacksList/>
         </div>
-        <ClientsGuestsItemList list={clientsGuests} setListItems={setClientsGuests}/>
+        <ClientsGuestsItemList/>
         <CarPlatesItemList list={carPlates} setList={setCarPlates}/>
         <div className='VisitRegistrationButtonContainer'>
           <Button htmlType='submit'>Registruoti</Button>

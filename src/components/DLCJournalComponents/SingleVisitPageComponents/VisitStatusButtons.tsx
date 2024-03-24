@@ -4,9 +4,9 @@ import SuccessMessage      from '../../UniversalComponents/SuccessMessage'
 import { useAppSelector }  from '../../../store/hooks'
 
 const VisitStatusButton = () => {
-  const { validate, contextHolder, loading } = useVisitValidation()
-  const visitData                   = useAppSelector((state) => state.visit.visit)
-  const visitStatuses               = useAppSelector((state) => state.visit.visitStatus)
+  const { validate, contextHolder, loading }  = useVisitValidation()
+  const visitData                             = useAppSelector((state) => state.visit.visit)
+  const visitStatuses                         = useAppSelector((state) => state.visit.visitStatus)
 
   const startVisit = async() => {
     validate('visit/start', 'Vizitas Pradėtas!', visitStatuses?.[0])
